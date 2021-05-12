@@ -1,5 +1,7 @@
 
 install.packages('devtools')
+install.packages('data.table')
+
 devtools::install_github('SeasonalForecastingEngine/ForecastTools')
 devtools::install_github('SeasonalForecastingEngine/SeaVal')
 
@@ -19,20 +21,10 @@ mse_dt = MSESS_dt(cv_dt,fc_col = 'prec',obs_col = 'obs')
 
 print(mse_dt)
 
-```
 
-The output contains, for each gridpoint, the MSE of the prediction, the MSE of a (leave-one-year-out) climatological forecast, as well as the skill score.
-The function MSESS_dt needs three arguments: The data table containing predictions and observations, and the names of the columns containing forecast and observation.
-
-If we want to plot our results as a map, we can use the following function:
-  ```{r}
 ggplot_dt(mse_dt,'MSESS',rr = c(-0.5,0.5))
 
-```
 
-For averaging (skill) scores by country we can do the following:
-
-  ```{r}
 mse_dt = add_countries(mse_dt)
 
 mse_country_averaged = mse_dt[,.(MSE = mean(MSE),

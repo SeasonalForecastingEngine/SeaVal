@@ -1,7 +1,14 @@
+#' adds country names to a data table containing lons and lats (on half or full degrees).
+#' Only the 10 countries specified in the CONFER proposal are added (Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tansania, Uganda, Rwanda, Burundi)
+#' @param dt the data table.
+#'
+#' @importFrom data.table as.data.table
+#'
+#' @export
 
-
-add_countries = function(dt,countryfile = '/nr/project/stat/CONFER/Data/GHAcountries.csv')
+add_countries = function(dt)
 {
-  cs = fread(countryfile)
+  data(countries)
+  cs = as.data.table(countries)
   return(merge(dt,cs,by = c('lon','lat')))
 }
