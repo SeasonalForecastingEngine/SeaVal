@@ -4,12 +4,12 @@ devtools::install_github('SeasonalForecastingEngine/ForecastTools')
 devtools::install_github('SeasonalForecastingEngine/SeaVal')
 
 library(data.table)
-library(ncdf4)
+
 library(ForecastTools)
 library(SeaVal)
 
 
-data_dir = '/nr/project/stat/CONFER/Data/validation/example_data/202101/' 
+data_dir = '/nr/project/stat/CONFER/Data/validation/example_data/202101/'
 
 cv_dt = cv_to_dt(data_dir)
 
@@ -17,12 +17,12 @@ print(cv_dt)
 
 ```
 
-In this R data.table, the column 'prec' contains the predicted precip and the column 'obs' contains the corresponding observations. The function is based on the data structure and naming system of the files in 
+In this R data.table, the column 'prec' contains the predicted precip and the column 'obs' contains the corresponding observations. The function is based on the data structure and naming system of the files in
 
 ~SharedData/gcm/seasonal/202101/.
 
 In particular it makes the following assumptions:
-  
+
   1. The cross-validation file is named according to the following scheme:
   'CrossVal\*\*\*-MMtarYYtar_\*\*\*'
 + MMtar are the target months (capital letters describing consecutive months, e.g. 'OND' or 'JJAS')
@@ -32,7 +32,7 @@ In particular it makes the following assumptions:
 3. Both of these netcdf files are formatted as in the 202101 example.
 
 Since the predictions are point forecasts (rather than probabilities), we can use the mean square error (MSE) to assess the skill of our forecast. The following function computes the MSE and MSE-skill-score:
-  
+
   ```{r}
 mse_dt = MSESS_dt(cv_dt,fc_col = 'prec',obs_col = 'obs')
 
@@ -50,7 +50,7 @@ ggplot_dt(mse_dt,'MSESS',rr = c(-0.5,0.5))
 ```
 
 For averaging (skill) scores by country we can do the following:
-  
+
   ```{r}
 mse_dt = add_countries(mse_dt)
 

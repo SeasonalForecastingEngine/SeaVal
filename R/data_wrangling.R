@@ -14,9 +14,8 @@
 #' ncdf_to_dt(fn, subset_list = list('latitude' = -50:50)) # will read out everything between lat -50 and lat 50 (not only the latitudes matching -50:50)
 #' }
 #'
-#' @author Claudio
-#'
 #' @export
+#' @author Claudio
 
 cv_to_dt = function(data_dir)
 {

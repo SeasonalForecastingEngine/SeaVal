@@ -2,6 +2,7 @@
 
 export(composite_analysis)
 export(crps_sample_na)
+export(cv_to_dt)
 import(ForecastTools)
 import(data.table)
 importFrom(ncdf4,nc_open)

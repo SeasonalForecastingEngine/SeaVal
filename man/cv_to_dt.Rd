@@ -24,4 +24,6 @@ ncdf_to_dt(fn, subset_list = list('latitude' = -50:50)) # will read out everythi
 }
 \author{
 Claudio
+takes a character string consisting of capital letters of successive months.
+Returns the indices of these months
 }
