@@ -1,3 +1,23 @@
+
+#' function for loading cross-validation data (predictions and observations).
+#'
+#' @param data_dir path to where the cross-validation is stored.
+#'
+#' @return A data table.
+#'
+#' @importFrom  ncdf4 nc_open
+#' @import data.table
+#' @import ForecastTools
+#'
+#' @examples {
+#' fn = '/nr/user/claudio/bigdisk/SFE/ERA_monthly_nc/total_precipitation_era_1979_1.nc'
+#' ncdf_to_dt(fn, subset_list = list('latitude' = -50:50)) # will read out everything between lat -50 and lat 50 (not only the latitudes matching -50:50)
+#' }
+#'
+#' @author Claudio
+#'
+#' @export
+
 cv_to_dt = function(data_dir)
 {
 
@@ -57,7 +77,7 @@ cv_to_dt = function(data_dir)
 
   ######### now get cross-validation data ############
 
-  nc_cv = nc_open(paste0(data_dir,fn))
+  nc_cv = ncdf4::nc_open(paste0(data_dir,fn))
 
   cv_dt = ncdf_to_dt(nc_cv,printunits = F)
 
@@ -69,7 +89,7 @@ cv_to_dt = function(data_dir)
 
   obs_fn = paste0('ObservedRainfall-',spec)
 
-  nc_obs = nc_open(paste0(data_dir,obs_fn))
+  nc_obs = ncdf4::nc_open(paste0(data_dir,obs_fn))
 
   obs_dt = ncdf_to_dt(nc_obs,printunits = F)
 
