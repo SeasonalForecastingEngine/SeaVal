@@ -225,7 +225,7 @@ CRPSS_ens_fc = function(fc_dt,fc_cn,
   obs_by_cns = intersect(by_cns,names(obs_dt))
 
   climatology_prediction = climatology_ens_forecast(obs_dt = obs_dt,
-                                                    by_cns = obs_by_cns)
+                                                    by_cols = obs_by_cols)
 
   climatology_CRPS = CRPS_ens_fc(fc_dt = climatology_prediction,
                                fc_cn = obs_cn,
