@@ -24,7 +24,7 @@ MSESS_dt(
 
 \item{obs_col}{column name of the observations (either in obs_dt, or in fc_dt if obs_dt = NULL).}
 
-\item{by_cols}{column names of grouping variables, all of which need to be columns in fc_dt. A separate MSE is computed for each value of the grouping variables. 
+\item{by_cols}{column names of grouping variables, all of which need to be columns in fc_dt. A separate MSE is computed for each value of the grouping variables.
 Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in fc_dt.}
 
 \item{along_cols}{column name(s) for the variable(s) along which is averaged. Needs to contain 'year' since the reference climatology forecast is leave-one-year-out.}
@@ -32,6 +32,6 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 \item{...}{passed on to MSE_dt}
 }
 \description{
-Can also handle point forecasts. 
+Can also handle point forecasts.
 Warning: The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology.
 }

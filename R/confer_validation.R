@@ -2,11 +2,11 @@
 
 bootstrap_scores_dt = function(dt,r = 100,score_col,bycols = NULL,mc_cores = 1)
 {
-  
+
   statistic = function(x,inds){mean(x[inds],na.rm = T)}
-  
+
   bootstrap_dt = data.table(R = 1:r)
-  
+
   if(length(bycols) > 0)
   {
     for(i in 1:length(bycols))
@@ -14,56 +14,57 @@ bootstrap_scores_dt = function(dt,r = 100,score_col,bycols = NULL,mc_cores = 1)
       bootstrap_dt = c(bootstrap_dt,unique(dt[,.SD,.SDcols = bycols[i]]))
     }
   }
-  
+
   bootstrap_dt = as.data.table(expand.grid(bootstrap_dt))
-  
+
   if(length(bycols) > 0)
   {
     by_dt = unique(dt[,.SD,.SDcols = bycols])
     setkeyv(by_dt,names(by_dt))
     setkeyv(dt,key(by_dt))
     setkeyv(bootstrap_dt,key(by_dt))
-    
+
     aux_fun = function(row_index)
     {
       sub_dt = by_dt[row_index,]
       data = dt[sub_dt,get(score_col)]
       samples = boot::boot(data,statistic = statistic,R = r)$t
-      
+
       bootstrap_dt[sub_dt,bootstrap_samples := samples]
     }
-    
+
     if(mc_cores == 1)
     {
       for(ri in 1:by_dt[,.N])
       {
         aux_fun(ri)
-      } 
+      }
     } else { # using more cores doesn't speed up things here, so some bad coding happened?
       parallel::mclapply(1:by_dt[,.N],aux_fun,mc.cores = mc_cores)
     }
   } else {
     bootstrap_dt[,bootstrap_samples := boot::boot(dt[,get(score_col)],statistic = statistic,R = r)$t]
   }
-  
+
   return(bootstrap_dt)
 }
 
 #' Returns a leave-one-year-out climatology-based ensemble forecast
-#' 
-#' for a given year, the ensemble forecast simply consists of the observations in all other years. 
+#'
+#' for a given year, the ensemble forecast simply consists of the observations in all other years.
 #' This is essentially an auxiliary function for computing skill scores relative to climatology.
-#' 
+#'
 #' @param obs_dt Data table containing observations, must contain a column 'year'.
 #' @param by_cns character vector containing the column names of the grouping variables, e.g. \code{c('month','lon','lat')}.
-#' 
+#'
 #' @return Long data table with the typical ensemble-forecast looks, i.e. containing a column 'member'.
+#' @export
 
 climatology_ens_forecast = function(obs_dt,
                                     by_cols)
 {
   years = unique(obs_dt[,year])
-  
+
   ret_dt = data.table()
   for(yy in years)
   {
@@ -75,14 +76,14 @@ climatology_ens_forecast = function(obs_dt,
 
 
 
-#' composite analysis for teleconnections 
-#' 
+#' composite analysis for teleconnections
+#'
 #'@param var_dt Data table containing the weather variables for which you want to conduct the composite analysis, e.g. monthly mean precip for a range of years, months, and locations.
-#'@param TC_dt Data table containing the values of the teleconnection index (such as IOD), typically indexed by year and month. 
+#'@param TC_dt Data table containing the values of the teleconnection index (such as IOD), typically indexed by year and month.
 #'@param TC_name Character string containing the column name of TC_dt where the values of the teleconnection index are stored. Default is third column.
 #'@param by_cols Character vector containing the column names of the grouping variables by which the composite analysis is supposed to be conducted. Default is \code{c('month','lon','lat')}.
 #'@param var_name Column name of the weather variable in var_dt. Default is first column not contained in \code{by_cols} and not named 'year'.
-#'  
+#'
 #'@return A data table containing the composites x_plus and x_minus for each value of by_cols
 #'@author Claudio
 #'@export
@@ -97,36 +98,38 @@ composite_analysis = function(var_dt,TC_dt,
   # get three categories: -1 is low TC, 0 is normal TC, 1 is high TC
   TC_by = intersect(by_cols,names(TC_dt))
   TC_dt[,cat := -1*(get(TC_name) <= quantile(get(TC_name),0.33)) + 1*(get(TC_name) >= quantile(get(TC_name),0.67)),by = TC_by]
-  
+
   TCcols = intersect(c('cat',by_cols,average_along_cols),names(TC_dt))
   var_dt = merge(var_dt,TC_dt[,.SD,.SDcols = TCcols],by = c(average_along_cols,TC_by))
-  
+
   CA_dt = var_dt[,mean(get(var_name)),by = c(by_cols,'cat')]
   setnames(CA_dt,'V1',var_name)
   setkeyv(CA_dt,c(by_cols,'cat'))
-  
-  ret_dt = unique(CA_dt[,.SD,.SDcols = by_cols]) 
+
+  ret_dt = unique(CA_dt[,.SD,.SDcols = by_cols])
   x_plus = CA_dt[ cat == 1,get(var_name)] - CA_dt[ cat == 0,get(var_name)]
   x_minus = CA_dt[ cat == -1,get(var_name)] - CA_dt[ cat == 0,get(var_name)]
-  
+
   ret_dt[,x_plus := x_plus][,x_minus := x_minus]
-  
+
   return(ret_dt)
 }
 
 
 #' Taking CRPSs of ensemble forecasts stored in long data tables:
-#' 
+#'
 #' @param fc_dt Data table containing the predictions.
 #' @param fc_cn column name of the prediction.
 #' @param obs_dt Data table containing the observations. Pass NULL if the observations are contained in fc_dt.
 #' @param obs_cn column name of the observations (either in obs_dt, or in fc_dt if obs_dt = NULL).
-#' @param by_cns column names of grouping variables, all of which need to be columns in fc_dt. 
+#' @param by_cns column names of grouping variables, all of which need to be columns in fc_dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in fc_dt.
 #' @param along_cns column name(s) for the variable(s) along which is averaged, typically just 'year'.
-#' @check_dimension Logical. If True, a simple test whether the dimensions match up is conducted: 
+#' @param check_dimension Logical. If True, a simple test whether the dimensions match up is conducted:
 #' Namely, getting the mean grouped by by_cns AND along_cns should correspond to getting the ensemble mean. This is tested.
-#' @member_cn Name of the column identifying the ensemble member.
+#' @param member_cn Name of the column identifying the ensemble member.
+#'
+#' @export
 
 
 CRPS_ens_fc = function(fc_dt,fc_cn,
@@ -152,21 +155,21 @@ CRPS_ens_fc = function(fc_dt,fc_cn,
     } else {
       obs_dt_new = obs_dt
     }
-    
+
     keep_cols = intersect(colnames(obs_dt_new),c(obs_cn,by_cns,along_cns))
-    
+
     fc_dt_new = merge(fc_dt,obs_dt_new[,.SD,.SDcols = keep_cols],by = intersect(names(fc_dt),keep_cols))
   }
-  
+
   fc_dt_new = fc_dt_new[!is.na(get(obs_cn)) & ! is.na(get(fc_cn))]
-  
+
   if(check_dimensions)
   {
     check = unique(fc_dt[,.SD,.SDcols = c(by_cns,along_cns,member_cn)])[,.N] == fc_dt[,.N]
     if(!check) stop('dimension check failed: your data format does not meet the requirements.')
   }
-  
-  
+
+
   #expand for application of crps:
   if(!is.null(by_cns))
   {
@@ -174,35 +177,35 @@ CRPS_ens_fc = function(fc_dt,fc_cn,
   } else {
     ff = paste0('year + ',obs_cn,'~ ',member_cn)
   }
-  
+
   fc_dt_new = dcast(fc_dt_new,formula = as.formula(ff),fun.aggregate = mean,value.var = fc_cn,na.rm = T)
-  
+
   pred_cols = (length(by_cns) + length(along_cns) + 2) : ncol(fc_dt_new) # that's a bit hacked
-  
+
   pred_mat = as.matrix(fc_dt_new[,pred_cols,with = FALSE])
-  
+
   obs = fc_dt_new[,get(obs_cn)]
-  
+
   crps_vals = crps_sample_na(obs,pred_mat)
-  
+
   ret_dt = fc_dt_new[,.SD,.SDcols = c(along_cns,by_cns)][,CRPS := crps_vals]
   ret_dt = ret_dt[,.(CRPS = mean(CRPS)), by = by_cns]
   return(ret_dt)
 }
 
 #' Function for taking CRPS skill scores of ensemble forecasts stored in long data tables:
-#' 
-#' Warning: The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology. 
+#'
+#' Warning: The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology.
 #' @param fc_dt Data table containing the predictions.
 #' @param fc_cn column name of the prediction.
 #' @param obs_dt Data table containing the observations. Pass NULL if the observation are contained in fc_dt.
 #' @param obs_cn column name of the observations (either in obs_dt, or in fc_dt if obs_dt = NULL).
-#' @param by_cns column names of grouping variables, all of which need to be columns in fc_dt. A separate MSE is computed for each value of the grouping variables. 
+#' @param by_cns column names of grouping variables, all of which need to be columns in fc_dt. A separate MSE is computed for each value of the grouping variables.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in fc_dt.
 #' @param along_cns column name(s) for the variable(s) along which is averaged. Needs to contain 'year' since the reference climatology forecast is leave-one-year-out.
 #' @param ... passed on to MSE_ens_fc
-#' 
-#' 
+#'
+#' @export
 
 CRPSS_ens_fc = function(fc_dt,fc_cn,
                         obs_dt = NULL,
@@ -210,46 +213,46 @@ CRPSS_ens_fc = function(fc_dt,fc_cn,
                         by_cns = intersect(c('month','season','lon','lat','system','lead_time'),names(fc_dt)),
                         along_cns = c('year'),...)
 {
-  
+
   if(!('year' %in% along_cns)) stop('skill scores are with respect to leave-one-year-out climatology, so your along_cns must contain "year".')
-  
+
   if(is.null(obs_dt))
   {
-    obs_dt = unique(fc_dt[,.SD,.SDcols = intersect(c(obs_cn,by_cns,along_cns),c('year','month','lon','lat',obs_cn))]) 
+    obs_dt = unique(fc_dt[,.SD,.SDcols = intersect(c(obs_cn,by_cns,along_cns),c('year','month','lon','lat',obs_cn))])
     # note that by_cns can contain e.g. different systems, all of which are compared to the same observation, therefore the intersect.
   }
-  
+
   obs_by_cns = intersect(by_cns,names(obs_dt))
-  
+
   climatology_prediction = climatology_ens_forecast(obs_dt = obs_dt,
                                                     by_cns = obs_by_cns)
-  
+
   climatology_CRPS = CRPS_ens_fc(fc_dt = climatology_prediction,
                                fc_cn = obs_cn,
                                obs_dt = obs_dt,
                                obs_cn = obs_cn,
                                by_cns = obs_by_cns)
-  
+
   setnames(climatology_CRPS,'CRPS','clim_CRPS')
-  
+
   CRPS_dt = CRPS_ens_fc(fc_dt = fc_dt,
                       fc_cn = fc_cn,
                       obs_dt = obs_dt,
                       obs_cn = obs_cn,
                       by_cns = by_cns,
                       along_cns = along_cns,...)
-  
+
   CRPS_dt = merge(CRPS_dt,climatology_CRPS)
   CRPS_dt[,CRPSS := (clim_CRPS - CRPS)/clim_CRPS]
-  
+
   return(CRPS_dt)
-  
+
 }
 
 
 #' Auxiliary function for computing CRPS on ensemble forecasts
 #' Essentially wraps scoringRules::crps_sample, but can deal with missing values.
-#' That's important when your ensemble switches size between hind- and forecasts, and 
+#' That's important when your ensemble switches size between hind- and forecasts, and
 #' when you're computing crps for several systems at once and are too lazy to peel them apart.
 #'
 #' @param obs vector of observations.
@@ -265,31 +268,33 @@ crps_sample_na = function (obs, pred)
     crps = scoringRules::crps_sample(single_obs,vector_pred2)
     return(crps)
   }
-  
+
   if(length(obs) == 1)
   {
     crps = crps_sample_na_single_obs(obs,pred)
   } else{
-    crps = sapply(seq_along(obs), function(i) crps_sample_na_single_obs(obs[i], pred[i,]))  
+    crps = sapply(seq_along(obs), function(i) crps_sample_na_single_obs(obs[i], pred[i,]))
   }
-  
+
   return(crps)
 }
 
 
 
 #' Taking MSEs of ensemble forecasts stored in long data tables. Can also handle point forecast
-#' 
+#'
 #' @param fc_dt Data table containing the predictions.
 #' @param fc_cn column name of the prediction.
 #' @param obs_dt Data table containing the observations. Pass NULL if the observation are contained in fc_dt.
 #' @param obs_cn column name of the observations (either in obs_dt, or in fc_dt if obs_dt = NULL).
-#' @param by_cns column names of grouping variables, all of which need to be columns in fc_dt. 
+#' @param by_cns column names of grouping variables, all of which need to be columns in fc_dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in fc_dt.
 #' @param along_cns column name(s) for the variable(s) along which is averaged, typically just 'year'.
-#' @check_dimension Logical. If True, a simple test whether the dimensions match is conducted: 
+#' @param check_dimension Logical. If True, a simple test whether the dimensions match is conducted:
 #' Namely, getting the mean grouped by by_cns AND along_cns should correspond to getting the ensemble mean. This is tested.
-#' @member_cn Name of the column identifying the ensemble member. Only used if check_dimension is TRUE.
+#' @param member_cn Name of the column identifying the ensemble member. Only used if check_dimension is TRUE.
+#' @export
+
 
 MSE_dt = function(fc_dt,fc_col,
                   obs_dt = NULL,
@@ -299,7 +304,7 @@ MSE_dt = function(fc_dt,fc_col,
                   check_dimensions = T,
                   member_col = intersect('member',colnames(fc_dt)))
 {
-  
+
   if(!is.null(obs_dt))
   {
     if(obs_col == fc_col)
@@ -315,24 +320,24 @@ MSE_dt = function(fc_dt,fc_col,
     } else {
       obs_dt_new = obs_dt
     }
-    
+
     keep_cols = intersect(colnames(obs_dt_new),c(obs_col,by_cols,along_cols))
-    
+
     fc_dt_new = merge(fc_dt,obs_dt_new[,.SD,.SDcols = keep_cols],by = intersect(names(fc_dt),keep_cols))
   } else {fc_dt_new = copy(fc_dt)}
-  
+
   if(check_dimensions)
   {
     check = unique(fc_dt[,.SD,.SDcols = c(by_cols,along_cols,member_col)])[,.N] == fc_dt[,.N]
     if(!check) stop('Dimension check failed. Probably you have multiple layers per ensemble member and year after grouping.')
   }
-  
-  
+
+
   # get forecast mean (= mean over all ensemble members)
     fc_dt_new[,fc_mean := mean(get(fc_col),na.rm = T),by = c(by_cols,along_cols)]
-  
-  
-  # take mean along all 
+
+
+  # take mean along all
   MSE_dt = fc_dt_new[,.(MSE = mean((fc_mean - get(obs_col))^2,na.rm = T)),by = by_cols]
   return(MSE_dt)
 }
@@ -340,19 +345,19 @@ MSE_dt = function(fc_dt,fc_col,
 
 
 #' Function for taking MSE skill scores of ensemble forecasts stored in long data tables:
-#' 
-#' Can also handle point forecasts. 
-#' Warning: The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology. 
+#'
+#' Can also handle point forecasts.
+#' Warning: The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology.
 #' @param fc_dt Data table containing the predictions.
 #' @param fc_col column name of the prediction.
 #' @param obs_dt Data table containing the observations. Pass NULL if the observation are contained in fc_dt.
 #' @param obs_col column name of the observations (either in obs_dt, or in fc_dt if obs_dt = NULL).
-#' @param by_cols column names of grouping variables, all of which need to be columns in fc_dt. A separate MSE is computed for each value of the grouping variables. 
+#' @param by_cols column names of grouping variables, all of which need to be columns in fc_dt. A separate MSE is computed for each value of the grouping variables.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in fc_dt.
 #' @param along_cols column name(s) for the variable(s) along which is averaged. Needs to contain 'year' since the reference climatology forecast is leave-one-year-out.
 #' @param ... passed on to MSE_dt
-#' 
-#' 
+#'
+#' @export
 
 MSESS_dt = function(fc_dt,fc_col,
                     obs_dt = NULL,
@@ -360,39 +365,39 @@ MSESS_dt = function(fc_dt,fc_col,
                     by_cols = intersect(c('month','season','lon','lat','system','lead_time'),names(fc_dt)),
                     along_cols = c('year'),...)
 {
-  
+
   if(!('year' %in% along_cols)) stop('skill scores are with respect to leave-one-year-out climatology, so your along_cns must contain "year".')
-  
+
   if(is.null(obs_dt))
   {
-    obs_dt = unique(fc_dt[,.SD,.SDcols = intersect(c(obs_col,by_cols,along_cols),c('year','month','lon','lat',obs_col))]) 
+    obs_dt = unique(fc_dt[,.SD,.SDcols = intersect(c(obs_col,by_cols,along_cols),c('year','month','lon','lat',obs_col))])
     # note that by_cols can contain e.g. different systems, all of which are compared to the same observation, therefore the intersect.
   }
-  
+
   obs_by_cols = intersect(by_cols,names(obs_dt))
-  
+
   climatology_prediction = climatology_ens_forecast(obs_dt = obs_dt,
                                                     by_cols = obs_by_cols)
-  
+
   climatology_MSE = MSE_dt(fc_dt = climatology_prediction,
                            fc_col = obs_col,
                            obs_dt = obs_dt,
                            obs_col = obs_col,
                            by_cols = obs_by_cols)
-  
+
   setnames(climatology_MSE,'MSE','clim_MSE')
-  
+
   MSE_dt = MSE_dt(fc_dt = fc_dt,
                   fc_col = fc_col,
                   obs_dt = obs_dt,
                   obs_col = obs_col,
                   by_cols = by_cols,
                   along_cols = along_cols,...)
-  
+
   MSE_dt = merge(MSE_dt,climatology_MSE, by = intersect(names(MSE_dt),names(climatology_MSE)))
   MSE_dt[,MSESS := (clim_MSE - MSE)/clim_MSE]
-  
+
   return(MSE_dt)
-  
+
 }
 

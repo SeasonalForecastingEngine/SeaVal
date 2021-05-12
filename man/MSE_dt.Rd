@@ -25,10 +25,15 @@ MSE_dt(
 
 \item{obs_cn}{column name of the observations (either in obs_dt, or in fc_dt if obs_dt = NULL).}
 
-\item{by_cns}{column names of grouping variables, all of which need to be columns in fc_dt. 
+\item{by_cns}{column names of grouping variables, all of which need to be columns in fc_dt.
 Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in fc_dt.}
 
 \item{along_cns}{column name(s) for the variable(s) along which is averaged, typically just 'year'.}
+
+\item{check_dimension}{Logical. If True, a simple test whether the dimensions match is conducted:
+Namely, getting the mean grouped by by_cns AND along_cns should correspond to getting the ensemble mean. This is tested.}
+
+\item{member_cn}{Name of the column identifying the ensemble member. Only used if check_dimension is TRUE.}
 }
 \description{
 Taking MSEs of ensemble forecasts stored in long data tables. Can also handle point forecast

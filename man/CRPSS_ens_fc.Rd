@@ -24,7 +24,7 @@ CRPSS_ens_fc(
 
 \item{obs_cn}{column name of the observations (either in obs_dt, or in fc_dt if obs_dt = NULL).}
 
-\item{by_cns}{column names of grouping variables, all of which need to be columns in fc_dt. A separate MSE is computed for each value of the grouping variables. 
+\item{by_cns}{column names of grouping variables, all of which need to be columns in fc_dt. A separate MSE is computed for each value of the grouping variables.
 Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in fc_dt.}
 
 \item{along_cns}{column name(s) for the variable(s) along which is averaged. Needs to contain 'year' since the reference climatology forecast is leave-one-year-out.}

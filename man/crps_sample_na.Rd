@@ -4,7 +4,7 @@
 \alias{crps_sample_na}
 \title{Auxiliary function for computing CRPS on ensemble forecasts
 Essentially wraps scoringRules::crps_sample, but can deal with missing values.
-That's important when your ensemble switches size between hind- and forecasts, and 
+That's important when your ensemble switches size between hind- and forecasts, and
 when you're computing crps for several systems at once and are too lazy to peel them apart.}
 \usage{
 crps_sample_na(obs, pred)
@@ -18,6 +18,6 @@ where the different columns are the different predictions.}
 \description{
 Auxiliary function for computing CRPS on ensemble forecasts
 Essentially wraps scoringRules::crps_sample, but can deal with missing values.
-That's important when your ensemble switches size between hind- and forecasts, and 
+That's important when your ensemble switches size between hind- and forecasts, and
 when you're computing crps for several systems at once and are too lazy to peel them apart.
 }
