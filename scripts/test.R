@@ -33,15 +33,9 @@ mse_country_averaged = mse_dt[,.(MSE = mean(MSE),
                               by = country]
 print(mse_country_averaged)
 
-```
-
-We can use the plotting function above to generate all kinds of spatial plots from the derived data. For example, say, we're interested in the predicted anomaly for 2016. We can do the following:
-
-```{r}
 cv_dt[,prec_ano := prec - mean(prec), by = .(lon,lat)] # derive anomaly for each gridpoint
 ggplot_dt(cv_dt,'prec_ano',rr = c(-10,10))
 
-```
 
 
 And we can (visually) compare to observed climatology:

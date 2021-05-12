@@ -10,5 +10,6 @@ Authors@R:
 Description: What the package does (one paragraph).
 License: What license it uses
 Encoding: UTF-8
+Imports: ForecastTools, data.table
 LazyData: true
 RoxygenNote: 7.0.2

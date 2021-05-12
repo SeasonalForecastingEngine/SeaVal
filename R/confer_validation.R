@@ -55,7 +55,7 @@ bootstrap_scores_dt = function(dt,r = 100,score_col,bycols = NULL,mc_cores = 1)
 #' This is essentially an auxiliary function for computing skill scores relative to climatology.
 #'
 #' @param obs_dt Data table containing observations, must contain a column 'year'.
-#' @param by_cns character vector containing the column names of the grouping variables, e.g. \code{c('month','lon','lat')}.
+#' @param by_cols character vector containing the column names of the grouping variables, e.g. \code{c('month','lon','lat')}.
 #'
 #' @return Long data table with the typical ensemble-forecast looks, i.e. containing a column 'member'.
 #' @export
