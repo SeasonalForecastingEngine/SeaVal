@@ -27,8 +27,8 @@ cv_to_dt = function(data_dir)
 
   target_months = strsplit(gsub("[[:digit:]]","",spec), split = '_')[[1]][1]
 
-  #' takes a character string consisting of capital letters of successive months.
-  #' Returns the indices of these months
+  # takes a character string consisting of capital letters of successive months.
+  # Returns the indices of these months
   months_to_numbers = function(str)
   {
     nmon = nchar(str)
