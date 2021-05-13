@@ -1,10 +1,7 @@
 
-# These lines you only need when you don't have the packages installed:
+# These lines you only need when you don't have the package installed, so you only need to do this once:
 install.packages('devtools')
 
-
-# This should get you the two packages from Github:
-devtools::install_github('SeasonalForecastingEngine/ForecastTools')
 devtools::install_github('SeasonalForecastingEngine/SeaVal')
 
 
