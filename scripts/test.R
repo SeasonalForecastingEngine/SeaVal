@@ -7,7 +7,7 @@ devtools::install_github('SeasonalForecastingEngine/SeaVal')
 
 # setup:
 library(SeaVal)
-
+library(ForecastTools)
 
 # set this to the data directory containing the cross-validation data,
 # at ICPAC that should be something like '~SharedData/gcm/seasonal/202101/'. If you are using windows, you might need to replace '/' by '\' instead...

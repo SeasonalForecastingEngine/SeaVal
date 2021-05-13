@@ -12,8 +12,11 @@ License: MIT
 Encoding: UTF-8
 Remotes:
   github::SeasonalForecastingEngine/ForecastTools
-Imports: 
+Depends: 
   data.table,
   ForecastTools
+Imports:
+  ncdf4,
+  scoringRules
 LazyData: true
 RoxygenNote: 7.1.1

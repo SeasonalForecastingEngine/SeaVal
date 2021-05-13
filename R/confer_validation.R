@@ -258,6 +258,8 @@ CRPSS_ens_fc = function(fc_dt,fc_cn,
 #' @param obs vector of observations.
 #' @param pred either vector of predictions when a single observation is provided, or a matrix with nrow = length(obs)
 #' where the different columns are the different predictions.
+#'
+#' @importFrom scoringRules crps_sample
 #' @export
 
 crps_sample_na = function (obs, pred)
