@@ -1,5 +1,5 @@
 Package: SeaVal
-Title: What the Package Does (One Line, Title Case)
+Title: Validation of Seasonal Forecasts issued by ICPAC
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "First",
@@ -8,8 +8,10 @@ Authors@R:
            email = "first.last@example.com",
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: What the package does (one paragraph).
-License: What license it uses
+License: MIT
 Encoding: UTF-8
-Imports: ForecastTools, data.table
+Imports: 
+  data.table,
+  ForecastTools
 LazyData: true
 RoxygenNote: 7.0.2

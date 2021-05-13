@@ -11,8 +11,6 @@ devtools::install_github('SeasonalForecastingEngine/SeaVal')
 
 # setup:
 
-library(data.table)
-library(ForecastTools)
 library(SeaVal)
 
 
