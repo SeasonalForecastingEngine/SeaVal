@@ -1,7 +1,6 @@
 
 # These lines you only need when you don't have the packages installed:
 install.packages('devtools')
-install.packages('data.table')
 
 
 # This should get you the two packages from Github:
@@ -10,7 +9,7 @@ devtools::install_github('SeasonalForecastingEngine/SeaVal')
 
 
 # setup:
-
+library(ForecastTools)
 library(SeaVal)
 
 

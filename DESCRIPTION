@@ -14,4 +14,4 @@ Imports:
   data.table,
   ForecastTools
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1

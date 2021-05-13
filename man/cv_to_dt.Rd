@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_wrangling.R
 \name{cv_to_dt}
 \alias{cv_to_dt}
-\title{function for loading cross-validation data (predictions and observations).}
+\title{Loading cross-validation data}
 \usage{
 cv_to_dt(data_dir)
 }
@@ -13,17 +13,6 @@ cv_to_dt(data_dir)
 A data table.
 }
 \description{
-function for loading cross-validation data (predictions and observations).
-}
-\examples{
-{
-fn = '/nr/user/claudio/bigdisk/SFE/ERA_monthly_nc/total_precipitation_era_1979_1.nc'
-ncdf_to_dt(fn, subset_list = list('latitude' = -50:50)) # will read out everything between lat -50 and lat 50 (not only the latitudes matching -50:50)
-}
-
-}
-\author{
-Claudio
-takes a character string consisting of capital letters of successive months.
-Returns the indices of these months
+This function loads cross-validation data (predictions and observations) from the provided directory.
+The data is averaged over the target months specified in the file name.
 }
