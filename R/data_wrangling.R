@@ -1,21 +1,19 @@
 
-#' function for loading cross-validation data (predictions and observations).
+#' Loading cross-validation data
+#'
+#' @description  This function loads cross-validation data (predictions and observations) from the provided directory.
+#' The data is averaged over the target months specified in the file name.
 #'
 #' @param data_dir path to where the cross-validation is stored.
 #'
 #' @return A data table.
 #'
+#' @export
+#'
 #' @importFrom  ncdf4 nc_open
 #' @import data.table
 #' @import ForecastTools
-#'
-#' @examples {
-#' fn = '/nr/user/claudio/bigdisk/SFE/ERA_monthly_nc/total_precipitation_era_1979_1.nc'
-#' ncdf_to_dt(fn, subset_list = list('latitude' = -50:50)) # will read out everything between lat -50 and lat 50 (not only the latitudes matching -50:50)
-#' }
-#'
-#' @export
-#' @author Claudio
+
 
 cv_to_dt = function(data_dir)
 {
