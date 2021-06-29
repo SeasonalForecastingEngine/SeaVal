@@ -281,6 +281,58 @@ crps_sample_na = function (obs, pred)
   return(crps)
 }
 
+#' Compute the Multicategory Brier Skill score
+#'
+#' This score is suitable for tercile category forecasts.
+#'
+#' @param fc_dt Data table containing the predictions.
+#' @param fc_cols column names of the prediction.
+#' @param obs_dt Data table containing the observations. Pass NULL if the observations are contained in fc_dt.
+#' @param obs_col column name of the observations (either in obs_dt, or in fc_dt if obs_dt = NULL). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to fc_cols[1]), 0 for the second and 1 for the third category.
+#' @param by_cols column names of grouping variables, all of which need to be columns in fc_dt.
+#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in fc_dt.
+#' @param along_cns column name(s) for the variable(s) along which is averaged, typically just 'year'.
+#' @export
+
+
+MBSS_dt = function(fc_dt,fc_cols = c('below','normal','above'),
+                  obs_dt = NULL,
+                  obs_col = ifelse(is.null(obs_dt),yes = 'obs',no = fc_col),
+                  by_cols = intersect(c('month','season','lon','lat','system','lead_time'),names(fc_dt)),
+                  along_cols = c('year'))
+{
+
+  # organize everything into one data table:
+  if(!is.null(obs_dt))
+  {
+    if(obs_col == fc_col)
+    {
+      obs_dt_new = copy(obs_dt)
+      setnames(obs_dt_new,obs_col,'obs')
+      obs_col = 'obs'
+      if(fc_col == 'obs') #relevant for skill scores, where observations are considered as predictions, and the fc_cn is sometimes 'obs'
+      {
+        setnames(fc_dt,'obs','fc')
+        fc_col = 'fc'
+      }
+    } else {
+      obs_dt_new = obs_dt
+    }
+
+    keep_cols = intersect(colnames(obs_dt_new),c(obs_col,by_cols,along_cols))
+
+    fc_dt_new = merge(fc_dt,obs_dt_new[,.SD,.SDcols = keep_cols],by = intersect(names(fc_dt),keep_cols))
+  } else {fc_dt_new = copy(fc_dt)}
+
+
+  # Multicategory Brier skill score:
+
+  MBSS_dt = fc_dt_new[,.(MBSS = 3/2 * (2/3 - mean((get(fc_cols[1]) - (get(obs_col) == -1))^2 + (get(fc_cols[2]) - (get(obs_col) == 0))^2 + (get(fc_cols[3]) - (get(obs_col) == 1))^2))),by = by_cols]
+  return(MBSS_dt)
+}
+
+
 
 
 #' Taking MSEs of ensemble forecasts stored in long data tables. Can also handle point forecast

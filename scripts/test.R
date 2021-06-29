@@ -1,4 +1,8 @@
 
+rm(list = ls())
+remove.packages('rnaturalearthhires')
+remove.packages('ForecastTools')
+remove.packages('SeaVal')
 # These lines you only need when you don't have the package installed, so you only need to do this once:
 install.packages('devtools')
 
@@ -7,7 +11,6 @@ devtools::install_github('SeasonalForecastingEngine/SeaVal')
 
 # setup:
 library(SeaVal)
-library(ForecastTools)
 
 # set this to the data directory containing the cross-validation data,
 # at ICPAC that should be something like '~SharedData/gcm/seasonal/202101/'. If you are using windows, you might need to replace '/' by '\' instead...
@@ -28,7 +31,7 @@ print(mse_dt)
 
 ### plot results ###
 
-ggplot_dt(mse_dt,'MSESS',rr = c(-0.5,0.5)) # rr is the range of the color scale
+ggplot_dt(mse_dt,'MSESS',rr = c(-0.5,0.5),tol = 2) # rr is the range of the color scale
 
 ### get result by country ###
 
