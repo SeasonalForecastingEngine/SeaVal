@@ -22,6 +22,11 @@ cv_to_dt = function(data_dir)
   fns = list.files(data_dir)
   fn = fns[grepl('CrossVal',fns)]
 
+  if(length(fn) == 0)
+  {
+    stop('The directory does not seem to contain a cross-validation file, maybe the path is wrong?')
+  }
+
   spec = strsplit(fn,split = '-')[[1]][2]
   #get rid of year number:
 
