@@ -424,7 +424,7 @@ MSESS_dt = function(fc_dt,fc_col,
 
   if(is.null(obs_dt))
   {
-    obs_dt = unique(fc_dt[,.SD,.SDcols = intersect(c(obs_col,by_cols,along_cols),c('year','month','lon','lat',obs_col))])
+    obs_dt = unique(fc_dt[,.SD,.SDcols = intersect(c(obs_col,by_cols,along_cols),c('year','month','season','lon','lat',obs_col))])
     # note that by_cols can contain e.g. different systems, all of which are compared to the same observation, therefore the intersect.
   }
 
