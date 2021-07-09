@@ -14,12 +14,9 @@ An object of class \code{data.table} (inherits from \code{data.frame}) with 4180
 data(chirps_monthly)
 }
 \description{
-This dataset contains observed monthly mean precipitation for October - December 1981-2020. 
-The unit of precipitation is mm/day. Only the greater horn of Africa is covered. It also contains the tercile category, where -1 means below normal rainfall 
+This dataset contains observed monthly mean precipitation for October - December 1981-2020.
+The unit of precipitation is mm/day. Only the greater horn of Africa is covered. It also contains the tercile category, where -1 means below normal rainfall
 (lowest tercile for this location and month), 0 is normal and 1 is above normal.
 The data source is CHIRPS-blended, upscaled to a half-degree grid.
-}
-\examples{
-print(data(chirps_monthly))
 }
 \keyword{datasets}
