@@ -1,0 +1,230 @@
+---
+title: "Validation Examples"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 
+
+We now provide some hands on examples for data import, data analysis and evaluation using the `SeaVal` package.
+The setup is as follows:
+
+
+```{r}
+library(SeaVal)
+library(ggpubr) # allows slightly fancier plots, see below
+
+data_dir = '/nr/project/stat/CONFER/Data/validation/example_data/202102/' # the directory the data is stored in
+```
+
+The key function for importing netcdf files is `netcdf_to_dt`, which just takes the name of the netcdf (including directory path):
+
+```{r}
+fn = "CorrelationSkillRain_Feb-Apr_Feb2021.nc"
+dt = netcdf_to_dt(paste0(data_dir,fn))
+```
+
+By default, the function prints out all the information it gets from the netcdf, which is often useful. This can be turned off by the `verbose` argument of the function, see `?netcdf_to_dt`.
+As we can see, the netcdf consists of a single variable (and the two dimension variables lon and lat). The resulting data table looks like this:
+
+```{r }
+print(dt)
+
+ggplot_dt(dt,
+          mn = 'Corr. skill rain Feb-Apr, Feb initialized', # title
+          rr = c(-1,1), # range of the colorbar
+          discrete_cs = TRUE,binwidth = 0.4, # discretize colorbar
+          guide = guide_colorbar(barwidth = 0.5, barheight = 10)) # make colorbar longer
+
+```
+
+We can compare to the March initialized forecast:
+
+```{r}
+fn = "CorrelationSkillRain_Mar-May_Feb2021.nc"
+
+dt = netcdf_to_dt(paste0(data_dir,fn),verbose = 0) 
+
+ggplot_dt(dt,
+          mn = 'Corr. skill rain Mar-May, Mar initialized', # title
+          rr = c(-1,1), # range of the colorbar
+          discrete_cs = TRUE,binwidth = 0.4, # discretize colorbar
+          guide = guide_colorbar(barwidth = 0.5, barheight = 10)) # make colorbar longer
+
+```
+
+Next, let us look at a more elaborate example of crossvalidation. In our example folder we have two crossvalidation datasets and corresponding observations (one for FMA, one for MAM). 
+We will process them simultaneously here, to highlight more `data.table` syntax.
+
+```{r}
+##### CrossValidatedPredictedRain_Feb-Apr_Feb2021.nc #####
+
+fn_pred1 = "CrossValidatedPredictedRain_Feb-Apr_Feb2021.nc"
+fn_pred2 = "CrossValidatedPredictedRain_Mar-May_Feb2021.nc"
+
+dt_pred1 = netcdf_to_dt(paste0(data_dir,fn_pred1),verbose = 0) # they look the same, we can just look at the information from one of them...
+dt_pred2 = netcdf_to_dt(paste0(data_dir,fn_pred2))
+
+# add a column, identifying which is which:
+dt_pred1[,season:= 'FMA']
+dt_pred2[,season:= 'MAM']
+
+# bind together
+dt_pred = rbindlist(list(dt_pred1,dt_pred2))
+print(dt_pred)
+
+# get observations:
+
+fn_obs1 = "ObservedRain_Feb-Apr_Feb2021.nc"
+fn_obs2 = "ObservedRain_Mar-May_Feb2021_update.nc"
+dt_obs1 = netcdf_to_dt(paste0(data_dir,fn_obs1),verbose = 0)
+dt_obs2 = netcdf_to_dt(paste0(data_dir,fn_obs2),verbose = 1)
+
+dt_obs1[,season := 'FMA']
+dt_obs2[,season := 'MAM']
+dt_obs = rbindlist(list(dt_obs1,dt_obs2))
+
+# merge predictions and observations into the same data table:
+setnames(dt_pred,'prec','prediction')
+setnames(dt_obs,'prec','observation')
+
+dt = merge(dt_pred,dt_obs,by = c('lon','lat','time','season'))
+print(dt)
+
+# remove all rows with missing predictions:
+dt = dt[!is.na(prediction)]
+
+# convert time from the 'months since date' (MSD) format to years and months (YM)
+dt = MSD_to_YM(dt,origin = '1981-01-01') # (the origin was documented in the netcdf, see above.)
+print(dt) 
+```
+
+We now have the data table in the shape we want it to be, containing both predictions and observations as one column each, which makes it easy to compare:
+
+```{r}
+### check out local biases ###
+bias_dt = dt[,.(bias = mean(prediction - observation)), by = .(lon,lat,season)] # grouping by lon,lat, and season means that the mean is taken over all years.
+bias_dt[,range(bias)] # get an idea of the range
+
+pp1 = ggplot_dt(bias_dt[season == 'FMA'],
+                data_col = 'bias', 
+                rr = c(-15,15), # fix range to make it comparable to pp2
+                mn = 'bias of FMA prediction',
+                midpoint = 0)
+
+pp2 = ggplot_dt(bias_dt[season == 'MAM'],
+                data_col = 'bias', 
+                rr = c(-15,15),
+                mn = 'bias of MAM prediction',
+                midpoint = 0)
+
+# show plots:
+ggarrange(pp1,pp2)
+```
+
+We can use the function `MSESS_dt` to compute MSE skill scores. The skill is relative to leave-one-year-out climatology:
+
+```{r}
+### analyze mean square error skill scores ###
+msess = MSESS_dt(dt,
+                 fc_col = 'prediction', 
+                 obs_col = 'observation',
+                 by_cols = c('lon','lat','season')) # the skill scores should be computed for each location and each season separately
+
+# get range for plotting:
+msess[,range(MSESS)]
+rr = c(-0.35,0.35)
+
+pp1 = ggplot_dt(msess[season == 'FMA'], 
+                data_col = 'MSESS', 
+                rr=rr,
+                mn = 'MSE skill score, FMA')
+
+pp2 = ggplot_dt(msess[season == 'MAM'], 
+                data_col = 'MSESS', 
+                rr=rr,
+                mn = 'MSE skill score, MAM')
+
+ggarrange(pp1,pp2)
+
+```
+
+If we want to analyze results by countries, we can use the function `add_country_names` that adds a column with country names to the data table:
+
+```{r}
+# check out average MSEs and MSESSs per country:
+msess = add_country_names(msess)
+print(msess)
+msess_by_country = msess[,.(MSE = mean(MSE),
+                            MSESS = mean(MSESS)), by = country] # take averages by country
+
+print(msess_by_country)
+
+```
+
+## Tercile Forecasts
+
+Let us look at the tercile forecasts:
+
+```{r}
+fn = 'Ens_Prec_1monLead_MAM_Prob_EnsRegrCPT-avg.nc'
+
+dt = netcdf_to_dt(paste0(data_dir,fn))
+dt = dt[!is.na(below) | !is.na(normal) | !is.na (above)]
+
+p1 = ggplot_dt(dt,data_col = 'below', midpoint = dt[,min(below,na.rm = TRUE)])
+p2 = ggplot_dt(dt,data_col = 'normal', midpoint = dt[,min(normal,na.rm = TRUE)], high = 'darkgoldenrod') # see https://www.r-graph-gallery.com/ggplot2-color.html for an overview of color names.
+p3 = ggplot_dt(dt,data_col = 'above', midpoint = dt[,min(above,na.rm = TRUE)], high = 'darkgreen')
+
+ggarrange(p1,p2,p3)
+```
+
+*In order to evaluate the forecast we need precipitation data for 2021.*
+
+```{r}
+fn = "PredictedProbabilityRain_Mar-May_Feb2021_new.nc"
+dt = netcdf_to_dt(paste0(data_dir,fn))
+
+dt[,normal := normal/100][,above := above/100][,below := below/100]
+```
+
+## Exceedence probabilities
+
+*missing observations*
+
+## Temperature
+
+```{r}
+##### TrefEnsRegr_monthly.nc #####
+
+fn = 'TrefEnsRegr_monthly.nc'
+
+dt = netcdf_to_dt(paste0(data_dir,fn))
+
+# plot correlations of predictions for all five models at all lead_times:
+# create list of plots:
+plot_list = list()
+
+for(leadtime in 1:3)
+{
+  for(mod in 1:5)
+  {
+    
+      plot_list = c(plot_list,list(ggplot_dt(dt[model == mod & lead == leadtime],
+                                        'corr',
+                                        rr = c(-1,1),
+                                        mn = paste0('model = ',mod,', lead time ',leadtime),
+                                        discrete_cs = TRUE,
+                                        binwidth = 0.2,
+                                        guide = guide_colorbar(title = NULL, barwidth = 75, direction = 'horizontal')))) # adjust the legend/colorbar.
+  }  
+}
+
+
+#plot as grid:
+do.call('ggarrange', c(plot_list,ncol = 5,nrow = 3,common.legend = TRUE,legend = 'bottom'))
+
+```

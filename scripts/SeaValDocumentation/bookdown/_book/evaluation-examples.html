@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3 Evaluation Examples | Tutorial for the SeaVal package</title>
+  <meta name="description" content="3 Evaluation Examples | Tutorial for the SeaVal package" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3 Evaluation Examples | Tutorial for the SeaVal package" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3 Evaluation Examples | Tutorial for the SeaVal package" />
+  
+  
+  
+
+<meta name="author" content="Claudio Heinrich" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="plotting.html"/>
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Getting Started</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#installation"><i class="fa fa-check"></i><b>1.1</b> Installation</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#examples-of-data.table-syntax"><i class="fa fa-check"></i><b>1.2</b> examples of <code>data.table</code> syntax</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="plotting.html"><a href="plotting.html"><i class="fa fa-check"></i><b>2</b> Plotting</a><ul>
+<li class="chapter" data-level="2.1" data-path="plotting.html"><a href="plotting.html#plotting-values-for-selected-countries"><i class="fa fa-check"></i><b>2.1</b> Plotting values for selected countries</a></li>
+<li class="chapter" data-level="2.2" data-path="plotting.html"><a href="plotting.html#more-plotting-options"><i class="fa fa-check"></i><b>2.2</b> More plotting options</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="evaluation-examples.html"><a href="evaluation-examples.html"><i class="fa fa-check"></i><b>3</b> Evaluation Examples</a><ul>
+<li class="chapter" data-level="3.1" data-path="evaluation-examples.html"><a href="evaluation-examples.html#data-import-with-netcdf_to_dt"><i class="fa fa-check"></i><b>3.1</b> Data import with <code>netcdf_to_dt</code></a></li>
+<li class="chapter" data-level="3.2" data-path="evaluation-examples.html"><a href="evaluation-examples.html#tercile-forecasts"><i class="fa fa-check"></i><b>3.2</b> Tercile Forecasts</a></li>
+<li class="chapter" data-level="3.3" data-path="evaluation-examples.html"><a href="evaluation-examples.html#exceedence-probabilities"><i class="fa fa-check"></i><b>3.3</b> Exceedence probabilities</a></li>
+<li class="chapter" data-level="3.4" data-path="evaluation-examples.html"><a href="evaluation-examples.html#temperature"><i class="fa fa-check"></i><b>3.4</b> Temperature</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Tutorial for the <code>SeaVal</code> package</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="evaluation-examples" class="section level1">
+<h1><span class="header-section-number">3</span> Evaluation Examples</h1>
+<div id="data-import-with-netcdf_to_dt" class="section level2">
+<h2><span class="header-section-number">3.1</span> Data import with <code>netcdf_to_dt</code></h2>
+<p>We now provide some hands on examples for data import, data analysis and evaluation using the <code>SeaVal</code> package. The setup is as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggpubr) <span class="co"># allows slightly fancier plots, see below</span>
+
+data_dir =<span class="st"> &#39;/nr/project/stat/CONFER/Data/validation/example_data/202102/&#39;</span> <span class="co"># the directory the data is stored in</span></code></pre></div>
+<p>The key function for importing netcdf files is <code>netcdf_to_dt</code>, which just takes the name of the netcdf (including directory path):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn =<span class="st"> &quot;CorrelationSkillRain_Feb-Apr_Feb2021.nc&quot;</span>
+dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn))</code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/CorrelationSkillRain_Feb-Apr_Feb2021.nc (NC_FORMAT_CLASSIC):
+## 
+##      1 variables (excluding dimension variables):
+##         float corr[lon,lat]   
+##             lead: 0
+##             average_op_ncl: dim_avg_n over dimension(s): model
+##             type: 0
+##             time: 13
+##             _FillValue: -9999
+## 
+##      3 dimensions:
+##         time  Size:0   *** is unlimited ***
+## [1] &quot;vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point&quot;
+##         lat  Size:77
+##             units: degrees_north
+##         lon  Size:66
+##             units: degrees_east
+## 
+##     6 global attributes:
+##         units: mm
+##         MonInit_month: 2
+##         valid_time: Feb-Apr
+##         creation_date: Mon Feb 15 06:59:57 EAT 2021
+##         Conventions: None
+##         title:  Correlation between Cross-Validated and Observed Rainfall</code></pre>
+<p>By default, the function prints out all the information it gets from the netcdf, which is often useful. This can be turned off by the <code>verbose</code> argument of the function, see <code>?netcdf_to_dt</code>. As we can see, the netcdf consists of a single variable (and the two dimension variables lon and lat). The resulting data table looks like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(dt)</code></pre></div>
+<pre><code>##        lon   lat corr
+##    1: 20.5 -13.5   NA
+##    2: 21.0 -13.5   NA
+##    3: 21.5 -13.5   NA
+##    4: 22.0 -13.5   NA
+##    5: 22.5 -13.5   NA
+##   ---                
+## 5078: 51.0  24.5   NA
+## 5079: 51.5  24.5   NA
+## 5080: 52.0  24.5   NA
+## 5081: 52.5  24.5   NA
+## 5082: 53.0  24.5   NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt,
+          <span class="dt">mn =</span> <span class="st">&#39;Corr. skill rain Feb-Apr, Feb initialized&#39;</span>, <span class="co"># title</span>
+          <span class="dt">rr =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="co"># range of the colorbar</span>
+          <span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>,<span class="dt">binwidth =</span> <span class="fl">0.4</span>, <span class="co"># discretize colorbar</span>
+          <span class="dt">guide =</span> <span class="kw">guide_colorbar</span>(<span class="dt">barwidth =</span> <span class="fl">0.5</span>, <span class="dt">barheight =</span> <span class="dv">10</span>)) <span class="co"># make colorbar longer</span></code></pre></div>
+<p><img src="03-Example_validation_files/figure-html/unnamed-chunk-3-1.png" width="480" /></p>
+<p>We can compare to the March initialized forecast:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn =<span class="st"> &quot;CorrelationSkillRain_Mar-May_Feb2021.nc&quot;</span>
+
+dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn),<span class="dt">verbose =</span> <span class="dv">0</span>) 
+
+<span class="kw">ggplot_dt</span>(dt,
+          <span class="dt">mn =</span> <span class="st">&#39;Corr. skill rain Mar-May, Mar initialized&#39;</span>, <span class="co"># title</span>
+          <span class="dt">rr =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="co"># range of the colorbar</span>
+          <span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>,<span class="dt">binwidth =</span> <span class="fl">0.4</span>, <span class="co"># discretize colorbar</span>
+          <span class="dt">guide =</span> <span class="kw">guide_colorbar</span>(<span class="dt">barwidth =</span> <span class="fl">0.5</span>, <span class="dt">barheight =</span> <span class="dv">10</span>)) <span class="co"># make colorbar longer</span></code></pre></div>
+<p><img src="03-Example_validation_files/figure-html/unnamed-chunk-4-1.png" width="480" /></p>
+<p>Next, let us look at a more elaborate example of crossvalidation. In our example folder we have two crossvalidation datasets and corresponding observations (one for FMA, one for MAM). We will process them simultaneously here, to highlight more <code>data.table</code> syntax.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">##### CrossValidatedPredictedRain_Feb-Apr_Feb2021.nc #####
+
+fn_pred1 =<span class="st"> &quot;CrossValidatedPredictedRain_Feb-Apr_Feb2021.nc&quot;</span>
+fn_pred2 =<span class="st"> &quot;CrossValidatedPredictedRain_Mar-May_Feb2021.nc&quot;</span>
+
+dt_pred1 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn_pred1),<span class="dt">verbose =</span> <span class="dv">0</span>) <span class="co"># they look the same, we can just look at the information from one of them...</span>
+dt_pred2 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn_pred2))</code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/CrossValidatedPredictedRain_Mar-May_Feb2021.nc (NC_FORMAT_CLASSIC):
+## 
+##      1 variables (excluding dimension variables):
+##         float prec[lon,lat,time]   
+##             lead: 1
+##             average_op_ncl: dim_avg_n over dimension(s): model
+##             type: 1
+##             _FillValue: -9999
+## 
+##      3 dimensions:
+##         time  Size:35   *** is unlimited ***
+##             units: months since 1981-01-01 
+##             calendar: standard
+##             _FillValue: 9.96920996838687e+36
+##         lat  Size:77
+##             units: degrees_north
+##         lon  Size:66
+##             units: degrees_east
+## 
+##     6 global attributes:
+##         units: mm
+##         MonInit_month: 2
+##         valid_time: Mar-May
+##         creation_date: Mon Feb 15 06:59:57 EAT 2021
+##         Conventions: None
+##         title:  Cross Validated Predicted Rainfall Total (mm)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># add a column, identifying which is which:</span>
+dt_pred1[,season<span class="op">:</span><span class="er">=</span><span class="st"> &#39;FMA&#39;</span>]
+dt_pred2[,season<span class="op">:</span><span class="er">=</span><span class="st"> &#39;MAM&#39;</span>]
+
+<span class="co"># bind together</span>
+dt_pred =<span class="st"> </span><span class="kw">rbindlist</span>(<span class="kw">list</span>(dt_pred1,dt_pred2))
+<span class="kw">print</span>(dt_pred)</code></pre></div>
+<pre><code>##          lon   lat time prec season
+##      1: 20.5 -13.5   13   NA    FMA
+##      2: 21.0 -13.5   13   NA    FMA
+##      3: 21.5 -13.5   13   NA    FMA
+##      4: 22.0 -13.5   13   NA    FMA
+##      5: 22.5 -13.5   13   NA    FMA
+##     ---                            
+## 355736: 51.0  24.5  421   NA    MAM
+## 355737: 51.5  24.5  421   NA    MAM
+## 355738: 52.0  24.5  421   NA    MAM
+## 355739: 52.5  24.5  421   NA    MAM
+## 355740: 53.0  24.5  421   NA    MAM</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get observations:</span>
+
+fn_obs1 =<span class="st"> &quot;ObservedRain_Feb-Apr_Feb2021.nc&quot;</span>
+fn_obs2 =<span class="st"> &quot;ObservedRain_Mar-May_Feb2021_update.nc&quot;</span>
+dt_obs1 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn_obs1),<span class="dt">verbose =</span> <span class="dv">0</span>)
+dt_obs2 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn_obs2),<span class="dt">verbose =</span> <span class="dv">1</span>)</code></pre></div>
+<pre><code>## Units:
+## prec: 
+## time: months since 1981-01-01 
+## lat: degrees_north
+## lon: degrees_east</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_obs1[,season <span class="op">:</span><span class="er">=</span><span class="st"> &#39;FMA&#39;</span>]
+dt_obs2[,season <span class="op">:</span><span class="er">=</span><span class="st"> &#39;MAM&#39;</span>]
+dt_obs =<span class="st"> </span><span class="kw">rbindlist</span>(<span class="kw">list</span>(dt_obs1,dt_obs2))
+
+<span class="co"># merge predictions and observations into the same data table:</span>
+<span class="kw">setnames</span>(dt_pred,<span class="st">&#39;prec&#39;</span>,<span class="st">&#39;prediction&#39;</span>)
+<span class="kw">setnames</span>(dt_obs,<span class="st">&#39;prec&#39;</span>,<span class="st">&#39;observation&#39;</span>)
+
+dt =<span class="st"> </span><span class="kw">merge</span>(dt_pred,dt_obs,<span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>,<span class="st">&#39;time&#39;</span>,<span class="st">&#39;season&#39;</span>))
+<span class="kw">print</span>(dt)</code></pre></div>
+<pre><code>##          lon   lat time season prediction observation
+##      1: 20.5 -13.5   13    FMA         NA          NA
+##      2: 20.5 -13.5   13    MAM         NA          NA
+##      3: 20.5 -13.5   25    FMA         NA          NA
+##      4: 20.5 -13.5   25    MAM         NA          NA
+##      5: 20.5 -13.5   37    FMA         NA          NA
+##     ---                                              
+## 355736: 53.0  24.5  397    MAM         NA          NA
+## 355737: 53.0  24.5  409    FMA         NA          NA
+## 355738: 53.0  24.5  409    MAM         NA          NA
+## 355739: 53.0  24.5  421    FMA         NA          NA
+## 355740: 53.0  24.5  421    MAM         NA          NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># remove all rows with missing predictions:</span>
+dt =<span class="st"> </span>dt[<span class="op">!</span><span class="kw">is.na</span>(prediction)]
+
+<span class="co"># convert time from the &#39;months since date&#39; (MSD) format to years and months (YM)</span>
+dt =<span class="st"> </span><span class="kw">MSD_to_YM</span>(dt,<span class="dt">origin =</span> <span class="st">&#39;1981-01-01&#39;</span>) <span class="co"># (the origin was documented in the netcdf, see above.)</span>
+<span class="kw">print</span>(dt) </code></pre></div>
+<pre><code>##          lon   lat season prediction observation year month
+##      1: 20.5 -11.5    FMA  316.19452   369.36932 1982     2
+##      2: 20.5 -11.5    MAM  202.94411   208.28058 1982     2
+##      3: 20.5 -11.5    FMA  316.20178   252.47144 1983     2
+##      4: 20.5 -11.5    MAM  205.24921   161.22548 1983     2
+##      5: 20.5 -11.5    FMA  317.43375   267.44031 1984     2
+##     ---                                                    
+## 167330: 51.5  22.5    FMA   25.44651    19.71902 2012     2
+## 167331: 51.5  22.5    FMA   25.59836    27.55773 2013     2
+## 167332: 51.5  22.5    FMA   26.03941    25.14965 2014     2
+## 167333: 51.5  22.5    FMA   26.03053    22.23634 2015     2
+## 167334: 51.5  22.5    FMA   26.00327    34.84376 2016     2</code></pre>
+<p>We now have the data table in the shape we want it to be, containing both predictions and observations as one column each, which makes it easy to compare:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### check out local biases <span class="al">###</span>
+bias_dt =<span class="st"> </span>dt[,.(<span class="dt">bias =</span> <span class="kw">mean</span>(prediction <span class="op">-</span><span class="st"> </span>observation)), by =<span class="st"> </span>.(lon,lat,season)] <span class="co"># grouping by lon,lat, and season means that the mean is taken over all years.</span>
+bias_dt[,<span class="kw">range</span>(bias)] <span class="co"># get an idea of the range</span></code></pre></div>
+<pre><code>## [1] -12.64276  15.80456</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pp1 =<span class="st"> </span><span class="kw">ggplot_dt</span>(bias_dt[season <span class="op">==</span><span class="st"> &#39;FMA&#39;</span>],
+                <span class="dt">data_col =</span> <span class="st">&#39;bias&#39;</span>, 
+                <span class="dt">rr =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">15</span>,<span class="dv">15</span>), <span class="co"># fix range to make it comparable to pp2</span>
+                <span class="dt">mn =</span> <span class="st">&#39;bias of FMA prediction&#39;</span>,
+                <span class="dt">midpoint =</span> <span class="dv">0</span>)
+
+pp2 =<span class="st"> </span><span class="kw">ggplot_dt</span>(bias_dt[season <span class="op">==</span><span class="st"> &#39;MAM&#39;</span>],
+                <span class="dt">data_col =</span> <span class="st">&#39;bias&#39;</span>, 
+                <span class="dt">rr =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">15</span>,<span class="dv">15</span>),
+                <span class="dt">mn =</span> <span class="st">&#39;bias of MAM prediction&#39;</span>,
+                <span class="dt">midpoint =</span> <span class="dv">0</span>)
+
+<span class="co"># show plots:</span>
+<span class="kw">ggarrange</span>(pp1,pp2) <span class="co"># here we need the package ggpubr</span></code></pre></div>
+<p><img src="03-Example_validation_files/figure-html/unnamed-chunk-6-1.png" width="960" /></p>
+<p>We can use the function <code>MSESS_dt</code> to compute MSE skill scores. The skill is relative to leave-one-year-out climatology:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### analyze mean square error skill scores <span class="al">###</span>
+msess =<span class="st"> </span><span class="kw">MSESS_dt</span>(dt,
+                 <span class="dt">fc_col =</span> <span class="st">&#39;prediction&#39;</span>, 
+                 <span class="dt">obs_col =</span> <span class="st">&#39;observation&#39;</span>,
+                 <span class="dt">by_cols =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>,<span class="st">&#39;season&#39;</span>)) <span class="co"># the skill scores should be computed for each location and each season separately</span>
+
+<span class="co"># get range for plotting:</span>
+msess[,<span class="kw">range</span>(MSESS)]</code></pre></div>
+<pre><code>## [1] -0.3447786  0.3436327</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rr =<span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="fl">0.35</span>,<span class="fl">0.35</span>)
+
+pp1 =<span class="st"> </span><span class="kw">ggplot_dt</span>(msess[season <span class="op">==</span><span class="st"> &#39;FMA&#39;</span>], 
+                <span class="dt">data_col =</span> <span class="st">&#39;MSESS&#39;</span>, 
+                <span class="dt">rr=</span>rr,
+                <span class="dt">mn =</span> <span class="st">&#39;MSE skill score, FMA&#39;</span>)
+
+pp2 =<span class="st"> </span><span class="kw">ggplot_dt</span>(msess[season <span class="op">==</span><span class="st"> &#39;MAM&#39;</span>], 
+                <span class="dt">data_col =</span> <span class="st">&#39;MSESS&#39;</span>, 
+                <span class="dt">rr=</span>rr,
+                <span class="dt">mn =</span> <span class="st">&#39;MSE skill score, MAM&#39;</span>)
+
+<span class="kw">ggarrange</span>(pp1,pp2)</code></pre></div>
+<p><img src="03-Example_validation_files/figure-html/unnamed-chunk-7-1.png" width="960" /></p>
+<p>If we want to analyze results by countries, we can use the function <code>add_country_names</code> that adds a column with country names to the data table:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># check out average MSEs and MSESSs per country:</span>
+msess =<span class="st"> </span><span class="kw">add_country_names</span>(msess)
+<span class="kw">print</span>(msess)</code></pre></div>
+<pre><code>##        lon  lat season       MSE  clim_MSE        MSESS country
+##    1: 23.0 11.0    MAM 303.14287 308.54726  0.017515586   Sudan
+##    2: 23.5  9.0    MAM 751.99749 731.22747 -0.028404319   Sudan
+##    3: 23.5 10.5    MAM 294.52421 297.75507  0.010850729   Sudan
+##    4: 23.5 11.0    MAM 229.63428 228.55108 -0.004739428   Sudan
+##    5: 24.0  9.0    MAM 426.41982 400.60929 -0.064428203   Sudan
+##   ---                                                          
+## 2703: 50.0 11.0    MAM 185.52785 200.07593  0.072712761 Somalia
+## 2704: 50.5  9.5    MAM  48.67772  46.13510 -0.055112437 Somalia
+## 2705: 50.5 10.0    MAM  28.67013  27.39041 -0.046721342 Somalia
+## 2706: 50.5 11.0    MAM  55.81477  54.05239 -0.032604992 Somalia
+## 2707: 50.5 11.5    MAM  60.25333  60.52558  0.004498041 Somalia</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">msess_by_country =<span class="st"> </span>msess[,.(<span class="dt">MSE =</span> <span class="kw">mean</span>(MSE),
+                            <span class="dt">MSESS =</span> <span class="kw">mean</span>(MSESS)), by =<span class="st"> </span>country] <span class="co"># take averages by country</span>
+
+<span class="kw">print</span>(msess_by_country)</code></pre></div>
+<pre><code>##         country       MSE       MSESS
+##  1:       Sudan  358.0374 0.015229343
+##  2: South Sudan  901.2060 0.021752470
+##  3:      Rwanda 1657.1758 0.129892834
+##  4:    Tanzania 3588.8147 0.037472556
+##  5:     Burundi 2263.1621 0.110301016
+##  6:      Uganda 1578.1713 0.044870020
+##  7:    Ethiopia 1863.0355 0.049708565
+##  8:       Kenya 2404.1271 0.061263744
+##  9:     Eritrea  447.6274 0.009834729
+## 10:     Somalia 1121.8166 0.023641155
+## 11:    Djibouti  111.1771 0.029694437</code></pre>
+</div>
+<div id="tercile-forecasts" class="section level2">
+<h2><span class="header-section-number">3.2</span> Tercile Forecasts</h2>
+<p>Let us look at the tercile forecasts:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn =<span class="st"> &#39;Ens_Prec_1monLead_MAM_Prob_EnsRegrCPT-avg.nc&#39;</span>
+
+dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn))</code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/Ens_Prec_1monLead_MAM_Prob_EnsRegrCPT-avg.nc (NC_FORMAT_CLASSIC):
+## 
+##      3 variables (excluding dimension variables):
+##         float below[lon,lat]   
+##             average_op_ncl: dim_avg_n over dimension(s): model
+##             units: 
+##             lead: 1
+##             _FillValue: -9999
+##         float normal[lon,lat]   
+##             _FillValue: -9999
+##             lead: 1
+##             units: 
+##             average_op_ncl: dim_avg_n over dimension(s): model
+##         float above[lon,lat]   
+##             _FillValue: -9999
+##             lead: 1
+##             units: 
+##             average_op_ncl: dim_avg_n over dimension(s): model
+## 
+##      3 dimensions:
+##         time  Size:0   *** is unlimited ***
+## [1] &quot;vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point&quot;
+##         lat  Size:381
+##             units: degrees_north
+##         lon  Size:326
+##             units: degrees_east
+## 
+##     7 global attributes:
+##         creation_date: Thu Feb 18 17:06:05 EAT 2021
+##         Conventions: None
+##         source_file: Objective Forecast  
+##         description:  Obtained by averaging CPT and local regression 
+##         title: Tercile Consolidated Objective Forecast 
+##         history: Mon Feb 22 10:28:53 2021: ncrename -v LAT,lat Ens_Prec_1monLead_MAM_Prob_EnsRegrCPT-avg.nc
+## Mon Feb 22 10:28:43 2021: ncrename -v LON,lon Ens_Prec_1monLead_MAM_Prob_EnsRegrCPT-avg.nc
+## Mon Feb 22 10:28:26 2021: ncrename -d LON,lon Ens_Prec_1monLead_MAM_Prob_EnsRegrCPT-avg.nc
+## Mon Feb 22 10:27:42 2021: ncrename -d LAT,lat Ens_Prec_1monLead_MAM_Prob_EnsRegrCPT-avg.nc
+##         NCO: netCDF Operators version 4.9.3 (Homepage = http://nco.sf.net, Code = http://github.com/nco/nco)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt =<span class="st"> </span>dt[<span class="op">!</span><span class="kw">is.na</span>(below) <span class="op">|</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(normal) <span class="op">|</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span> (above)]
+
+p1 =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt,<span class="dt">data_col =</span> <span class="st">&#39;below&#39;</span>, <span class="dt">midpoint =</span> dt[,<span class="kw">min</span>(below,<span class="dt">na.rm =</span> <span class="ot">TRUE</span>)])
+p2 =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt,<span class="dt">data_col =</span> <span class="st">&#39;normal&#39;</span>, <span class="dt">midpoint =</span> dt[,<span class="kw">min</span>(normal,<span class="dt">na.rm =</span> <span class="ot">TRUE</span>)], <span class="dt">high =</span> <span class="st">&#39;darkgoldenrod&#39;</span>) <span class="co"># see https://www.r-graph-gallery.com/ggplot2-color.html for an overview of color names.</span>
+p3 =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt,<span class="dt">data_col =</span> <span class="st">&#39;above&#39;</span>, <span class="dt">midpoint =</span> dt[,<span class="kw">min</span>(above,<span class="dt">na.rm =</span> <span class="ot">TRUE</span>)], <span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>)
+
+<span class="kw">ggarrange</span>(p1,p2,p3,<span class="dt">ncol =</span> <span class="dv">3</span>)</code></pre></div>
+<p><img src="03-Example_validation_files/figure-html/unnamed-chunk-9-1.png" width="1152" /></p>
+<p><em>In order to evaluate the forecast we need precipitation data for 2021.</em></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn =<span class="st"> &quot;PredictedProbabilityRain_Mar-May_Feb2021_new.nc&quot;</span>
+dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn))</code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/PredictedProbabilityRain_Mar-May_Feb2021_new.nc (NC_FORMAT_NETCDF4):
+## 
+##      3 variables (excluding dimension variables):
+##         float normal[lon,lat]   (Contiguous storage)  
+##             _FillValue: -1
+##         float above[lon,lat]   (Contiguous storage)  
+##             _FillValue: -1
+##             lead: 1
+##             average_op_ncl: dim_avg_n over dimension(s): model
+##             type: 2
+##         float below[lon,lat]   (Contiguous storage)  
+##             _FillValue: -1
+##             lead: 1
+##             average_op_ncl: dim_avg_n over dimension(s): model
+##             type: 0
+## 
+##      2 dimensions:
+##         lat  Size:77
+##             _FillValue: NaN
+##             units: degrees_north
+##         lon  Size:66
+##             _FillValue: NaN
+##             units: degrees_east</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt[,normal <span class="op">:</span><span class="er">=</span><span class="st"> </span>normal<span class="op">/</span><span class="dv">100</span>][,above <span class="op">:</span><span class="er">=</span><span class="st"> </span>above<span class="op">/</span><span class="dv">100</span>][,below <span class="op">:</span><span class="er">=</span><span class="st"> </span>below<span class="op">/</span><span class="dv">100</span>]</code></pre></div>
+</div>
+<div id="exceedence-probabilities" class="section level2">
+<h2><span class="header-section-number">3.3</span> Exceedence probabilities</h2>
+<p><em>missing observations</em></p>
+</div>
+<div id="temperature" class="section level2">
+<h2><span class="header-section-number">3.4</span> Temperature</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">##### TrefEnsRegr_monthly.nc #####
+
+fn =<span class="st"> &#39;TrefEnsRegr_monthly.nc&#39;</span>
+
+dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn))</code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/TrefEnsRegr_monthly.nc (NC_FORMAT_CLASSIC):
+## 
+##      6 variables (excluding dimension variables):
+##         float below[lon,lat,model,lead]   
+##             units: %
+##             _FillValue: -9999
+##         float above[lon,lat,model,lead]   
+##             units: %
+##             _FillValue: -9999
+##         float normal[lon,lat,model,lead]   
+##             units: %
+##             _FillValue: -9999
+##         float corr[lon,lat,model,lead]   
+##             units: cor
+##             _FillValue: -9999
+##         float tref[lon,lat,model,lead]   
+##             units: K
+##             _FillValue: -9999
+##         float anom[lon,lat,model,lead]   
+##             units: K
+##             _FillValue: -9999
+## 
+##      4 dimensions:
+##         lon  Size:66
+##             units: degreesE
+##             long_name: lon
+##         lat  Size:77
+##             units: degreesN
+##             long_name: lat
+##         model  Size:5
+##             units: number
+##             long_name: model
+##         lead  Size:3
+##             units: month
+##             long_name: lead</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># plot correlations of predictions for all five models at all lead_times:</span>
+<span class="co"># create list of plots:</span>
+plot_list =<span class="st"> </span><span class="kw">list</span>()
+
+<span class="cf">for</span>(leadtime <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)
+{
+  <span class="cf">for</span>(mod <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)
+  {
+    
+      plot_list =<span class="st"> </span><span class="kw">c</span>(plot_list,<span class="kw">list</span>(<span class="kw">ggplot_dt</span>(dt[model <span class="op">==</span><span class="st"> </span>mod <span class="op">&amp;</span><span class="st"> </span>lead <span class="op">==</span><span class="st"> </span>leadtime],
+                                        <span class="st">&#39;corr&#39;</span>,
+                                        <span class="dt">rr =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),
+                                        <span class="dt">mn =</span> <span class="kw">paste0</span>(<span class="st">&#39;model &#39;</span>,mod,<span class="st">&#39;, lead &#39;</span>,leadtime),
+                                        <span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>,
+                                        <span class="dt">binwidth =</span> <span class="fl">0.2</span>,
+                                        <span class="dt">guide =</span> <span class="kw">guide_colorbar</span>(<span class="dt">title =</span> <span class="ot">NULL</span>, <span class="dt">barwidth =</span> <span class="dv">75</span>, <span class="dt">direction =</span> <span class="st">&#39;horizontal&#39;</span>)))) <span class="co"># adjust the legend/colorbar.</span>
+  }  
+}
+
+
+<span class="co">#plot as grid:</span>
+<span class="kw">do.call</span>(<span class="st">&#39;ggarrange&#39;</span>, <span class="kw">c</span>(plot_list,<span class="dt">ncol =</span> <span class="dv">5</span>,<span class="dt">nrow =</span> <span class="dv">3</span>,<span class="dt">common.legend =</span> <span class="ot">TRUE</span>,<span class="dt">legend =</span> <span class="st">&#39;bottom&#39;</span>))</code></pre></div>
+<p><img src="03-Example_validation_files/figure-html/unnamed-chunk-11-1.png" width="960" /></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="plotting.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

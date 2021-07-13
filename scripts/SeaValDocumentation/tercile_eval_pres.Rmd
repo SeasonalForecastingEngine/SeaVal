@@ -1,0 +1,136 @@
+---
+title: "Co-Validation of GHACOF predictions"
+output: 
+  ioslides_presentation:
+    incremental: true
+
+---
+
+```{r setup}
+knitr::opts_chunk$set(echo = FALSE)
+
+# knitr::opts_chunk$set(fig.width = 6)
+# knitr::opts_chunk$set(fig.height = 6)
+
+```
+
+## Goal:
+
+- Put together a toolkit for evaluation of GHACOF-predictions.
+- The toolkit will be in R (and possibly Python). It should be easy-to-use, self-contained and flexible.
+- Communication between ICPAC and NR extremely important!
+- Let's have (possibly short) meetings every other week.
+- How are ICPACs data formats now, in the past and in the future?
+
+
+
+## Proper scoring rules for tercile forecasts
+
+- Proper scoring rules are tools for evaluating predictive performance. Lower scores indicate better performance.
+- **Examples:**  Brier Score, Mean Square Error, Log-likelihood score or the continuous ranked probability score (CRPS).
+- For tercile forecasts: The *ranked probability score (RPS)* is defined as
+\[\text{RPS} := \big( (p_1 - e_1)^2 + (p_2 - e_2)^2 + (p_3 - e_3)^2\big).\]
+Here, $p_1,p_2,$ and $p_3$ are the predicted probabilities for the three categories, and $e_i$ is 1 if the observation falls in the $i$th category, and 0 else.
+
+
+##
+- For example, if the observation falls into the first category, the RPS would be
+\[(p_1 - 1)^2 + p_2^2 + p_3^2.\]
+- The RPS is *proper*, meaning that it rewards calibration and accuracy. 
+- The climatological forecast always gets an RPS of 2/3 = 0.67. 
+- We can spatially average: E.g. if we average the RPS of our prediction over all gridpoints in Ethiopia and obtain a value below 2/3, our prediction for Ethiopia was on average better than climatology.
+ 
+
+##
+
+**Data example:** the seasonal prediction issued January 2021 for the time period FMA *(from the ICPAC repository ~/SharedData/gcm/seasonal/202101/).*
+
+
+```{r }
+
+print(dt_fc)
+
+```
+
+
+##
+
+
+```{r, fig.width = 8, fig.height = 3 }
+par(mfrow = c(1,3))
+ggplot_dt(dt_fc,'below',rr = c(0.1,0.56))
+ggplot_dt(dt_fc,'normal',rr = c(0.1,0.56))
+ggplot_dt(dt_fc,'above',rr = c(0.1,0.56))
+```
+
+```{r , fig.width = 4,fig.height = 4}
+
+ggplot_dt(dt_fc_new,'prec_cat')
+```
+
+
+<!-- We don't have observations from April available right now, so we will evaluate based on February/March observations only. The precipitation data is -->
+<!-- taken from ERA5, the tercile categories are based on the climatology from 1980 to 2021. This is what our evaluation data looks like: -->
+
+
+
+<!-- Here, -1 means below normal rainfall, 0 means normal rainfall and 1 means above normal rainfall. -->
+
+<!-- Since we have three probabilities for each gridpoint and the outcome category for each gridpoint, we can compute the RPS as described above, for each gridpoint: -->
+
+```{r}
+rps = function(p1_vec,p2_vec,p3_vec,obs_vec)
+{
+  return(((obs_vec == -1) - p1_vec)^2 +  ((obs_vec == 0) -  p2_vec)^2 + ((obs_vec == 1) - p3_vec)^2)
+}
+
+
+# get RPS:
+dt_fc_new[,rps := rps(below,normal,above,prec_cat)]
+
+# plot:
+ggplot_dt(dt_fc_new,'rps',rr = c(0.33,1))
+```
+
+
+<!-- As mentioned, the climatological reference value for the RPS is 2/3. This is the center of the color scale in the plot, meaning that areas colored in blue show where the prediction is (so far) doing better than climatology, areas colored in red indicate worse performance. The RPS indicates, for example, good forecast performance over central Ethiopia and North Sudan. If we compare with the predictions and observations above, we see that a high probability for below normal rainfall was issued for central Ethiopia and was also observed. Similarly for North Sudan, only that here above normal precipitation was predicted. This is correctly reflected in the RPS plot. -->
+
+To see whether the forecast was overall better than climatology, we average the RPS:
+
+```{r}
+print(dt_fc[,mean(rps)])
+```
+Based on February and March-observations only, the FMA-prediction issued in January was just as good as climatology.
+
+
+
+## Why evaluate all three probabilities, not only the most likely category?
+
+- Proper scores that are only based on the highest probability category are difficult to construct.
+- Intuitively, a promising candidate seems to be the Brier Score
+\[BS_{\max} = (p_{\max}-e_{\max})^2,\]
+where $p_{\max}$ is the probability assigned to the maximum probability category, and $e_{\max} = 1$ if the observation falls into that category and $0$ else. 
+- Unfortunately, it turns out that this score is *improper*: it does not reward calibration and accuracy. Let us look at an example forecast for just one gridpoint:
+
+
+##
+
+```{r, echo=FALSE, out.width="100%", fig.cap=""}
+knitr::include_graphics("/nr/project/stat/CONFER/Presentations/CCH/2021-04-12 - time to stuff eval/CounterexampleBSonHighProbCat.PNG")
+```
+
+
+<!-- In this example we compare a climatological forecast (red) with a prediction issued by a forecaster (blue). The highest probability categories are indicated by the shaded area: for the forecaster it is the 'above normal' category. For the climatology-forecast the 'below normal' category is selected. Below the figure we show the scores achieved by the forecaster and climatology for all three possible outcomes. -->
+<!-- Paradoxically, the climatology gets a better (lower) Brier Score when the observation is 'normal' or 'above normal', exactly the categories to which the forecaster assigned a higher probability. This highlights the improperness - when evaluating predictions with this score, the best forecast does not necessarily get preferred. -->
+
+<!-- This is unintuitive, because the (standard) Brier Score is proper. However, the Brier Score is designed for predictions of two-category-events with fixed categories. In the definition of $BS_{\max}$ the categories are 'highest probability category' vs. the rest. Here, the two categories *depend on the forecast probabilities*, which makes the Brier Score improper. -->
+
+
+##
+- The only proper score we are aware of, that is only based on the highest probability category, is the hit-score
+\[HS := 1-e_{\max}\]
+(returns 0 when the observation falls into the category whith the highest predicted probability category, and 1 else.) 
+
+-  takes only two values, so contains much less information than the RPS is evaluated. 
+
+- There is nothing wrong with evaluating the full probability vector $(p_1,p_2,p_3)$, but only communicating the highest of the three probabilities to the public.

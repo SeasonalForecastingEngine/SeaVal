@@ -1,0 +1,159 @@
+---
+title: "Validation of Forecasts with SeaVal"
+output: html_document
+---
+
+```{r setup, echo = F}
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_chunk$set(fig.width = 6)
+knitr::opts_chunk$set(fig.height = 6)
+
+```
+
+This sheet gives a short introduction how to use the `R`-package 'SeaVal' for seasonal validation. This package is currently developed at NR and made available via Github. 
+The package will provide a toolkit to evaluate predictions issued by ICPAC. `SeaVal` relies on R data tables (available with the `R` package `data.table`).
+Data tables are more flexible and memory efficient data frames, and simplify many operations that are frequently required when working with weather- and climate data. An introduction to data tables can be found here: https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html
+`SeaVal` will allow to convert the output of forecast models and observations generated at ICPAC into data tables. Moreover it will contain functionality for generating a variety of diagnostic plots, and provide various tools for forecast evaluation.
+
+
+## Setting up `SeaVal`
+
+In order to get started with the package you first need to install the packages `devtools` (if you don't have it already), which allows installing packages from Github directly:
+```{r eval = FALSE, echo = TRUE}
+install.packages('devtools')
+```
+Now you should be able to install the `SeaVal`-package like this:
+```{r, eval = FALSE, echo = TRUE}
+devtools::install_github('SeasonalForecastingEngine/SeaVal')
+```
+
+This line should not only install the `SeaVal` package, but also all packages it depends on. This may take a while, especially if you haven't installed some of the larger packages that we utilize, such as `data.table` or `ggplot2`.
+Also, it is possible that you'll get a message like this:
+```
+These packages have more recent versions available.
+It is recommended to update all of them.
+Which would you like to update?
+
+1: All                                 
+2: CRAN packages only                  
+3: None                             
+...
+```
+
+In that case just type '1' for all. 
+
+If this completes without an error, the setup is complete and you're good to go.
+From here on out, all you have to do is load `SeaVal`:
+
+```{r}
+library(SeaVal)
+```
+
+This imports all functionality of the SeaVal package. It also imports the package `data.table`, so you don't need to put a separate `library(data.table)` in order to have data table syntax and functionality available.
+
+
+
+## Example of cross-validation
+
+The central function for processing cross-validation data is called `cv_to_dt` (because it converts the **c**ross-**v**alidation output into an R-**d**ata-**t**able). The functions contained in the packages `ForecastTools` and `SeaVal` are documented. You can access the function documentation by typing `?<function name>`.
+The function `cv_dt` takes only one argument, which is the path of the directory where the cross-validation results are stored:
+
+```{r}
+
+data_dir = '/nr/project/stat/CONFER/Data/validation/example_data/202101/' 
+
+cv_dt = cv_to_dt(data_dir)
+
+print(cv_dt)
+
+```
+
+In this R data.table, the column 'prec' contains the predicted precip and the column 'obs' contains the corresponding observations. The function is based on the data structure and naming system of the files in 
+
+~SharedData/gcm/seasonal/202101/,
+
+so you need to adjust the `data_dir` to your platform. 
+
+The `cv_to_dt`-function currently makes the following assumptions:
+
+1. The cross-validation file is named according to the following scheme:
+'CrossVal\*\*\*-MMtarYYtar_\*\*\*'
+  + MMtar are the target months (capital letters describing consecutive months, e.g. 'OND' or 'JJAS')
+  + YYtar is the target year
+  + \*\*\* is a placeholder for any sequence of characters
+2. The file with the corresponding observations is located in the same folder and is named as the cross-validation file, just beginning with 'ObservedRainfall' rather than 'CrossVal\*\*\*'.
+3. Both of these netcdf files are formatted as in the 202101 example.
+
+In particular, the function won't work if the cross-validation and observation netcdf are named differently in the directory you provide, or if they follow a different format.
+
+Since the predictions are point forecasts (rather than probabilities), we can use the mean square error (MSE) to assess the skill of our forecast. The following function computes the MSE and MSE-skill-score:
+
+```{r}
+mse_dt = MSESS_dt(cv_dt,fc_col = 'prec',obs_col = 'obs')
+
+print(mse_dt)
+
+```
+
+The output is a data table that contains, for each gridpoint, the MSE of the prediction, the MSE of a (leave-one-year-out) climatological forecast, as well as the skill score.
+The function MSESS_dt needs three arguments: The data table containing predictions and observations, and the names of the columns containing forecast and observation.
+
+If we want to plot our results as a map, we can use the function `ggplot_dt`:
+```{r}
+ggplot_dt(mse_dt,'MSESS',rr = c(-0.5,0.5)) # the first argument is the data table, the second the column name of the data you want to plot, the third is the range of the color scale.
+
+```
+
+For averaging (skill) scores by country we can do the following:
+
+```{r}
+mse_dt = add_countries(mse_dt)
+
+mse_country_averaged = mse_dt[,.(MSE = mean(MSE),
+                                 clim_MSE = mean(clim_MSE),
+                                 MSESS = mean(MSESS)),
+                              by = country]
+print(mse_country_averaged)
+
+```
+
+After using the function `add_countries`, the data table `mse_dt` contains a column specifying the country:
+```{r}
+print(mse_dt)
+```
+
+We can use this to plot skill scores for a selected country:
+```{r}
+ggplot_dt(mse_dt[country == 'Tanzania'], 'MSESS', rr = c(-0.5,0.5))
+
+```
+
+The plotting function `ggplot_dt` automatically fits the borders of the plot to the data present in the data table.
+Therefore, if we restrict the data to a specific country (here by using `mse_dt[country == 'Tanzania']`), it will just show a plot of that particular country. *(I am aware that in this case it would look nicer to have a little more tolerance at the map edges, I'll put it on the to-do-list)*
+We can also use this function to generate all kinds of spatial plots from the derived data. 
+For example, say, we're interested in the predicted anomaly for 2016. We can do the following:
+
+```{r}
+cv_dt[,prec_ano := prec - mean(prec), by = .(lon,lat)] # derive anomaly for each gridpoint
+ggplot_dt(cv_dt[year == 2016],'prec_ano')
+
+```
+
+In more detail, the first row adds a column to the data table `cv_dt` called prec_ano containing the predicted gridpoint anomaly for each year:
+```{r}
+print(cv_dt)
+```
+
+The second row subsets `cv_dt` to only contain the data for year 2016 and then plots the prec_ano column. Note that here we left the range argument `rr` of the plotting function empty. In this case the colorscale is fitted automatically to the range of the data. By default, the color scale is white at 0, red for values above, and blue below. All of this can be customized, more on this later.
+
+And we can (visually) compare to the observed anomaly:
+
+```{r}
+cv_dt[,obs_ano := obs - mean(obs), by = .(lon,lat)] # derive anomaly for each gridpoint
+ggplot_dt(cv_dt[year == 2016],'obs_ano')
+
+```
+
+*Since we're comparing two plots here, it would have actually been better to fix the colorscale, so that it is identical. We didn't do it just for showcasing functionality.*
+

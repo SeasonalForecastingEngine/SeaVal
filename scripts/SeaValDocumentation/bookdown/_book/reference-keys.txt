@@ -1,0 +1,11 @@
+getting-started
+installation
+examples-of-data.table-syntax
+plotting
+plotting-values-for-selected-countries
+more-plotting-options
+evaluation-examples
+data-import-with-netcdf_to_dt
+tercile-forecasts
+exceedence-probabilities
+temperature
