@@ -1,0 +1,328 @@
+---
+title: "Validation of Forecasts with SeaVal"
+output: html_document
+---
+
+```{r setup, echo = F}
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_chunk$set(fig.width = 6)
+knitr::opts_chunk$set(fig.height = 6)
+
+```
+
+This sheet gives a short introduction how to use the `R`-package 'SeaVal' for seasonal validation. This package is currently developed at NR and made available via Github. 
+The package will provide a toolkit to evaluate predictions issued by ICPAC. `SeaVal` relies on R data tables (available with the `R` package `data.table`).
+Data tables are more flexible and memory efficient data frames, and simplify many operations that are frequently required when working with weather- and climate data. An introduction to data tables can be found here: https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html
+`SeaVal` will allow to convert the output of forecast models and observations generated at ICPAC into data tables. Moreover it will contain functionality for generating a variety of diagnostic plots, and provide various tools for forecast evaluation.
+
+
+## Setting up `SeaVal`
+
+In order to get started with the package you first need to install the packages `devtools` (if you don't have it already), which allows installing packages from Github directly:
+```{r eval = FALSE, echo = TRUE}
+install.packages('devtools')
+```
+Now you should be able to install the `SeaVal`-package like this:
+```{r, eval = FALSE, echo = TRUE}
+devtools::install_github('SeasonalForecastingEngine/SeaVal')
+```
+
+This line should not only install the `SeaVal` package, but also all packages it depends on. This may take a while, especially if you haven't installed some of the larger packages that we utilize, such as `data.table` or `ggplot2`.
+Also, it is possible that you'll get a message like this:
+```
+These packages have more recent versions available.
+It is recommended to update all of them.
+Which would you like to update?
+
+1: All                                 
+2: CRAN packages only                  
+3: None                             
+...
+```
+
+In that case just type '1' for all. 
+
+If this completes without an error, the setup is complete and you're good to go.
+From here on out, all you have to do is load `SeaVal`:
+
+```{r}
+library(SeaVal)
+```
+
+This imports all functionality of the SeaVal package. It also imports the package `data.table`, so you don't need to put a separate `library(data.table)` in order to have data table syntax and functionality available. 
+
+Especially in the early development phase it is important to occasionally update the `SeaVal` package. This can be done by running the two commands
+```{r, eval = FALSE, echo = TRUE}
+devtools::install_github('SeasonalForecastingEngine/ForecastTools')
+devtools::install_github('SeasonalForecastingEngine/SeaVal')
+```
+
+
+## `data.table` syntax
+
+Here we show with some examples how to perform basic operations on data tables. 
+A short but comprehensive introduction to `data.table`s syntax can be found here:
+https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html.
+The `SeaVal` package comes with a few example data sets, for example monthly mean precipitation over the GHA region for the OND season provided by CHIRPS:
+
+```{r}
+data("chirps_monthly")
+print(chirps_monthly)
+
+```
+
+We can look at a short description of the dataset like this:
+
+```{r, eval = FALSE, echo = TRUE}
+?chirps_monthly
+```
+
+We'll now go over a few basic commands for handling this sort of data. `chirps_monthly` is a data_table, which is an enhanced data frame. The most fundamental operations include subsetting, performing calculations on columns and aggregation or grouping for calculations. Examples for subsetting are
+```{r}
+chirps_monthly[month == 10] # extract the data for October
+chirps_monthly[year %between% c(1990,1999)] # extract the data for 1990 - 1999
+chirps_monthly[1000:2000] # extract rows 1000 - 2000
+chirps_monthly[month == 10][lon > 30][terc_cat == 0] #chained subsetting: get all October values at locations with longitude >30 that had normal rainfall (terc_cat == 0)
+chirps_monthly[month == 10 & lon > 30 & terc_cat == 0] # different syntax, same effect.
+```
+We can subset either by logical expressions or by row indices (third example above). Subsetting always returns a data table, e.g. `chirps_monthly[1]` returns a one-row data table containing the first row of `chirps_monthly`. 
+
+Next, let's look at examples for operations on columns:
+```{r}
+chirps_monthly[,mean(prec)] # get the mean precipitation (over all locations, months, years)
+chirps_monthly[,mean_prec := mean(prec)] # create a new column in the data table containing the mean
+chirps_monthly[,prec := 30*prec] # transform precipitation from unit mm/day to mm (per month)
+```
+Note in all cases the ',' after '[' which tells data table that you're doing an operation rather than trying to subset. We can also put things together and subset and operate simultaneously:
+```{r}
+chirps_monthly[month == 10 , mean(prec)] # get the mean precipitation for October (over all locations, years)
+```
+(Note that the mean is much larger now because we changed units above...)
+
+Finally, we can perform operations over aggregated groups: 
+```{r}
+dt_new = chirps_monthly[, mean(prec),by = .(lon,lat,month)] 
+print(dt_new)
+```
+Here, the 'by' command (after the second comma) tells data table to perform the operation (`mean`) for each instance of `lon`, `lat`, and `month` separately. As a result, the mean is taken only over all years and we obtain the monthly local climatology. As we can see, the output is a data table containing all columns in `by` and a column named `V1` containing the output of the operation. That's of course a bit impractical. But it's easy to rename columns:
+
+```{r}
+setnames(dt_new,'V1','clim') # take the data table from above and rename column 'V1' into 'clim'
+```
+It's also possible to name the column direcly while `dt_new` is created, like this:
+```{r}
+dt_new = chirps_monthly[,.(clim = mean(prec)),by = .(lon,lat,month)] # same as above, but with simultaneously setting the name of the new column
+```
+This can again be combined with subsetting:
+```{r}
+dt_new = chirps_monthly[year %in% 1990:2020, .(clim = mean(prec)), by = .(lon,lat,month)] # same as above, but with additional subsetting: computes climatology based on the years 1990-2020 only.
+```
+In the examples above we create a new data table containing the climatology. If we instead want to add the climatology as a new column to `chirps_monthly` directly, we can again use the `:=` operator:
+```{r}
+chirps_monthly[,clim := mean(prec), by = .(lon,lat,month)] # add the climatology column directly into chirps_monthly.
+```
+This showcases some of the main functionalities and syntax of the `data.table` package. As mentioned above, it is strongly recommended to have a look at 
+https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html, which introduces many more commands and properly explains the logic underlying `data.table`s syntax.
+We'll finish this section by an example where we compute the MSE for raw ecmwf forecasts:
+
+```{r}
+data("chirps_monthly") # reload data to reverse the changes made in the examples above.
+data("ecmwf_monthly") # get example hindcasts from ecmwf
+
+print(ecmwf_monthly) 
+
+# merge observations and predictions into a single data table:
+setnames(chirps_monthly,'prec','obs') # rename the 'prec' column in the observation data table to 'obs' in order to avoid name clashes since the column in ecmwf_monthly containing the predictions for precip is also named 'prec'
+dt = merge(ecmwf_monthly,chirps_monthly,
+           by = c('lon','lat','year','month')) # merge the data.
+
+print(dt)
+
+dt[,ens_mean := mean(prec),by = .(lon,lat,year,month)] # get the ensemble mean, essentially group by all other dimension variables
+
+mse_dt = dt[,.(mse = mean((prec-obs)^2)), by = .(lon,lat,month)] # create a new data.table containing the mse by location and month
+
+print(mse_dt)
+
+ggplot_dt(mse_dt[month == 10],'mse',rr = c(-10,10) ) # plot mse for October
+
+```
+
+The function `ggplot_dt` is used to create spatial plots from data stored in data tables. In the next section we will showcase how this function works and how the plots can be manipulated.
+
+## Spatial plotting
+
+The function `ggplot_dt` takes a data table containing two columns named `lon` and `lat` that should specify a regular longitude-latitude grid, as well as some data to use for coloring the map. An easy example is the following
+
+```{r}
+dt = chirps_monthly[year == 2020 & month == 10] # reduce the observed precipitation data to a single time slice, namely October 2020
+print(dt) # recall that we renamed the column 'prec' into 'obs'
+ggplot_dt(dt,'obs')
+```
+
+As we can see, the color scale here makes no sense (blue meaning no precipitation) and we'll talk about that in a second. But let's start at the base functionality. `ggplot_dt` requires two arguments, the first one being a data table containing the data, and the second one is the name of the column that contains the data you want to plot. This defaults to the third column in the data table (often your data table will start with lon, lat, and the third column is what you want to plot). So in the example above, `ggplot_dt(dt)` would have led to the same result, because `'obs'` is the third column in `dt`. The plotting window is determined by the data. If you have data covering the entire earth, the entire earth would be plotted. As a consequence, we can restrict the plotted region by subsetting the data table:
+```{r}
+dt_sub  = dt[lon %between% c(28,43) & lat %between% c(-12,1)] # a region containing Tanzania
+ggplot_dt(dt_sub)
+```
+
+The function has further optional arguments (also recall that you can access the function documentation summarizing all of this by typing `?ggplot_dt`):
+```{r}
+ggplot_dt(dt_sub,'obs',
+          mn = 'October 2020 precipitation', # add a title to the plot
+          rr = c(1,10), # fix the limits of the color scale
+          name = 'mm/day') # change the legend label
+```
+
+In this example we set the lower limit of the color scale to 1 and the upper limit to 10. Note that the plot truncates the data at the ends of the color scale, so every pixel with precipitation of  below 1mm/day is now shown in the same blue color. Setting the range of the color scale is particularly useful to force symmetry around 0, e.g. when plotting correlations or anomalies:
+```{r}
+chirps_monthly[,clim := mean(obs), by = .(lon,lat,month)] # add a climatology column
+chirps_monthly[,ano := obs - clim] # add anomaly as another column
+print(chirps_monthly)
+ggplot_dt(chirps_monthly[month == 10 & year == 2020], 'ano', rr = c(-3,3))
+
+```
+
+Now, in this plot positive rainfall anomalies are shown red while negative anomalies are blue, which is very counterintuitive. The function allows us to specify the three used colors by name with the arguments `low`,`mid`, and `high`. So here's an anomaly plot looking a bit nicer:
+```{r}
+ggplot_dt(chirps_monthly[month == 10 & year == 2020], 'ano', 
+          mn = 'October 2020 rainfall anomaly',
+          rr = c(-3,3),
+          low = 'red', mid = 'white', high = 'darkgreen',
+          name = 'mm/day')
+```
+
+Note that we set the range argument to `c(-3,3)`. Fixing the range makes mostly sense when the range is known (e.g. for correlation plots), or when you want to compare several plots (e.g. for comparing mean square error of different NWP models, all plots should have the same range). If we leave the range argument `rr` free, the range is determined from the data. However, when we do this for our anomaly plot this has an undesired sideeffect:
+```{r}
+ggplot_dt(chirps_monthly[month == 10 & year == 2020], 'ano', 
+          mn = 'October 2020 rainfall anomaly',
+          low = 'red', mid = 'white', high = 'darkgreen',
+          name = 'mm/day')
+```
+
+The color scale is no longer centered (white) at 0, but in the center of the (now asymetric) range. As a consequence, all gridpoints with anomaly 0 are shown in a light red. To fix this we can use the `midpoint` argument:
+```{r}
+ggplot_dt(chirps_monthly[month == 10 & year == 2020], 'ano', 
+          mn = 'October 2020 rainfall anomaly',
+          low = 'red', mid = 'white', high = 'darkgreen',
+          midpoint = 0,
+          name = 'mm/day')
+```
+
+Another, maybe surprising, use for the `midpoint` argument is that we can generate plots with a colorscale with only two colors. For example, going back to plotting the observed rainfall we can do the following:
+```{r}
+ggplot_dt(chirps_monthly[month == 10 & year == 2020], 'obs', 
+          mn = 'October 2020 rainfall',
+          mid = 'white', high = 'blue',
+          midpoint = 0,
+          name = 'mm/day')
+```
+
+What happens here is that we set the midpoint to 0, which is the minimum of our data (since observed rainfall is never below 0). Consequently the second half of the colorscale extending below 0 is ignored.
+
+Finally, the function allows to discretize the color scale. To this end we need to set the argument `discrete_cs` to `TRUE`. We can then control the breaks of the discrete colorscale by either of the arguments `binwidth`, `n.breaks`, or `breaks` (the latter takes a vector containing all breakpoints). To revisit the anomaly plot from above:
+```{r}
+ggplot_dt(chirps_monthly[month == 10 & year == 2020], 'ano', 
+          mn = 'October 2020 rainfall anomaly',
+          discrete_cs = TRUE, binwidth = 2,
+          low = 'red', mid = 'white', high = 'darkgreen',
+          midpoint = 0,
+          name = 'mm/day')
+```
+
+
+One final remark: Often you will deal with data tables that contain spatio-temporal data. It is then important to subselect the particular timeslice you want to plot before plotting (as we did above when we plotted October 2020). The function `ggplot_dt` by default tries to select the first timeslice of tempo-spatial data. This is often not what you want (which is why you should subselect first), but it's frequently handy for quick data diagnostics, which is the reason for this default behavior. Here an example:
+```{r}
+print(chirps_monthly) # a data table with multiple months and years and locations, so spatio-temporal data
+ggplot_dt(chirps_monthly) # generates a plot of the precipitation of October 1981 (first timeslice), for a first quick impression how your data looks
+```
+
+## Plotting values for selected countries
+
+We have already seen an option above how to focus the plot on a particular country: by manually subsetting the data to a rectangle of longitudes and latitudes containing that specific country. This is of course quite tedious, and to make our lives easier we can use the `restrict_to_country`-function that takes a data table and a country name, and subsets the data table to only contain gridpoints in the specified country. Currently, the function accepts the following country names: Burundi, Eritrea, Ethiopia, Kenya, Rwanda, Somalia, South Sudan, Sudan, Tansania, Uganda.
+```{r}
+dt_new = restrict_to_country(chirps_monthly[month == 10 & year == 2020],'Kenya')
+print(dt_new)
+ggplot_dt(dt_new, 'ano', 
+          mn = 'October 2020 rainfall anomaly',
+          discrete_cs = TRUE, binwidth = 2,
+          low = 'red', mid = 'white', high = 'darkgreen',
+          midpoint = 0,
+          name = 'mm/day')
+
+```
+
+As we can see, the function restricts the data to all gridcells for which the centerpoint lies within the specified country. This is useful, for example, for calculating mean scores for the specified country. However, it is not optimal for plotting since every grid cell past the border is censored even though the original data table contained values there. To this end, the `restrict_to_country` function has a `rectangle`-argument that you can set to `TRUE` for plotting:
+```{r}
+dt_new = restrict_to_country(chirps_monthly[month == 10 & year == 2020],'Kenya', rectangle = TRUE)
+ggplot_dt(dt_new, 'ano', 
+          mn = 'October 2020 rainfall anomaly',
+          discrete_cs = TRUE, binwidth = 2,
+          low = 'red', mid = 'white', high = 'darkgreen',
+          midpoint = 0,
+          name = 'mm/day')
+
+```
+
+Instead of a single country name you can also pass multiple country names in a vector to the function. Moreover, when you use `rectangle = TRUE`, you can specify a tolerance `tol` in order to widen the plotting window:
+```{r}
+dt_new = restrict_to_country(chirps_monthly[month == 10 & year == 2020],
+                             c('Kenya','Tanzania'),
+                             rectangle = TRUE,tol = 2)
+ggplot_dt(dt_new, 'ano', 
+          mn = 'October 2020 rainfall anomaly',
+          discrete_cs = TRUE, binwidth = 2,
+          low = 'red', mid = 'white', high = 'darkgreen',
+          midpoint = 0,
+          name = 'mm/day')
+
+```
+
+The `tol = 2` argument means that the function will include a buffer zone of 2 degrees lon/lat outside the specified countries (i.e. 4 gridpoints to each side). Note that the buffer to the south of Tanzania is smaller, because the original data table `chirps_monthly` ends there.
+
+
+## More plotting options
+
+The function `ggplot_dt` is, as its name suggests, based on the package `ggplot2`. In `ggplot2`, plots are composed out of multiple layers, allowing for successive adding of layers. This can help us to generate highly customized plots. As an example, let's revisit the anomaly plot from above and add the location of Nairobi an Addis Abbaba to it:
+```{r}
+# get locations as data table:
+loc = data.table(name = c('Addis Abbaba','Nairobi'),lon = c(38.77,36.84),lat = c(9,-1.28))
+print(loc)
+
+pp = ggplot_dt(chirps_monthly[month == 10 & year == 2020], 'ano', 
+               mn = 'October 2020 rainfall anomaly',
+               low = 'red', mid = 'white', high = 'darkgreen',
+               midpoint = 0,
+               name = 'mm/day') + 
+     geom_point(data = loc,mapping = aes(x = lon,y = lat)) + 
+     geom_text(data = loc,mapping = aes(x = lon,y = lat,label = name),vjust = 1.5)
+
+print(pp)
+
+```
+
+Here, we added two layers to the original plot, the first one being the `geom_point`-layer that creates the two points and the second being the `geom_text`-layer that adds the labels of the points. `ggplot2` is a widely used package and there is a large variety of tutorials and books out there that can help you getting familiar with the syntax.
+
+A frequently required operation is the changing of the font sizes of title and labels. The easiest way to do this is the command
+```{r}
+theme_set(theme_bw(base_size = 16)) # defaults to 12
+print(pp)
+```
+
+If we want to print the plot to an external file, all we have to do is
+```{r, eval = FALSE, echo = TRUE}
+pdf(file = '<path to file and filename>.pdf')
+  print(pp)
+dev.off()
+```
+This prints a .pdf file, but you can print .png and some other file formats similarly, see `?Devices` for an overview.
+
+We can also use ggplots adding-layer-syntax to overwrite existing layers, for example if we want a fully customized colorscale:
+```{r}
+library(viridis) # the viridis package contains some nice color scales
+pp = pp + scale_fill_viridis(name = 'my_color_scale',breaks = seq(-5,5,by = 2),guide = 'legend')
+print(pp)
+```
+
+

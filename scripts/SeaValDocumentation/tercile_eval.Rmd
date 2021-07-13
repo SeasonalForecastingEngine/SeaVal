@@ -1,0 +1,117 @@
+---
+title: "Validating GHACOF predictions"
+output: html_document
+---
+
+```{r setup, echo = F}
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_chunk$set(fig.width = 6)
+knitr::opts_chunk$set(fig.height = 6)
+
+# This RMarkdown file is not fully self-contained. Knit this from the file tercile_eval.R!!!
+
+```
+
+## Proper scoring rules for tercile forecasts
+
+Proper scoring rules are tools for evaluating predictive performance. Given a prediction and the corresponding observation, a proper score returns a single number. We consider negatively oriented scores, that is, lower scores indicate better performance. Popular examples are the Brier Score, Mean Square Error, Log-likelihood score or the continuous ranked probability score (CRPS).
+
+When we're dealing with tercile forecasts of precipitation, we can use the *Brier Score (BS)*. It is defined as
+\[\text{BS} := \big( (p_1 - e_1)^2 + (p_2 - e_2)^2 + (p_3 - e_3)^2\big).\]
+Here, $p_1,p_2,$ and $p_3$ are the predicted probabilities for the three categories, and $e_i$ is 1 if the observation falls in the $i$th category, and 0 else. For example, if the observation falls into the first category, the BS would be
+\[(p_1 - 1)^2 + p_2^2 + p_3^2.\]
+
+This score is strictly proper, meaning that it rewards calibration and accuracy. In our particular situation, the climatological forecast is uniform
+(since climatology is used to define the tercile categories), and the climatological forecast (1/3,1/3,1/3) always gets a BS of 2/3 = 0.67. 
+It is convenient to consider the *Brier Skill Score*
+\[BSS := \frac{3}{2}(2/3 - \text{BS}) ,\]
+which is normalized in the sense that a skill score of 1 corresponds to a perfect forecast and a climatology forecast gets a skill score of 0. Skill-score values of above 0 indicate predictive skill relative to climatology.
+Note that we're here in the rare situation where the skill score is already a strictly proper scoring rule itself (albeit positively oriented).
+
+As with other scores, we can spatially average: E.g. if we average the BSS of our prediction over all gridpoints in Ethiopia and obtain a value above 0, our prediction for Ethiopia was on average better than climatology.
+
+Let's look at a data example. We import the seasonal precipitation prediction from issued January 2021 for the time period FMA (from the ICPAC repository ~/SharedData/gcm/seasonal/202101/). This is how the data looks as an R data.table:
+
+
+```{r }
+
+print(dt_fc)
+
+```
+
+If we look at the probabilities for the three categories as maps we get this:
+
+```{r, fig.width = 3, fig.height = 3 }
+par(mfrow = c(1,3))
+ggplot_dt(dt_fc,'below',rr = c(0.1,0.56))
+ggplot_dt(dt_fc,'normal',rr = c(0.1,0.56))
+ggplot_dt(dt_fc,'above',rr = c(0.1,0.56))
+```
+
+We don't have observations from April available right now, so we will evaluate based on February/March observations only. The precipitation data is
+taken from ERA5, the tercile categories are based on the climatology from 1980 to 2021. This is what our evaluation data looks like:
+
+```{r}
+print(era_cats)
+
+# append observation to prediction:
+dt_fc_new = merge(dt_fc,era_cats[,.(lon,lat,prec_cat)],by = c('lon','lat'))
+
+ggplot_dt(dt_fc_new,'prec_cat')
+```
+
+
+Here, -1 means below normal rainfall, 0 means normal rainfall and 1 means above normal rainfall.
+
+Since we have three probabilities for each gridpoint and the outcome category for each gridpoint, we can compute the BSS as described above, for each gridpoint:
+
+```{r}
+bss = function(p1_vec,p2_vec,p3_vec,obs_vec)
+{
+  bss = 3/2 *(2/3 - (((obs_vec == -1) - p1_vec)^2 +  ((obs_vec == 0) -  p2_vec)^2 + ((obs_vec == 1) - p3_vec)^2))
+  return(bss)
+}
+
+
+# get BSS:
+dt_fc_new[,bss := bss(below,normal,above,prec_cat)]
+
+# plot:
+ggplot_dt(dt_fc_new,'bss',rr = c(-0.5,0.5))
+```
+
+
+Areas colored in red show where the prediction is (so far) doing better than climatology, areas colored in blue indicate worse performance. The BSS indicates, for example, good forecast performance over central Ethiopia and North Sudan. If we compare with the predictions and observations above, we see that a high probability for below normal rainfall was issued for central Ethiopia and was also observed. Similarly for North Sudan, only that here above normal precipitation was predicted. This is correctly reflected in the BSS plot.
+
+To see whether the forecast was overall better than climatology, we average the BSS:
+
+```{r}
+print(dt_fc_new[,mean(bss)])
+```
+Based on February and March-observations only, the FMA-prediction issued in January was just as good as climatology. 
+
+
+
+## Why should we evaluate all three probabilities, not only the most likely category?
+
+The maps communicated at GHACOFs show only the probability for the category with highest chance. This is much more condensed and clear than showing three probability plots as shown above, and should not be changed. In particular, it is fair to have the forecast evaluation being based on the complete forecast data, while only the most important message is presented to the public.
+
+But if we mostly care about the highest probability category, why not focus evaluation just on this prediction?
+One reason is that it is actually not easy to find a proper scoring rule only based on the highest probability category.
+Intuitively, a promising candidate seems to be the two-category-Brier Score on the category with the highest probability
+\[BS_{\max} = (p_{\max}-e_{\max})^2,\]
+where $p_{\max}$ is the probability assigned to the maximum probability category, and $e_{\max} = 1$ if the observation falls into that category and $0$ else. Unfortunately, it turns out that this score is *improper*: it does not reward calibration and accuracy. Let us look at an example forecast for just one gridpoint:
+
+![unchanged image](/nr/project/stat/CONFER/Presentations/CCH/2021-04-12 - time to stuff eval/CounterexampleBSonHighProbCat.PNG)
+
+In this example we compare a climatological forecast (red) with a prediction issued by a forecaster (blue). The highest probability categories are indicated by the shaded area: for the forecaster it is the 'above normal' category. For the climatology-forecast the 'below normal' category is selected. Below the figure we show the scores achieved by the forecaster and climatology for all three possible outcomes.
+Paradoxically, the climatology gets a better (lower) Brier Score when the observation is 'normal' or 'above normal', exactly the categories to which the forecaster assigned a higher probability. This highlights the improperness - when evaluating predictions with this score, the best forecast does not necessarily get preferred.
+
+This is unintuitive, because the (standard) Brier Score is proper. However, the Brier Score is designed for predictions of two-category-events with fixed categories. In the definition of $BS_{\max}$ the categories are 'highest probability category' vs. the rest. Here, the two categories *depend on the forecast probabilities*, which makes the Brier Score improper.
+
+Are there other scoring rules that only depend on the probability issued for the highest probability category and that are proper? The only one we are currently aware of is the hit-score
+\[HS := 1-e_{\max}\]
+that returns 0 when the observation falls into the category with the highest predicted probability category, and 1 else. However, since it only takes two values, the evaluation conveys much less information than when the full RPS is evaluated. It is therefore preferable to evaluate the full prediction $(p_1,p_2,p_3)$ rather than just the highest probability category.
+
+

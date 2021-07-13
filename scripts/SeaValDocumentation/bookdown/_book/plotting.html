@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 Plotting | Tutorial for the SeaVal package</title>
+  <meta name="description" content="2 Plotting | Tutorial for the SeaVal package" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 Plotting | Tutorial for the SeaVal package" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 Plotting | Tutorial for the SeaVal package" />
+  
+  
+  
+
+<meta name="author" content="Claudio Heinrich" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="evaluation-examples.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Getting Started</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#installation"><i class="fa fa-check"></i><b>1.1</b> Installation</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#examples-of-data.table-syntax"><i class="fa fa-check"></i><b>1.2</b> examples of <code>data.table</code> syntax</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="plotting.html"><a href="plotting.html"><i class="fa fa-check"></i><b>2</b> Plotting</a><ul>
+<li class="chapter" data-level="2.1" data-path="plotting.html"><a href="plotting.html#plotting-values-for-selected-countries"><i class="fa fa-check"></i><b>2.1</b> Plotting values for selected countries</a></li>
+<li class="chapter" data-level="2.2" data-path="plotting.html"><a href="plotting.html#more-plotting-options"><i class="fa fa-check"></i><b>2.2</b> More plotting options</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="evaluation-examples.html"><a href="evaluation-examples.html"><i class="fa fa-check"></i><b>3</b> Evaluation Examples</a><ul>
+<li class="chapter" data-level="3.1" data-path="evaluation-examples.html"><a href="evaluation-examples.html#data-import-with-netcdf_to_dt"><i class="fa fa-check"></i><b>3.1</b> Data import with <code>netcdf_to_dt</code></a></li>
+<li class="chapter" data-level="3.2" data-path="evaluation-examples.html"><a href="evaluation-examples.html#tercile-forecasts"><i class="fa fa-check"></i><b>3.2</b> Tercile Forecasts</a></li>
+<li class="chapter" data-level="3.3" data-path="evaluation-examples.html"><a href="evaluation-examples.html#exceedence-probabilities"><i class="fa fa-check"></i><b>3.3</b> Exceedence probabilities</a></li>
+<li class="chapter" data-level="3.4" data-path="evaluation-examples.html"><a href="evaluation-examples.html#temperature"><i class="fa fa-check"></i><b>3.4</b> Temperature</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Tutorial for the <code>SeaVal</code> package</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="plotting" class="section level1">
+<h1><span class="header-section-number">2</span> Plotting</h1>
+<p>The function <code>ggplot_dt</code> takes a data table containing two columns named <code>lon</code> and <code>lat</code> that should specify a regular longitude-latitude grid, as well as some data to use for coloring the map. An easy example is the following</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;chirps_monthly&quot;</span>)
+
+dt =<span class="st"> </span><span class="kw">copy</span>(chirps_monthly) <span class="co"># to manipulate the data table: chirps_monthly has locked binding</span>
+
+dt2020 =<span class="st"> </span>dt[year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span> <span class="op">&amp;</span><span class="st"> </span>month <span class="op">==</span><span class="st"> </span><span class="dv">10</span>] <span class="co"># reduce the observed precipitation data to a single time slice, namely October 2020</span>
+<span class="kw">print</span>(dt2020) </code></pre></div>
+<pre><code>##        lon   lat        prec month year terc_cat
+##    1: 22.0 -12.0 2.981750252    10 2020        0
+##    2: 22.0 -11.5 3.382063644    10 2020        0
+##    3: 22.0 -11.0 3.250394658    10 2020        0
+##    4: 22.0 -10.5 3.065396443    10 2020       -1
+##    5: 22.0 -10.0 3.416906726    10 2020       -1
+##   ---                                           
+## 3480: 51.5  21.0 0.033333333    10 2020       -1
+## 3481: 51.5  21.5 0.033333333    10 2020        0
+## 3482: 51.5  22.0 0.032608688    10 2020       -1
+## 3483: 51.5  22.5 0.001594238    10 2020       -1
+## 3484: 51.5  23.0 0.000000000    10 2020       -1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt2020,<span class="st">&#39;prec&#39;</span>)</code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-1-1.png" width="480" /></p>
+<p>As we can see, the color scale here makes no sense (blue meaning no precipitation) and we'll talk about that in a second. But let's start at the base functionality. <code>ggplot_dt</code> requires two arguments, the first one being a data table containing the data, and the second one is the name of the column that contains the data you want to plot. This defaults to the third column in the data table (often your data table will start with lon, lat, and the third column is what you want to plot). So in the example above, <code>ggplot_dt(dt)</code> would have led to the same result, because <code>'obs'</code> is the third column in <code>dt</code>. The plotting window is determined by the data. If you have data covering the entire earth, the entire earth would be plotted. As a consequence, we can restrict the plotted region by subsetting the data table:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_sub  =<span class="st"> </span>dt2020[lon <span class="op">%between%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">28</span>,<span class="dv">43</span>) <span class="op">&amp;</span><span class="st"> </span>lat <span class="op">%between%</span><span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="dv">12</span>,<span class="dv">1</span>)] <span class="co"># a region containing Tanzania</span>
+<span class="kw">ggplot_dt</span>(dt_sub)</code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-2-1.png" width="480" /></p>
+<p>The function has further optional arguments (also recall that you can access the function documentation summarizing all of this by typing <code>?ggplot_dt</code>):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt_sub,<span class="st">&#39;prec&#39;</span>,
+          <span class="dt">mn =</span> <span class="st">&#39;October 2020 precipitation&#39;</span>, <span class="co"># add a title to the plot</span>
+          <span class="dt">rr =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">10</span>), <span class="co"># fix the limits of the color scale</span>
+          <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>) <span class="co"># change the legend label</span></code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-3-1.png" width="480" /></p>
+<p>In this example we set the lower limit of the color scale to 1 and the upper limit to 10. Note that the plot truncates the data at the ends of the color scale, so every pixel with precipitation of below 1mm/day is now shown in the same blue color. Setting the range of the color scale is particularly useful to force symmetry around 0, e.g. when plotting correlations or anomalies:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt[,clim <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">mean</span>(prec), by =<span class="st"> </span>.(lon,lat,month)] <span class="co"># add a climatology column</span>
+dt[,ano <span class="op">:</span><span class="er">=</span><span class="st"> </span>prec <span class="op">-</span><span class="st"> </span>clim] <span class="co"># add anomaly as another column</span>
+<span class="kw">print</span>(dt)</code></pre></div>
+<pre><code>##          lon   lat      prec month year terc_cat      clim          ano
+##      1: 22.0 -12.0 1.9301587    10 1981       -1 2.8169255 -0.886766778
+##      2: 22.0 -11.5 2.1351602    10 1981       -1 3.0905585 -0.955398264
+##      3: 22.0 -11.0 2.7692883    10 1981       -1 3.4675703 -0.698281996
+##      4: 22.0 -10.5 3.9201619    10 1981        0 3.8808617  0.039300191
+##      5: 22.0 -10.0 4.8720656    10 1981        1 4.2989969  0.573068714
+##     ---                                                                
+## 418076: 51.5  21.0 0.2404348    12 2020       -1 0.2559819 -0.015547112
+## 418077: 51.5  21.5 0.2184058    12 2020       -1 0.2415870 -0.023181188
+## 418078: 51.5  22.0 0.2053623    12 2020       -1 0.2151377 -0.009775418
+## 418079: 51.5  22.5 0.1615942    12 2020       -1 0.1870797 -0.025485473
+## 418080: 51.5  23.0 0.1387682    12 2020       -1 0.1701314 -0.031363167</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>], <span class="st">&#39;ano&#39;</span>, <span class="dt">rr =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">3</span>,<span class="dv">3</span>))</code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-4-1.png" width="480" /></p>
+<p>Now, in this plot positive rainfall anomalies are shown red while negative anomalies are blue, which is very counterintuitive. The function allows us to specify the three used colors by name with the arguments <code>low</code>,<code>mid</code>, and <code>high</code>. So here's an anomaly plot looking a bit nicer:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>], <span class="st">&#39;ano&#39;</span>, 
+          <span class="dt">mn =</span> <span class="st">&#39;October 2020 rainfall anomaly&#39;</span>,
+          <span class="dt">rr =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">3</span>,<span class="dv">3</span>),
+          <span class="dt">low =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">mid =</span> <span class="st">&#39;white&#39;</span>, <span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>,
+          <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>)</code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-5-1.png" width="480" /></p>
+<p>Note that we set the range argument to <code>c(-3,3)</code>. Fixing the range makes mostly sense when the range is known (e.g. for correlation plots), or when you want to compare several plots (e.g. for comparing mean square error of different NWP models, all plots should have the same range). If we leave the range argument <code>rr</code> free, the range is determined from the data. However, when we do this for our anomaly plot this has an undesired sideeffect:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>], <span class="st">&#39;ano&#39;</span>, 
+          <span class="dt">mn =</span> <span class="st">&#39;October 2020 rainfall anomaly&#39;</span>,
+          <span class="dt">low =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">mid =</span> <span class="st">&#39;white&#39;</span>, <span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>,
+          <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>)</code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-6-1.png" width="480" /></p>
+<p>The color scale is no longer centered (white) at 0, but in the center of the (now asymetric) range. As a consequence, all gridpoints with anomaly 0 are shown in a light red. To fix this we can use the <code>midpoint</code> argument:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>], <span class="st">&#39;ano&#39;</span>, 
+          <span class="dt">mn =</span> <span class="st">&#39;October 2020 rainfall anomaly&#39;</span>,
+          <span class="dt">low =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">mid =</span> <span class="st">&#39;white&#39;</span>, <span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>,
+          <span class="dt">midpoint =</span> <span class="dv">0</span>,
+          <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>)</code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-7-1.png" width="480" /></p>
+<p>Another, maybe surprising, use for the <code>midpoint</code> argument is that we can generate plots with a colorscale with only two colors. For example, going back to plotting the observed rainfall we can do the following:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>], <span class="st">&#39;prec&#39;</span>, 
+          <span class="dt">mn =</span> <span class="st">&#39;October 2020 rainfall&#39;</span>,
+          <span class="dt">mid =</span> <span class="st">&#39;white&#39;</span>, <span class="dt">high =</span> <span class="st">&#39;blue&#39;</span>,
+          <span class="dt">midpoint =</span> <span class="dv">0</span>,
+          <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>)</code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-8-1.png" width="480" /></p>
+<p>What happens here is that we set the midpoint to 0, which is the minimum of our data (since observed rainfall is never below 0). Consequently the second half of the colorscale extending below 0 is ignored.</p>
+<p>Finally, the function allows to discretize the color scale. To this end we need to set the argument <code>discrete_cs</code> to <code>TRUE</code>. We can then control the breaks of the discrete colorscale by either of the arguments <code>binwidth</code>, <code>n.breaks</code>, or <code>breaks</code> (the latter takes a vector containing all breakpoints). To revisit the anomaly plot from above:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>], <span class="st">&#39;ano&#39;</span>, 
+          <span class="dt">mn =</span> <span class="st">&#39;October 2020 rainfall anomaly&#39;</span>,
+          <span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>, <span class="dt">binwidth =</span> <span class="dv">2</span>,
+          <span class="dt">low =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">mid =</span> <span class="st">&#39;white&#39;</span>, <span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>,
+          <span class="dt">midpoint =</span> <span class="dv">0</span>,
+          <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>)</code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-9-1.png" width="480" /></p>
+<p>One final remark: Often you will deal with data tables that contain spatio-temporal data. It is then important to subselect the particular timeslice you want to plot before plotting (as we did above when we plotted October 2020). The function <code>ggplot_dt</code> by default tries to select the first timeslice of tempo-spatial data. This is often not what you want (which is why you should subselect first), but it's frequently handy for quick data diagnostics, which is the reason for this default behavior. Here an example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(chirps_monthly) <span class="co"># a data table with multiple months and years and locations, so spatio-temporal data</span></code></pre></div>
+<pre><code>##          lon   lat      prec month year terc_cat
+##      1: 22.0 -12.0 1.9301587    10 1981       -1
+##      2: 22.0 -11.5 2.1351602    10 1981       -1
+##      3: 22.0 -11.0 2.7692883    10 1981       -1
+##      4: 22.0 -10.5 3.9201619    10 1981        0
+##      5: 22.0 -10.0 4.8720656    10 1981        1
+##     ---                                         
+## 418076: 51.5  21.0 0.2404348    12 2020       -1
+## 418077: 51.5  21.5 0.2184058    12 2020       -1
+## 418078: 51.5  22.0 0.2053623    12 2020       -1
+## 418079: 51.5  22.5 0.1615942    12 2020       -1
+## 418080: 51.5  23.0 0.1387682    12 2020       -1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(chirps_monthly) <span class="co"># generates a plot of the precipitation of October 1981 (first timeslice), for a first quick impression how your data looks</span></code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-10-1.png" width="480" /></p>
+<div id="plotting-values-for-selected-countries" class="section level2">
+<h2><span class="header-section-number">2.1</span> Plotting values for selected countries</h2>
+<p>Above, we have already seen an option how to restrict a plot to a particular country: by manually subsetting the data to a rectangle of longitudes and latitudes containing that specific country. This is of course quite tedious, and to make our lives easier we can use the <code>restrict_to_country</code>-function that takes a data table and a country name, and subsets the data table to only contain gridpoints in the specified country. Currently, the function accepts the following country names: Burundi, Eritrea, Ethiopia, Kenya, Rwanda, Somalia, South Sudan, Sudan, Tansania, Uganda.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_new =<span class="st"> </span><span class="kw">restrict_to_country</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>],<span class="st">&#39;Kenya&#39;</span>)
+<span class="kw">print</span>(dt_new)</code></pre></div>
+<pre><code>##       lon  lat      prec month year terc_cat     clim        ano
+##   1: 34.0 -1.0 4.9593979    10 2020        1 2.964475  1.9949232
+##   2: 34.0 -0.5 4.7645891    10 2020        1 3.639693  1.1248956
+##   3: 34.0  0.0 4.6154697    10 2020        1 4.284345  0.3311242
+##   4: 34.5 -1.0 7.5550100    10 2020        1 4.380272  3.1747380
+##   5: 34.5 -0.5 6.4341863    10 2020        1 4.056996  2.3771907
+##  ---                                                            
+## 187: 41.0 -1.0 0.7533339    10 2020       -1 2.456691 -1.7033568
+## 188: 41.0  3.0 1.1354665    10 2020        0 2.135546 -1.0000791
+## 189: 41.0  3.5 1.5012010    10 2020        0 2.191273 -0.6900723
+## 190: 41.0  4.0 1.8609376    10 2020        0 2.431412 -0.5704748
+## 191: 41.5  3.5 1.3543324    10 2020        0 2.447758 -1.0934261</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt_new, <span class="st">&#39;ano&#39;</span>, 
+          <span class="dt">mn =</span> <span class="st">&#39;October 2020 rainfall anomaly&#39;</span>,
+          <span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>, <span class="dt">binwidth =</span> <span class="dv">2</span>,
+          <span class="dt">low =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">mid =</span> <span class="st">&#39;white&#39;</span>, <span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>,
+          <span class="dt">midpoint =</span> <span class="dv">0</span>,
+          <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>)</code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-11-1.png" width="480" /></p>
+<p>As we can see, the function restricts the data to all gridcells for which the centerpoint lies within the specified country. This is useful, for example, for calculating mean scores for the specified country. However, it is not optimal for plotting since every grid cell past the border is censored even though the original data table contained values there. To this end, the <code>restrict_to_country</code> function has a <code>rectangle</code>-argument that you can set to <code>TRUE</code> for plotting:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_new =<span class="st"> </span><span class="kw">restrict_to_country</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>],<span class="st">&#39;Kenya&#39;</span>, <span class="dt">rectangle =</span> <span class="ot">TRUE</span>)
+<span class="kw">ggplot_dt</span>(dt_new, <span class="st">&#39;ano&#39;</span>, 
+          <span class="dt">mn =</span> <span class="st">&#39;October 2020 rainfall anomaly&#39;</span>,
+          <span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>, <span class="dt">binwidth =</span> <span class="dv">2</span>,
+          <span class="dt">low =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">mid =</span> <span class="st">&#39;white&#39;</span>, <span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>,
+          <span class="dt">midpoint =</span> <span class="dv">0</span>,
+          <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>)</code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-12-1.png" width="480" /></p>
+<p>Instead of a single country name you can also pass multiple country names in a vector to the function. Moreover, when you use <code>rectangle = TRUE</code>, you can specify a tolerance <code>tol</code> in order to widen the plotting window:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_new =<span class="st"> </span><span class="kw">restrict_to_country</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>],
+                             <span class="kw">c</span>(<span class="st">&#39;Kenya&#39;</span>,<span class="st">&#39;Tanzania&#39;</span>),
+                             <span class="dt">rectangle =</span> <span class="ot">TRUE</span>,<span class="dt">tol =</span> <span class="dv">2</span>)
+<span class="kw">ggplot_dt</span>(dt_new, <span class="st">&#39;ano&#39;</span>, 
+          <span class="dt">mn =</span> <span class="st">&#39;October 2020 rainfall anomaly&#39;</span>,
+          <span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>, <span class="dt">binwidth =</span> <span class="dv">2</span>,
+          <span class="dt">low =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">mid =</span> <span class="st">&#39;white&#39;</span>, <span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>,
+          <span class="dt">midpoint =</span> <span class="dv">0</span>,
+          <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>)</code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-13-1.png" width="480" /></p>
+<p>The <code>tol = 2</code> argument means that the function will include a buffer zone of 2 degrees lon/lat outside the specified countries (i.e. 4 gridpoints to each side). Note that the buffer to the south of Tanzania is smaller, because the original data table <code>dt</code> does not contain any data further south.</p>
+</div>
+<div id="more-plotting-options" class="section level2">
+<h2><span class="header-section-number">2.2</span> More plotting options</h2>
+<p>The function <code>ggplot_dt</code> is, as its name suggests, based on the package <code>ggplot2</code>. In <code>ggplot2</code>, plots are composed out of multiple layers, allowing for successive adding of layers. This can help us to generate highly customized plots. As an example, let's revisit the anomaly plot from above and add the location of Nairobi an Addis Abbaba to it:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
+
+<span class="co"># get locations as data table:</span>
+loc =<span class="st"> </span><span class="kw">data.table</span>(<span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&#39;Addis Abbaba&#39;</span>,<span class="st">&#39;Nairobi&#39;</span>),<span class="dt">lon =</span> <span class="kw">c</span>(<span class="fl">38.77</span>,<span class="fl">36.84</span>),<span class="dt">lat =</span> <span class="kw">c</span>(<span class="dv">9</span>,<span class="op">-</span><span class="fl">1.28</span>))
+<span class="kw">print</span>(loc)</code></pre></div>
+<pre><code>##            name   lon   lat
+## 1: Addis Abbaba 38.77  9.00
+## 2:      Nairobi 36.84 -1.28</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pp =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>], <span class="st">&#39;ano&#39;</span>, 
+               <span class="dt">mn =</span> <span class="st">&#39;October 2020 rainfall anomaly&#39;</span>,
+               <span class="dt">low =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">mid =</span> <span class="st">&#39;white&#39;</span>, <span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>,
+               <span class="dt">midpoint =</span> <span class="dv">0</span>,
+               <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">     </span><span class="kw">geom_point</span>(<span class="dt">data =</span> loc,<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> lon,<span class="dt">y =</span> lat)) <span class="op">+</span><span class="st"> </span>
+<span class="st">     </span><span class="kw">geom_text</span>(<span class="dt">data =</span> loc,<span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> lon,<span class="dt">y =</span> lat,<span class="dt">label =</span> name),<span class="dt">vjust =</span> <span class="fl">1.5</span>)
+
+<span class="kw">print</span>(pp)</code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-14-1.png" width="480" /></p>
+<p>Here, we added two layers to the original plot, the first one being the <code>geom_point</code>-layer that creates the two points at the locations of the cities, and the second being the <code>geom_text</code>-layer that labels the points by the city names. <code>ggplot2</code> is a widely used package and there is a large variety of tutorials and books out there that can help you getting familiar with the syntax.</p>
+<p>A frequently required operation is the changing of the font sizes of title and labels. The easiest way to do this is the command</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">theme_set</span>(<span class="kw">theme_bw</span>(<span class="dt">base_size =</span> <span class="dv">16</span>)) <span class="co"># defaults to 12</span>
+<span class="kw">print</span>(pp)</code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-15-1.png" width="480" /></p>
+<p>If we want to print the plot to an external file, all we have to do is</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pdf</span>(<span class="dt">file =</span> <span class="st">&#39;&lt;path to file and filename&gt;.pdf&#39;</span>, <span class="dt">width =</span> ...,<span class="dt">height =</span> ...)
+  <span class="kw">print</span>(pp)
+<span class="kw">dev.off</span>()</code></pre></div>
+<p>This prints a .pdf file, but you can print .png and some other file formats similarly, see <code>?Devices</code> for an overview.</p>
+<p>We can also use ggplots adding-layer-syntax to overwrite existing layers, for example if we want a fully customized colorscale:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(viridis) <span class="co"># the viridis package contains some nice color scales</span></code></pre></div>
+<pre><code>## Loading required package: viridisLite</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pp_new =<span class="st"> </span>pp <span class="op">+</span><span class="st"> </span><span class="kw">scale_fill_viridis</span>(<span class="dt">name =</span> <span class="st">&#39;my_color_scale&#39;</span>,
+                                 <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="op">-</span><span class="dv">5</span>,<span class="dv">5</span>,<span class="dt">by =</span> <span class="dv">2</span>),
+                                 <span class="dt">guide =</span> <span class="kw">guide_colorbar</span>(<span class="dt">title =</span> <span class="st">&#39;my personal color scale&#39;</span>,
+                                                        <span class="dt">title.position =</span> <span class="st">&#39;top&#39;</span>,
+                                                        <span class="dt">barwidth =</span> <span class="dv">20</span>,
+                                                        <span class="dt">direction =</span> <span class="st">&#39;horizontal&#39;</span>)) <span class="op">+</span>
+<span class="st">              </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&#39;bottom&#39;</span>)</code></pre></div>
+<pre><code>## Scale for &#39;fill&#39; is already present. Adding another scale for &#39;fill&#39;, which
+## will replace the existing scale.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(pp_new)</code></pre></div>
+<p><img src="02-plotting_files/figure-html/unnamed-chunk-17-1.png" width="384" /></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="evaluation-examples.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

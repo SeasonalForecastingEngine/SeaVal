@@ -1,0 +1,10 @@
+base
+Rcpp
+data.table
+geosphere
+ncdf4
+Matrix
+irlba
+sp
+maptools
+PostProcessing

@@ -1,0 +1,156 @@
+
+---
+title: "Tutorial for the `SeaVal` package"
+author: "Claudio Heinrich"
+output: html_document
+---
+
+
+# Getting Started
+
+
+This tutorial gives a short introduction how to use the `R`-package `SeaVal` for seasonal validation, which is currently developed at NR and made available via Github. 
+The package provides a toolkit to evaluate predictions, tailored to specific needs of ICPAC. `SeaVal` relies on R data tables (available with the `R` package `data.table`).
+Data tables are more flexible and memory efficient data frames, and simplify many operations that are frequently required when working with weather- and climate data. An introduction to data tables can be found here: https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html.
+The package `SeaVal` allows to import netcdf-files as data tables. Moreover, it contains functionality for generating a variety of diagnostic plots, and provides various tools for forecast evaluation.
+
+## Installation
+
+```{r setup, echo = F}
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_chunk$set(fig.width = 6)
+knitr::opts_chunk$set(fig.height = 6)
+
+```
+
+
+In order to get started with the package, you first need to install the packages `devtools` (if you don't have it already), which allows installing packages from Github directly:
+```{r eval = FALSE, echo = TRUE}
+install.packages('devtools')
+```
+Now you should be able to install the `SeaVal`-package using the following command
+```{r, eval = FALSE, echo = TRUE}
+devtools::install_github('SeasonalForecastingEngine/SeaVal')
+```
+
+This installs `SeaVal` and all packages it depends on. This may take a while, especially if you didn't have some of the larger dependency packages installed, such as `data.table` or `ggplot2`.
+Also, it is possible that you'll get a message like this:
+```
+These packages have more recent versions available.
+It is recommended to update all of them.
+Which would you like to update?
+
+1: All                                 
+2: CRAN packages only                  
+3: None                             
+...
+```
+
+In that case just type '1' for all. 
+
+If this completes without an error, the setup is complete and you're good to go.
+From here on out, all you have to do is load `SeaVal`:
+
+```{r}
+library(SeaVal)
+```
+
+Especially in the early development phase, it is important to occasionally update the `SeaVal` package. To this end you should run the two commands
+```{r, eval = FALSE, echo = TRUE}
+devtools::install_github('SeasonalForecastingEngine/ForecastTools')
+devtools::install_github('SeasonalForecastingEngine/SeaVal')
+```
+
+## examples of `data.table` syntax
+
+Here, we show with some examples how to perform basic operations on data tables. 
+A short but comprehensive introduction to `data.table`s syntax can be found here:
+https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html.
+The `SeaVal` package comes with a few example data sets, for example monthly mean precipitation over the GHA region for the OND season provided by CHIRPS:
+
+```{r}
+data("chirps_monthly")
+print(chirps_monthly)
+
+```
+
+We can look at a short description of the dataset like this:
+
+```{r, eval = FALSE, echo = TRUE}
+?chirps_monthly
+```
+
+We'll now go over a few basic commands for handling this sort of data. `chirps_monthly` is a data_table, which is an enhanced data frame. The most fundamental operations include subsetting, performing calculations on columns and aggregation or grouping for calculations. Examples for subsetting are
+```{r}
+chirps_monthly[month == 10] # extract the data for October
+chirps_monthly[year %between% c(1990,1999)] # extract the data for 1990 - 1999
+chirps_monthly[1000:2000] # extract rows 1000 - 2000
+chirps_monthly[month == 10][lon > 30][terc_cat == 0] #chained subsetting: get all October values at locations with longitude >30 that had normal rainfall (terc_cat == 0)
+chirps_monthly[month == 10 & lon > 30 & terc_cat == 0] # different syntax, same effect.
+```
+We can subset either by logical expressions or by row indices (third example above). Subsetting always returns a data table, e.g. `chirps_monthly[1]` returns a one-row data table containing the first row of `chirps_monthly`. 
+
+Next, let's look at examples for operations on columns:
+```{r}
+chirps_monthly[,mean(prec)] # get the mean precipitation (over all locations, months, years)
+chirps_monthly[,mean_prec := mean(prec)] # create a new column in the data table containing the mean
+chirps_monthly[,prec := 30*prec] # transform precipitation from unit mm/day to mm (per month)
+```
+Note in all cases the ',' after '[' which tells data table that you're doing an operation rather than trying to subset. We can also put things together and subset and operate simultaneously:
+```{r}
+chirps_monthly[month == 10 , mean(prec)] # get the mean precipitation for October (over all locations, years)
+```
+(Note that the mean is much larger now because we changed units above...)
+
+Finally, we can perform operations over aggregated groups: 
+```{r}
+dt_new = chirps_monthly[, mean(prec),by = .(lon,lat,month)] 
+print(dt_new)
+```
+Here, the 'by' command (after the second comma) tells data table to perform the operation (`mean`) for each instance of `lon`, `lat`, and `month` separately. As a result, the mean is taken only over all years and we obtain the monthly local climatology. As we can see, the output is a data table containing all columns in `by` and a column named `V1` containing the output of the operation. That's of course a bit impractical. But it's easy to rename columns:
+
+```{r}
+setnames(dt_new,'V1','clim') # take the data table from above and rename column 'V1' into 'clim'
+```
+It's also possible to name the column direcly while `dt_new` is created, like this:
+```{r}
+dt_new = chirps_monthly[,.(clim = mean(prec)),by = .(lon,lat,month)] # same as above, but with simultaneously setting the name of the new column
+```
+This can again be combined with subsetting:
+```{r}
+dt_new = chirps_monthly[year %in% 1990:2020, .(clim = mean(prec)), by = .(lon,lat,month)] # same as above, but with additional subsetting: computes climatology based on the years 1990-2020 only.
+```
+In the examples above we create a new data table containing the climatology. If we instead want to add the climatology as a new column to `chirps_monthly` directly, we can again use the `:=` operator:
+```{r}
+chirps_monthly[,clim := mean(prec), by = .(lon,lat,month)] # add the climatology column directly into chirps_monthly.
+```
+This showcases some of the main functionalities and syntax of the `data.table` package. As mentioned above, it is strongly recommended to have a look at 
+https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html, which introduces many more commands and properly explains the logic underlying `data.table`s syntax.
+We'll finish this section by an example where we compute the MSE for raw ecmwf forecasts:
+
+```{r}
+data("chirps_monthly") # reload data to reverse the changes made in the examples above.
+data("ecmwf_monthly") # get example hindcasts from ecmwf
+
+print(ecmwf_monthly) 
+
+# merge observations and predictions into a single data table:
+setnames(chirps_monthly,'prec','obs') # rename the 'prec' column in the observation data table to 'obs' in order to avoid name clashes since the column in ecmwf_monthly containing the predictions for precip is also named 'prec'
+dt = merge(ecmwf_monthly,chirps_monthly,
+           by = c('lon','lat','year','month')) # merge the data.
+
+print(dt)
+
+dt[,ens_mean := mean(prec),by = .(lon,lat,year,month)] # get the ensemble mean, essentially group by all other dimension variables
+
+mse_dt = dt[,.(mse = mean((prec-obs)^2)), by = .(lon,lat,month)] # create a new data.table containing the mse by location and month
+
+print(mse_dt)
+
+ggplot_dt(mse_dt[month == 10],'mse',rr = c(-10,10) ) # plot mse for October
+
+```
+
+The function `ggplot_dt` is used to create spatial plots from data stored in data tables. In the next section we will showcase how this function works and how the plots can be manipulated.
+
