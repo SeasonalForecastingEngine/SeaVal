@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3 Data import and processing | Tutorial for the SeaVal package</title>
+  <meta name="description" content="3 Data import and processing | Tutorial for the SeaVal package" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3 Data import and processing | Tutorial for the SeaVal package" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3 Data import and processing | Tutorial for the SeaVal package" />
+  
+  
+  
+
+<meta name="author" content="Claudio Heinrich" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="plotting.html"/>
+<link rel="next" href="validation.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Getting Started</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#installation"><i class="fa fa-check"></i><b>1.1</b> Installation</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#examples-of-data.table-syntax"><i class="fa fa-check"></i><b>1.2</b> examples of <code>data.table</code> syntax</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="plotting.html"><a href="plotting.html"><i class="fa fa-check"></i><b>2</b> Plotting</a><ul>
+<li class="chapter" data-level="2.1" data-path="plotting.html"><a href="plotting.html#plotting-values-for-selected-countries"><i class="fa fa-check"></i><b>2.1</b> Plotting values for selected countries</a></li>
+<li class="chapter" data-level="2.2" data-path="plotting.html"><a href="plotting.html#customized-plots"><i class="fa fa-check"></i><b>2.2</b> Customized plots</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html"><i class="fa fa-check"></i><b>3</b> Data import and processing</a><ul>
+<li class="chapter" data-level="3.1" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#netcdf_to_dt"><i class="fa fa-check"></i><b>3.1</b> The function <code>netcdf_to_dt</code></a></li>
+<li class="chapter" data-level="3.2" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#reshaping-data-data-examples"><i class="fa fa-check"></i><b>3.2</b> Reshaping data {#data examples}</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#cv-data"><i class="fa fa-check"></i><b>3.2.1</b> Example: cross-validation data</a></li>
+<li class="chapter" data-level="3.2.2" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#example-corrupted-netcdf"><i class="fa fa-check"></i><b>3.2.2</b> Example: 'corrupted' netcdf</a></li>
+<li class="chapter" data-level="3.2.3" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#us-obs"><i class="fa fa-check"></i><b>3.2.3</b> Example: Upscaling observations</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="validation.html"><a href="validation.html"><i class="fa fa-check"></i><b>4</b> Validation</a><ul>
+<li class="chapter" data-level="4.1" data-path="validation.html"><a href="validation.html#evaluating-cross-validation-predictions"><i class="fa fa-check"></i><b>4.1</b> Evaluating cross-validation predictions</a></li>
+<li class="chapter" data-level="4.2" data-path="validation.html"><a href="validation.html#evaluating-tercile-forecasts"><i class="fa fa-check"></i><b>4.2</b> Evaluating Tercile Forecasts</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="validation.html"><a href="validation.html#proper-scoring-rules-for-full-tercile-forecasts"><i class="fa fa-check"></i><b>4.2.1</b> Proper scoring rules for full tercile forecasts</a></li>
+<li class="chapter" data-level="4.2.2" data-path="validation.html"><a href="validation.html#evaluation-when-only-the-highest-probability-category-is-avaliable"><i class="fa fa-check"></i><b>4.2.2</b> Evaluation when only the highest probability category is avaliable</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="validation.html"><a href="validation.html#exceedence-probabilities"><i class="fa fa-check"></i><b>4.3</b> Exceedence probabilities</a></li>
+<li class="chapter" data-level="4.4" data-path="validation.html"><a href="validation.html#temperature"><i class="fa fa-check"></i><b>4.4</b> Temperature</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Tutorial for the <code>SeaVal</code> package</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="data-import-and-processing" class="section level1">
+<h1><span class="header-section-number">3</span> Data import and processing</h1>
+<p>In this section we look at how to import netcdf-data as data tables, and how to get the data into the shape we need.</p>
+<div id="netcdf_to_dt" class="section level2">
+<h2><span class="header-section-number">3.1</span> The function <code>netcdf_to_dt</code></h2>
+<p>The central function for importing netcdf-data as data.table is called <code>netcdf_to_dt</code>. It takes a filename of a netcdf (including directory path) as argument. The examples we look at here are hosted on ICPACs ftp server at SharedData/gcm/seasonal/202102.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_dir =<span class="st"> &#39;/nr/project/stat/CONFER/Data/validation/example_data/202102/&#39;</span> <span class="co"># the directory the data is stored in, you need to adjust this to your platform.</span>
+fn =<span class="st"> &quot;CorrelationSkillRain_Feb-Apr_Feb2021.nc&quot;</span>
+dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn))</code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/CorrelationSkillRain_Feb-Apr_Feb2021.nc (NC_FORMAT_CLASSIC):
+## 
+##      1 variables (excluding dimension variables):
+##         float corr[lon,lat]   
+##             lead: 0
+##             average_op_ncl: dim_avg_n over dimension(s): model
+##             type: 0
+##             time: 13
+##             _FillValue: -9999
+## 
+##      3 dimensions:
+##         time  Size:0   *** is unlimited ***
+## [1] &quot;vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point&quot;
+##         lat  Size:77
+##             units: degrees_north
+##         lon  Size:66
+##             units: degrees_east
+## 
+##     6 global attributes:
+##         units: mm
+##         MonInit_month: 2
+##         valid_time: Feb-Apr
+##         creation_date: Mon Feb 15 06:59:57 EAT 2021
+##         Conventions: None
+##         title:  Correlation between Cross-Validated and Observed Rainfall</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(dt)</code></pre></div>
+<pre><code>##        lon   lat corr
+##    1: 20.5 -13.5   NA
+##    2: 21.0 -13.5   NA
+##    3: 21.5 -13.5   NA
+##    4: 22.0 -13.5   NA
+##    5: 22.5 -13.5   NA
+##   ---                
+## 5078: 51.0  24.5   NA
+## 5079: 51.5  24.5   NA
+## 5080: 52.0  24.5   NA
+## 5081: 52.5  24.5   NA
+## 5082: 53.0  24.5   NA</code></pre>
+<p>By default, the function prints out all the information it gets from the netcdf, including units, array sizes etc. This can be turned off by the <code>verbose</code> argument of the function: setting it to 0 supresses all messages, setting it to 1 only prints units of the variables. The default value is 2.</p>
+<p>A netcdf file always contains variables (such as precip or temperature) and dimension variables (such as longitude or time). The function <code>netcdf_to_dt</code> by default tries to extract all variables into a single data table that also contains all dimension variables that are indexing a variable: For example, the netcdf file above has three dimension variables: lon,lat, and time (which is empty). It has one variable (corr) that is indexed by lon and lat, therefore the resulting data table has three columns: corr, lon and lat. In particular, it does not have a column time, since this dimension variable does not index anything.</p>
+<p>The default behavior of merging all netcdf data into a single data table may sometimes be inappropriate. Say for example we have a netcdf with three dimension variables lon,lat and time, and it has a variable precipitation[lon,lat,time] and a second variable grid_point_index[lon,lat]. The resulting data table would have the columns lon,lat,time,precipitation, and grid_point_index. This is not very memory efficient because the grid_point_indices are repeated for every instance of time, and in this case we don't need the grid_point_index anyway. We can use the <code>vars</code> argument of the <code>netcdf_to_dt</code> function to only extract selected variables. So, in this example, <code>netcdf_to_dt('example_file.nc', vars = 'precipitation')</code> would have done the trick.</p>
+<p>As described, the resulting data table becomes unneccesary large if you have multiple variables that have different dimension variables. For large netcdfs with many variables and many dimension variables this can easily get out of hand. In this case you can use <code>netcdf_to_dt('example_file.nc',trymerge = FALSE)</code>. This will return a list of data tables, one data table for each variable, containing only the variable values and the dimension variables it is indexed by. If you have two or more variables that do not share a dimension variable, the function requires you to set <code>trymerge = FALSE</code>, see below.</p>
+<p>As we can see from the printed information, the netcdf consists of a single variable 'corr' and two dimension variables 'lon' and 'lat'. The resulting data table looks like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt,
+          <span class="dt">mn =</span> <span class="st">&#39;Corr. skill rain Feb-Apr, Feb initialized&#39;</span>, <span class="co"># title</span>
+          <span class="dt">rr =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="co"># range of the colorbar</span>
+          <span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>,<span class="dt">binwidth =</span> <span class="fl">0.4</span>) <span class="co"># discretize colorbar</span></code></pre></div>
+<p><img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-2-1.png" width="480" /></p>
+<p>Note that the area shown by <code>ggplot_dt</code> is always the full extend of the data contained in the data table. In particular, the correlation plot above extends beyond areas where we have data, because the data table <code>dt</code> contains these locations (with missing values in the 'corr'-column). To just plot a window taylored to the data that is not missing, we can simply suppress the missing values by using <code>dt[!is.na(corr)]</code> instead. We can compare to the February initialized forecast for March to May:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn =<span class="st"> &quot;CorrelationSkillRain_Mar-May_Feb2021.nc&quot;</span>
+
+dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn),<span class="dt">verbose =</span> <span class="dv">0</span>) 
+
+<span class="kw">ggplot_dt</span>(dt[<span class="op">!</span><span class="kw">is.na</span>(corr)], <span class="co"># here we suppress missing values</span>
+          <span class="dt">mn =</span> <span class="st">&#39;Corr. skill rain Mar-May, Mar initialized&#39;</span>, <span class="co"># title</span>
+          <span class="dt">rr =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="co"># range of the colorbar</span>
+          <span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>,<span class="dt">binwidth =</span> <span class="fl">0.4</span>) <span class="co"># discretize colorbar</span></code></pre></div>
+<p><img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-3-1.png" width="480" /></p>
+</div>
+<div id="reshaping-data-data-examples" class="section level2">
+<h2><span class="header-section-number">3.2</span> Reshaping data {#data examples}</h2>
+<p>For forecast validation, the ideal data format is to have all your fore- and hindcasts in the same data table, alongside the corresponding observations. So one column of forecasts, one column of observations and several columns of dimension variables (e.g. year, month, lon,lat). However, this is rarely how your netcdf-data looks like: you'll often have different netcdfs for observations and fore-/hindcasts. They might, moreover have different units, different missing values, different variable names etc.</p>
+<p>So to get your data into the preferred shape, you either need to manipulate the netcdf files beforehand, to get exactly the data table you want from <code>netcdf_to_dt</code>, or you can extract several data tables and do the required manipulations in <code>R</code>, using <code>SeaVal</code> and <code>data.table</code> functions. In this section we show with a few examples how this can be done.</p>
+<div id="cv-data" class="section level3">
+<h3><span class="header-section-number">3.2.1</span> Example: cross-validation data</h3>
+<p>To get some more practice, let us look at a more elaborate example of crossvalidation. In our example folder, we have two crossvalidation datasets and corresponding observations (one for FMA, one for MAM). We will process them simultaneously here, merging everything into one single data table.<br />
+This is not really making things easier and not generally recommended. It is a great way for us to highlight more <code>data.table</code>-syntax here.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">##### CrossValidatedPredictedRain_Feb-Apr_Feb2021.nc #####
+
+<span class="co"># get the two CV-files:</span>
+fn_pred1 =<span class="st"> &quot;CrossValidatedPredictedRain_Feb-Apr_Feb2021.nc&quot;</span>
+fn_pred2 =<span class="st"> &quot;CrossValidatedPredictedRain_Mar-May_Feb2021.nc&quot;</span>
+
+dt_pred1 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn_pred1),<span class="dt">verbose =</span> <span class="dv">0</span>) <span class="co"># they look the same, we can just look at the information from one of them...</span>
+dt_pred2 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn_pred2))</code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/CrossValidatedPredictedRain_Mar-May_Feb2021.nc (NC_FORMAT_CLASSIC):
+## 
+##      1 variables (excluding dimension variables):
+##         float prec[lon,lat,time]   
+##             lead: 1
+##             average_op_ncl: dim_avg_n over dimension(s): model
+##             type: 1
+##             _FillValue: -9999
+## 
+##      3 dimensions:
+##         time  Size:35   *** is unlimited ***
+##             units: months since 1981-01-01 
+##             calendar: standard
+##             _FillValue: 9.96920996838687e+36
+##         lat  Size:77
+##             units: degrees_north
+##         lon  Size:66
+##             units: degrees_east
+## 
+##     6 global attributes:
+##         units: mm
+##         MonInit_month: 2
+##         valid_time: Mar-May
+##         creation_date: Mon Feb 15 06:59:57 EAT 2021
+##         Conventions: None
+##         title:  Cross Validated Predicted Rainfall Total (mm)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#this is how they look:</span>
+<span class="kw">print</span>(dt_pred1)</code></pre></div>
+<pre><code>##          lon   lat time prec
+##      1: 20.5 -13.5   13   NA
+##      2: 21.0 -13.5   13   NA
+##      3: 21.5 -13.5   13   NA
+##      4: 22.0 -13.5   13   NA
+##      5: 22.5 -13.5   13   NA
+##     ---                     
+## 177866: 51.0  24.5  421   NA
+## 177867: 51.5  24.5  421   NA
+## 177868: 52.0  24.5  421   NA
+## 177869: 52.5  24.5  421   NA
+## 177870: 53.0  24.5  421   NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># before joining the two data tables, we should add a column, identifying which is which:</span>
+dt_pred1[,season<span class="op">:</span><span class="er">=</span><span class="st"> &#39;FMA&#39;</span>]
+dt_pred2[,season<span class="op">:</span><span class="er">=</span><span class="st"> &#39;MAM&#39;</span>]
+
+<span class="co"># bind together</span>
+dt_pred =<span class="st"> </span><span class="kw">rbindlist</span>(<span class="kw">list</span>(dt_pred1,dt_pred2))
+<span class="kw">print</span>(dt_pred)</code></pre></div>
+<pre><code>##          lon   lat time prec season
+##      1: 20.5 -13.5   13   NA    FMA
+##      2: 21.0 -13.5   13   NA    FMA
+##      3: 21.5 -13.5   13   NA    FMA
+##      4: 22.0 -13.5   13   NA    FMA
+##      5: 22.5 -13.5   13   NA    FMA
+##     ---                            
+## 355736: 51.0  24.5  421   NA    MAM
+## 355737: 51.5  24.5  421   NA    MAM
+## 355738: 52.0  24.5  421   NA    MAM
+## 355739: 52.5  24.5  421   NA    MAM
+## 355740: 53.0  24.5  421   NA    MAM</code></pre>
+<p>The function <code>rbindlist</code> binds a list of several data tables into one. This only works if they have the same columns, though, otherwise you need to use <code>merge</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># next, get the observations:</span>
+
+fn_obs1 =<span class="st"> &quot;ObservedRain_Feb-Apr_Feb2021.nc&quot;</span>
+fn_obs2 =<span class="st"> &quot;ObservedRain_Mar-May_Feb2021_update.nc&quot;</span>
+dt_obs1 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn_obs1),<span class="dt">verbose =</span> <span class="dv">0</span>)
+dt_obs2 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn_obs2) )</code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/ObservedRain_Mar-May_Feb2021_update.nc (NC_FORMAT_CLASSIC):
+## 
+##      1 variables (excluding dimension variables):
+##         float prec[lon,lat,time]   
+##             lead: 1
+##             average_op_ncl: dim_avg_n over dimension(s): model
+##             type: 0
+##             _FillValue: -9999
+## 
+##      3 dimensions:
+##         time  Size:35   *** is unlimited ***
+##             units: months since 1981-01-01 
+##             calendar: 360_day
+##             _FillValue: 9.96920996838687e+36
+##         lat  Size:77
+##             units: degrees_north
+##         lon  Size:66
+##             units: degrees_east
+## 
+##     8 global attributes:
+##         units: mm
+##         MonInit_month: 2
+##         valid_time: Mar-May
+##         creation_date: Mon Feb 15 06:59:57 EAT 2021
+##         Conventions: None
+##         title:  Observed Rainfall Total (mm) 
+##         history: Tue Feb 16 12:38:58 2021: ncatted -a calendar,time,o,c,360_day /dump/SharedData/gcm/seasonal/202102/ObservedRain_Mar-May_Feb2021.nc /dump/SharedData/gcm/seasonal/202102/ObservedRain_Mar-May_Feb2021_update.nc
+##         NCO: netCDF Operators version 4.7.5 (Homepage = http://nco.sf.net, Code = http://github.com/nco/nco)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_obs1[,season <span class="op">:</span><span class="er">=</span><span class="st"> &#39;FMA&#39;</span>]
+dt_obs2[,season <span class="op">:</span><span class="er">=</span><span class="st"> &#39;MAM&#39;</span>]
+dt_obs =<span class="st"> </span><span class="kw">rbindlist</span>(<span class="kw">list</span>(dt_obs1,dt_obs2))</code></pre></div>
+<p>Now we have two data tables, one with predictions and one with observations. We want to join them, but we want to have predictions next to observations, so <code>rbindlist</code> does not work for us here, and we need to use <code>merge</code>. However, we should first make sure that the columns are named appropriately, currently, both <code>dt_obs</code> and <code>dt_pred</code> have a column named <code>prec</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setnames</span>(dt_pred,<span class="st">&#39;prec&#39;</span>,<span class="st">&#39;prediction&#39;</span>)
+<span class="kw">setnames</span>(dt_obs,<span class="st">&#39;prec&#39;</span>,<span class="st">&#39;observation&#39;</span>)
+
+dt =<span class="st"> </span><span class="kw">merge</span>(dt_pred,dt_obs,<span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>,<span class="st">&#39;time&#39;</span>,<span class="st">&#39;season&#39;</span>))
+<span class="kw">print</span>(dt)</code></pre></div>
+<pre><code>##          lon   lat time season prediction observation
+##      1: 20.5 -13.5   13    FMA         NA          NA
+##      2: 20.5 -13.5   13    MAM         NA          NA
+##      3: 20.5 -13.5   25    FMA         NA          NA
+##      4: 20.5 -13.5   25    MAM         NA          NA
+##      5: 20.5 -13.5   37    FMA         NA          NA
+##     ---                                              
+## 355736: 53.0  24.5  397    MAM         NA          NA
+## 355737: 53.0  24.5  409    FMA         NA          NA
+## 355738: 53.0  24.5  409    MAM         NA          NA
+## 355739: 53.0  24.5  421    FMA         NA          NA
+## 355740: 53.0  24.5  421    MAM         NA          NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># remove all rows with missing predictions:</span>
+dt =<span class="st"> </span>dt[<span class="op">!</span><span class="kw">is.na</span>(prediction)]
+
+<span class="co"># convert time from the &#39;months since date&#39; (MSD) format to years and months (YM)</span>
+dt =<span class="st"> </span><span class="kw">MSD_to_YM</span>(dt,<span class="dt">origin =</span> <span class="st">&#39;1981-01-01&#39;</span>) <span class="co"># (the origin was documented in the netcdf, see above.)</span>
+<span class="kw">print</span>(dt) </code></pre></div>
+<pre><code>##          lon   lat season prediction observation year month
+##      1: 20.5 -11.5    FMA  316.19452   369.36932 1982     2
+##      2: 20.5 -11.5    MAM  202.94411   208.28058 1982     2
+##      3: 20.5 -11.5    FMA  316.20178   252.47144 1983     2
+##      4: 20.5 -11.5    MAM  205.24921   161.22548 1983     2
+##      5: 20.5 -11.5    FMA  317.43375   267.44031 1984     2
+##     ---                                                    
+## 167330: 51.5  22.5    FMA   25.44651    19.71902 2012     2
+## 167331: 51.5  22.5    FMA   25.59836    27.55773 2013     2
+## 167332: 51.5  22.5    FMA   26.03941    25.14965 2014     2
+## 167333: 51.5  22.5    FMA   26.03053    22.23634 2015     2
+## 167334: 51.5  22.5    FMA   26.00327    34.84376 2016     2</code></pre>
+<p>We now have the data table in the shape we want it to be, containing both predictions and observations as one column each. In the next section we will show how to evaluate the predictions when they are in this shape:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># for use in the next section:</span>
+dt_cv =<span class="st"> </span><span class="kw">copy</span>(dt)</code></pre></div>
+</div>
+<div id="example-corrupted-netcdf" class="section level3">
+<h3><span class="header-section-number">3.2.2</span> Example: 'corrupted' netcdf</h3>
+<p>Data handling can be messy and things can go wrong at any stage. Here we have a look at a netcdf file where something has gone wrong and how to fix it:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn =<span class="st"> &quot;PredictedProbabilityRain_Feb-Apr_Feb2021.nc&quot;</span>
+dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn))</code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/PredictedProbabilityRain_Feb-Apr_Feb2021.nc (NC_FORMAT_CLASSIC):
+## 
+##      3 variables (excluding dimension variables):
+##         float below[lon,lat]   
+##             lead: 0
+##             average_op_ncl: dim_avg_n over dimension(s): model
+##             type: 0
+##             _FillValue: -1
+##         float normal[ncl4,ncl3]   
+##             _FillValue: -1
+##         float above[lon,lat]   
+##             lead: 0
+##             average_op_ncl: dim_avg_n over dimension(s): model
+##             type: 2
+##             _FillValue: -1
+## 
+##      5 dimensions:
+##         time  Size:0   *** is unlimited ***
+## [1] &quot;vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point&quot;
+##         lat  Size:77
+##             units: degrees_north
+##         lon  Size:66
+##             units: degrees_east
+##         ncl3  Size:77
+## [1] &quot;vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named ncl3 BUT this dimension HAS NO DIMVAR! Code will probably fail at this point&quot;
+##         ncl4  Size:66
+## [1] &quot;vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named ncl4 BUT this dimension HAS NO DIMVAR! Code will probably fail at this point&quot;
+## 
+##     6 global attributes:
+##         units: mm
+##         MonInit_month: 2
+##         valid_time: Mar-May
+##         creation_date: Mon Feb 15 06:59:57 EAT 2021
+##         Conventions: None
+##         title: Predicted Tercile probability</code></pre>
+<pre><code>## Error in netcdf_to_dt(paste0(data_dir, fn)): Your file has variables with disjoint dimensions, which should not be stored in a single data table. Either set trymerge to FALSE or select variables with overlapping dimensions in vars.</code></pre>
+<p>We are getting an error because we have disjoint dimension variables for some variables. Indeed, looking at the printed out netcdf-description, we have three variables (below,normal,above), and while 'below' and 'above' are indexed by 'lon' and 'lat', 'normal' is indexed by 'ncl3' and 'ncl4'. As the error message suggests, we can set <code>trymerge</code> to FALSE:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_list =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn),<span class="dt">trymerge =</span> <span class="ot">FALSE</span>,<span class="dt">verbose =</span> <span class="dv">0</span>)
+<span class="kw">print</span>(dt_list)</code></pre></div>
+<pre><code>## [[1]]
+##        lon   lat below
+##    1: 20.5 -13.5    NA
+##    2: 21.0 -13.5    NA
+##    3: 21.5 -13.5    NA
+##    4: 22.0 -13.5    NA
+##    5: 22.5 -13.5    NA
+##   ---                 
+## 5078: 51.0  24.5    NA
+## 5079: 51.5  24.5    NA
+## 5080: 52.0  24.5    NA
+## 5081: 52.5  24.5    NA
+## 5082: 53.0  24.5    NA
+## 
+## [[2]]
+##       ncl4 ncl3 normal
+##    1:    1    1     NA
+##    2:    2    1     NA
+##    3:    3    1     NA
+##    4:    4    1     NA
+##    5:    5    1     NA
+##   ---                 
+## 5078:   62   77     NA
+## 5079:   63   77     NA
+## 5080:   64   77     NA
+## 5081:   65   77     NA
+## 5082:   66   77     NA
+## 
+## [[3]]
+##        lon   lat above
+##    1: 20.5 -13.5    NA
+##    2: 21.0 -13.5    NA
+##    3: 21.5 -13.5    NA
+##    4: 22.0 -13.5    NA
+##    5: 22.5 -13.5    NA
+##   ---                 
+## 5078: 51.0  24.5    NA
+## 5079: 51.5  24.5    NA
+## 5080: 52.0  24.5    NA
+## 5081: 52.5  24.5    NA
+## 5082: 53.0  24.5    NA</code></pre>
+<p>Now, we see that 'ncl3' and 'ncl4' have different values than 'lon' and 'lat', apparently they are meaningless indexing integers. However, we see that the three data.tables are of the same size, and can hope that the 'below' data table is arranged in the same row-ordering than the others. If this is the case we can just extract the 'normal' column from it as vector and attach it to one of the others and we'll be fine. Let's try:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt =<span class="st"> </span>dt_list[[<span class="dv">1</span>]]
+normal_probs_as_vector =<span class="st"> </span>dt_list[[<span class="dv">2</span>]][,normal]
+dt[,normal <span class="op">:</span><span class="er">=</span><span class="st"> </span>normal_probs_as_vector]
+
+<span class="kw">ggplot_dt</span>(dt,<span class="st">&#39;normal&#39;</span>)</code></pre></div>
+<p><img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-10-1.png" width="480" /></p>
+<p>Plotting is usually a great way to see whether something went wrong: Here, we can be fairly certain that everything is correctly ordered, simply because the missing values in the 'normal' vector are at the locations where they should be (over water and desert). If the ordering would have been differently, these would be all over the place. However, let's be even more sure:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># attach the &#39;above&#39;-data table:</span>
+dt =<span class="st"> </span><span class="kw">merge</span>(dt,dt_list[[<span class="dv">3</span>]],<span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>))
+<span class="kw">print</span>(dt)</code></pre></div>
+<pre><code>##        lon   lat    below   normal    above
+##    1: 20.5 -13.5       NA       NA       NA
+##    2: 20.5 -13.0       NA       NA       NA
+##    3: 20.5 -12.5       NA       NA       NA
+##    4: 20.5 -12.0       NA       NA       NA
+##    5: 20.5 -11.5 31.13112 35.07441 33.79448
+##   ---                                      
+## 5078: 53.0  22.5       NA       NA       NA
+## 5079: 53.0  23.0       NA       NA       NA
+## 5080: 53.0  23.5       NA       NA       NA
+## 5081: 53.0  24.0       NA       NA       NA
+## 5082: 53.0  24.5       NA       NA       NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># if the ordering was correct, we need to have below + normal + above = 100%:</span>
+check =<span class="st"> </span><span class="kw">rowSums</span>(dt[,.(below,normal,above)])
+<span class="kw">print</span>(check[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>])</code></pre></div>
+<pre><code>##  [1]  NA  NA  NA  NA 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
+## [20] 100</code></pre>
+<p>We were lucky here that the ordering was correct. Could we have done anything if it would have been different? Well, yes, we could have just used <span class="math inline">\(\text{below} + \text{normal} + \text{above} = 100\%\)</span> right away:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn), <span class="dt">vars =</span> <span class="kw">c</span>(<span class="st">&#39;below&#39;</span>,<span class="st">&#39;above&#39;</span>),<span class="dt">verbose =</span> <span class="dv">0</span>)
+<span class="kw">print</span>(dt)</code></pre></div>
+<pre><code>##        lon   lat    below    above
+##    1: 20.5 -13.5       NA       NA
+##    2: 20.5 -13.0       NA       NA
+##    3: 20.5 -12.5       NA       NA
+##    4: 20.5 -12.0       NA       NA
+##    5: 20.5 -11.5 31.13112 33.79448
+##   ---                             
+## 5078: 53.0  22.5       NA       NA
+## 5079: 53.0  23.0       NA       NA
+## 5080: 53.0  23.5       NA       NA
+## 5081: 53.0  24.0       NA       NA
+## 5082: 53.0  24.5       NA       NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt[,normal <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="dv">100</span> <span class="op">-</span><span class="st"> </span>below <span class="op">-</span><span class="st"> </span>above]
+<span class="kw">ggplot_dt</span>(dt,<span class="st">&#39;normal&#39;</span>)</code></pre></div>
+<p><img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-12-1.png" width="480" /></p>
+</div>
+<div id="us-obs" class="section level3">
+<h3><span class="header-section-number">3.2.3</span> Example: Upscaling observations</h3>
+<p>Let us try to prepare a dataset for evaluating tercile forecasts for the MAM season: In our example data directory <code>data_dir</code> (given above) we have three datasets we need to use: predictions (including hindcasts), past observations and the 2021-observation. Here, our main difficulty is that the 2021-observation is on higher resolution than the past observations, and we need to upscale it first to half degrees.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get predictions:</span>
+dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,<span class="st">&#39;PredictedProbabilityRain_Mar-May_Feb2021_new.nc&#39;</span>))</code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/PredictedProbabilityRain_Mar-May_Feb2021_new.nc (NC_FORMAT_NETCDF4):
+## 
+##      3 variables (excluding dimension variables):
+##         float normal[lon,lat]   (Contiguous storage)  
+##             _FillValue: -1
+##         float above[lon,lat]   (Contiguous storage)  
+##             _FillValue: -1
+##             lead: 1
+##             average_op_ncl: dim_avg_n over dimension(s): model
+##             type: 2
+##         float below[lon,lat]   (Contiguous storage)  
+##             _FillValue: -1
+##             lead: 1
+##             average_op_ncl: dim_avg_n over dimension(s): model
+##             type: 0
+## 
+##      2 dimensions:
+##         lat  Size:77
+##             _FillValue: NaN
+##             units: degrees_north
+##         lon  Size:66
+##             _FillValue: NaN
+##             units: degrees_east</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(dt)</code></pre></div>
+<pre><code>##        lon   lat   normal    above    below
+##    1: 20.5 -13.5       NA       NA       NA
+##    2: 20.5 -13.0       NA       NA       NA
+##    3: 20.5 -12.5       NA       NA       NA
+##    4: 20.5 -12.0       NA       NA       NA
+##    5: 20.5 -11.5 34.11535 33.56262 32.32204
+##   ---                                      
+## 5078: 53.0  22.5       NA       NA       NA
+## 5079: 53.0  23.0       NA       NA       NA
+## 5080: 53.0  23.5       NA       NA       NA
+## 5081: 53.0  24.0       NA       NA       NA
+## 5082: 53.0  24.5       NA       NA       NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># past observations:</span>
+dt_obs =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,<span class="st">&#39;ObservedRain_Mar-May_Feb2021.nc&#39;</span>))</code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/ObservedRain_Mar-May_Feb2021.nc (NC_FORMAT_CLASSIC):
+## 
+##      1 variables (excluding dimension variables):
+##         float prec[lon,lat,time]   
+##             lead: 1
+##             average_op_ncl: dim_avg_n over dimension(s): model
+##             type: 0
+##             _FillValue: -9999
+## 
+##      3 dimensions:
+##         time  Size:35   *** is unlimited ***
+##             units: months since 1981-01-01 
+##             calendar: standard
+##             _FillValue: 9.96920996838687e+36
+##         lat  Size:77
+##             units: degrees_north
+##         lon  Size:66
+##             units: degrees_east
+## 
+##     6 global attributes:
+##         units: mm
+##         MonInit_month: 2
+##         valid_time: Mar-May
+##         creation_date: Mon Feb 15 06:59:57 EAT 2021
+##         Conventions: None
+##         title:  Observed Rainfall Total (mm)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># 2021 observation:</span>
+dt_obs2021 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,<span class="st">&#39;ObservedChirpsRainTotal_MAM2021.nc&#39;</span>),<span class="dt">vars =</span> <span class="st">&#39;precip&#39;</span>)</code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/ObservedChirpsRainTotal_MAM2021.nc (NC_FORMAT_NETCDF4):
+## 
+##      2 variables (excluding dimension variables):
+##         double time_bnds[bnds,time]   (Chunking: [2,1])  
+##         float precip[longitude,latitude,time]   (Chunking: [592,1,1])  
+##             standard_name: convective precipitation rate
+##             long_name: Climate Hazards group InfraRed Precipitation with Stations
+##             units: mm/day
+##             _FillValue: -9999
+##             missing_value: -9999
+##             time_step: day
+##             geostatial_lat_min: -50
+##             geostatial_lat_max: 50
+##             geostatial_lon_min: -180
+##             geostatial_lon_max: 180
+## 
+##      4 dimensions:
+##         longitude  Size:592
+##             standard_name: longitude
+##             long_name: longitude
+##             units: degrees_east
+##             axis: X
+##         latitude  Size:679
+##             standard_name: latitude
+##             long_name: latitude
+##             units: degrees_north
+##             axis: Y
+##         time  Size:1   *** is unlimited ***
+##             standard_name: time
+##             bounds: time_bnds
+##             units: days since 1980-1-1 0:0:0
+##             calendar: standard
+##             axis: T
+##         bnds  Size:2
+## [1] &quot;vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named bnds BUT this dimension HAS NO DIMVAR! Code will probably fail at this point&quot;
+## 
+##     18 global attributes:
+##         CDI: Climate Data Interface version 1.9.0 (http://mpimet.mpg.de/cdi)
+##         history: Wed Jun 23 10:40:15 2021: cdo -L sellonlatbox,21.81,51.41,-11.72,22.23 -mulc,92 -timmean -selmon,3/5 chirps-v2.0.20210101-20210531.mon_p05_GHA.nc r_MAM_Tot_2021.nc
+## Tue Jun 22 15:01:48 2021: cdo monmean chirps-v2.0.20210101-20210531.days_p05_GHA.nc chirps-v2.0.20210101-20210531.mon_p05_GHA.nc
+## Tue Jun 22 14:49:19 2021: cdo remapbil,chrips_gha.txt /home/hussen/Downloads/CHIRPS/chirps-v2.0.2021.days_p05.nc chirps-v2.0.20210101-20210531.days_p05_GHA.nc
+## created by Climate Hazards Group
+##         institution: Climate Hazards Group.  University of California at Santa Barbara
+##         Conventions: CF-1.6
+##         title: CHIRPS Version 2.0
+##         version: Version 2.0
+##         date_created: 2021-06-16
+##         creator_name: Pete Peterson
+##         creator_email: pete@geog.ucsb.edu
+##         documentation: http://pubs.usgs.gov/ds/832/
+##         reference: Funk, C.C., Peterson, P.J., Landsfeld, M.F., Pedreros, D.H., Verdin, J.P., Rowland, J.D., Romero, B.E., Husak, G.J., Michaelsen, J.C., and Verdin, A.P., 2014, A quasi-global precipitation time series for drought monitoring: U.S. Geological Survey Data Series 832, 4 p., http://dx.doi.org/110.3133/ds832. 
+##         comments:  time variable denotes the first day of the given day. Improved October 2015.
+##         acknowledgements: The Climate Hazards Group InfraRed Precipitation with Stations development process was carried out through U.S. Geological Survey (USGS) cooperative agreement #G09AC000001 &quot;Monitoring and Forecasting Climate, Water and Land Use for Food Production in the Developing World&quot; with funding from: U.S. Agency for International Development Office of Food for Peace, award #AID-FFP-P-10-00002 for &quot;Famine Early Warning Systems Network Support,&quot; the National Aeronautics and Space Administration Applied Sciences Program, Decisions award #NN10AN26I for &quot;A Land Data Assimilation System for Famine Early Warning,&quot; SERVIR award #NNH12AU22I for &quot;A Long Time-Series Indicator of Agricultural Drought for the Greater Horn of Africa,&quot; The National Oceanic and Atmospheric Administration award NA11OAR4310151 for &quot;A Global Standardized Precipitation Index supporting the US Drought Portal and the Famine Early Warning System Network,&quot; and the USGS Land Change Science Program.
+##         ftp_url: ftp://chg-ftpout.geog.ucsb.edu/pub/org/chg/products/CHIRPS-latest/
+##         website: http://chg.geog.ucsb.edu/data/chirps/index.html
+##         faq: http://chg-wiki.geog.ucsb.edu/wiki/CHIRPS_FAQ
+##         frequency: mon
+##         CDO: Climate Data Operators version 1.9.0 (http://mpimet.mpg.de/cdo)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the 2021 observation is named differently...</span>
+<span class="kw">setnames</span>(dt_obs2021,<span class="kw">c</span>(<span class="st">&#39;longitude&#39;</span>,<span class="st">&#39;latitude&#39;</span>,<span class="st">&#39;precip&#39;</span>),<span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>,<span class="st">&#39;prec&#39;</span>))
+<span class="co"># ... and it is on higher resolution:</span>
+<span class="kw">ggplot_dt</span>(dt_obs2021,<span class="st">&#39;prec&#39;</span>,<span class="dt">high =</span> <span class="st">&#39;blue&#39;</span>,<span class="dt">midpoint =</span> <span class="dv">0</span>)</code></pre></div>
+<p><img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-13-1.png" width="480" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># we can upscale it to half-degree-resolution using the following function:</span>
+dt_obs2021 =<span class="st"> </span><span class="kw">upscale_to_half_degrees</span>(dt_obs2021,<span class="dt">uscol =</span> <span class="st">&#39;prec&#39;</span>,<span class="dt">bycols =</span> <span class="st">&#39;time&#39;</span>)</code></pre></div>
+<pre><code>## [1] &quot;1/1&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt_obs2021,<span class="dt">high =</span> <span class="st">&#39;blue&#39;</span>,<span class="dt">midpoint =</span> <span class="dv">0</span>)</code></pre></div>
+<p><img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-13-2.png" width="480" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the observation datasets still look different:</span>
+<span class="kw">print</span>(dt_obs)</code></pre></div>
+<pre><code>##          lon   lat time prec
+##      1: 20.5 -13.5   13   NA
+##      2: 21.0 -13.5   13   NA
+##      3: 21.5 -13.5   13   NA
+##      4: 22.0 -13.5   13   NA
+##      5: 22.5 -13.5   13   NA
+##     ---                     
+## 177866: 51.0  24.5  421   NA
+## 177867: 51.5  24.5  421   NA
+## 177868: 52.0  24.5  421   NA
+## 177869: 52.5  24.5  421   NA
+## 177870: 53.0  24.5  421   NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(dt_obs2021)</code></pre></div>
+<pre><code>##        lon   lat     prec    time
+##    1: 21.5 -12.0       NA 15080.5
+##    2: 21.5 -11.5       NA 15080.5
+##    3: 21.5 -11.0       NA 15080.5
+##    4: 21.5 -10.5       NA 15080.5
+##    5: 21.5 -10.0       NA 15080.5
+##   ---                            
+## 4266: 51.5  20.5 25.20947 15080.5
+## 4267: 51.5  21.0 21.71183 15080.5
+## 4268: 51.5  21.5 23.18140 15080.5
+## 4269: 51.5  22.0 23.29202 15080.5
+## 4270: 51.5  22.5       NA 15080.5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># let&#39;s first get the time into same format:</span>
+dt_obs =<span class="st"> </span><span class="kw">MSD_to_YM</span>(dt_obs)
+<span class="kw">print</span>(dt_obs)</code></pre></div>
+<pre><code>##          lon   lat prec year month
+##      1: 20.5 -13.5   NA 1982     2
+##      2: 21.0 -13.5   NA 1982     2
+##      3: 21.5 -13.5   NA 1982     2
+##      4: 22.0 -13.5   NA 1982     2
+##      5: 22.5 -13.5   NA 1982     2
+##     ---                           
+## 177866: 51.0  24.5   NA 2016     2
+## 177867: 51.5  24.5   NA 2016     2
+## 177868: 52.0  24.5   NA 2016     2
+## 177869: 52.5  24.5   NA 2016     2
+## 177870: 53.0  24.5   NA 2016     2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_obs2021[,date <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.Date</span>(time,<span class="dt">origin =</span> <span class="st">&#39;1980-01-01&#39;</span>)] <span class="co"># see netcdf description above</span>
+dt_obs2021[,year <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">year</span>(date)][,month <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">month</span>(date)]
+<span class="kw">print</span>(dt_obs2021)</code></pre></div>
+<pre><code>##        lon   lat     prec    time       date year month
+##    1: 21.5 -12.0       NA 15080.5 2021-04-15 2021     4
+##    2: 21.5 -11.5       NA 15080.5 2021-04-15 2021     4
+##    3: 21.5 -11.0       NA 15080.5 2021-04-15 2021     4
+##    4: 21.5 -10.5       NA 15080.5 2021-04-15 2021     4
+##    5: 21.5 -10.0       NA 15080.5 2021-04-15 2021     4
+##   ---                                                  
+## 4266: 51.5  20.5 25.20947 15080.5 2021-04-15 2021     4
+## 4267: 51.5  21.0 21.71183 15080.5 2021-04-15 2021     4
+## 4268: 51.5  21.5 23.18140 15080.5 2021-04-15 2021     4
+## 4269: 51.5  22.0 23.29202 15080.5 2021-04-15 2021     4
+## 4270: 51.5  22.5       NA 15080.5 2021-04-15 2021     4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Next, let&#39;s restrict 2021-observations to locations that are not blanked out in the past observations:</span>
+na_locs =<span class="st"> </span>dt_obs[year <span class="op">==</span><span class="st"> </span>year[<span class="dv">1</span>],.(lon,lat,<span class="kw">is.na</span>(prec))]
+<span class="kw">print</span>(na_locs)</code></pre></div>
+<pre><code>##        lon   lat   V3
+##    1: 20.5 -13.5 TRUE
+##    2: 21.0 -13.5 TRUE
+##    3: 21.5 -13.5 TRUE
+##    4: 22.0 -13.5 TRUE
+##    5: 22.5 -13.5 TRUE
+##   ---                
+## 5078: 51.0  24.5 TRUE
+## 5079: 51.5  24.5 TRUE
+## 5080: 52.0  24.5 TRUE
+## 5081: 52.5  24.5 TRUE
+## 5082: 53.0  24.5 TRUE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_obs2021 =<span class="st"> </span><span class="kw">merge</span>(dt_obs2021,na_locs,<span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>))
+dt_obs2021 =<span class="st"> </span>dt_obs2021[<span class="op">!</span>(V3)]
+<span class="kw">ggplot_dt</span>(dt_obs2021, <span class="st">&#39;prec&#39;</span>,<span class="dt">high =</span> <span class="st">&#39;blue&#39;</span>,<span class="dt">midpoint =</span> <span class="dv">0</span>)</code></pre></div>
+<p><img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-13-3.png" width="480" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#delete what we don&#39;t need and bind together:</span>
+dt_obs[,month<span class="op">:</span><span class="er">=</span><span class="ot">NULL</span>]
+dt_obs2021[,<span class="kw">c</span>(<span class="st">&#39;month&#39;</span>,<span class="st">&#39;time&#39;</span>,<span class="st">&#39;date&#39;</span>,<span class="st">&#39;V3&#39;</span>)<span class="op">:</span><span class="er">=</span><span class="ot">NULL</span>]
+
+dt_obs =<span class="st"> </span><span class="kw">rbindlist</span>(<span class="kw">list</span>(dt_obs,dt_obs2021),<span class="dt">use.names =</span> <span class="ot">TRUE</span>)
+dt_obs =<span class="st"> </span>dt_obs[<span class="op">!</span><span class="kw">is.na</span>(prec)]
+
+<span class="co"># in which climatology tercile lies the observation for which year?</span>
+dt_obs =<span class="st"> </span><span class="kw">add_tercile_cat</span>(dt_obs) <span class="co"># In order to do this we needed to bind them together!</span>
+
+<span class="kw">ggplot_dt</span>(dt_obs,<span class="st">&#39;tercile_cat&#39;</span>,<span class="dt">low =</span> <span class="st">&#39;red&#39;</span>,<span class="dt">high =</span> <span class="st">&#39;blue&#39;</span>)</code></pre></div>
+<p><img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-13-4.png" width="480" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># merge prediction and corresponding observation:</span>
+
+dt =<span class="st"> </span><span class="kw">merge</span>(dt,dt_obs[year <span class="op">==</span><span class="st"> </span><span class="dv">2021</span>],<span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>))
+<span class="co"># transform percentage prediction to probabilities between zero and one:</span>
+dt[,normal <span class="op">:</span><span class="er">=</span><span class="st"> </span>normal<span class="op">/</span><span class="dv">100</span>]
+dt[,above <span class="op">:</span><span class="er">=</span><span class="st"> </span>above<span class="op">/</span><span class="dv">100</span>]
+dt[,below <span class="op">:</span><span class="er">=</span><span class="st"> </span>below<span class="op">/</span><span class="dv">100</span>]
+
+<span class="kw">print</span>(dt)</code></pre></div>
+<pre><code>##        lon   lat    normal     above     below      prec year tercile_cat
+##    1: 22.0 -11.5 0.2794044 0.3959641 0.3246315 271.66216 2021           1
+##    2: 22.0 -11.0 0.3176142 0.3509704 0.3314154 279.13827 2021           1
+##    3: 22.0 -10.5 0.2897301 0.3781255 0.3321443 300.32019 2021           1
+##    4: 22.0 -10.0 0.3133837 0.3520903 0.3345260 332.45370 2021           1
+##    5: 22.0  -9.5 0.3076811 0.3480890 0.3442299 407.19163 2021           1
+##   ---                                                                    
+## 2939: 51.5  20.0        NA        NA        NA  26.43442 2021          -1
+## 2940: 51.5  20.5        NA        NA        NA  25.20947 2021          -1
+## 2941: 51.5  21.0        NA        NA        NA  21.71183 2021          -1
+## 2942: 51.5  21.5        NA        NA        NA  23.18140 2021          -1
+## 2943: 51.5  22.0        NA        NA        NA  23.29202 2021          -1</code></pre>
+<p>How to evaluate this dataset will be discussed in the next section, so let's give it a distinguished name:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_tercile_forecast =<span class="st"> </span><span class="kw">copy</span>(dt)</code></pre></div>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="plotting.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="validation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

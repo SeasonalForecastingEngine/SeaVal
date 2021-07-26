@@ -1,0 +1,258 @@
+# Data import and processing
+
+```{r setup, echo = F, message = F}
+knitr::opts_chunk$set(fig.width = 5)
+knitr::opts_chunk$set(fig.height = 6)
+library(SeaVal)
+library(ggpubr)
+library(ggplot2)
+```
+
+In this section we look at how to import netcdf-data as data tables, and how to get the data into the shape we need.
+
+## The function `netcdf_to_dt` {#netcdf_to_dt}
+
+The central function for importing netcdf-data as data.table is called `netcdf_to_dt`. It takes a filename of a netcdf (including directory path) as argument.
+The examples we look at here are hosted on ICPACs ftp server at SharedData/gcm/seasonal/202102.
+
+```{r,message=FALSE}
+data_dir = '/nr/project/stat/CONFER/Data/validation/example_data/202102/' # the directory the data is stored in, you need to adjust this to your platform.
+fn = "CorrelationSkillRain_Feb-Apr_Feb2021.nc"
+dt = netcdf_to_dt(paste0(data_dir,fn))
+
+print(dt)
+```
+
+By default, the function prints out all the information it gets from the netcdf, including units, array sizes etc. 
+This can be turned off by the `verbose` argument of the function: setting it to 0 supresses all messages, setting it to 1 only prints units of the variables. The default value is 2.
+
+A netcdf file always contains variables (such as precip or temperature) and dimension variables (such as longitude or time). The function `netcdf_to_dt` by default tries to extract all variables into a single data table that also contains all dimension variables that are indexing a variable: For example, the netcdf file above has three dimension variables: lon,lat, and time (which is empty). It has one variable (corr) that is indexed by lon and lat, therefore the resulting data table has three columns: corr, lon and lat. In particular, it does not have a column time, since this dimension variable does not index anything.
+
+The default behavior of merging all netcdf data into a single data table may sometimes be inappropriate. Say for example we have a netcdf with three dimension variables lon,lat and time, and it has a variable precipitation[lon,lat,time] and a second variable grid_point_index[lon,lat]. The resulting data table would have the columns lon,lat,time,precipitation, and grid_point_index.
+This is not very memory efficient because the grid_point_indices are repeated for every instance of time, and in this case we don't need the grid_point_index anyway. We can use the `vars` argument of the `netcdf_to_dt` function to only extract selected variables. So, in this example, `netcdf_to_dt('example_file.nc', vars = 'precipitation')` would have done the trick.
+
+As described, the resulting data table becomes unneccesary large if you have multiple variables that have different dimension variables. For large netcdfs with many variables and many dimension variables this can easily get out of hand. In this case you can use `netcdf_to_dt('example_file.nc',trymerge = FALSE)`. This will return a list of data tables, one data table for each variable, containing only the variable values and the dimension variables it is indexed by. If you have two or more variables that do not share a dimension variable, the function requires you to set `trymerge = FALSE`, see below.
+
+As we can see from the printed information, the netcdf consists of a single variable 'corr' and two dimension variables 'lon' and 'lat'. The resulting data table looks like this:
+
+```{r }
+
+ggplot_dt(dt,
+          mn = 'Corr. skill rain Feb-Apr, Feb initialized', # title
+          rr = c(-1,1), # range of the colorbar
+          discrete_cs = TRUE,binwidth = 0.4) # discretize colorbar
+          
+```
+
+Note that the area shown by `ggplot_dt` is always the full extend of the data contained in the data table. In particular, the correlation plot above extends beyond areas where we have data, because the data table `dt` contains these locations (with missing values in the 'corr'-column). To just plot a window taylored to the data that is not missing, we can simply suppress the missing values by using `dt[!is.na(corr)]` instead.
+We can compare to the February initialized forecast for March to May:
+
+```{r}
+fn = "CorrelationSkillRain_Mar-May_Feb2021.nc"
+
+dt = netcdf_to_dt(paste0(data_dir,fn),verbose = 0) 
+
+ggplot_dt(dt[!is.na(corr)], # here we suppress missing values
+          mn = 'Corr. skill rain Mar-May, Mar initialized', # title
+          rr = c(-1,1), # range of the colorbar
+          discrete_cs = TRUE,binwidth = 0.4) # discretize colorbar
+          
+
+```
+
+
+
+## Reshaping data {#data examples}
+
+For forecast validation, the ideal data format is to have all your fore- and hindcasts in the same data table, alongside the corresponding observations. So one column of forecasts, one column of observations and several columns of dimension variables (e.g. year, month, lon,lat). However, this is rarely how your netcdf-data looks like: you'll often have different netcdfs for observations and fore-/hindcasts. They might, moreover have different units, different missing values, different variable names etc.
+
+So to get your data into the preferred shape, you either need to manipulate the netcdf files beforehand, to get exactly the data table you want from `netcdf_to_dt`, or you can extract several data tables and do the required manipulations in `R`, using `SeaVal` and `data.table` functions. In this section we show with a few examples how this can be done.
+
+### Example: cross-validation data {#cv-data}
+
+To get some more practice, let us look at a more elaborate example of crossvalidation. 
+In our example folder, we have two crossvalidation datasets and corresponding observations (one for FMA, one for MAM). 
+We will process them simultaneously here, merging everything into one single data table.  
+This is not really making things easier and not generally recommended. It is a great way for us to highlight more `data.table`-syntax here.
+
+```{r}
+##### CrossValidatedPredictedRain_Feb-Apr_Feb2021.nc #####
+
+# get the two CV-files:
+fn_pred1 = "CrossValidatedPredictedRain_Feb-Apr_Feb2021.nc"
+fn_pred2 = "CrossValidatedPredictedRain_Mar-May_Feb2021.nc"
+
+dt_pred1 = netcdf_to_dt(paste0(data_dir,fn_pred1),verbose = 0) # they look the same, we can just look at the information from one of them...
+dt_pred2 = netcdf_to_dt(paste0(data_dir,fn_pred2))
+
+#this is how they look:
+print(dt_pred1)
+
+# before joining the two data tables, we should add a column, identifying which is which:
+dt_pred1[,season:= 'FMA']
+dt_pred2[,season:= 'MAM']
+
+# bind together
+dt_pred = rbindlist(list(dt_pred1,dt_pred2))
+print(dt_pred)
+```
+
+The function `rbindlist` binds a list of several data tables into one. This only works if they have the same columns, though, otherwise you need to use `merge`.
+
+```{r}
+# next, get the observations:
+
+fn_obs1 = "ObservedRain_Feb-Apr_Feb2021.nc"
+fn_obs2 = "ObservedRain_Mar-May_Feb2021_update.nc"
+dt_obs1 = netcdf_to_dt(paste0(data_dir,fn_obs1),verbose = 0)
+dt_obs2 = netcdf_to_dt(paste0(data_dir,fn_obs2) )
+
+dt_obs1[,season := 'FMA']
+dt_obs2[,season := 'MAM']
+dt_obs = rbindlist(list(dt_obs1,dt_obs2))
+```
+
+Now we have two data tables, one with predictions and one with observations. We want to join them, but we want to have predictions next to observations, so `rbindlist` does not work for us here, and we need to use `merge`. However, we should first make sure that the columns are named appropriately, currently, both `dt_obs` and `dt_pred` have a column named `prec`.
+
+```{r}
+setnames(dt_pred,'prec','prediction')
+setnames(dt_obs,'prec','observation')
+
+dt = merge(dt_pred,dt_obs,by = c('lon','lat','time','season'))
+print(dt)
+
+# remove all rows with missing predictions:
+dt = dt[!is.na(prediction)]
+
+# convert time from the 'months since date' (MSD) format to years and months (YM)
+dt = MSD_to_YM(dt,origin = '1981-01-01') # (the origin was documented in the netcdf, see above.)
+print(dt) 
+```
+We now have the data table in the shape we want it to be, containing both predictions and observations as one column each. In the next section we will show how to evaluate the predictions when they are in this shape:
+```{r}
+# for use in the next section:
+dt_cv = copy(dt)
+```
+### Example: 'corrupted' netcdf
+
+Data handling can be messy and things can go wrong at any stage. Here we have a look at a netcdf file where something has gone wrong and how to fix it:
+
+```{r,error = TRUE}
+fn = "PredictedProbabilityRain_Feb-Apr_Feb2021.nc"
+dt = netcdf_to_dt(paste0(data_dir,fn))
+```
+
+We are getting an error because we have disjoint dimension variables for some variables. Indeed, looking at the printed out netcdf-description, we have three variables (below,normal,above), and while 'below' and 'above' are indexed by 'lon' and 'lat', 'normal' is indexed by 'ncl3' and 'ncl4'. As the error message suggests, we can set `trymerge` to FALSE: 
+
+```{r}
+dt_list = netcdf_to_dt(paste0(data_dir,fn),trymerge = FALSE,verbose = 0)
+print(dt_list)
+```
+
+Now, we see that 'ncl3' and 'ncl4' have different values than 'lon' and 'lat', apparently they are meaningless indexing integers. However, we see that the three data.tables are of the same size, and can hope that the 'below' data table is arranged in the same row-ordering than the others. If this is the case we can just extract the 'normal' column from it as vector and attach it to one of the others and we'll be fine. Let's try:
+
+```{r}
+
+dt = dt_list[[1]]
+normal_probs_as_vector = dt_list[[2]][,normal]
+dt[,normal := normal_probs_as_vector]
+
+ggplot_dt(dt,'normal')
+```
+
+Plotting is usually a great way to see whether something went wrong:  Here, we can be fairly certain that everything is correctly ordered, simply because the missing values in the 'normal' vector are at the locations where they should be (over water and desert). If the ordering would have been differently, these would be all over the place. However, let's be even more sure:
+
+```{r}
+# attach the 'above'-data table:
+dt = merge(dt,dt_list[[3]],by = c('lon','lat'))
+print(dt)
+
+# if the ordering was correct, we need to have below + normal + above = 100%:
+check = rowSums(dt[,.(below,normal,above)])
+print(check[1:20])
+```
+
+We were lucky here that the ordering was correct. Could we have done anything if it would have been different? Well, yes, we could have just used $\text{below} + \text{normal} + \text{above} = 100\%$ right away:
+
+```{r}
+dt = netcdf_to_dt(paste0(data_dir,fn), vars = c('below','above'),verbose = 0)
+print(dt)
+dt[,normal := 100 - below - above]
+ggplot_dt(dt,'normal')
+```
+
+### Example: Upscaling observations {#us-obs}
+
+Let us try to prepare a dataset for evaluating tercile forecasts for the MAM season: In our example data directory `data_dir` (given above) we have three datasets we need to use: predictions (including hindcasts), past observations and the 2021-observation. Here, our main difficulty is that the 2021-observation is on higher resolution than the past observations, and we need to upscale it first to half degrees. 
+
+```{r }
+# get predictions:
+dt = netcdf_to_dt(paste0(data_dir,'PredictedProbabilityRain_Mar-May_Feb2021_new.nc'))
+print(dt)
+
+# past observations:
+dt_obs = netcdf_to_dt(paste0(data_dir,'ObservedRain_Mar-May_Feb2021.nc'))
+# 2021 observation:
+dt_obs2021 = netcdf_to_dt(paste0(data_dir,'ObservedChirpsRainTotal_MAM2021.nc'),vars = 'precip')
+
+# the 2021 observation is named differently...
+setnames(dt_obs2021,c('longitude','latitude','precip'),c('lon','lat','prec'))
+# ... and it is on higher resolution:
+ggplot_dt(dt_obs2021,'prec',high = 'blue',midpoint = 0)
+
+# we can upscale it to half-degree-resolution using the following function:
+dt_obs2021 = upscale_to_half_degrees(dt_obs2021,uscol = 'prec',bycols = 'time')
+ggplot_dt(dt_obs2021,high = 'blue',midpoint = 0)
+
+# the observation datasets still look different:
+print(dt_obs)
+print(dt_obs2021)
+
+# let's first get the time into same format:
+dt_obs = MSD_to_YM(dt_obs)
+print(dt_obs)
+
+dt_obs2021[,date := as.Date(time,origin = '1980-01-01')] # see netcdf description above
+dt_obs2021[,year := year(date)][,month := month(date)]
+print(dt_obs2021)
+
+# Next, let's restrict 2021-observations to locations that are not blanked out in the past observations:
+na_locs = dt_obs[year == year[1],.(lon,lat,is.na(prec))]
+print(na_locs)
+dt_obs2021 = merge(dt_obs2021,na_locs,by = c('lon','lat'))
+dt_obs2021 = dt_obs2021[!(V3)]
+ggplot_dt(dt_obs2021, 'prec',high = 'blue',midpoint = 0)
+
+#delete what we don't need and bind together:
+dt_obs[,month:=NULL]
+dt_obs2021[,c('month','time','date','V3'):=NULL]
+
+dt_obs = rbindlist(list(dt_obs,dt_obs2021),use.names = TRUE)
+dt_obs = dt_obs[!is.na(prec)]
+
+# in which climatology tercile lies the observation for which year?
+dt_obs = add_tercile_cat(dt_obs) # In order to do this we needed to bind them together!
+
+ggplot_dt(dt_obs,'tercile_cat',low = 'red',high = 'blue')
+
+# merge prediction and corresponding observation:
+
+dt = merge(dt,dt_obs[year == 2021],by = c('lon','lat'))
+# transform percentage prediction to probabilities between zero and one:
+dt[,normal := normal/100]
+dt[,above := above/100]
+dt[,below := below/100]
+
+print(dt)
+```
+
+How to evaluate this dataset will be discussed in the next section, so let's give it a distinguished name:
+```{r}
+dt_tercile_forecast = copy(dt)
+```
+```{r,echo = FALSE}
+save(dt_tercile_forecast,dt_cv,dt_obs,file = '_temp.RData')
+```
+
+
+
