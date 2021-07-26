@@ -457,43 +457,36 @@ MSESS_dt = function(fc_dt,fc_col,
 
 
 
-#' Function for calculating anomaly correlation coefficients (ACCs) of ensemble mean forecasts stored in long data tables:
+#' Function for calculating Pearson correlation coefficients (PCCs) of ensemble mean forecasts stored in long data tables:
 #'
 #' Can also handle point forecasts.
-#' Warning: This metric always needs several years of data since the anomalies are calculated relative to multi-year means and standard deviations.
-#' @param fc_dt Data table containing the predictions.
+#' Warning: This metric always needs several years of data since the means and standard deviations are calculated across time.
+#' @param fc_obs_dt Data table containing the predictions.
 #' @param fc_col column name of the prediction.
-#' @param obs_dt Data table containing the observations. Pass NULL if the observation are contained in fc_dt.
-#' @param obs_col column name of the observations (either in obs_dt, or in fc_dt if obs_dt = NULL).
-#' @param by_cols column names of grouping variables, all of which need to be columns in fc_dt. A separate ACC is computed for each value of the grouping variables.
-#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in fc_dt.
+#' @param obs_col column name of the observations.
+#' @param by_cols column names of grouping variables, all of which need to be columns in fc_dt. A separate PCC is computed for each value of the grouping variables.
+#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in fc_obs_dt.
 #' @param along_cols column name(s) for the variable(s) along which is averaged. Needs to contain 'year' per warning above.
-#' @param ... passed on to ACC_dt
+#' @param ... passed on to PCC_dt
 #'
 #' @export
 
-ACC_dt = function(fc_dt,fc_col,
-                    obs_dt = NULL,
-                    obs_col = ifelse(is.null(obs_dt),yes = 'obs',no = fc_col),
-                    by_cols = intersect(c('month','season','lon','lat','system','lead_time'),names(fc_dt)),
-                    along_cols = c('year'),...)
+PCC_dt = function(fc_obs_dt, fc_col,
+                  obs_col = 'obs',
+                  by_cols = intersect(c('month','season','lon','lat','system','lead_time'),names(fc_obs_dt)),
+                  along_cols = c('year'),...)
 {
 
   if(!('year' %in% along_cols)) stop('skill scores are with respect to leave-one-year-out climatology, so your along_cns must contain "year".')
 
   # get forecast mean (= mean over all ensemble members)
-  fc_dt[, fc_mean:=mean(get(fc_col),na.rm = T), by=c(by_cols,along_cols)]
+  fc_obs_dt[, fc_mean:=mean(get(fc_col),na.rm = T), by=c(by_cols,along_cols)]
   
-  # combine data into a single DT and calculate correlation coefficient
-  if(is.null(obs_dt))
-  {
-    fc_obs_dt = fc_dt[, .SD, .SDcols=c("fc_mean",obs_col,by_cols,along_cols)]
-  } else {
-    fc_obs_dt = merge(fc_dt[, .SD, .SDcols=c("fc_mean",by_cols,along_cols)], obs_dt[, .SD, .SDcols=c("obs",by_cols,along_cols)], by=c(by_cols,along_cols))
-  }
-  ACC_dt = fc_obs_dt[, .(ACC=cor(fc_mean,obs,use="na.or.complete")), by=by_cols]
+  # calculate correlation coefficient
+  fc_obs_dt = fc_obs_dt[, .SD, .SDcols=c("fc_mean",obs_col,by_cols,along_cols)]
+  PCC_dt = fc_obs_dt[, .(rho=cor(fc_mean,obs,use="na.or.complete")), by=by_cols]
 
-  return(ACC_dt)
+  return(PCC_dt)
 }
 
 
@@ -502,43 +495,36 @@ ACC_dt = function(fc_dt,fc_col,
 #'
 #' Can also handle point forecasts.
 #' Warning: This metric always needs several years of data since the ranks on which it is based are calculated across multi-year samples.
-#' @param fc_dt Data table containing the predictions.
+#' @param fc_obs_dt Data table containing the predictions.
 #' @param fc_col column name of the prediction.
-#' @param obs_dt Data table containing the observations. Pass NULL if the observation are contained in fc_dt.
-#' @param obs_col column name of the observations (either in obs_dt, or in fc_dt if obs_dt = NULL).
+#' @param obs_col column name of the observations.
 #' @param by_cols column names of grouping variables, all of which need to be columns in fc_dt. A separate CPA is computed for each value of the grouping variables.
-#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in fc_dt.
+#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in fc_obs_dt.
 #' @param along_cols column name(s) for the variable(s) along which is averaged. Needs to contain 'year' per warning above.
 #' @param ... passed on to CPA_dt
 #'
 #' @export
 
-CPA_dt = function(fc_dt,fc_col,
-                    obs_dt = NULL,
-                    obs_col = ifelse(is.null(obs_dt),yes = 'obs',no = fc_col),
-                    by_cols = intersect(c('month','season','lon','lat','system','lead_time'),names(fc_dt)),
-                    along_cols = c('year'),...)
+CPA_dt = function(fc_obs_dt, fc_col,
+                  obs_col = 'obs',
+                  by_cols = intersect(c('month','season','lon','lat','system','lead_time'),names(fc_obs_dt)),
+                  along_cols = c('year'),...)
 {
 
   if(!('year' %in% along_cols)) stop('skill scores are with respect to leave-one-year-out climatology, so your along_cns must contain "year".')
 
 
   # get forecast mean (= mean over all ensemble members)
-  fc_dt[, fc_mean:=mean(get(fc_col), na.rm=T), by=c(by_cols,along_cols)]
+  fc_obs_dt[, fc_mean:=mean(get(fc_col), na.rm=T), by=c(by_cols,along_cols)]
   
   # combine data into a single DT and remove rows with missing data
-  if(is.null(obs_dt))
-  {
-    fc_obs_dt = na.omit(fc_dt[, .SD, .SDcols=c("fc_mean",obs_col,by_cols,along_cols)])
-  } else {
-    fc_obs_dt = na.omit(merge(fc_dt[, .SD, .SDcols=c("fc_mean",by_cols,along_cols)], obs_dt[, .SD, .SDcols=c("obs",by_cols,along_cols)], by=c(by_cols,along_cols)))
-  }
+  fc_obs_dt = na.omit(fc_obs_dt[, .SD, .SDcols=c("fc_mean",obs_col,by_cols,along_cols)])
 
   # calculate the CPA
   fc_obs_dt[, fc_midrank:=frank(fc_mean,ties.method="average"), by=by_cols]
   fc_obs_dt[, obs_class:=frank(obs,ties.method="dense"), by=by_cols]
   fc_obs_dt[, obs_midrank:=frank(obs,ties.method="average"), by=by_cols]
-  CPA_dt = fc_obs_dt[, .(CPA=0.5*(1.+cov(obs_class,fc_midrank)/cov(obs_class,obs_midrank))), by=by_cols]
+  CPA_dt = fc_obs_dt[, .(cpa=0.5*(1.+cov(obs_class,fc_midrank)/cov(obs_class,obs_midrank))), by=by_cols]
 
   return(CPA_dt)
 }
