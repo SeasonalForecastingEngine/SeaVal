@@ -1,0 +1,80 @@
+---
+title: "Validation of Forecasts with SeaVal"
+output: html_document
+---
+
+```{r setup, echo = F}
+knitr::opts_chunk$set(echo = TRUE)
+
+knitr::opts_chunk$set(fig.width = 6)
+knitr::opts_chunk$set(fig.height = 6)
+
+```
+
+This sheet gives a short introduction how to use the `R`-package 'SeaVal' for seasonal validation. This package is currently developed at NR and made available via Github. 
+The package will provide a toolkit to evaluate predictions issued by ICPAC. `SeaVal` relies on R data tables (available with the `R` package `data.table`).
+Data tables are more flexible and memory efficient data frames, and simplify many operations that are frequently required when working with weather- and climate data. An introduction to data tables can be found here: https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html
+`SeaVal` will allow to convert the output of forecast models and observations generated at ICPAC into data tables. Moreover it will contain functionality for generating a variety of diagnostic plots, and provide various tools for forecast evaluation.
+
+
+## Setting up `SeaVal`
+
+In order to get started with the package you first need to install the packages `devtools` (if you don't have it already), which allows installing packages from Github directly:
+```{r eval = FALSE, echo = TRUE}
+install.packages('devtools')
+```
+Now you should be able to install the `SeaVal`-package like this:
+```{r, eval = FALSE, echo = TRUE}
+devtools::install_github('SeasonalForecastingEngine/SeaVal')
+```
+
+This line should not only install the `SeaVal` package, but also all packages it depends on. This may take a while, especially if you haven't installed some of the larger packages that we utilize, such as `data.table` or `ggplot2`.
+Also, it is possible that you'll get a message like this:
+```
+These packages have more recent versions available.
+It is recommended to update all of them.
+Which would you like to update?
+
+1: All                                 
+2: CRAN packages only                  
+3: None                             
+...
+```
+
+In that case just type '1' for all. 
+
+If this completes without an error, the setup is complete and you're good to go.
+From here on out, all you have to do is load `SeaVal`:
+
+```{r}
+library(SeaVal)
+```
+
+This imports all functionality of the SeaVal package. It also imports the package `data.table`, so you don't need to put a separate `library(data.table)` in order to have data table syntax and functionality available.
+
+## Handling data
+
+Here we give a short introduction how to use common operations on data tables. The `SeaVal` package comes with a few example data sets, for example this one:
+
+```{r}
+data("chirps_monthly")
+print(chirps_monthly)
+
+```
+
+We can look at a short description of the dataset like this:
+
+```{r}
+?chirps_monthly
+```
+
+We'll now go over a few basic commands for handling this sort of data. If we want to have a look at the OND-climatology of precipitation we can simply do this:
+
+```{r}
+clim_dt = chirps_monthly[,mean(prec),by = .(lon,lat)]
+print(clim_dt)
+ggplot_dt(clim_dt)
+```
+
+
+

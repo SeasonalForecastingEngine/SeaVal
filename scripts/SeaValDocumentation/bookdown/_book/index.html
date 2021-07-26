@@ -110,13 +110,24 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="2" data-path="plotting.html"><a href="plotting.html"><i class="fa fa-check"></i><b>2</b> Plotting</a><ul>
 <li class="chapter" data-level="2.1" data-path="plotting.html"><a href="plotting.html#plotting-values-for-selected-countries"><i class="fa fa-check"></i><b>2.1</b> Plotting values for selected countries</a></li>
-<li class="chapter" data-level="2.2" data-path="plotting.html"><a href="plotting.html#more-plotting-options"><i class="fa fa-check"></i><b>2.2</b> More plotting options</a></li>
+<li class="chapter" data-level="2.2" data-path="plotting.html"><a href="plotting.html#customized-plots"><i class="fa fa-check"></i><b>2.2</b> Customized plots</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="evaluation-examples.html"><a href="evaluation-examples.html"><i class="fa fa-check"></i><b>3</b> Evaluation Examples</a><ul>
-<li class="chapter" data-level="3.1" data-path="evaluation-examples.html"><a href="evaluation-examples.html#data-import-with-netcdf_to_dt"><i class="fa fa-check"></i><b>3.1</b> Data import with <code>netcdf_to_dt</code></a></li>
-<li class="chapter" data-level="3.2" data-path="evaluation-examples.html"><a href="evaluation-examples.html#tercile-forecasts"><i class="fa fa-check"></i><b>3.2</b> Tercile Forecasts</a></li>
-<li class="chapter" data-level="3.3" data-path="evaluation-examples.html"><a href="evaluation-examples.html#exceedence-probabilities"><i class="fa fa-check"></i><b>3.3</b> Exceedence probabilities</a></li>
-<li class="chapter" data-level="3.4" data-path="evaluation-examples.html"><a href="evaluation-examples.html#temperature"><i class="fa fa-check"></i><b>3.4</b> Temperature</a></li>
+<li class="chapter" data-level="3" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html"><i class="fa fa-check"></i><b>3</b> Data import and processing</a><ul>
+<li class="chapter" data-level="3.1" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#netcdf_to_dt"><i class="fa fa-check"></i><b>3.1</b> The function <code>netcdf_to_dt</code></a></li>
+<li class="chapter" data-level="3.2" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#reshaping-data-data-examples"><i class="fa fa-check"></i><b>3.2</b> Reshaping data {#data examples}</a><ul>
+<li class="chapter" data-level="3.2.1" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#cv-data"><i class="fa fa-check"></i><b>3.2.1</b> Example: cross-validation data</a></li>
+<li class="chapter" data-level="3.2.2" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#example-corrupted-netcdf"><i class="fa fa-check"></i><b>3.2.2</b> Example: 'corrupted' netcdf</a></li>
+<li class="chapter" data-level="3.2.3" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#us-obs"><i class="fa fa-check"></i><b>3.2.3</b> Example: Upscaling observations</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="validation.html"><a href="validation.html"><i class="fa fa-check"></i><b>4</b> Validation</a><ul>
+<li class="chapter" data-level="4.1" data-path="validation.html"><a href="validation.html#evaluating-cross-validation-predictions"><i class="fa fa-check"></i><b>4.1</b> Evaluating cross-validation predictions</a></li>
+<li class="chapter" data-level="4.2" data-path="validation.html"><a href="validation.html#evaluating-tercile-forecasts"><i class="fa fa-check"></i><b>4.2</b> Evaluating Tercile Forecasts</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="validation.html"><a href="validation.html#proper-scoring-rules-for-full-tercile-forecasts"><i class="fa fa-check"></i><b>4.2.1</b> Proper scoring rules for full tercile forecasts</a></li>
+<li class="chapter" data-level="4.2.2" data-path="validation.html"><a href="validation.html#evaluation-when-only-the-highest-probability-category-is-avaliable"><i class="fa fa-check"></i><b>4.2.2</b> Evaluation when only the highest probability category is avaliable</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="validation.html"><a href="validation.html#exceedence-probabilities"><i class="fa fa-check"></i><b>4.3</b> Exceedence probabilities</a></li>
+<li class="chapter" data-level="4.4" data-path="validation.html"><a href="validation.html#temperature"><i class="fa fa-check"></i><b>4.4</b> Temperature</a></li>
 </ul></li>
 </ul>
 
@@ -352,6 +363,7 @@ mse_dt =<span class="st"> </span>dt[,.(<span class="dt">mse =</span> <span class
 <p><img src="index_files/figure-html/unnamed-chunk-15-1.png" width="576" /></p>
 <p>The function <code>ggplot_dt</code> is used to create spatial plots from data stored in data tables. In the next section we will showcase how this function works and how the plots can be manipulated.</p>
 
+
 </div>
 </div>
             </section>
@@ -411,6 +423,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

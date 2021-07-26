@@ -3,7 +3,8 @@
 
 
 
-The function `ggplot_dt` takes a data table containing two columns named `lon` and `lat` that should specify a regular longitude-latitude grid, as well as some data to use for coloring the map. An easy example is the following
+The function `ggplot_dt` takes a data table containing two columns named `lon` and `lat` that should specify a regular longitude-latitude grid, as well as some data to use for coloring the map.
+The naming of the columns is important in that the function will not work if you, for example, name the longitude column `long` or `Lon`. An easy example is the following
 
 
 ```r
@@ -132,9 +133,9 @@ ggplot_dt(dt[month == 10 & year == 2020], 'prec',
 
 <img src="02-plotting_files/figure-html/unnamed-chunk-8-1.png" width="480" />
 
-What happens here is that we set the midpoint to 0, which is the minimum of our data (since observed rainfall is never below 0). Consequently the second half of the colorscale extending below 0 is ignored.
+Here, we set the midpoint to 0, which is the minimum of our data (since observed rainfall is never below 0). Consequently, the second half of the colorscale extending below 0 is ignored.
 
-Finally, the function allows to discretize the color scale. To this end we need to set the argument `discrete_cs` to `TRUE`. We can then control the breaks of the discrete colorscale by either of the arguments `binwidth`, `n.breaks`, or `breaks` (the latter takes a vector containing all breakpoints). To revisit the anomaly plot from above:
+Finally, the function allows to discretize the color scale. To this end we need to set the argument `discrete_cs` to `TRUE`. We can then control the breaks of the discrete colorscale by one of the arguments `binwidth`, `n.breaks`, or `breaks` (the latter takes a vector containing all breakpoints). The argument `n.breaks` (which is passed to the function  `ggplot2::scale_fill_steps2`) tries to find 'nice' breaks and does not work reliably. To revisit the anomaly plot from above:
 
 ```r
 ggplot_dt(dt[month == 10 & year == 2020], 'ano', 
@@ -148,7 +149,17 @@ ggplot_dt(dt[month == 10 & year == 2020], 'ano',
 <img src="02-plotting_files/figure-html/unnamed-chunk-9-1.png" width="480" />
 
 
-One final remark: Often you will deal with data tables that contain spatio-temporal data. It is then important to subselect the particular timeslice you want to plot before plotting (as we did above when we plotted October 2020). The function `ggplot_dt` by default tries to select the first timeslice of tempo-spatial data. This is often not what you want (which is why you should subselect first), but it's frequently handy for quick data diagnostics, which is the reason for this default behavior. Here an example:
+For saving a created plot the syntax is as follows:
+
+```r
+pdf(file = '<path to file and filename>.pdf', width = ...,height = ...)
+  print(pp)
+dev.off()
+```
+This creates a .pdf file, but you can print .png and some other file formats similarly, see `?Devices` for an overview.
+
+
+One final remark: Often you will deal with data tables that contain spatio-temporal data. It is then important to remember subselecting the particular timeslice you want to view, (October 2020 in the examples above). The function `ggplot_dt` by default tries to select the first timeslice of tempo-spatial data. This is convenient for a quick first look at your data. Here an example:
 
 ```r
 print(chirps_monthly) # a data table with multiple months and years and locations, so spatio-temporal data
@@ -170,10 +181,10 @@ print(chirps_monthly) # a data table with multiple months and years and location
 ```
 
 ```r
-ggplot_dt(chirps_monthly) # generates a plot of the precipitation of October 1981 (first timeslice), for a first quick impression how your data looks
+ggplot_dt(chirps_monthly) # generates a plot of the precipitation of October 1981 (first timeslice), for a first quick impression of your data. 
 ```
 
-<img src="02-plotting_files/figure-html/unnamed-chunk-10-1.png" width="480" />
+<img src="02-plotting_files/figure-html/unnamed-chunk-11-1.png" width="480" />
 
 ## Plotting values for selected countries
 
@@ -208,7 +219,7 @@ ggplot_dt(dt_new, 'ano',
           name = 'mm/day')
 ```
 
-<img src="02-plotting_files/figure-html/unnamed-chunk-11-1.png" width="480" />
+<img src="02-plotting_files/figure-html/unnamed-chunk-12-1.png" width="480" />
 
 As we can see, the function restricts the data to all gridcells for which the centerpoint lies within the specified country. This is useful, for example, for calculating mean scores for the specified country. However, it is not optimal for plotting since every grid cell past the border is censored even though the original data table contained values there. To this end, the `restrict_to_country` function has a `rectangle`-argument that you can set to `TRUE` for plotting:
 
@@ -222,7 +233,7 @@ ggplot_dt(dt_new, 'ano',
           name = 'mm/day')
 ```
 
-<img src="02-plotting_files/figure-html/unnamed-chunk-12-1.png" width="480" />
+<img src="02-plotting_files/figure-html/unnamed-chunk-13-1.png" width="480" />
 
 Instead of a single country name you can also pass multiple country names in a vector to the function. Moreover, when you use `rectangle = TRUE`, you can specify a tolerance `tol` in order to widen the plotting window:
 
@@ -238,14 +249,14 @@ ggplot_dt(dt_new, 'ano',
           name = 'mm/day')
 ```
 
-<img src="02-plotting_files/figure-html/unnamed-chunk-13-1.png" width="480" />
+<img src="02-plotting_files/figure-html/unnamed-chunk-14-1.png" width="480" />
 
 The `tol = 2` argument means that the function will include a buffer zone of 2 degrees lon/lat outside the specified countries (i.e. 4 gridpoints to each side). Note that the buffer to the south of Tanzania is smaller, because the original data table `dt` does not contain any data further south.
 
 
-## More plotting options
+## Customized plots
 
-The function `ggplot_dt` is, as its name suggests, based on the package `ggplot2`. In `ggplot2`, plots are composed out of multiple layers, allowing for successive adding of layers. This can help us to generate highly customized plots. As an example, let's revisit the anomaly plot from above and add the location of Nairobi an Addis Abbaba to it:
+The function `ggplot_dt` is, as its name suggests, based on the package `ggplot2`, see https://ggplot2-book.org/. In `ggplot2`, plots are composed out of multiple layers, allowing for successive adding of layers. This can help us to generate highly customized plots. As an example, let's revisit the anomaly plot from above and add the location of Nairobi an Addis Abbaba to it:
 
 ```r
 library(ggplot2)
@@ -273,7 +284,7 @@ pp = ggplot_dt(dt[month == 10 & year == 2020], 'ano',
 print(pp)
 ```
 
-<img src="02-plotting_files/figure-html/unnamed-chunk-14-1.png" width="480" />
+<img src="02-plotting_files/figure-html/unnamed-chunk-15-1.png" width="480" />
 
 Here, we added two layers to the original plot, the first one being the `geom_point`-layer that creates the two points at the locations of the cities, and the second being the `geom_text`-layer that labels the points by the city names. `ggplot2` is a widely used package and there is a large variety of tutorials and books out there that can help you getting familiar with the syntax.
 
@@ -284,45 +295,61 @@ theme_set(theme_bw(base_size = 16)) # defaults to 12
 print(pp)
 ```
 
-<img src="02-plotting_files/figure-html/unnamed-chunk-15-1.png" width="480" />
+<img src="02-plotting_files/figure-html/unnamed-chunk-16-1.png" width="576" />
 
-If we want to print the plot to an external file, all we have to do is
-
-```r
-pdf(file = '<path to file and filename>.pdf', width = ...,height = ...)
-  print(pp)
-dev.off()
-```
-This prints a .pdf file, but you can print .png and some other file formats similarly, see `?Devices` for an overview.
 
 We can also use ggplots adding-layer-syntax to overwrite existing layers, for example if we want a fully customized colorscale:
 
+
+
 ```r
 library(viridis) # the viridis package contains some nice color scales
-```
-
-```
-## Loading required package: viridisLite
-```
-
-```r
 pp_new = pp + scale_fill_viridis(name = 'my_color_scale',
                                  breaks = seq(-5,5,by = 2),
                                  guide = guide_colorbar(title = 'my personal color scale',
                                                         title.position = 'top',
                                                         barwidth = 20,
                                                         direction = 'horizontal')) +
-              theme(legend.position = 'bottom')
-```
-
-```
-## Scale for 'fill' is already present. Adding another scale for 'fill', which
-## will replace the existing scale.
-```
-
-```r
+              xlab('lon') + ylab('lat') +   # label axis
+              theme(panel.background = element_rect(fill = 'salmon'), # change background color (used for missing values) to something whackey
+                    axis.ticks = element_line(), # add ticks...
+                    axis.text = element_text(),  # ... and labels for the axis, i.e. some lons and lats.
+                    legend.position = 'bottom') 
+              
 print(pp_new)
 ```
 
-<img src="02-plotting_files/figure-html/unnamed-chunk-17-1.png" width="384" />
+<img src="02-plotting_files/figure-html/unnamed-chunk-18-1.png" width="384" />
+
+For comparing multiple plots (potentially all of them with the same legend), the function `ggpubr::ggarrange` is useful:
+
+```r
+library(ggpubr)
+# compare 2019 October anomaly to 2020 anomaly:
+rr = c(-5,5) # force color scale to be identical for the plots
+
+pp1 = ggplot_dt(dt[month == 10 & year == 2019], 'ano', 
+                rr = rr,
+                mn = 'October 2019 rainfall anomaly',
+                low = 'red', mid = 'white', high = 'darkgreen',
+                guide = guide_colorbar(barwidth = 20,barheight = 1,direction = 'horizontal'),
+                midpoint = 0,
+                name = 'mm/day') + 
+  geom_point(data = loc,mapping = aes(x = lon,y = lat)) + 
+  geom_text(data = loc,mapping = aes(x = lon,y = lat,label = name),vjust = 1.5)
+
+pp2 = ggplot_dt(dt[month == 10 & year == 2020], 'ano', 
+                rr = rr,
+                mn = 'October 2020 rainfall anomaly',
+                low = 'red', mid = 'white', high = 'darkgreen',
+                midpoint = 0,
+                name = 'mm/day') + 
+  geom_point(data = loc,mapping = aes(x = lon,y = lat)) + 
+  geom_text(data = loc,mapping = aes(x = lon,y = lat,label = name),vjust = 1.5)
+
+
+ggarrange(pp1,pp2,ncol = 2,common.legend = TRUE,legend = 'bottom')
+```
+
+<img src="02-plotting_files/figure-html/unnamed-chunk-19-1.png" width="960" />
 
