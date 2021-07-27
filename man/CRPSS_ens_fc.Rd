@@ -7,8 +7,7 @@
 CRPSS_ens_fc(
   fc_dt,
   fc_cn,
-  obs_dt = NULL,
-  obs_cn = ifelse(is.null(obs_dt), yes = "obs", no = fc_cn),
+  obs_cn = "obs",
   by_cns = intersect(c("month", "season", "lon", "lat", "system", "lead_time"),
     names(fc_dt)),
   along_cns = c("year"),
@@ -20,16 +19,16 @@ CRPSS_ens_fc(
 
 \item{fc_cn}{column name of the prediction.}
 
-\item{obs_dt}{Data table containing the observations. Pass NULL if the observation are contained in fc_dt.}
-
 \item{obs_cn}{column name of the observations (either in obs_dt, or in fc_dt if obs_dt = NULL).}
 
-\item{by_cns}{column names of grouping variables, all of which need to be columns in fc_dt. A separate MSE is computed for each value of the grouping variables.
+\item{by_cns}{column names of grouping variables, all of which need to be columns in fc_dt. A separate CRPS is computed for each value of the grouping variables.
 Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in fc_dt.}
 
 \item{along_cns}{column name(s) for the variable(s) along which is averaged. Needs to contain 'year' since the reference climatology forecast is leave-one-year-out.}
 
-\item{...}{passed on to MSE_ens_fc}
+\item{...}{passed on to CRPS_ens_fc}
+
+\item{obs_dt}{Data table containing the observations. Pass NULL if the observation are contained in fc_dt.}
 }
 \description{
 Warning: The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology.

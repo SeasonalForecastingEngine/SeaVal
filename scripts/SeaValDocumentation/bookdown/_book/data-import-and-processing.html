@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>3 Data import and processing | Tutorial for the SeaVal package</title>
-  <meta name="description" content="3 Data import and processing | Tutorial for the SeaVal package" />
+  <title>3 Data import and processing | The SeaVal package for validating seasonal weather forecasts</title>
+  <meta name="description" content="3 Data import and processing | The SeaVal package for validating seasonal weather forecasts" />
   <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="3 Data import and processing | Tutorial for the SeaVal package" />
+  <meta property="og:title" content="3 Data import and processing | The SeaVal package for validating seasonal weather forecasts" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3 Data import and processing | Tutorial for the SeaVal package" />
+  <meta name="twitter:title" content="3 Data import and processing | The SeaVal package for validating seasonal weather forecasts" />
   
   
   
@@ -114,19 +114,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html"><i class="fa fa-check"></i><b>3</b> Data import and processing</a><ul>
 <li class="chapter" data-level="3.1" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#netcdf_to_dt"><i class="fa fa-check"></i><b>3.1</b> The function <code>netcdf_to_dt</code></a></li>
-<li class="chapter" data-level="3.2" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#reshaping-data-data-examples"><i class="fa fa-check"></i><b>3.2</b> Reshaping data {#data examples}</a><ul>
+<li class="chapter" data-level="3.2" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#data-examples"><i class="fa fa-check"></i><b>3.2</b> Reshaping data</a><ul>
 <li class="chapter" data-level="3.2.1" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#cv-data"><i class="fa fa-check"></i><b>3.2.1</b> Example: cross-validation data</a></li>
-<li class="chapter" data-level="3.2.2" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#example-corrupted-netcdf"><i class="fa fa-check"></i><b>3.2.2</b> Example: 'corrupted' netcdf</a></li>
+<li class="chapter" data-level="3.2.2" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#ex-corrupted-netcdf"><i class="fa fa-check"></i><b>3.2.2</b> Example: 'corrupted' netcdf</a></li>
 <li class="chapter" data-level="3.2.3" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#us-obs"><i class="fa fa-check"></i><b>3.2.3</b> Example: Upscaling observations</a></li>
+<li class="chapter" data-level="3.2.4" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#data-ex-prexc"><i class="fa fa-check"></i><b>3.2.4</b> Example: preparing data for evaluating exceedence probabilities</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="validation.html"><a href="validation.html"><i class="fa fa-check"></i><b>4</b> Validation</a><ul>
-<li class="chapter" data-level="4.1" data-path="validation.html"><a href="validation.html#evaluating-cross-validation-predictions"><i class="fa fa-check"></i><b>4.1</b> Evaluating cross-validation predictions</a></li>
+<li class="chapter" data-level="4.1" data-path="validation.html"><a href="validation.html#cv-eval"><i class="fa fa-check"></i><b>4.1</b> Evaluating cross-validation predictions</a></li>
 <li class="chapter" data-level="4.2" data-path="validation.html"><a href="validation.html#evaluating-tercile-forecasts"><i class="fa fa-check"></i><b>4.2</b> Evaluating Tercile Forecasts</a><ul>
-<li class="chapter" data-level="4.2.1" data-path="validation.html"><a href="validation.html#proper-scoring-rules-for-full-tercile-forecasts"><i class="fa fa-check"></i><b>4.2.1</b> Proper scoring rules for full tercile forecasts</a></li>
-<li class="chapter" data-level="4.2.2" data-path="validation.html"><a href="validation.html#evaluation-when-only-the-highest-probability-category-is-avaliable"><i class="fa fa-check"></i><b>4.2.2</b> Evaluation when only the highest probability category is avaliable</a></li>
+<li class="chapter" data-level="4.2.1" data-path="validation.html"><a href="validation.html#eval-terciles"><i class="fa fa-check"></i><b>4.2.1</b> Proper scoring rules for full tercile forecasts</a></li>
+<li class="chapter" data-level="4.2.2" data-path="validation.html"><a href="validation.html#eval-terciles2"><i class="fa fa-check"></i><b>4.2.2</b> Evaluation when only the highest probability category is avaliable</a></li>
 </ul></li>
-<li class="chapter" data-level="4.3" data-path="validation.html"><a href="validation.html#exceedence-probabilities"><i class="fa fa-check"></i><b>4.3</b> Exceedence probabilities</a></li>
+<li class="chapter" data-level="4.3" data-path="validation.html"><a href="validation.html#eval-ex-pr"><i class="fa fa-check"></i><b>4.3</b> Exceedence probabilities</a></li>
 <li class="chapter" data-level="4.4" data-path="validation.html"><a href="validation.html#temperature"><i class="fa fa-check"></i><b>4.4</b> Temperature</a></li>
 </ul></li>
 </ul>
@@ -138,7 +139,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Tutorial for the <code>SeaVal</code> package</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The <code>SeaVal</code> package for validating seasonal weather forecasts</a>
           </h1>
         </div>
 
@@ -151,9 +152,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>In this section we look at how to import netcdf-data as data tables, and how to get the data into the shape we need.</p>
 <div id="netcdf_to_dt" class="section level2">
 <h2><span class="header-section-number">3.1</span> The function <code>netcdf_to_dt</code></h2>
-<p>The central function for importing netcdf-data as data.table is called <code>netcdf_to_dt</code>. It takes a filename of a netcdf (including directory path) as argument. The examples we look at here are hosted on ICPACs ftp server at SharedData/gcm/seasonal/202102.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data_dir =<span class="st"> &#39;/nr/project/stat/CONFER/Data/validation/example_data/202102/&#39;</span> <span class="co"># the directory the data is stored in, you need to adjust this to your platform.</span>
-fn =<span class="st"> &quot;CorrelationSkillRain_Feb-Apr_Feb2021.nc&quot;</span>
+<p>The central function for importing netcdf-data as data.table is called <code>netcdf_to_dt</code>. It takes a filename of a netcdf (including directory path) as argument. The example files we consider are hosted on ICPACs ftp server at SharedData/gcm/seasonal/202102.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(data_dir) <span class="co"># the directory the data is stored in, you need to adjust this to your platform.</span></code></pre></div>
+<pre><code>## [1] &quot;/nr/project/stat/CONFER/Data/validation/example_data/202102/&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn =<span class="st"> &quot;CorrelationSkillRain_Feb-Apr_Feb2021.nc&quot;</span>
 dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn))</code></pre></div>
 <pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/CorrelationSkillRain_Feb-Apr_Feb2021.nc (NC_FORMAT_CLASSIC):
 ## 
@@ -194,16 +196,16 @@ dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="k
 ## 5081: 52.5  24.5   NA
 ## 5082: 53.0  24.5   NA</code></pre>
 <p>By default, the function prints out all the information it gets from the netcdf, including units, array sizes etc. This can be turned off by the <code>verbose</code> argument of the function: setting it to 0 supresses all messages, setting it to 1 only prints units of the variables. The default value is 2.</p>
-<p>A netcdf file always contains variables (such as precip or temperature) and dimension variables (such as longitude or time). The function <code>netcdf_to_dt</code> by default tries to extract all variables into a single data table that also contains all dimension variables that are indexing a variable: For example, the netcdf file above has three dimension variables: lon,lat, and time (which is empty). It has one variable (corr) that is indexed by lon and lat, therefore the resulting data table has three columns: corr, lon and lat. In particular, it does not have a column time, since this dimension variable does not index anything.</p>
-<p>The default behavior of merging all netcdf data into a single data table may sometimes be inappropriate. Say for example we have a netcdf with three dimension variables lon,lat and time, and it has a variable precipitation[lon,lat,time] and a second variable grid_point_index[lon,lat]. The resulting data table would have the columns lon,lat,time,precipitation, and grid_point_index. This is not very memory efficient because the grid_point_indices are repeated for every instance of time, and in this case we don't need the grid_point_index anyway. We can use the <code>vars</code> argument of the <code>netcdf_to_dt</code> function to only extract selected variables. So, in this example, <code>netcdf_to_dt('example_file.nc', vars = 'precipitation')</code> would have done the trick.</p>
-<p>As described, the resulting data table becomes unneccesary large if you have multiple variables that have different dimension variables. For large netcdfs with many variables and many dimension variables this can easily get out of hand. In this case you can use <code>netcdf_to_dt('example_file.nc',trymerge = FALSE)</code>. This will return a list of data tables, one data table for each variable, containing only the variable values and the dimension variables it is indexed by. If you have two or more variables that do not share a dimension variable, the function requires you to set <code>trymerge = FALSE</code>, see below.</p>
-<p>As we can see from the printed information, the netcdf consists of a single variable 'corr' and two dimension variables 'lon' and 'lat'. The resulting data table looks like this:</p>
+<p>A netcdf file always contains <em>variables</em> (such as precip or temperature) and <em>dimension variables</em> (such as longitude or time). The function <code>netcdf_to_dt</code> by default tries to extract all variables into a single data table that also contains all dimension variables that are indexing at least one variable: For example, the netcdf file above has three dimension variables: lon,lat, and time (which is empty). It has one variable ('corr') that is indexed by lon and lat, therefore the resulting data table has three columns: corr, lon and lat.</p>
+<p>The default behavior of merging all netcdf data into a single data table may sometimes be inappropriate. Say, for example, we have a netcdf with three dimension variables lon,lat and time, and it has a variable precipitation[lon,lat,time] and a second variable grid_point_index[lon,lat]. The resulting data table would have the columns lon,lat,time,precipitation, and grid_point_index. This is not very memory efficient because the grid_point_indices are repeated for every instance of time. Moreover, in this case we probably don't need the grid_point_index anyway. We can use the <code>vars</code> argument of the <code>netcdf_to_dt</code> function to extract only selected variables. So, in this example, <code>netcdf_to_dt('example_file.nc', vars = 'precipitation')</code> would have done the trick.</p>
+<p>Merging the data tables for all variables is particularly memory efficient when you have multiple variables that have different dimension variables. For large netcdfs with many variables and many dimension variables this can easily get out of hand. In this case you can use <code>netcdf_to_dt('example_file.nc',trymerge = FALSE)</code>. This will return a list of data tables, one data table for each variable, containing only the variable values and the dimension variables it is indexed by. If you have two or more variables that do not share a dimension variable, the function requires you to set <code>trymerge = FALSE</code>, see the example in Section <a href="data-import-and-processing.html#ex-corrupted-netcdf">3.2.2</a>.</p>
+<p>For the example above, the resulting data table looks like this:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt,
           <span class="dt">mn =</span> <span class="st">&#39;Corr. skill rain Feb-Apr, Feb initialized&#39;</span>, <span class="co"># title</span>
           <span class="dt">rr =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="co"># range of the colorbar</span>
           <span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>,<span class="dt">binwidth =</span> <span class="fl">0.4</span>) <span class="co"># discretize colorbar</span></code></pre></div>
 <p><img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-2-1.png" width="480" /></p>
-<p>Note that the area shown by <code>ggplot_dt</code> is always the full extend of the data contained in the data table. In particular, the correlation plot above extends beyond areas where we have data, because the data table <code>dt</code> contains these locations (with missing values in the 'corr'-column). To just plot a window taylored to the data that is not missing, we can simply suppress the missing values by using <code>dt[!is.na(corr)]</code> instead. We can compare to the February initialized forecast for March to May:</p>
+<p>Note that the area shown by <code>ggplot_dt</code> is always the full extend of the data contained in the data table. In particular, the correlation plot above extends beyond areas where we have data, because the netcdf-file contained these locations (with missing values in the 'corr'-array). To just plot a window taylored to the data that is not missing, we can simply suppress the missing values by using <code>dt[!is.na(corr)]</code>. We can compare to the February initialized forecast for March to May:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn =<span class="st"> &quot;CorrelationSkillRain_Mar-May_Feb2021.nc&quot;</span>
 
 dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn),<span class="dt">verbose =</span> <span class="dv">0</span>) 
@@ -214,21 +216,19 @@ dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="k
           <span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>,<span class="dt">binwidth =</span> <span class="fl">0.4</span>) <span class="co"># discretize colorbar</span></code></pre></div>
 <p><img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-3-1.png" width="480" /></p>
 </div>
-<div id="reshaping-data-data-examples" class="section level2">
-<h2><span class="header-section-number">3.2</span> Reshaping data {#data examples}</h2>
+<div id="data-examples" class="section level2">
+<h2><span class="header-section-number">3.2</span> Reshaping data</h2>
 <p>For forecast validation, the ideal data format is to have all your fore- and hindcasts in the same data table, alongside the corresponding observations. So one column of forecasts, one column of observations and several columns of dimension variables (e.g. year, month, lon,lat). However, this is rarely how your netcdf-data looks like: you'll often have different netcdfs for observations and fore-/hindcasts. They might, moreover have different units, different missing values, different variable names etc.</p>
-<p>So to get your data into the preferred shape, you either need to manipulate the netcdf files beforehand, to get exactly the data table you want from <code>netcdf_to_dt</code>, or you can extract several data tables and do the required manipulations in <code>R</code>, using <code>SeaVal</code> and <code>data.table</code> functions. In this section we show with a few examples how this can be done.</p>
+<p>So to get your data into the preferred shape, you either need to manipulate the netcdf files beforehand, to get exactly the data table you want from <code>netcdf_to_dt</code>, or you can extract several data tables and do the required manipulations in <code>R</code>, using <code>SeaVal</code> and <code>data.table</code>. In this section we show a few examples for this.</p>
 <div id="cv-data" class="section level3">
 <h3><span class="header-section-number">3.2.1</span> Example: cross-validation data</h3>
-<p>To get some more practice, let us look at a more elaborate example of crossvalidation. In our example folder, we have two crossvalidation datasets and corresponding observations (one for FMA, one for MAM). We will process them simultaneously here, merging everything into one single data table.<br />
-This is not really making things easier and not generally recommended. It is a great way for us to highlight more <code>data.table</code>-syntax here.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">##### CrossValidatedPredictedRain_Feb-Apr_Feb2021.nc #####
-
-<span class="co"># get the two CV-files:</span>
+<p>In our example folder (see above) we have two crossvalidation datasets and corresponding observations (one for FMA, one for MAM). We will process them simultaneously here, merging everything into one single data table.<br />
+This is not really making things easier and not generally recommended. It is a great way for us to highlight more <code>data.table</code>-syntax, though.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get the two CV-files:</span>
 fn_pred1 =<span class="st"> &quot;CrossValidatedPredictedRain_Feb-Apr_Feb2021.nc&quot;</span>
 fn_pred2 =<span class="st"> &quot;CrossValidatedPredictedRain_Mar-May_Feb2021.nc&quot;</span>
 
-dt_pred1 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn_pred1),<span class="dt">verbose =</span> <span class="dv">0</span>) <span class="co"># they look the same, we can just look at the information from one of them...</span>
+dt_pred1 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn_pred1),<span class="dt">verbose =</span> <span class="dv">0</span>) <span class="co"># they look the same, we can just look at the information from one of them:</span>
 dt_pred2 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn_pred2))</code></pre></div>
 <pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/CrossValidatedPredictedRain_Mar-May_Feb2021.nc (NC_FORMAT_CLASSIC):
 ## 
@@ -256,7 +256,7 @@ dt_pred2 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span cl
 ##         creation_date: Mon Feb 15 06:59:57 EAT 2021
 ##         Conventions: None
 ##         title:  Cross Validated Predicted Rainfall Total (mm)</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#this is how they look:</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#this is how our data looks now:</span>
 <span class="kw">print</span>(dt_pred1)</code></pre></div>
 <pre><code>##          lon   lat time prec
 ##      1: 20.5 -13.5   13   NA
@@ -270,7 +270,7 @@ dt_pred2 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span cl
 ## 177868: 52.0  24.5  421   NA
 ## 177869: 52.5  24.5  421   NA
 ## 177870: 53.0  24.5  421   NA</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># before joining the two data tables, we should add a column, identifying which is which:</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># before joining the two data tables, we should add a column identifying which is which:</span>
 dt_pred1[,season<span class="op">:</span><span class="er">=</span><span class="st"> &#39;FMA&#39;</span>]
 dt_pred2[,season<span class="op">:</span><span class="er">=</span><span class="st"> &#39;MAM&#39;</span>]
 
@@ -291,7 +291,6 @@ dt_pred =<span class="st"> </span><span class="kw">rbindlist</span>(<span class=
 ## 355740: 53.0  24.5  421   NA    MAM</code></pre>
 <p>The function <code>rbindlist</code> binds a list of several data tables into one. This only works if they have the same columns, though, otherwise you need to use <code>merge</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># next, get the observations:</span>
-
 fn_obs1 =<span class="st"> &quot;ObservedRain_Feb-Apr_Feb2021.nc&quot;</span>
 fn_obs2 =<span class="st"> &quot;ObservedRain_Mar-May_Feb2021_update.nc&quot;</span>
 dt_obs1 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn_obs1),<span class="dt">verbose =</span> <span class="dv">0</span>)
@@ -327,7 +326,7 @@ dt_obs2 =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span cla
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_obs1[,season <span class="op">:</span><span class="er">=</span><span class="st"> &#39;FMA&#39;</span>]
 dt_obs2[,season <span class="op">:</span><span class="er">=</span><span class="st"> &#39;MAM&#39;</span>]
 dt_obs =<span class="st"> </span><span class="kw">rbindlist</span>(<span class="kw">list</span>(dt_obs1,dt_obs2))</code></pre></div>
-<p>Now we have two data tables, one with predictions and one with observations. We want to join them, but we want to have predictions next to observations, so <code>rbindlist</code> does not work for us here, and we need to use <code>merge</code>. However, we should first make sure that the columns are named appropriately, currently, both <code>dt_obs</code> and <code>dt_pred</code> have a column named <code>prec</code>.</p>
+<p>Now we have two data tables, one with predictions and one with observations. We want to join them, but we want to have predictions next to observations, so <code>rbindlist</code> does not work for us here, and we need to use <code>merge</code>. However, we should first make sure that the columns are named appropriately: Currently, both <code>dt_obs</code> and <code>dt_pred</code> have a column named <code>prec</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setnames</span>(dt_pred,<span class="st">&#39;prec&#39;</span>,<span class="st">&#39;prediction&#39;</span>)
 <span class="kw">setnames</span>(dt_obs,<span class="st">&#39;prec&#39;</span>,<span class="st">&#39;observation&#39;</span>)
 
@@ -363,13 +362,11 @@ dt =<span class="st"> </span><span class="kw">MSD_to_YM</span>(dt,<span class="d
 ## 167332: 51.5  22.5    FMA   26.03941    25.14965 2014     2
 ## 167333: 51.5  22.5    FMA   26.03053    22.23634 2015     2
 ## 167334: 51.5  22.5    FMA   26.00327    34.84376 2016     2</code></pre>
-<p>We now have the data table in the shape we want it to be, containing both predictions and observations as one column each. In the next section we will show how to evaluate the predictions when they are in this shape:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># for use in the next section:</span>
-dt_cv =<span class="st"> </span><span class="kw">copy</span>(dt)</code></pre></div>
+<p>We now have the data table in the shape we want it to be, containing both predictions and observations as one column each. In section <a href="validation.html#cv-eval">4.1</a> we show how to evaluate the predictions.</p>
 </div>
-<div id="example-corrupted-netcdf" class="section level3">
+<div id="ex-corrupted-netcdf" class="section level3">
 <h3><span class="header-section-number">3.2.2</span> Example: 'corrupted' netcdf</h3>
-<p>Data handling can be messy and things can go wrong at any stage. Here we have a look at a netcdf file where something has gone wrong and how to fix it:</p>
+<p>Data handling can be messy and things can go wrong at any stage. Here, we have a look at a netcdf file where something has gone wrong:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn =<span class="st"> &quot;PredictedProbabilityRain_Feb-Apr_Feb2021.nc&quot;</span>
 dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn))</code></pre></div>
 <pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/PredictedProbabilityRain_Feb-Apr_Feb2021.nc (NC_FORMAT_CLASSIC):
@@ -408,7 +405,7 @@ dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="k
 ##         Conventions: None
 ##         title: Predicted Tercile probability</code></pre>
 <pre><code>## Error in netcdf_to_dt(paste0(data_dir, fn)): Your file has variables with disjoint dimensions, which should not be stored in a single data table. Either set trymerge to FALSE or select variables with overlapping dimensions in vars.</code></pre>
-<p>We are getting an error because we have disjoint dimension variables for some variables. Indeed, looking at the printed out netcdf-description, we have three variables (below,normal,above), and while 'below' and 'above' are indexed by 'lon' and 'lat', 'normal' is indexed by 'ncl3' and 'ncl4'. As the error message suggests, we can set <code>trymerge</code> to FALSE:</p>
+<p>The <code>netcdf_to_dt</code> function prints out the netcdf information, and then crashes with the error message above, saying that we have disjoint dimension variables for some variables. Indeed, looking at the printed out netcdf-description, we have three variables (below,normal,above), and while 'below' and 'above' are indexed by 'lon' and 'lat', 'normal' is indexed by 'ncl3' and 'ncl4'. As the error message suggests, we can set <code>trymerge</code> to FALSE, making <code>netcdf_to_dt</code> return a list of data tables.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_list =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn),<span class="dt">trymerge =</span> <span class="ot">FALSE</span>,<span class="dt">verbose =</span> <span class="dv">0</span>)
 <span class="kw">print</span>(dt_list)</code></pre></div>
 <pre><code>## [[1]]
@@ -452,14 +449,14 @@ dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="k
 ## 5080: 52.0  24.5    NA
 ## 5081: 52.5  24.5    NA
 ## 5082: 53.0  24.5    NA</code></pre>
-<p>Now, we see that 'ncl3' and 'ncl4' have different values than 'lon' and 'lat', apparently they are meaningless indexing integers. However, we see that the three data.tables are of the same size, and can hope that the 'below' data table is arranged in the same row-ordering than the others. If this is the case we can just extract the 'normal' column from it as vector and attach it to one of the others and we'll be fine. Let's try:</p>
+<p>We see that 'ncl3' and 'ncl4' have different values than 'lon' and 'lat', apparently they are meaningless indexing integers. However, the three data.tables are of the same size, and we can hope that the 'below' data table is arranged in the same row-ordering than the others. If this is the case, we can simply extract the 'normal' column from it (as vector) and attach it to one of the others. Let's try:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt =<span class="st"> </span>dt_list[[<span class="dv">1</span>]]
 normal_probs_as_vector =<span class="st"> </span>dt_list[[<span class="dv">2</span>]][,normal]
 dt[,normal <span class="op">:</span><span class="er">=</span><span class="st"> </span>normal_probs_as_vector]
 
 <span class="kw">ggplot_dt</span>(dt,<span class="st">&#39;normal&#39;</span>)</code></pre></div>
 <p><img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-10-1.png" width="480" /></p>
-<p>Plotting is usually a great way to see whether something went wrong: Here, we can be fairly certain that everything is correctly ordered, simply because the missing values in the 'normal' vector are at the locations where they should be (over water and desert). If the ordering would have been differently, these would be all over the place. However, let's be even more sure:</p>
+<p>Plotting is usually a great way to see whether data got arranged correctly: Here, we can be fairly certain it did, simply because the missing values in the 'normal' vector are at the locations where they should be (over water and dry regions). If the ordering would have been differently, these would be all over the place. However, let's run another test to be certain:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># attach the &#39;above&#39;-data table:</span>
 dt =<span class="st"> </span><span class="kw">merge</span>(dt,dt_list[[<span class="dv">3</span>]],<span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>))
 <span class="kw">print</span>(dt)</code></pre></div>
@@ -475,13 +472,16 @@ dt =<span class="st"> </span><span class="kw">merge</span>(dt,dt_list[[<span cla
 ## 5080: 53.0  23.5       NA       NA       NA
 ## 5081: 53.0  24.0       NA       NA       NA
 ## 5082: 53.0  24.5       NA       NA       NA</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># if the ordering was correct, we need to have below + normal + above = 100%:</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># if the ordering of the &#39;normal&#39; column was correct, we have below + normal + above = 100%:</span>
 check =<span class="st"> </span><span class="kw">rowSums</span>(dt[,.(below,normal,above)])
 <span class="kw">print</span>(check[<span class="dv">1</span><span class="op">:</span><span class="dv">20</span>])</code></pre></div>
 <pre><code>##  [1]  NA  NA  NA  NA 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100
 ## [20] 100</code></pre>
-<p>We were lucky here that the ordering was correct. Could we have done anything if it would have been different? Well, yes, we could have just used <span class="math inline">\(\text{below} + \text{normal} + \text{above} = 100\%\)</span> right away:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn), <span class="dt">vars =</span> <span class="kw">c</span>(<span class="st">&#39;below&#39;</span>,<span class="st">&#39;above&#39;</span>),<span class="dt">verbose =</span> <span class="dv">0</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(check[<span class="op">!</span><span class="kw">is.na</span>(check)])</code></pre></div>
+<pre><code>## [1] 100</code></pre>
+<p>We were lucky and the ordering was correct. Is there anything we could have done otherwise? Well, yes, we could have just used <span class="math inline">\(\text{below} + \text{normal} + \text{above} = 100\%\)</span> right away:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># only extract &#39;below&#39; and &#39;above&#39;:</span>
+dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn), <span class="dt">vars =</span> <span class="kw">c</span>(<span class="st">&#39;below&#39;</span>,<span class="st">&#39;above&#39;</span>),<span class="dt">verbose =</span> <span class="dv">0</span>)
 <span class="kw">print</span>(dt)</code></pre></div>
 <pre><code>##        lon   lat    below    above
 ##    1: 20.5 -13.5       NA       NA
@@ -501,7 +501,7 @@ check =<span class="st"> </span><span class="kw">rowSums</span>(dt[,.(below,norm
 </div>
 <div id="us-obs" class="section level3">
 <h3><span class="header-section-number">3.2.3</span> Example: Upscaling observations</h3>
-<p>Let us try to prepare a dataset for evaluating tercile forecasts for the MAM season: In our example data directory <code>data_dir</code> (given above) we have three datasets we need to use: predictions (including hindcasts), past observations and the 2021-observation. Here, our main difficulty is that the 2021-observation is on higher resolution than the past observations, and we need to upscale it first to half degrees.</p>
+<p>Here we prepare a dataset for evaluating tercile forecasts for the MAM season: In our example data directory <code>data_dir</code> (given above) there are three datasets we need to combine to this end. Predictions, past observations and the 2021-observation. Note that we require past observations in order to find the climatology terciles, so that we can check whether the observed rainfll at a gridpoint is indeed 'high' or 'low' for that gridpoint., Our main challenge is that the 2021-observation file looks quite different from the others. In particular it is on a grid with higher resolution.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get predictions:</span>
 dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,<span class="st">&#39;PredictedProbabilityRain_Mar-May_Feb2021_new.nc&#39;</span>))</code></pre></div>
 <pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/PredictedProbabilityRain_Mar-May_Feb2021_new.nc (NC_FORMAT_NETCDF4):
@@ -638,49 +638,11 @@ dt_obs2021 =<span class="st"> </span><span class="kw">upscale_to_half_degrees</s
 <pre><code>## [1] &quot;1/1&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt_obs2021,<span class="dt">high =</span> <span class="st">&#39;blue&#39;</span>,<span class="dt">midpoint =</span> <span class="dv">0</span>)</code></pre></div>
 <p><img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-13-2.png" width="480" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the observation datasets still look different:</span>
-<span class="kw">print</span>(dt_obs)</code></pre></div>
-<pre><code>##          lon   lat time prec
-##      1: 20.5 -13.5   13   NA
-##      2: 21.0 -13.5   13   NA
-##      3: 21.5 -13.5   13   NA
-##      4: 22.0 -13.5   13   NA
-##      5: 22.5 -13.5   13   NA
-##     ---                     
-## 177866: 51.0  24.5  421   NA
-## 177867: 51.5  24.5  421   NA
-## 177868: 52.0  24.5  421   NA
-## 177869: 52.5  24.5  421   NA
-## 177870: 53.0  24.5  421   NA</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(dt_obs2021)</code></pre></div>
-<pre><code>##        lon   lat     prec    time
-##    1: 21.5 -12.0       NA 15080.5
-##    2: 21.5 -11.5       NA 15080.5
-##    3: 21.5 -11.0       NA 15080.5
-##    4: 21.5 -10.5       NA 15080.5
-##    5: 21.5 -10.0       NA 15080.5
-##   ---                            
-## 4266: 51.5  20.5 25.20947 15080.5
-## 4267: 51.5  21.0 21.71183 15080.5
-## 4268: 51.5  21.5 23.18140 15080.5
-## 4269: 51.5  22.0 23.29202 15080.5
-## 4270: 51.5  22.5       NA 15080.5</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># let&#39;s first get the time into same format:</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the time format is different for the two observation data tables, see netcdf description above.</span>
+<span class="co"># For dt_obs the format is month since date, and can be changed to year-month like this:</span>
 dt_obs =<span class="st"> </span><span class="kw">MSD_to_YM</span>(dt_obs)
-<span class="kw">print</span>(dt_obs)</code></pre></div>
-<pre><code>##          lon   lat prec year month
-##      1: 20.5 -13.5   NA 1982     2
-##      2: 21.0 -13.5   NA 1982     2
-##      3: 21.5 -13.5   NA 1982     2
-##      4: 22.0 -13.5   NA 1982     2
-##      5: 22.5 -13.5   NA 1982     2
-##     ---                           
-## 177866: 51.0  24.5   NA 2016     2
-## 177867: 51.5  24.5   NA 2016     2
-## 177868: 52.0  24.5   NA 2016     2
-## 177869: 52.5  24.5   NA 2016     2
-## 177870: 53.0  24.5   NA 2016     2</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_obs2021[,date <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.Date</span>(time,<span class="dt">origin =</span> <span class="st">&#39;1980-01-01&#39;</span>)] <span class="co"># see netcdf description above</span>
+<span class="co"># For dt_obs2021 it&#39;s the number of days since 1980-01-01, and we can do the following:</span>
+dt_obs2021[,date <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.Date</span>(time,<span class="dt">origin =</span> <span class="st">&#39;1980-01-01&#39;</span>)] <span class="co"># see netcdf description above</span>
 dt_obs2021[,year <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">year</span>(date)][,month <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">month</span>(date)]
 <span class="kw">print</span>(dt_obs2021)</code></pre></div>
 <pre><code>##        lon   lat     prec    time       date year month
@@ -711,7 +673,7 @@ na_locs =<span class="st"> </span>dt_obs[year <span class="op">==</span><span cl
 ## 5081: 52.5  24.5 TRUE
 ## 5082: 53.0  24.5 TRUE</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_obs2021 =<span class="st"> </span><span class="kw">merge</span>(dt_obs2021,na_locs,<span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>))
-dt_obs2021 =<span class="st"> </span>dt_obs2021[<span class="op">!</span>(V3)]
+dt_obs2021 =<span class="st"> </span>dt_obs2021[<span class="op">!</span>(V3)] <span class="co"># only keep rows for which V3 is FALSE</span>
 <span class="kw">ggplot_dt</span>(dt_obs2021, <span class="st">&#39;prec&#39;</span>,<span class="dt">high =</span> <span class="st">&#39;blue&#39;</span>,<span class="dt">midpoint =</span> <span class="dv">0</span>)</code></pre></div>
 <p><img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-13-3.png" width="480" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#delete what we don&#39;t need and bind together:</span>
@@ -722,12 +684,14 @@ dt_obs =<span class="st"> </span><span class="kw">rbindlist</span>(<span class="
 dt_obs =<span class="st"> </span>dt_obs[<span class="op">!</span><span class="kw">is.na</span>(prec)]
 
 <span class="co"># in which climatology tercile lies the observation for which year?</span>
-dt_obs =<span class="st"> </span><span class="kw">add_tercile_cat</span>(dt_obs) <span class="co"># In order to do this we needed to bind them together!</span>
+dt_obs =<span class="st"> </span><span class="kw">add_tercile_cat</span>(dt_obs) 
+<span class="co"># let&#39;s also add the climatology for alter use:</span>
+dt_obs[,clim <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">mean</span>(prec),by =<span class="st"> </span>.(lon,lat)]
 
-<span class="kw">ggplot_dt</span>(dt_obs,<span class="st">&#39;tercile_cat&#39;</span>,<span class="dt">low =</span> <span class="st">&#39;red&#39;</span>,<span class="dt">high =</span> <span class="st">&#39;blue&#39;</span>)</code></pre></div>
+
+<span class="kw">ggplot_dt</span>(dt_obs[year <span class="op">==</span><span class="st"> </span><span class="dv">2021</span>],<span class="st">&#39;tercile_cat&#39;</span>,<span class="dt">low =</span> <span class="st">&#39;red&#39;</span>,<span class="dt">high =</span> <span class="st">&#39;blue&#39;</span>)</code></pre></div>
 <p><img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-13-4.png" width="480" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># merge prediction and corresponding observation:</span>
-
 dt =<span class="st"> </span><span class="kw">merge</span>(dt,dt_obs[year <span class="op">==</span><span class="st"> </span><span class="dv">2021</span>],<span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>))
 <span class="co"># transform percentage prediction to probabilities between zero and one:</span>
 dt[,normal <span class="op">:</span><span class="er">=</span><span class="st"> </span>normal<span class="op">/</span><span class="dv">100</span>]
@@ -746,9 +710,142 @@ dt[,below <span class="op">:</span><span class="er">=</span><span class="st"> </
 ## 2940: 51.5  20.5        NA        NA        NA  25.20947 2021          -1
 ## 2941: 51.5  21.0        NA        NA        NA  21.71183 2021          -1
 ## 2942: 51.5  21.5        NA        NA        NA  23.18140 2021          -1
-## 2943: 51.5  22.0        NA        NA        NA  23.29202 2021          -1</code></pre>
-<p>How to evaluate this dataset will be discussed in the next section, so let's give it a distinguished name:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_tercile_forecast =<span class="st"> </span><span class="kw">copy</span>(dt)</code></pre></div>
+## 2943: 51.5  22.0        NA        NA        NA  23.29202 2021          -1
+##            clim
+##    1: 200.78224
+##    2: 218.82563
+##    3: 219.82354
+##    4: 224.44427
+##    5: 237.77492
+##   ---          
+## 2939:  14.02317
+## 2940:  13.39437
+## 2941:  13.75870
+## 2942:  14.37246
+## 2943:  17.47911</code></pre>
+<p>How to evaluate this dataset will be discussed in Section <a href="validation.html#eval-terciles">4.2.1</a>.</p>
+</div>
+<div id="data-ex-prexc" class="section level3">
+<h3><span class="header-section-number">3.2.4</span> Example: preparing data for evaluating exceedence probabilities</h3>
+<p>Here we show how to prepare data for evaluating exceedence probabilities, see Section <a href="validation.html#eval-ex-pr">4.3</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn =<span class="st"> &#39;PrecRegPeXcd_3monthSeasonal.nc&#39;</span>
+dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn))</code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/PrecRegPeXcd_3monthSeasonal.nc (NC_FORMAT_CLASSIC):
+## 
+##      1 variables (excluding dimension variables):
+##         float pexcd[lon,lat,model,lead,rthr]   
+##             thrhold4: 400
+##             thrhold3: 350
+##             thrhold2: 300
+##             thrhold1: 200
+##             units: %
+##             _FillValue: -9999
+## 
+##      6 dimensions:
+##         time  Size:0   *** is unlimited ***
+## [1] &quot;vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point&quot;
+##         rthr  Size:4
+##         lead  Size:6
+##             units: months since 2021-2-1 0:0 
+##         model  Size:9
+##             names: GEM-NEMO CanCM4i NASA-GEOSS2S GFDL-SPEAR COLA-RSMAS-CCSM4 NCEP-CFSv2 ECMWF Meteo_France UKMO
+##         lat  Size:77
+##             units: degrees_north
+##         lon  Size:66
+##             units: degrees_east
+## 
+##     5 global attributes:
+##         modelnames: GEM-NEMO CanCM4i NASA-GEOSS2S GFDL-SPEAR COLA-RSMAS-CCSM4 NCEP-CFSv2 ECMWF Meteo_France UKMO
+##         nmodels: 9
+##         initial_time: Feb2021
+##         creation_date: Thu Feb 25 19:58:57 EAT 2021
+##         title:  Forecast probabilities of Exceedance</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(dt)</code></pre></div>
+<pre><code>##           lon   lat model lead rthr pexcd
+##       1: 20.5 -13.5     0    0    0    NA
+##       2: 21.0 -13.5     0    0    0    NA
+##       3: 21.5 -13.5     0    0    0    NA
+##       4: 22.0 -13.5     0    0    0    NA
+##       5: 22.5 -13.5     0    0    0    NA
+##      ---                                 
+## 1097708: 51.0  24.5     8    5    3    NA
+## 1097709: 51.5  24.5     8    5    3    NA
+## 1097710: 52.0  24.5     8    5    3    NA
+## 1097711: 52.5  24.5     8    5    3    NA
+## 1097712: 53.0  24.5     8    5    3    NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># first, note that the &#39;model&#39;, &#39;rthr&#39;, and &#39;month&#39; column do not make much sense before we insert</span>
+<span class="co"># the information we gather from the netcdf description.:</span>
+modelnames =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;GEM-NEMO&#39;</span>,
+               <span class="st">&#39;CanCM4i&#39;</span>,
+               <span class="st">&#39;NASA-GEOSS2S&#39;</span>,
+               <span class="st">&#39;GFDL-SPEAR&#39;</span>,
+               <span class="st">&#39;COLA-RSMAS-CCSM4&#39;</span>,
+               <span class="st">&#39;NCEP-CFSv2&#39;</span>,
+               <span class="st">&#39;ECMWF&#39;</span>,
+               <span class="st">&#39;Meteo_France&#39;</span>,
+               <span class="st">&#39;UKMO&#39;</span>)
+thresholds =<span class="st"> </span><span class="kw">c</span>(<span class="dv">200</span>,<span class="dv">300</span>,<span class="dv">350</span>,<span class="dv">400</span>)
+
+dt[,model <span class="op">:</span><span class="er">=</span><span class="st"> </span>modelnames[model <span class="op">+</span><span class="st"> </span><span class="dv">1</span>]]
+dt[,rthr <span class="op">:</span><span class="er">=</span><span class="st"> </span>thresholds[rthr <span class="op">+</span><span class="st"> </span><span class="dv">1</span>]]
+dt[,month <span class="op">:</span><span class="er">=</span>lead <span class="op">+</span><span class="st"> </span><span class="dv">2</span>][,lead<span class="op">:</span><span class="er">=</span><span class="ot">NULL</span>]</code></pre></div>
+<p>Ultimately, we want to compare the skill of these models to a climatological forecast. The climatological forecast for the exceedence probability is just the fraction of observed years where the threshold was exceeded. To calculate this, we require past observations. These are not contained in our example data folder, so we cheat a little here and load in some chirps data. You can get this data (on high resolution) from here: <a href="http://digilib.icpac.net/SOURCES/.ICPAC/.CHIRPS-BLENDED/.monthly/.rainfall/.precipitation/" class="uri">http://digilib.icpac.net/SOURCES/.ICPAC/.CHIRPS-BLENDED/.monthly/.rainfall/.precipitation/</a>. It can then be upscaled as shown in the last section. Our observation data looks like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(dt_chirps)</code></pre></div>
+<pre><code>##          lon   lat     prec month year
+##      1: 21.5 -12.0       NA     2 1981
+##      2: 21.5 -11.5       NA     2 1981
+##      3: 21.5 -11.0       NA     2 1981
+##      4: 21.5 -10.5       NA     2 1981
+##      5: 21.5 -10.0       NA     2 1981
+##     ---                               
+## 720284: 51.5  21.5 4.000000     5 2021
+## 720285: 51.5  22.0 3.356522     5 2021
+## 720286: 51.5  22.5 1.117393     5 2021
+## 720287: 51.5  23.0 1.510869     5 2021
+## 720288: 51.5  23.5       NA     5 2021</code></pre>
+<p>In order to get the climatological exceedence probabilities, we can use the following function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">clim_fc =<span class="st"> </span><span class="kw">climatology_threshold_exceedence</span>(dt_chirps,
+                                           <span class="dt">obs_col =</span> <span class="st">&#39;prec&#39;</span>,
+                                           <span class="dt">thresholds =</span> <span class="kw">unique</span>(dt[,rthr]),
+                                           <span class="dt">by_cols =</span> <span class="kw">c</span>(<span class="st">&#39;month&#39;</span>,<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>))
+
+<span class="kw">print</span>(clim_fc)</code></pre></div>
+<pre><code>##          month  lon   lat year pexcd threshold
+##       1:     2 21.5 -12.0 1981    NA       200
+##       2:     2 21.5 -11.5 1981    NA       200
+##       3:     2 21.5 -11.0 1981    NA       200
+##       4:     2 21.5 -10.5 1981    NA       200
+##       5:     2 21.5 -10.0 1981    NA       200
+##      ---                                      
+## 2881148:     5 51.5  21.5 2021     0       400
+## 2881149:     5 51.5  22.0 2021     0       400
+## 2881150:     5 51.5  22.5 2021     0       400
+## 2881151:     5 51.5  23.0 2021     0       400
+## 2881152:     5 51.5  23.5 2021    NA       400</code></pre>
+<p>Note that we passed the thresholds given in <code>dt</code>. The <code>bycols</code> argument tells the function what columns to group by when computing the climatology. Finally, we need to merge the predictions, the climatological forecast and the observation into one data table. Since we only have predictions for 2021, it is enough to provide the climatology forecast and observation for 2021 as well. Also note that we have predictions for more months than observations (at the time this is written), so we cut the predictions for June and July out - we cannot evaluate predictions we don't know the outcome for.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setnames</span>(clim_fc,<span class="kw">c</span>(<span class="st">&#39;pexcd&#39;</span>,<span class="st">&#39;threshold&#39;</span>),<span class="kw">c</span>(<span class="st">&#39;clim&#39;</span>,<span class="st">&#39;rthr&#39;</span>))
+dt =<span class="st"> </span><span class="kw">merge</span>(dt,clim_fc[year <span class="op">==</span><span class="st"> </span><span class="dv">2021</span>,],<span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>,<span class="st">&#39;month&#39;</span>,<span class="st">&#39;rthr&#39;</span>))
+dt =<span class="st"> </span><span class="kw">merge</span>(dt,dt_chirps[year <span class="op">==</span><span class="st"> </span><span class="dv">2021</span>],<span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>,<span class="st">&#39;month&#39;</span>,<span class="st">&#39;year&#39;</span>))
+
+<span class="co">#finally, for evaluation we generally work with probabilities between 0 and 1, not percentages:</span>
+<span class="kw">range</span>(dt[,pexcd],<span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="co"># confirm that the data table contains percentages at the moment...</span></code></pre></div>
+<pre><code>## [1]   0 100</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt[,pexcd <span class="op">:</span><span class="er">=</span><span class="st"> </span>pexcd<span class="op">/</span><span class="dv">100</span>] <span class="co">#... and correct</span>
+
+<span class="kw">print</span>(dt)</code></pre></div>
+<pre><code>##          lon   lat month year rthr            model pexcd clim prec
+##      1: 21.5 -12.0     2 2021  200         GEM-NEMO 0.996   NA   NA
+##      2: 21.5 -12.0     2 2021  200          CanCM4i 0.995   NA   NA
+##      3: 21.5 -12.0     2 2021  200     NASA-GEOSS2S 0.996   NA   NA
+##      4: 21.5 -12.0     2 2021  200       GFDL-SPEAR 0.990   NA   NA
+##      5: 21.5 -12.0     2 2021  200 COLA-RSMAS-CCSM4 0.993   NA   NA
+##     ---                                                            
+## 632444: 51.5  23.5     5 2021  400 COLA-RSMAS-CCSM4 0.000   NA   NA
+## 632445: 51.5  23.5     5 2021  400       NCEP-CFSv2 0.000   NA   NA
+## 632446: 51.5  23.5     5 2021  400            ECMWF 0.000   NA   NA
+## 632447: 51.5  23.5     5 2021  400     Meteo_France 0.000   NA   NA
+## 632448: 51.5  23.5     5 2021  400             UKMO 0.000   NA   NA</code></pre>
+<p>How to evaluate the predictions from here is discussed in Section <a href="validation.html#eval-ex-pr">4.3</a>.</p>
 
 </div>
 </div>

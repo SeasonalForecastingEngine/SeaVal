@@ -7,8 +7,7 @@
 MSESS_dt(
   fc_dt,
   fc_col,
-  obs_dt = NULL,
-  obs_col = ifelse(is.null(obs_dt), yes = "obs", no = fc_col),
+  obs_col = "obs",
   by_cols = intersect(c("month", "season", "lon", "lat", "system", "lead_time"),
     names(fc_dt)),
   along_cols = c("year"),
@@ -20,8 +19,6 @@ MSESS_dt(
 
 \item{fc_col}{column name of the prediction.}
 
-\item{obs_dt}{Data table containing the observations. Pass NULL if the observation are contained in fc_dt.}
-
 \item{obs_col}{column name of the observations (either in obs_dt, or in fc_dt if obs_dt = NULL).}
 
 \item{by_cols}{column names of grouping variables, all of which need to be columns in fc_dt. A separate MSE is computed for each value of the grouping variables.
@@ -30,6 +27,8 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 \item{along_cols}{column name(s) for the variable(s) along which is averaged. Needs to contain 'year' since the reference climatology forecast is leave-one-year-out.}
 
 \item{...}{passed on to MSE_dt}
+
+\item{obs_dt}{Data table containing the observations. Pass NULL if the observation are contained in fc_dt.}
 }
 \description{
 Can also handle point forecasts.

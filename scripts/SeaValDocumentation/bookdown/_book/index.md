@@ -1,6 +1,6 @@
 
 ---
-title: "Tutorial for the `SeaVal` package"
+title: "The `SeaVal` package for validating seasonal weather forecasts"
 author: "Claudio Heinrich"
 output: html_document
 ---
@@ -9,24 +9,20 @@ output: html_document
 # Getting Started
 
 
-This tutorial gives a short introduction how to use the `R`-package `SeaVal` for seasonal validation, which is currently developed at NR and made available via Github. 
-The package provides a toolkit to evaluate predictions, tailored to specific needs of ICPAC. `SeaVal` relies on R data tables (available with the `R` package `data.table`).
+This tutorial gives a short introduction how to use the `R`-package `SeaVal` for seasonal validation. You can download the package directly from github as described below.
+It provides a toolkit to evaluate predictions, tailored to specific needs of ICPAC. `SeaVal` relies on `R` data tables (available with the `R` package `data.table`).
 Data tables are more flexible and memory efficient data frames, and simplify many operations that are frequently required when working with weather- and climate data. An introduction to data tables can be found here: https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html.
-The package `SeaVal` allows to import netcdf-files as data tables. Moreover, it contains functionality for generating a variety of diagnostic plots, and provides various tools for forecast evaluation.
+The package `SeaVal` allows to import netcdf-files as data tables. Moreover, it contains functionality for generating a variety of diagnostic plots, and provides various tools for forecast evaluation. In this tutorial we'll go over basic uses of this package, including examples for various evaluation scenarios.
 
 ## Installation
 
 
 
 
-In order to get started with the package, you first need to install the packages `devtools` (if you don't have it already), which allows installing packages from Github directly:
+In order to directly install the package from github, you need the package `devtools`:
 
 ```r
 install.packages('devtools')
-```
-Now you should be able to install the `SeaVal`-package using the following command
-
-```r
 devtools::install_github('SeasonalForecastingEngine/SeaVal')
 ```
 
@@ -61,7 +57,7 @@ library(SeaVal)
 ## Loading required package: ForecastTools
 ```
 
-Especially in the early development phase, it is important to occasionally update the `SeaVal` package. To this end you should run the two commands
+Especially in the early development phase, it is important to occasionally update the `SeaVal` package. To this end simply run the following commands every now and then:
 
 ```r
 devtools::install_github('SeasonalForecastingEngine/ForecastTools')
@@ -70,9 +66,8 @@ devtools::install_github('SeasonalForecastingEngine/SeaVal')
 
 ## examples of `data.table` syntax
 
-Here, we show with some examples how to perform basic operations on data tables. 
-A short but comprehensive introduction to `data.table`s syntax can be found here:
-https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html.
+Here, we show some examples of basic operations on data tables. 
+A short but comprehensive introduction to `data.table`s syntax can be found (here)[https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html].
 The `SeaVal` package comes with a few example data sets, for example monthly mean precipitation over the GHA region for the OND season provided by CHIRPS:
 
 
@@ -214,6 +209,22 @@ chirps_monthly[,mean(prec)] # get the mean precipitation (over all locations, mo
 ```r
 chirps_monthly[,mean_prec := mean(prec)] # create a new column in the data table containing the mean
 chirps_monthly[,prec := 30*prec] # transform precipitation from unit mm/day to mm (per month)
+print(chirps_monthly)
+```
+
+```
+##          lon   lat       prec month year terc_cat mean_prec
+##      1: 22.0 -12.0  57.904762    10 1981       -1  1.995215
+##      2: 22.0 -11.5  64.054807    10 1981       -1  1.995215
+##      3: 22.0 -11.0  83.078648    10 1981       -1  1.995215
+##      4: 22.0 -10.5 117.604856    10 1981        0  1.995215
+##      5: 22.0 -10.0 146.161968    10 1981        1  1.995215
+##     ---                                                    
+## 418076: 51.5  21.0   7.213044    12 2020       -1  1.995215
+## 418077: 51.5  21.5   6.552173    12 2020       -1  1.995215
+## 418078: 51.5  22.0   6.160868    12 2020       -1  1.995215
+## 418079: 51.5  22.5   4.847827    12 2020       -1  1.995215
+## 418080: 51.5  23.0   4.163046    12 2020       -1  1.995215
 ```
 Note in all cases the ',' after '[' which tells data table that you're doing an operation rather than trying to subset. We can also put things together and subset and operate simultaneously:
 
@@ -224,9 +235,8 @@ chirps_monthly[month == 10 , mean(prec)] # get the mean precipitation for Octobe
 ```
 ## [1] 66.30285
 ```
-(Note that the mean is much larger now because we changed units above...)
-
-Finally, we can perform operations over aggregated groups: 
+(Note that the mean is much larger now because we changed units...)
+Finally, and most importantly, we can perform operations over aggregated groups: 
 
 ```r
 dt_new = chirps_monthly[, mean(prec),by = .(lon,lat,month)] 
@@ -256,20 +266,22 @@ setnames(dt_new,'V1','clim') # take the data table from above and rename column 
 It's also possible to name the column direcly while `dt_new` is created, like this:
 
 ```r
-dt_new = chirps_monthly[,.(clim = mean(prec)),by = .(lon,lat,month)] # same as above, but with simultaneously setting the name of the new column
+dt_new = chirps_monthly[,.(clim = mean(prec)),by = .(lon,lat,month)] 
+# same as above, but with simultaneously setting the name of the new column
 ```
 This can again be combined with subsetting:
 
 ```r
-dt_new = chirps_monthly[year %in% 1990:2020, .(clim = mean(prec)), by = .(lon,lat,month)] # same as above, but with additional subsetting: computes climatology based on the years 1990-2020 only.
+dt_new = chirps_monthly[year %in% 1990:2020, .(clim = mean(prec)), by = .(lon,lat,month)] 
+# computes climatology based on the years 1990-2020 only.
 ```
-In the examples above we create a new data table containing the climatology. If we instead want to add the climatology as a new column to `chirps_monthly` directly, we can again use the `:=` operator:
+In the examples above we create a new data table containing the climatology. If we instead want to add the climatology as a new column to `chirps_monthly` directly, we need to use the `:=` operator:
 
 ```r
 chirps_monthly[,clim := mean(prec), by = .(lon,lat,month)] # add the climatology column directly into chirps_monthly.
 ```
 This showcases some of the main functionalities and syntax of the `data.table` package. As mentioned above, it is strongly recommended to have a look at 
-https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html, which introduces many more commands and properly explains the logic underlying `data.table`s syntax.
+(this introduction to `data.table`)[https://cran.r-project.org/web/packages/data.table/vignettes/datatable-intro.html], which introduces many more commands and properly explains the logic underlying `data.table`s syntax.
 We'll finish this section by an example where we compute the MSE for raw ecmwf forecasts:
 
 
@@ -297,10 +309,14 @@ print(ecmwf_monthly)
 
 ```r
 # merge observations and predictions into a single data table:
-setnames(chirps_monthly,'prec','obs') # rename the 'prec' column in the observation data table to 'obs' in order to avoid name clashes since the column in ecmwf_monthly containing the predictions for precip is also named 'prec'
-dt = merge(ecmwf_monthly,chirps_monthly,
-           by = c('lon','lat','year','month')) # merge the data.
+setnames(chirps_monthly,'prec','obs') 
+# rename the 'prec' column in the observation data table to 'obs', 
+# in order to avoid name clashes, since ecmwf_monthly also contains a column 'prec',
+# containing the predictions for precip.
 
+dt = merge(ecmwf_monthly,chirps_monthly,
+           by = c('lon','lat','year','month')) 
+# merge hindcasts and observations into one data table.
 print(dt)
 ```
 
@@ -332,10 +348,13 @@ print(dt)
 ```
 
 ```r
-dt[,ens_mean := mean(prec),by = .(lon,lat,year,month)] # get the ensemble mean, essentially group by all other dimension variables
+dt[,ens_mean := mean(prec),by = .(lon,lat,year,month)] 
+# get the ensemble mean as a new column. 
+# The mean is here grouped over all dimension variables excluding 'member', 
+# therefore the ensemble mean is returned. In other words, a separate mean
+# is calculated for every instance of lon, lat, year and month.
 
 mse_dt = dt[,.(mse = mean((prec-obs)^2)), by = .(lon,lat,month)] # create a new data.table containing the mse by location and month
-
 print(mse_dt)
 ```
 
@@ -355,10 +374,10 @@ print(mse_dt)
 ```
 
 ```r
-ggplot_dt(mse_dt[month == 10],'mse',rr = c(-10,10) ) # plot mse for October
+# plot mse for October:
+ggplot_dt(mse_dt[month == 10],'mse',rr = c(-10,10) ) 
 ```
 
-<img src="index_files/figure-html/unnamed-chunk-15-1.png" width="576" />
+<img src="index_files/figure-html/unnamed-chunk-14-1.png" width="576" />
 
-The function `ggplot_dt` is used to create spatial plots from data stored in data tables. In the next section we will showcase how this function works and how the plots can be manipulated.
-
+The function `ggplot_dt` is used to create spatial plots from data stored in data tables. The next section to this function and how the generated plots can be manipulated.

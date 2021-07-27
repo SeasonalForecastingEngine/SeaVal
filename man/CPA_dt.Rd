@@ -7,7 +7,6 @@
 CPA_dt(
   fc_dt,
   fc_col,
-  obs_dt = NULL,
   obs_col = ifelse(is.null(obs_dt), yes = "obs", no = fc_col),
   by_cols = intersect(c("month", "season", "lon", "lat", "system", "lead_time"),
     names(fc_dt)),
@@ -19,8 +18,6 @@ CPA_dt(
 \item{fc_dt}{Data table containing the predictions.}
 
 \item{fc_col}{column name of the prediction.}
-
-\item{obs_dt}{Data table containing the observations. Pass NULL if the observation are contained in fc_dt.}
 
 \item{obs_col}{column name of the observations (either in obs_dt, or in fc_dt if obs_dt = NULL).}
 
