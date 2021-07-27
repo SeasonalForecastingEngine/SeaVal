@@ -87,12 +87,83 @@ print(msess_by_country)
 
 ```
 
+
 Skill scores strongly depend on the skill of the climatological prediction, see Section \@ref(eval-ex-pr). This makes it somewhat problematic to average them in space, as skill scores for different grid points with different climatologies have different meanings. A more appropriate way to see whether the prediction outperformed climatology on average for a given country is by considering average score differences:
 
 ```{r}
 # positive values indicate better performance than climatology:
 msess[,.(score_diff = mean(clim_MSE - MSE)),by = country]
 ```
+
+The MSE (and its associated skill score) penalizes both systematic forecast errors (i.e. biases) and non-systematic forecast errors. The latter are a consequence of general forecast uncertainty and there is no easy way to reduce them. Biases, however, can often be removed through statistical post-processing, and it is therefore interesting to consider measures for forecast performance that penalize only non-systematic forecast errors, thus giving an idea of the *potential skill* of a forecast system.
+
+The standard metric to assess the *potential skill* is the *Pearson correlation coefficient (PCC)*. This is the usual correlation coefficient where forecasts and observations are standardized by their respective climatological means and standard deviations, and then the average product of these standardized variables is calculated. The function `PCC_dt` performs these calculations and is used in the same way as `MSESS_dt` above.
+
+```{r, fig.width = 10}
+### analyze mean square error skill scores ###
+PCC = PCC_dt(dt_cv,
+             fc_col = 'prediction', # column name of forecasts
+             obs_col = 'observation', # column name of observations
+             by_cols = c('lon','lat','season')) # the correlation coefficient should be computed for each location and each season separately
+
+# the maximal range for a correlation coefficient is [-1,1], but sometimes it is useful to narrow it:
+rr = c(-0.5,0.5)
+
+pp1 = ggplot_dt(PCC[season == 'FMA'], 
+                data_col = 'rho', 
+                rr=rr,
+                mn = 'Pearson correlation coefficient, FMA')
+
+pp2 = ggplot_dt(PCC[season == 'MAM'], 
+                data_col = 'rho', 
+                rr=rr,
+                mn = 'Pearson correlation coefficient, MAM')
+
+ggarrange(pp1,pp2)
+
+```
+
+
+While there is no technical requirement that the forecasts and observations follow a particular probability distribution when the Pearson correlation coefficient is employed, this metric is best suited for continuous (i.e. it is unlikely to encounter duplicate values) distributions that are relatively symmetric around the mean. For shorter accumulation periods (e.g. weekly amounts) and in dry climates, the distribution of precipitation usually becomes rather skewed and contains a number of zeros. A new metric, the coefficient of predictive ability (CPA), has recently been developed and constitutes an excellent alternative to the Pearson correlation coefficient as a measure of potential forecast skill in that situation of stronglt asymmetric distributions with multiple identical values. See [here](MotivationCPA.pdf) for more background information about the CPA. The function `CPA_dt` performs the calculations and is used in the same way as `MSESS_dt` and `PCC_dt` above.
+
+```{r, fig.width = 10}
+### analyze mean square error skill scores ###
+CPA = CPA_dt(dt_cv,
+             fc_col = 'prediction', # column name of forecasts
+             obs_col = 'observation', # column name of observations
+             by_cols = c('lon','lat','season')) # the CPA should be computed for each location and each season separately
+
+# the maximal range for the CPA is [0,1]
+rr = c(0.0,0.1)
+
+pp1 = ggplot_dt(CPA[season == 'FMA'], 
+                data_col = 'cpa', 
+                rr=rr,
+                mn = 'Coefficient of predictive ability, FMA')
+
+pp2 = ggplot_dt(CPA[season == 'MAM'], 
+                data_col = 'cpa', 
+                rr=rr,
+                mn = 'Coefficient of predictive ability, MAM')
+
+ggarrange(pp1,pp2)
+
+```
+
+Just like the MSESS, PCC and CPA can be averaged by country using the function `add_country_names`:
+
+```{r}
+# check out average PCCs and CPAs per country:
+PCC = add_country_names(PCC)
+CPA = add_country_names(CPA)
+
+PCC_by_country = PCC[,.(rho = mean(rho), by = country]
+CPA_by_country = CPA[,.(cpa = mean(cpa), by = country]
+
+print(PCC_by_country)
+
+print(CPA_by_country)
+
 
 
 ## Evaluating Tercile Forecasts
