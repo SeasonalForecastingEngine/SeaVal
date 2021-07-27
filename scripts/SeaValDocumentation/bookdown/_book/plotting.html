@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2 Plotting | Tutorial for the SeaVal package</title>
-  <meta name="description" content="2 Plotting | Tutorial for the SeaVal package" />
+  <title>2 Plotting | The SeaVal package for validating seasonal weather forecasts</title>
+  <meta name="description" content="2 Plotting | The SeaVal package for validating seasonal weather forecasts" />
   <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2 Plotting | Tutorial for the SeaVal package" />
+  <meta property="og:title" content="2 Plotting | The SeaVal package for validating seasonal weather forecasts" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2 Plotting | Tutorial for the SeaVal package" />
+  <meta name="twitter:title" content="2 Plotting | The SeaVal package for validating seasonal weather forecasts" />
   
   
   
@@ -114,19 +114,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html"><i class="fa fa-check"></i><b>3</b> Data import and processing</a><ul>
 <li class="chapter" data-level="3.1" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#netcdf_to_dt"><i class="fa fa-check"></i><b>3.1</b> The function <code>netcdf_to_dt</code></a></li>
-<li class="chapter" data-level="3.2" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#reshaping-data-data-examples"><i class="fa fa-check"></i><b>3.2</b> Reshaping data {#data examples}</a><ul>
+<li class="chapter" data-level="3.2" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#data-examples"><i class="fa fa-check"></i><b>3.2</b> Reshaping data</a><ul>
 <li class="chapter" data-level="3.2.1" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#cv-data"><i class="fa fa-check"></i><b>3.2.1</b> Example: cross-validation data</a></li>
-<li class="chapter" data-level="3.2.2" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#example-corrupted-netcdf"><i class="fa fa-check"></i><b>3.2.2</b> Example: 'corrupted' netcdf</a></li>
+<li class="chapter" data-level="3.2.2" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#ex-corrupted-netcdf"><i class="fa fa-check"></i><b>3.2.2</b> Example: 'corrupted' netcdf</a></li>
 <li class="chapter" data-level="3.2.3" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#us-obs"><i class="fa fa-check"></i><b>3.2.3</b> Example: Upscaling observations</a></li>
+<li class="chapter" data-level="3.2.4" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#data-ex-prexc"><i class="fa fa-check"></i><b>3.2.4</b> Example: preparing data for evaluating exceedence probabilities</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="validation.html"><a href="validation.html"><i class="fa fa-check"></i><b>4</b> Validation</a><ul>
-<li class="chapter" data-level="4.1" data-path="validation.html"><a href="validation.html#evaluating-cross-validation-predictions"><i class="fa fa-check"></i><b>4.1</b> Evaluating cross-validation predictions</a></li>
+<li class="chapter" data-level="4.1" data-path="validation.html"><a href="validation.html#cv-eval"><i class="fa fa-check"></i><b>4.1</b> Evaluating cross-validation predictions</a></li>
 <li class="chapter" data-level="4.2" data-path="validation.html"><a href="validation.html#evaluating-tercile-forecasts"><i class="fa fa-check"></i><b>4.2</b> Evaluating Tercile Forecasts</a><ul>
-<li class="chapter" data-level="4.2.1" data-path="validation.html"><a href="validation.html#proper-scoring-rules-for-full-tercile-forecasts"><i class="fa fa-check"></i><b>4.2.1</b> Proper scoring rules for full tercile forecasts</a></li>
-<li class="chapter" data-level="4.2.2" data-path="validation.html"><a href="validation.html#evaluation-when-only-the-highest-probability-category-is-avaliable"><i class="fa fa-check"></i><b>4.2.2</b> Evaluation when only the highest probability category is avaliable</a></li>
+<li class="chapter" data-level="4.2.1" data-path="validation.html"><a href="validation.html#eval-terciles"><i class="fa fa-check"></i><b>4.2.1</b> Proper scoring rules for full tercile forecasts</a></li>
+<li class="chapter" data-level="4.2.2" data-path="validation.html"><a href="validation.html#eval-terciles2"><i class="fa fa-check"></i><b>4.2.2</b> Evaluation when only the highest probability category is avaliable</a></li>
 </ul></li>
-<li class="chapter" data-level="4.3" data-path="validation.html"><a href="validation.html#exceedence-probabilities"><i class="fa fa-check"></i><b>4.3</b> Exceedence probabilities</a></li>
+<li class="chapter" data-level="4.3" data-path="validation.html"><a href="validation.html#eval-ex-pr"><i class="fa fa-check"></i><b>4.3</b> Exceedence probabilities</a></li>
 <li class="chapter" data-level="4.4" data-path="validation.html"><a href="validation.html#temperature"><i class="fa fa-check"></i><b>4.4</b> Temperature</a></li>
 </ul></li>
 </ul>
@@ -138,7 +139,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Tutorial for the <code>SeaVal</code> package</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The <code>SeaVal</code> package for validating seasonal weather forecasts</a>
           </h1>
         </div>
 
@@ -150,10 +151,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1><span class="header-section-number">2</span> Plotting</h1>
 <p>The function <code>ggplot_dt</code> takes a data table containing two columns named <code>lon</code> and <code>lat</code> that should specify a regular longitude-latitude grid, as well as some data to use for coloring the map. The naming of the columns is important in that the function will not work if you, for example, name the longitude column <code>long</code> or <code>Lon</code>. An easy example is the following</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(<span class="st">&quot;chirps_monthly&quot;</span>)
-
 dt =<span class="st"> </span><span class="kw">copy</span>(chirps_monthly) <span class="co"># to manipulate the data table: chirps_monthly has locked binding</span>
-
 dt2020 =<span class="st"> </span>dt[year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span> <span class="op">&amp;</span><span class="st"> </span>month <span class="op">==</span><span class="st"> </span><span class="dv">10</span>] <span class="co"># reduce the observed precipitation data to a single time slice, namely October 2020</span>
+<span class="co"># our data now looks like this:</span>
 <span class="kw">print</span>(dt2020) </code></pre></div>
 <pre><code>##        lon   lat        prec month year terc_cat
 ##    1: 22.0 -12.0 2.981750252    10 2020        0
@@ -167,9 +167,9 @@ dt2020 =<span class="st"> </span>dt[year <span class="op">==</span><span class="
 ## 3482: 51.5  22.0 0.032608688    10 2020       -1
 ## 3483: 51.5  22.5 0.001594238    10 2020       -1
 ## 3484: 51.5  23.0 0.000000000    10 2020       -1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt2020,<span class="st">&#39;prec&#39;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt2020,<span class="st">&#39;prec&#39;</span>) <span class="co"># we pass the data table and the name of the column containing the plotting data,</span></code></pre></div>
 <p><img src="02-plotting_files/figure-html/unnamed-chunk-1-1.png" width="480" /></p>
-<p>As we can see, the color scale here makes no sense (blue meaning no precipitation) and we'll talk about that in a second. But let's start at the base functionality. <code>ggplot_dt</code> requires two arguments, the first one being a data table containing the data, and the second one is the name of the column that contains the data you want to plot. This defaults to the third column in the data table (often your data table will start with lon, lat, and the third column is what you want to plot). So in the example above, <code>ggplot_dt(dt)</code> would have led to the same result, because <code>'obs'</code> is the third column in <code>dt</code>. The plotting window is determined by the data. If you have data covering the entire earth, the entire earth would be plotted. As a consequence, we can restrict the plotted region by subsetting the data table:</p>
+<p>As we can see, the color scale here makes no sense (blue meaning no precipitation) and we'll talk about that in a second. But let's start at the base functionality. <code>ggplot_dt</code> requires two arguments, the first one being a data table containing the data, and the second one is the name of the column that contains the data you want to plot. This defaults to the third column in the data table (often your data table will start with lon, lat, and the third column is what you want to plot). So in the example above, <code>ggplot_dt(dt)</code> would have led to the same result, because <code>'prec'</code> is the third column in <code>dt</code>. The plotting window is determined by the data. If you have data covering the entire earth, the entire earth would be plotted. As a consequence, we can restrict the plotted region by subsetting the data table:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_sub  =<span class="st"> </span>dt2020[lon <span class="op">%between%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">28</span>,<span class="dv">43</span>) <span class="op">&amp;</span><span class="st"> </span>lat <span class="op">%between%</span><span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="dv">12</span>,<span class="dv">1</span>)] <span class="co"># a region containing Tanzania</span>
 <span class="kw">ggplot_dt</span>(dt_sub)</code></pre></div>
 <p><img src="02-plotting_files/figure-html/unnamed-chunk-2-1.png" width="480" /></p>
@@ -179,9 +179,9 @@ dt2020 =<span class="st"> </span>dt[year <span class="op">==</span><span class="
           <span class="dt">rr =</span> <span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">10</span>), <span class="co"># fix the limits of the color scale</span>
           <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>) <span class="co"># change the legend label</span></code></pre></div>
 <p><img src="02-plotting_files/figure-html/unnamed-chunk-3-1.png" width="480" /></p>
-<p>In this example we set the lower limit of the color scale to 1 and the upper limit to 10. Note that the plot truncates the data at the ends of the color scale, so every pixel with precipitation of below 1mm/day is now shown in the same blue color. Setting the range of the color scale is particularly useful to force symmetry around 0, e.g. when plotting correlations or anomalies:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt[,clim <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">mean</span>(prec), by =<span class="st"> </span>.(lon,lat,month)] <span class="co"># add a climatology column</span>
-dt[,ano <span class="op">:</span><span class="er">=</span><span class="st"> </span>prec <span class="op">-</span><span class="st"> </span>clim] <span class="co"># add anomaly as another column</span>
+<p>In this example we set the lower limit of the color scale to 1 and the upper limit to 10. By default the data is truncated at the ends of the color scale, so every pixel with precipitation of below 1mm/day is now shown in the same blue color, the color corresponding to a value of 1 mm. Setting the range of the color scale is useful for making several plots comparable or to force symmetry around 0, e.g. when plotting correlations or anomalies:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt[,clim <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">mean</span>(prec), by =<span class="st"> </span>.(lon,lat,month)] <span class="co"># add a climatology column to dt</span>
+dt[,ano <span class="op">:</span><span class="er">=</span><span class="st"> </span>prec <span class="op">-</span><span class="st"> </span>clim] <span class="co"># add an anomaly column to dt</span>
 <span class="kw">print</span>(dt)</code></pre></div>
 <pre><code>##          lon   lat      prec month year terc_cat      clim          ano
 ##      1: 22.0 -12.0 1.9301587    10 1981       -1 2.8169255 -0.886766778
@@ -197,7 +197,7 @@ dt[,ano <span class="op">:</span><span class="er">=</span><span class="st"> </sp
 ## 418080: 51.5  23.0 0.1387682    12 2020       -1 0.1701314 -0.031363167</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>], <span class="st">&#39;ano&#39;</span>, <span class="dt">rr =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">3</span>,<span class="dv">3</span>))</code></pre></div>
 <p><img src="02-plotting_files/figure-html/unnamed-chunk-4-1.png" width="480" /></p>
-<p>Now, in this plot positive rainfall anomalies are shown red while negative anomalies are blue, which is very counterintuitive. The function allows us to specify the three used colors by name with the arguments <code>low</code>,<code>mid</code>, and <code>high</code>. So here's an anomaly plot looking a bit nicer:</p>
+<p>Now, in this plot positive rainfall anomalies are shown red while negative anomalies are blue, which is very unintuitive. The function allows us to specify the three used colors by name with the arguments <code>low</code>,<code>mid</code>, and <code>high</code>. An overview over available color names can be found <a href="http://sape.inf.usi.ch/quick-reference/ggplot2/colour">here</a>. So here's an anomaly plot looking a bit nicer:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>], <span class="st">&#39;ano&#39;</span>, 
           <span class="dt">mn =</span> <span class="st">&#39;October 2020 rainfall anomaly&#39;</span>,
           <span class="dt">rr =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">3</span>,<span class="dv">3</span>),

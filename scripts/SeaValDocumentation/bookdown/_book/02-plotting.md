@@ -9,10 +9,9 @@ The naming of the columns is important in that the function will not work if you
 
 ```r
 data("chirps_monthly")
-
 dt = copy(chirps_monthly) # to manipulate the data table: chirps_monthly has locked binding
-
 dt2020 = dt[year == 2020 & month == 10] # reduce the observed precipitation data to a single time slice, namely October 2020
+# our data now looks like this:
 print(dt2020) 
 ```
 
@@ -32,12 +31,12 @@ print(dt2020)
 ```
 
 ```r
-ggplot_dt(dt2020,'prec')
+ggplot_dt(dt2020,'prec') # we pass the data table and the name of the column containing the plotting data,
 ```
 
 <img src="02-plotting_files/figure-html/unnamed-chunk-1-1.png" width="480" />
 
-As we can see, the color scale here makes no sense (blue meaning no precipitation) and we'll talk about that in a second. But let's start at the base functionality. `ggplot_dt` requires two arguments, the first one being a data table containing the data, and the second one is the name of the column that contains the data you want to plot. This defaults to the third column in the data table (often your data table will start with lon, lat, and the third column is what you want to plot). So in the example above, `ggplot_dt(dt)` would have led to the same result, because `'obs'` is the third column in `dt`. The plotting window is determined by the data. If you have data covering the entire earth, the entire earth would be plotted. As a consequence, we can restrict the plotted region by subsetting the data table:
+As we can see, the color scale here makes no sense (blue meaning no precipitation) and we'll talk about that in a second. But let's start at the base functionality. `ggplot_dt` requires two arguments, the first one being a data table containing the data, and the second one is the name of the column that contains the data you want to plot. This defaults to the third column in the data table (often your data table will start with lon, lat, and the third column is what you want to plot). So in the example above, `ggplot_dt(dt)` would have led to the same result, because `'prec'` is the third column in `dt`. The plotting window is determined by the data. If you have data covering the entire earth, the entire earth would be plotted. As a consequence, we can restrict the plotted region by subsetting the data table:
 
 ```r
 dt_sub  = dt2020[lon %between% c(28,43) & lat %between% c(-12,1)] # a region containing Tanzania
@@ -57,11 +56,11 @@ ggplot_dt(dt_sub,'prec',
 
 <img src="02-plotting_files/figure-html/unnamed-chunk-3-1.png" width="480" />
 
-In this example we set the lower limit of the color scale to 1 and the upper limit to 10. Note that the plot truncates the data at the ends of the color scale, so every pixel with precipitation of  below 1mm/day is now shown in the same blue color. Setting the range of the color scale is particularly useful to force symmetry around 0, e.g. when plotting correlations or anomalies:
+In this example we set the lower limit of the color scale to 1 and the upper limit to 10. By default the data is truncated at the ends of the color scale, so every pixel with precipitation of  below 1mm/day is now shown in the same blue color, the color corresponding to a value of 1 mm. Setting the range of the color scale is useful for making several plots comparable or to force symmetry around 0, e.g. when plotting correlations or anomalies:
 
 ```r
-dt[,clim := mean(prec), by = .(lon,lat,month)] # add a climatology column
-dt[,ano := prec - clim] # add anomaly as another column
+dt[,clim := mean(prec), by = .(lon,lat,month)] # add a climatology column to dt
+dt[,ano := prec - clim] # add an anomaly column to dt
 print(dt)
 ```
 
@@ -86,7 +85,7 @@ ggplot_dt(dt[month == 10 & year == 2020], 'ano', rr = c(-3,3))
 
 <img src="02-plotting_files/figure-html/unnamed-chunk-4-1.png" width="480" />
 
-Now, in this plot positive rainfall anomalies are shown red while negative anomalies are blue, which is very counterintuitive. The function allows us to specify the three used colors by name with the arguments `low`,`mid`, and `high`. So here's an anomaly plot looking a bit nicer:
+Now, in this plot positive rainfall anomalies are shown red while negative anomalies are blue, which is very unintuitive. The function allows us to specify the three used colors by name with the arguments `low`,`mid`, and `high`. An overview over available color names can be found [here](http://sape.inf.usi.ch/quick-reference/ggplot2/colour). So here's an anomaly plot looking a bit nicer:
 
 ```r
 ggplot_dt(dt[month == 10 & year == 2020], 'ano', 

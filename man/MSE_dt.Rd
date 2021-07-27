@@ -7,7 +7,6 @@
 MSE_dt(
   fc_dt,
   fc_col,
-  obs_dt = NULL,
   obs_col = ifelse(is.null(obs_dt), yes = "obs", no = fc_col),
   by_cols = intersect(c("month", "season", "lon", "lat", "system", "lead_time"),
     names(fc_dt)),
@@ -19,9 +18,9 @@ MSE_dt(
 \arguments{
 \item{fc_dt}{Data table containing the predictions.}
 
-\item{obs_dt}{Data table containing the observations. Pass NULL if the observation are contained in fc_dt.}
-
 \item{fc_cn}{column name of the prediction.}
+
+\item{obs_dt}{Data table containing the observations. Pass NULL if the observation are contained in fc_dt.}
 
 \item{obs_cn}{column name of the observations (either in obs_dt, or in fc_dt if obs_dt = NULL).}
 
@@ -30,10 +29,10 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 
 \item{along_cns}{column name(s) for the variable(s) along which is averaged, typically just 'year'.}
 
-\item{check_dimension}{Logical. If True, a simple test whether the dimensions match is conducted:
+\item{check_dimension}{Logical. If True, a crude test whether the data table is in the correct shape is conducted
 Namely, getting the mean grouped by by_cns AND along_cns should correspond to getting the ensemble mean. This is tested.}
 
-\item{member_cn}{Name of the column identifying the ensemble member. Only used if check_dimension is TRUE.}
+\item{member_cn}{Name of the column identifying the ensemble member. Only used if check_dimension is TRUE. Is NULL for a point forecast.}
 }
 \description{
 Taking MSEs of ensemble forecasts stored in long data tables. Can also handle point forecast
