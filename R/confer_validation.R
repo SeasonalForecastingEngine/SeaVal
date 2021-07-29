@@ -474,7 +474,7 @@ MSESS_dt = function(fc_dt,fc_col,
 
   climatology_prediction = climatology_ens_forecast(obs_dt = obs_dt,
                                                     by_cols = obs_by_cols)
-  setnames(climatology_prediction,'obs','clim')
+  setnames(climatology_prediction,obs_col,'clim')
 
   climatology_prediction = merge(climatology_prediction,obs_dt,by = c(obs_by_cols,'year'))
 
@@ -516,7 +516,7 @@ MSESS_dt = function(fc_dt,fc_col,
 PCC_dt = function(fc_obs_dt, fc_col,
                   obs_col = 'obs',
                   by_cols = intersect(c('month','season','lon','lat','system','lead_time'),names(fc_obs_dt)),
-                  along_cols = c('year'),...)
+                  along_cols = c('year'))
 {
 
   if(!('year' %in% along_cols)) stop('skill scores are with respect to leave-one-year-out climatology, so your along_cns must contain "year".')
@@ -526,7 +526,7 @@ PCC_dt = function(fc_obs_dt, fc_col,
 
   # calculate correlation coefficient
   fc_obs_dt = fc_obs_dt[, .SD, .SDcols=c("fc_mean",obs_col,by_cols,along_cols)]
-  PCC_dt = fc_obs_dt[, .(rho=cor(fc_mean,obs,use="na.or.complete")), by=by_cols]
+  PCC_dt = fc_obs_dt[, .(rho=cor(fc_mean,get(obs_col),use="na.or.complete")), by=by_cols]
 
   return(PCC_dt)
 }
@@ -564,8 +564,8 @@ CPA_dt = function(fc_obs_dt, fc_col,
 
   # calculate the CPA
   fc_obs_dt[, fc_midrank:=frank(fc_mean,ties.method="average"), by=by_cols]
-  fc_obs_dt[, obs_class:=frank(obs,ties.method="dense"), by=by_cols]
-  fc_obs_dt[, obs_midrank:=frank(obs,ties.method="average"), by=by_cols]
+  fc_obs_dt[, obs_class:=frank(get(obs_col),ties.method="dense"), by=by_cols]
+  fc_obs_dt[, obs_midrank:=frank(get(obs_col),ties.method="average"), by=by_cols]
   CPA_dt = fc_obs_dt[, .(cpa=0.5*(1.+cov(obs_class,fc_midrank)/cov(obs_class,obs_midrank))), by=by_cols]
 
   return(CPA_dt)

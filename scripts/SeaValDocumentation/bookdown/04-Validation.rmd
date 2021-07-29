@@ -134,7 +134,7 @@ CPA = CPA_dt(dt_cv,
              by_cols = c('lon','lat','season')) # the CPA should be computed for each location and each season separately
 
 # the maximal range for the CPA is [0,1]
-rr = c(0.0,0.1)
+rr = c(0,1)
 
 pp1 = ggplot_dt(CPA[season == 'FMA'], 
                 data_col = 'cpa', 
@@ -157,13 +157,13 @@ Just like the MSESS, PCC and CPA can be averaged by country using the function `
 PCC = add_country_names(PCC)
 CPA = add_country_names(CPA)
 
-PCC_by_country = PCC[,.(rho = mean(rho), by = country]
-CPA_by_country = CPA[,.(cpa = mean(cpa), by = country]
+PCC_by_country = PCC[,.(rho = mean(rho)), by = country]
+CPA_by_country = CPA[,.(cpa = mean(cpa)), by = country]
 
 print(PCC_by_country)
 
 print(CPA_by_country)
-
+```
 
 
 ## Evaluating Tercile Forecasts
