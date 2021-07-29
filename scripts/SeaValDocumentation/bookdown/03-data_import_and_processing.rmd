@@ -287,7 +287,7 @@ dt[,month :=lead + 2][,lead:=NULL]
 Ultimately, we want to compare the skill of these models to a climatological forecast. The climatological forecast for the exceedence probability is just the fraction of observed years where the threshold was exceeded. To calculate this, we require past observations. These are not contained in our example data folder, so we cheat a little here and load in some chirps data. You can get this data (on high resolution) from here: http://digilib.icpac.net/SOURCES/.ICPAC/.CHIRPS-BLENDED/.monthly/.rainfall/.precipitation/. It can then be upscaled as shown in the last section. Our observation data looks like this:
 
 ```{r,echo = FALSE}
-dt_chirps = PostProcessing::load_chirps()[,index_coarse:= NULL]
+dt_chirps = PostProcessing::load_chirps(chirps_fn)[,index_coarse:= NULL]
 dt_chirps = dt_chirps[ month >=2 & month <= 5]
 dt_chirps[,prec:=30*prec]
 ```
