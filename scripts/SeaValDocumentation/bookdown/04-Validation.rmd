@@ -7,6 +7,7 @@ library(SeaVal)
 library(ggpubr)
 library(ggplot2)
 load(file = '_temp.RData')
+load(file = '_data_dir.RData')
 
 ```
 
@@ -100,14 +101,14 @@ The MSE (and its associated skill score) penalizes both systematic forecast erro
 The standard metric to assess the *potential skill* is the *Pearson correlation coefficient (PCC)*. This is the usual correlation coefficient where forecasts and observations are standardized by their respective climatological means and standard deviations, and then the average product of these standardized variables is calculated. The function `PCC_dt` performs these calculations and is used in the same way as `MSESS_dt` above.
 
 ```{r, fig.width = 10}
-### analyze mean square error skill scores ###
+### calculate Pearson correlation coefficients
 PCC = PCC_dt(dt_cv,
              fc_col = 'prediction', # column name of forecasts
              obs_col = 'observation', # column name of observations
              by_cols = c('lon','lat','season')) # the correlation coefficient should be computed for each location and each season separately
 
 # the maximal range for a correlation coefficient is [-1,1], but sometimes it is useful to narrow it:
-rr = c(-0.5,0.5)
+rr = c(-0.75,0.75)
 
 pp1 = ggplot_dt(PCC[season == 'FMA'], 
                 data_col = 'rho', 
@@ -124,16 +125,17 @@ ggarrange(pp1,pp2)
 ```
 
 
-While there is no technical requirement that the forecasts and observations follow a particular probability distribution when the Pearson correlation coefficient is employed, this metric is best suited for continuous (i.e. it is unlikely to encounter duplicate values) distributions that are relatively symmetric around the mean. For shorter accumulation periods (e.g. weekly amounts) and in dry climates, the distribution of precipitation usually becomes rather skewed and contains a number of zeros. A new metric, the coefficient of predictive ability (CPA), has recently been developed and constitutes an excellent alternative to the Pearson correlation coefficient as a measure of potential forecast skill in that situation of stronglt asymmetric distributions with multiple identical values. See [here](MotivationCPA.pdf) for more background information about the CPA. The function `CPA_dt` performs the calculations and is used in the same way as `MSESS_dt` and `PCC_dt` above.
+While there is no technical requirement that the forecasts and observations follow a particular probability distribution when the Pearson correlation coefficient is employed, this metric is best suited for continuous distributions (i.e. it is unlikely to encounter duplicate values) that are relatively symmetric around the mean. For shorter (e.g. weekly) accumulation periods and in dry climates, the distribution of precipitation usually becomes rather skewed and contains a number of zeros. A new metric, the coefficient of predictive ability (CPA), has recently been developed and constitutes an excellent alternative to the PCC as a measure of potential forecast skill in that situation of strongly asymmetric distributions with multiple identical values. See [here](MotivationCPA.pdf) for more background information about the CPA. The function `CPA_dt` performs the calculations and is used in the same way as `MSESS_dt` and `PCC_dt` above.
 
 ```{r, fig.width = 10}
-### analyze mean square error skill scores ###
+### calculate coefficient of predictive ability
 CPA = CPA_dt(dt_cv,
              fc_col = 'prediction', # column name of forecasts
              obs_col = 'observation', # column name of observations
              by_cols = c('lon','lat','season')) # the CPA should be computed for each location and each season separately
 
 # the maximal range for the CPA is [0,1]
+# a value of 0.5 corresponds to no skill (more details can be found in the document under the link given above) 
 rr = c(0,1)
 
 pp1 = ggplot_dt(CPA[season == 'FMA'], 
@@ -269,7 +271,7 @@ Note that this is not a skill score in the strict sense, but can be interpretet 
 To try this out in action, let us look at the 2021 tercile forecasts
 
 ```{r,fig.height = 4,fig.width = 12}
-data_dir = '/nr/project/stat/CONFER/Data/validation/example_data/202102/' # as in section 3
+# data_dir = '/nr/project/stat/CONFER/Data/validation/example_data/202102/' # as in section 3
 fn = 'Ens_Prec_1monLead_MAM_Prob_EnsRegrCPT-avg.nc'
 
 dt = netcdf_to_dt(paste0(data_dir,fn))

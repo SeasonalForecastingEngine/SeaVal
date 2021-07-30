@@ -15,7 +15,7 @@ print(data_dir) # the directory the data is stored in, you need to adjust this t
 ```
 
 ```
-## [1] "/nr/project/stat/CONFER/Data/validation/example_data/202102/"
+## [1] "~/nr/project/stat/CONFER/Data/validation/example_data/202102/"
 ```
 
 ```r
@@ -24,7 +24,7 @@ dt = netcdf_to_dt(paste0(data_dir,fn))
 ```
 
 ```
-## File /nr/project/stat/CONFER/Data/validation/example_data/202102/CorrelationSkillRain_Feb-Apr_Feb2021.nc (NC_FORMAT_CLASSIC):
+## File ~/nr/project/stat/CONFER/Data/validation/example_data/202102/CorrelationSkillRain_Feb-Apr_Feb2021.nc (NC_FORMAT_CLASSIC):
 ## 
 ##      1 variables (excluding dimension variables):
 ##         float corr[lon,lat]   
@@ -134,7 +134,7 @@ dt_pred2 = netcdf_to_dt(paste0(data_dir,fn_pred2))
 ```
 
 ```
-## File /nr/project/stat/CONFER/Data/validation/example_data/202102/CrossValidatedPredictedRain_Mar-May_Feb2021.nc (NC_FORMAT_CLASSIC):
+## File ~/nr/project/stat/CONFER/Data/validation/example_data/202102/CrossValidatedPredictedRain_Mar-May_Feb2021.nc (NC_FORMAT_CLASSIC):
 ## 
 ##      1 variables (excluding dimension variables):
 ##         float prec[lon,lat,time]   
@@ -219,7 +219,7 @@ dt_obs2 = netcdf_to_dt(paste0(data_dir,fn_obs2) )
 ```
 
 ```
-## File /nr/project/stat/CONFER/Data/validation/example_data/202102/ObservedRain_Mar-May_Feb2021_update.nc (NC_FORMAT_CLASSIC):
+## File ~/nr/project/stat/CONFER/Data/validation/example_data/202102/ObservedRain_Mar-May_Feb2021_update.nc (NC_FORMAT_CLASSIC):
 ## 
 ##      1 variables (excluding dimension variables):
 ##         float prec[lon,lat,time]   
@@ -319,7 +319,7 @@ dt = netcdf_to_dt(paste0(data_dir,fn))
 ```
 
 ```
-## File /nr/project/stat/CONFER/Data/validation/example_data/202102/PredictedProbabilityRain_Feb-Apr_Feb2021.nc (NC_FORMAT_CLASSIC):
+## File ~/nr/project/stat/CONFER/Data/validation/example_data/202102/PredictedProbabilityRain_Feb-Apr_Feb2021.nc (NC_FORMAT_CLASSIC):
 ## 
 ##      3 variables (excluding dimension variables):
 ##         float below[lon,lat]   
@@ -810,7 +810,7 @@ dt = netcdf_to_dt(paste0(data_dir,fn))
 ```
 
 ```
-## File /nr/project/stat/CONFER/Data/validation/example_data/202102/PrecRegPeXcd_3monthSeasonal.nc (NC_FORMAT_CLASSIC):
+## File ~/nr/project/stat/CONFER/Data/validation/example_data/202102/PrecRegPeXcd_3monthSeasonal.nc (NC_FORMAT_CLASSIC):
 ## 
 ##      1 variables (excluding dimension variables):
 ##         float pexcd[lon,lat,model,lead,rthr]   
