@@ -1,4 +1,4 @@
 # SeaVal
-Validation of Seasonal Forecasts issued by ICPAC
+Validation of seasonal and weekly forecasts issued by ICPAC
 
 For further information, see http://files.nr.no/samba/CONFER/SeaVal/
