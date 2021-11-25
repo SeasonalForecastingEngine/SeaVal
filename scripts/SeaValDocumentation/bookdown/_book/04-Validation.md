@@ -145,6 +145,7 @@ print(msess_by_country)
 ## 11:    Djibouti  111.1771 0.029694437
 ```
 
+
 Skill scores strongly depend on the skill of the climatological prediction, see Section \@ref(eval-ex-pr). This makes it somewhat problematic to average them in space, as skill scores for different grid points with different climatologies have different meanings. A more appropriate way to see whether the prediction outperformed climatology on average for a given country is by considering average score differences:
 
 
@@ -166,6 +167,113 @@ msess[,.(score_diff = mean(clim_MSE - MSE)),by = country]
 ##  9:     Eritrea  -0.1503512
 ## 10:     Somalia  28.1771594
 ## 11:    Djibouti   5.0474522
+```
+
+The MSE (and its associated skill score) penalizes both systematic forecast errors (i.e. biases) and non-systematic forecast errors. The latter are a consequence of general forecast uncertainty and there is no easy way to reduce them. Biases, however, can often be removed through statistical post-processing, and it is therefore interesting to consider measures for forecast performance that penalize only non-systematic forecast errors, thus giving an idea of the *potential skill* of a forecast system.
+
+The standard metric to assess the *potential skill* is the *Pearson correlation coefficient (PCC)*. This is the usual correlation coefficient where forecasts and observations are standardized by their respective climatological means and standard deviations, and then the average product of these standardized variables is calculated. The function `PCC_dt` performs these calculations and is used in the same way as `MSESS_dt` above.
+
+
+```r
+### analyze mean square error skill scores ###
+PCC = PCC_dt(dt_cv,
+             fc_col = 'prediction', # column name of forecasts
+             obs_col = 'observation', # column name of observations
+             by_cols = c('lon','lat','season')) # the correlation coefficient should be computed for each location and each season separately
+
+# the maximal range for a correlation coefficient is [-1,1], but sometimes it is useful to narrow it:
+rr = c(-0.5,0.5)
+
+pp1 = ggplot_dt(PCC[season == 'FMA'], 
+                data_col = 'rho', 
+                rr=rr,
+                mn = 'Pearson correlation coefficient, FMA')
+
+pp2 = ggplot_dt(PCC[season == 'MAM'], 
+                data_col = 'rho', 
+                rr=rr,
+                mn = 'Pearson correlation coefficient, MAM')
+
+ggarrange(pp1,pp2)
+```
+
+<img src="04-Validation_files/figure-html/unnamed-chunk-6-1.png" width="960" />
+
+
+While there is no technical requirement that the forecasts and observations follow a particular probability distribution when the Pearson correlation coefficient is employed, this metric is best suited for continuous (i.e. it is unlikely to encounter duplicate values) distributions that are relatively symmetric around the mean. For shorter accumulation periods (e.g. weekly amounts) and in dry climates, the distribution of precipitation usually becomes rather skewed and contains a number of zeros. A new metric, the coefficient of predictive ability (CPA), has recently been developed and constitutes an excellent alternative to the Pearson correlation coefficient as a measure of potential forecast skill in that situation of stronglt asymmetric distributions with multiple identical values. See [here](MotivationCPA.pdf) for more background information about the CPA. The function `CPA_dt` performs the calculations and is used in the same way as `MSESS_dt` and `PCC_dt` above.
+
+
+```r
+### analyze mean square error skill scores ###
+CPA = CPA_dt(dt_cv,
+             fc_col = 'prediction', # column name of forecasts
+             obs_col = 'observation', # column name of observations
+             by_cols = c('lon','lat','season')) # the CPA should be computed for each location and each season separately
+
+# the maximal range for the CPA is [0,1]
+rr = c(0,1)
+
+pp1 = ggplot_dt(CPA[season == 'FMA'], 
+                data_col = 'cpa', 
+                rr=rr,
+                mn = 'Coefficient of predictive ability, FMA')
+
+pp2 = ggplot_dt(CPA[season == 'MAM'], 
+                data_col = 'cpa', 
+                rr=rr,
+                mn = 'Coefficient of predictive ability, MAM')
+
+ggarrange(pp1,pp2)
+```
+
+<img src="04-Validation_files/figure-html/unnamed-chunk-7-1.png" width="960" />
+
+Just like the MSESS, PCC and CPA can be averaged by country using the function `add_country_names`:
+
+
+```r
+# check out average PCCs and CPAs per country:
+PCC = add_country_names(PCC)
+CPA = add_country_names(CPA)
+
+PCC_by_country = PCC[,.(rho = mean(rho)), by = country]
+CPA_by_country = CPA[,.(cpa = mean(cpa)), by = country]
+
+print(PCC_by_country)
+```
+
+```
+##         country         rho
+##  1:       Sudan -0.19636469
+##  2: South Sudan -0.16295459
+##  3:      Rwanda  0.30049770
+##  4:    Tanzania -0.05635683
+##  5:     Burundi  0.23708677
+##  6:      Uganda  0.01509619
+##  7:    Ethiopia  0.01459451
+##  8:       Kenya  0.07685737
+##  9:     Eritrea -0.14705925
+## 10:     Somalia -0.08751838
+## 11:    Djibouti -0.05427490
+```
+
+```r
+print(CPA_by_country)
+```
+
+```
+##         country       cpa
+##  1:       Sudan 0.3989506
+##  2: South Sudan 0.4130657
+##  3:      Rwanda 0.6490021
+##  4:    Tanzania 0.4802252
+##  5:     Burundi 0.6187519
+##  6:      Uganda 0.5011563
+##  7:    Ethiopia 0.5158528
+##  8:       Kenya 0.5364750
+##  9:     Eritrea 0.4310610
+## 10:     Somalia 0.4713838
+## 11:    Djibouti 0.5031902
 ```
 
 
@@ -235,7 +343,7 @@ mbss = MBSS_dt(dt,obs_col = 'tercile_cat')
 ggplot_dt(mbss,high = 'darkgreen',low = 'purple',discrete_cs = TRUE,binwidth = 0.2,midpoint = 0, mn = 'MBSS for MAM tercile forecast 2021')
 ```
 
-<img src="04-Validation_files/figure-html/unnamed-chunk-6-1.png" width="480" />
+<img src="04-Validation_files/figure-html/unnamed-chunk-9-1.png" width="480" />
 
 Areas colored in green show where the prediction was better than climatology, areas colored in purple indicate worse performance. The MBSS indicates, for example, good forecast performance over most of Tanzania. 
 
@@ -273,7 +381,7 @@ dt[,anomaly:= prec - clim]
 ggplot_dt(dt[year == 2021],'anomaly',high = 'blue',low = 'red',midpoint = 0, mn = 'observed 2021 MAM precip anomaly')
 ```
 
-<img src="04-Validation_files/figure-html/unnamed-chunk-8-1.png" width="480" />
+<img src="04-Validation_files/figure-html/unnamed-chunk-11-1.png" width="480" />
 
 ```r
 # or, as discrete plot:
@@ -290,7 +398,7 @@ pp4 = ggplot_dt(dt,'above',midpoint = 0.33,discrete_cs = TRUE,binwidth = 0.05,mn
 ggpubr::ggarrange(pp1,pp2,pp3,pp4,ncol = 4)
 ```
 
-<img src="04-Validation_files/figure-html/unnamed-chunk-9-1.png" width="1920" />
+<img src="04-Validation_files/figure-html/unnamed-chunk-12-1.png" width="1920" />
 As we can see, the season was very wet overall. The prediction was overall wet as well, especially over the western part of the considered region, where the prediction also got assigned a positive MBSS.
 
 ### Evaluation when only the highest probability category is avaliable {#eval-terciles2}
@@ -380,7 +488,7 @@ p3 = ggplot_dt(dt,data_col = 'above', midpoint = dt[,min(above,na.rm = TRUE)], h
 ggarrange(p1,p2,p3,ncol = 3)
 ```
 
-<img src="04-Validation_files/figure-html/unnamed-chunk-11-1.png" width="1152" />
+<img src="04-Validation_files/figure-html/unnamed-chunk-14-1.png" width="1152" />
 
 *In order to evaluate these forecast the high resolution CHIRPS-data of the past is missing!*
 
@@ -504,7 +612,7 @@ for(mod in unique(bss_dt[,model])) # 1 plot for each model
 ggpubr::ggarrange(plotlist = plot_list,ncol = 3,nrow = 3,common.legend = TRUE,legend = 'bottom')
 ```
 
-<img src="04-Validation_files/figure-html/unnamed-chunk-15-1.png" width="480" />
+<img src="04-Validation_files/figure-html/unnamed-chunk-18-1.png" width="480" />
 Here, red color indicates better performance of the prediction than climatology. Large areas of the map are blue, which indicates better performance of the climatological forecast than of the prediction models. However, these are mostly areas where the observations never exceeded 200mm. Therefore, the climatological forecast issued a 0% chance of rainfall exceeding 200mm, whereas all actual prediction models issued a small positive probability and therefore performed 'worse'. This not so much highlights a problem of the forecasts than rather a problem of skill scores, which become degenerate whenever the climatological prediction is near perfect.
 
 For comparing overall performance, we can average scores spatially. Note that, because of the above-mentioned effect, it is important not to average skill scores. However, since we have a climatology forecast in our data table, we can compute a spatially averaged score for climatology as well. Thus, we can compare whether the prediction models performed on average better or worse than climatology.
@@ -544,7 +652,7 @@ pp = ggplot(mean_scores) + geom_line(aes(x = month,y = BS_ex,color = model,linet
 print(pp)
 ```
 
-<img src="04-Validation_files/figure-html/unnamed-chunk-17-1.png" width="480" />
+<img src="04-Validation_files/figure-html/unnamed-chunk-20-1.png" width="480" />
 
 The plot shows that, averaging over all grid points, a climatological forecast does much better than all the systems, which probably indicates that the systems need to be bias corrected.
 
@@ -622,4 +730,4 @@ for(leadtime in 1:3)
 do.call('ggarrange', c(plot_list,ncol = 5,nrow = 3,common.legend = TRUE,legend = 'bottom'))
 ```
 
-<img src="04-Validation_files/figure-html/unnamed-chunk-18-1.png" width="960" />
+<img src="04-Validation_files/figure-html/unnamed-chunk-21-1.png" width="960" />

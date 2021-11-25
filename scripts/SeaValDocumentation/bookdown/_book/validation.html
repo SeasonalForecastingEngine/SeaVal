@@ -21,7 +21,8 @@
   
   
 
-<meta name="author" content="Claudio Heinrich" />
+<meta name="author" content="Claudio Heinrich and Michael Scheuerer, with input from" />
+<meta name="author" content="Masilin Gudoshava, Eunice Koech, Anthony Mwanthi, Zewdu Segele, Hussen Seid and Thordis Thorarinsdottir" />
 
 
 
@@ -257,6 +258,85 @@ msess[,.(<span class="dt">score_diff =</span> <span class="kw">mean</span>(clim_
 ##  9:     Eritrea  -0.1503512
 ## 10:     Somalia  28.1771594
 ## 11:    Djibouti   5.0474522</code></pre>
+<p>The MSE (and its associated skill score) penalizes both systematic forecast errors (i.e. biases) and non-systematic forecast errors. The latter are a consequence of general forecast uncertainty and there is no easy way to reduce them. Biases, however, can often be removed through statistical post-processing, and it is therefore interesting to consider measures for forecast performance that penalize only non-systematic forecast errors, thus giving an idea of the <em>potential skill</em> of a forecast system.</p>
+<p>The standard metric to assess the <em>potential skill</em> is the <em>Pearson correlation coefficient (PCC)</em>. This is the usual correlation coefficient where forecasts and observations are standardized by their respective climatological means and standard deviations, and then the average product of these standardized variables is calculated. The function <code>PCC_dt</code> performs these calculations and is used in the same way as <code>MSESS_dt</code> above.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### analyze mean square error skill scores <span class="al">###</span>
+PCC =<span class="st"> </span><span class="kw">PCC_dt</span>(dt_cv,
+             <span class="dt">fc_col =</span> <span class="st">&#39;prediction&#39;</span>, <span class="co"># column name of forecasts</span>
+             <span class="dt">obs_col =</span> <span class="st">&#39;observation&#39;</span>, <span class="co"># column name of observations</span>
+             <span class="dt">by_cols =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>,<span class="st">&#39;season&#39;</span>)) <span class="co"># the correlation coefficient should be computed for each location and each season separately</span>
+
+<span class="co"># the maximal range for a correlation coefficient is [-1,1], but sometimes it is useful to narrow it:</span>
+rr =<span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="fl">0.5</span>,<span class="fl">0.5</span>)
+
+pp1 =<span class="st"> </span><span class="kw">ggplot_dt</span>(PCC[season <span class="op">==</span><span class="st"> &#39;FMA&#39;</span>], 
+                <span class="dt">data_col =</span> <span class="st">&#39;rho&#39;</span>, 
+                <span class="dt">rr=</span>rr,
+                <span class="dt">mn =</span> <span class="st">&#39;Pearson correlation coefficient, FMA&#39;</span>)
+
+pp2 =<span class="st"> </span><span class="kw">ggplot_dt</span>(PCC[season <span class="op">==</span><span class="st"> &#39;MAM&#39;</span>], 
+                <span class="dt">data_col =</span> <span class="st">&#39;rho&#39;</span>, 
+                <span class="dt">rr=</span>rr,
+                <span class="dt">mn =</span> <span class="st">&#39;Pearson correlation coefficient, MAM&#39;</span>)
+
+<span class="kw">ggarrange</span>(pp1,pp2)</code></pre></div>
+<p><img src="04-Validation_files/figure-html/unnamed-chunk-6-1.png" width="960" /></p>
+<p>While there is no technical requirement that the forecasts and observations follow a particular probability distribution when the Pearson correlation coefficient is employed, this metric is best suited for continuous (i.e. it is unlikely to encounter duplicate values) distributions that are relatively symmetric around the mean. For shorter accumulation periods (e.g. weekly amounts) and in dry climates, the distribution of precipitation usually becomes rather skewed and contains a number of zeros. A new metric, the coefficient of predictive ability (CPA), has recently been developed and constitutes an excellent alternative to the Pearson correlation coefficient as a measure of potential forecast skill in that situation of stronglt asymmetric distributions with multiple identical values. See <a href="MotivationCPA.pdf">here</a> for more background information about the CPA. The function <code>CPA_dt</code> performs the calculations and is used in the same way as <code>MSESS_dt</code> and <code>PCC_dt</code> above.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### analyze mean square error skill scores <span class="al">###</span>
+CPA =<span class="st"> </span><span class="kw">CPA_dt</span>(dt_cv,
+             <span class="dt">fc_col =</span> <span class="st">&#39;prediction&#39;</span>, <span class="co"># column name of forecasts</span>
+             <span class="dt">obs_col =</span> <span class="st">&#39;observation&#39;</span>, <span class="co"># column name of observations</span>
+             <span class="dt">by_cols =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>,<span class="st">&#39;season&#39;</span>)) <span class="co"># the CPA should be computed for each location and each season separately</span>
+
+<span class="co"># the maximal range for the CPA is [0,1]</span>
+rr =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)
+
+pp1 =<span class="st"> </span><span class="kw">ggplot_dt</span>(CPA[season <span class="op">==</span><span class="st"> &#39;FMA&#39;</span>], 
+                <span class="dt">data_col =</span> <span class="st">&#39;cpa&#39;</span>, 
+                <span class="dt">rr=</span>rr,
+                <span class="dt">mn =</span> <span class="st">&#39;Coefficient of predictive ability, FMA&#39;</span>)
+
+pp2 =<span class="st"> </span><span class="kw">ggplot_dt</span>(CPA[season <span class="op">==</span><span class="st"> &#39;MAM&#39;</span>], 
+                <span class="dt">data_col =</span> <span class="st">&#39;cpa&#39;</span>, 
+                <span class="dt">rr=</span>rr,
+                <span class="dt">mn =</span> <span class="st">&#39;Coefficient of predictive ability, MAM&#39;</span>)
+
+<span class="kw">ggarrange</span>(pp1,pp2)</code></pre></div>
+<p><img src="04-Validation_files/figure-html/unnamed-chunk-7-1.png" width="960" /></p>
+<p>Just like the MSESS, PCC and CPA can be averaged by country using the function <code>add_country_names</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># check out average PCCs and CPAs per country:</span>
+PCC =<span class="st"> </span><span class="kw">add_country_names</span>(PCC)
+CPA =<span class="st"> </span><span class="kw">add_country_names</span>(CPA)
+
+PCC_by_country =<span class="st"> </span>PCC[,.(<span class="dt">rho =</span> <span class="kw">mean</span>(rho)), by =<span class="st"> </span>country]
+CPA_by_country =<span class="st"> </span>CPA[,.(<span class="dt">cpa =</span> <span class="kw">mean</span>(cpa)), by =<span class="st"> </span>country]
+
+<span class="kw">print</span>(PCC_by_country)</code></pre></div>
+<pre><code>##         country         rho
+##  1:       Sudan -0.19636469
+##  2: South Sudan -0.16295459
+##  3:      Rwanda  0.30049770
+##  4:    Tanzania -0.05635683
+##  5:     Burundi  0.23708677
+##  6:      Uganda  0.01509619
+##  7:    Ethiopia  0.01459451
+##  8:       Kenya  0.07685737
+##  9:     Eritrea -0.14705925
+## 10:     Somalia -0.08751838
+## 11:    Djibouti -0.05427490</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(CPA_by_country)</code></pre></div>
+<pre><code>##         country       cpa
+##  1:       Sudan 0.3989506
+##  2: South Sudan 0.4130657
+##  3:      Rwanda 0.6490021
+##  4:    Tanzania 0.4802252
+##  5:     Burundi 0.6187519
+##  6:      Uganda 0.5011563
+##  7:    Ethiopia 0.5158528
+##  8:       Kenya 0.5364750
+##  9:     Eritrea 0.4310610
+## 10:     Somalia 0.4713838
+## 11:    Djibouti 0.5031902</code></pre>
 </div>
 <div id="evaluating-tercile-forecasts" class="section level2">
 <h2><span class="header-section-number">4.2</span> Evaluating Tercile Forecasts</h2>
@@ -298,7 +378,7 @@ msess[,.(<span class="dt">score_diff =</span> <span class="kw">mean</span>(clim_
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get Multicategory Brier Skill Score:</span>
 mbss =<span class="st"> </span><span class="kw">MBSS_dt</span>(dt,<span class="dt">obs_col =</span> <span class="st">&#39;tercile_cat&#39;</span>)
 <span class="kw">ggplot_dt</span>(mbss,<span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>,<span class="dt">low =</span> <span class="st">&#39;purple&#39;</span>,<span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>,<span class="dt">binwidth =</span> <span class="fl">0.2</span>,<span class="dt">midpoint =</span> <span class="dv">0</span>, <span class="dt">mn =</span> <span class="st">&#39;MBSS for MAM tercile forecast 2021&#39;</span>)</code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-6-1.png" width="480" /></p>
+<p><img src="04-Validation_files/figure-html/unnamed-chunk-9-1.png" width="480" /></p>
 <p>Areas colored in green show where the prediction was better than climatology, areas colored in purple indicate worse performance. The MBSS indicates, for example, good forecast performance over most of Tanzania.</p>
 <p>To see whether the forecast was overall better than climatology, we average the MBSS:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># check out the MBSS by country:</span>
@@ -321,7 +401,7 @@ mean_mbss =<span class="st"> </span>mbss[,.(<span class="dt">mean_mbss =</span> 
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt[,anomaly<span class="op">:</span><span class="er">=</span><span class="st"> </span>prec <span class="op">-</span><span class="st"> </span>clim]
 
 <span class="kw">ggplot_dt</span>(dt[year <span class="op">==</span><span class="st"> </span><span class="dv">2021</span>],<span class="st">&#39;anomaly&#39;</span>,<span class="dt">high =</span> <span class="st">&#39;blue&#39;</span>,<span class="dt">low =</span> <span class="st">&#39;red&#39;</span>,<span class="dt">midpoint =</span> <span class="dv">0</span>, <span class="dt">mn =</span> <span class="st">&#39;observed 2021 MAM precip anomaly&#39;</span>)</code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-8-1.png" width="480" /></p>
+<p><img src="04-Validation_files/figure-html/unnamed-chunk-11-1.png" width="480" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># or, as discrete plot:</span>
 pp1 =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt[year <span class="op">==</span><span class="st"> </span><span class="dv">2021</span>],<span class="st">&#39;anomaly&#39;</span>,
                 <span class="dt">high =</span> <span class="st">&#39;blue&#39;</span>,<span class="dt">low =</span> <span class="st">&#39;red&#39;</span>,<span class="dt">midpoint =</span> <span class="dv">0</span>,
@@ -334,7 +414,7 @@ pp3 =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt,<span class="
 pp4 =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt,<span class="st">&#39;above&#39;</span>,<span class="dt">midpoint =</span> <span class="fl">0.33</span>,<span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>,<span class="dt">binwidth =</span> <span class="fl">0.05</span>,<span class="dt">mn =</span> <span class="st">&#39;predicted probability above&#39;</span>)
 
 ggpubr<span class="op">::</span><span class="kw">ggarrange</span>(pp1,pp2,pp3,pp4,<span class="dt">ncol =</span> <span class="dv">4</span>)</code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-9-1.png" width="1920" /> As we can see, the season was very wet overall. The prediction was overall wet as well, especially over the western part of the considered region, where the prediction also got assigned a positive MBSS.</p>
+<p><img src="04-Validation_files/figure-html/unnamed-chunk-12-1.png" width="1920" /> As we can see, the season was very wet overall. The prediction was overall wet as well, especially over the western part of the considered region, where the prediction also got assigned a positive MBSS.</p>
 </div>
 <div id="eval-terciles2" class="section level3">
 <h3><span class="header-section-number">4.2.2</span> Evaluation when only the highest probability category is avaliable</h3>
@@ -395,7 +475,7 @@ p2 =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt,<span class="d
 p3 =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt,<span class="dt">data_col =</span> <span class="st">&#39;above&#39;</span>, <span class="dt">midpoint =</span> dt[,<span class="kw">min</span>(above,<span class="dt">na.rm =</span> <span class="ot">TRUE</span>)], <span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>)
 
 <span class="kw">ggarrange</span>(p1,p2,p3,<span class="dt">ncol =</span> <span class="dv">3</span>)</code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-11-1.png" width="1152" /></p>
+<p><img src="04-Validation_files/figure-html/unnamed-chunk-14-1.png" width="1152" /></p>
 <p><em>In order to evaluate these forecast the high resolution CHIRPS-data of the past is missing!</em></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fn =<span class="st"> &quot;PredictedProbabilityRain_Mar-May_Feb2021_new.nc&quot;</span>
 dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn))</code></pre></div>
@@ -486,7 +566,7 @@ plot_list =<span class="st"> </span><span class="kw">list</span>()
 }
 
 ggpubr<span class="op">::</span><span class="kw">ggarrange</span>(<span class="dt">plotlist =</span> plot_list,<span class="dt">ncol =</span> <span class="dv">3</span>,<span class="dt">nrow =</span> <span class="dv">3</span>,<span class="dt">common.legend =</span> <span class="ot">TRUE</span>,<span class="dt">legend =</span> <span class="st">&#39;bottom&#39;</span>)</code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-15-1.png" width="480" /> Here, red color indicates better performance of the prediction than climatology. Large areas of the map are blue, which indicates better performance of the climatological forecast than of the prediction models. However, these are mostly areas where the observations never exceeded 200mm. Therefore, the climatological forecast issued a 0% chance of rainfall exceeding 200mm, whereas all actual prediction models issued a small positive probability and therefore performed 'worse'. This not so much highlights a problem of the forecasts than rather a problem of skill scores, which become degenerate whenever the climatological prediction is near perfect.</p>
+<p><img src="04-Validation_files/figure-html/unnamed-chunk-18-1.png" width="480" /> Here, red color indicates better performance of the prediction than climatology. Large areas of the map are blue, which indicates better performance of the climatological forecast than of the prediction models. However, these are mostly areas where the observations never exceeded 200mm. Therefore, the climatological forecast issued a 0% chance of rainfall exceeding 200mm, whereas all actual prediction models issued a small positive probability and therefore performed 'worse'. This not so much highlights a problem of the forecasts than rather a problem of skill scores, which become degenerate whenever the climatological prediction is near perfect.</p>
 <p>For comparing overall performance, we can average scores spatially. Note that, because of the above-mentioned effect, it is important not to average skill scores. However, since we have a climatology forecast in our data table, we can compute a spatially averaged score for climatology as well. Thus, we can compare whether the prediction models performed on average better or worse than climatology.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mean_scores =<span class="st"> </span>bss_dt[,.(<span class="dt">BS_ex =</span> <span class="kw">mean</span>(BS_ex,<span class="dt">na.rm =</span> T)),by =<span class="st"> </span>.(model,month,rthr)]
 <span class="co"># get climatology score as well:</span>
@@ -511,7 +591,7 @@ mean_scores =<span class="st"> </span><span class="kw">rbindlist</span>(<span cl
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pp =<span class="st"> </span><span class="kw">ggplot</span>(mean_scores) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> month,<span class="dt">y =</span> BS_ex,<span class="dt">color =</span> model,<span class="dt">linetype =</span> model)) <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>rthr,<span class="dt">nrow =</span> <span class="dv">1</span>)
 
 <span class="kw">print</span>(pp)</code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-17-1.png" width="480" /></p>
+<p><img src="04-Validation_files/figure-html/unnamed-chunk-20-1.png" width="480" /></p>
 <p>The plot shows that, averaging over all grid points, a climatological forecast does much better than all the systems, which probably indicates that the systems need to be bias corrected.</p>
 </div>
 <div id="temperature" class="section level2">
@@ -575,7 +655,7 @@ plot_list =<span class="st"> </span><span class="kw">list</span>()
 
 <span class="co">#plot as grid:</span>
 <span class="kw">do.call</span>(<span class="st">&#39;ggarrange&#39;</span>, <span class="kw">c</span>(plot_list,<span class="dt">ncol =</span> <span class="dv">5</span>,<span class="dt">nrow =</span> <span class="dv">3</span>,<span class="dt">common.legend =</span> <span class="ot">TRUE</span>,<span class="dt">legend =</span> <span class="st">&#39;bottom&#39;</span>))</code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-18-1.png" width="960" /></p>
+<p><img src="04-Validation_files/figure-html/unnamed-chunk-21-1.png" width="960" /></p>
 
 </div>
 </div>

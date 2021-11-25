@@ -3,17 +3,25 @@
 \name{upscale_nested_griddings}
 \alias{upscale_nested_griddings}
 \title{upscaling data from a finer to a coarser grid (by averaging) assumes the finer grid to be nested within the larger (only averages )
-Does not account for error by projection (lon/lat squares are treated as actual squares), so only use this near the equator.}
+Does not account for error by projection (lon/lat squares are treated as actual squares), and assumes lon/lat gridcells to all have equal size, so only use this near the equator.}
 \usage{
 upscale_nested_griddings(
   dt,
   uscol,
   coarse_grid,
-  bycols = intersect(c("month", "year"), colnames(dt)),
-  type = "within"
+  bycols = intersect(c("month", "year"), colnames(dt))
 )
+}
+\arguments{
+\item{dt}{Data table containing data for upscaling}
+
+\item{uscol}{The column name of the column to be upscaled by averaging}
+
+\item{coarse_grid}{The coarse grid as data table with colnames lon,lat.}
+
+\item{bycols}{column names of dt for grouping (usually time- or system-columns)}
 }
 \description{
 upscaling data from a finer to a coarser grid (by averaging) assumes the finer grid to be nested within the larger (only averages )
-Does not account for error by projection (lon/lat squares are treated as actual squares), so only use this near the equator.
+Does not account for error by projection (lon/lat squares are treated as actual squares), and assumes lon/lat gridcells to all have equal size, so only use this near the equator.
 }

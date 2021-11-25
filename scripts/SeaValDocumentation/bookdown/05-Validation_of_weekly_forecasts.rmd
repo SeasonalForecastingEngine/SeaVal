@@ -1,0 +1,22 @@
+# Validation
+
+```{r setup, echo = F, message = F}
+knitr::opts_chunk$set(fig.width = 5)
+knitr::opts_chunk$set(fig.height = 6)
+library(SeaVal)
+library(ggpubr)
+library(ggplot2)
+load(file = '_temp.RData')
+
+```
+
+
+This section looks into evaluation of weekly predictions. `Seaval` can be used to compute evaluation metrics such as the MSE for the running forecasts. These results can be saved as netcdfs which allows to integrate the results with the East African Hazard Watch. 
+
+## Matching predictions and observations {#upscaling}
+
+Numerical weather prediction models produce forecasts on a spatial grid with a certain resolution. Similarly, satellite-based observation datasets, such as for example CHIRPS, provide estimates of observed weather on a spatial grid. It frequently happens, that the observation and predictions are on grids with different resolution. If this is the case, you need to first map the values from the different grids onto the same grid, before they can be compared. The package `SeaVal` allows to do that by the function `upscale_lonlat`.
+
+## Evaluating weekly predictions of precipitation
+
+The function `eval_weekly_precip` operates directly on the current format the weekly predictions are stored in. It takes the name of a folder where the predictions are stored, as well as the initialization date in the format 'YYYYMMDD'. At ICPAC the predictions are stored under `/SharedData/wrf/weekly/` 

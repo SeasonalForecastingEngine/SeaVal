@@ -21,7 +21,8 @@
   
   
 
-<meta name="author" content="Claudio Heinrich" />
+<meta name="author" content="Claudio Heinrich and Michael Scheuerer, with input from" />
+<meta name="author" content="Masilin Gudoshava, Eunice Koech, Anthony Mwanthi, Zewdu Segele, Hussen Seid and Thordis Thorarinsdottir" />
 
 
 
@@ -204,13 +205,13 @@ dt[,ano <span class="op">:</span><span class="er">=</span><span class="st"> </sp
           <span class="dt">low =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">mid =</span> <span class="st">&#39;white&#39;</span>, <span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>,
           <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>)</code></pre></div>
 <p><img src="02-plotting_files/figure-html/unnamed-chunk-5-1.png" width="480" /></p>
-<p>Note that we set the range argument to <code>c(-3,3)</code>. Fixing the range makes mostly sense when the range is known (e.g. for correlation plots), or when you want to compare several plots (e.g. for comparing mean square error of different NWP models, all plots should have the same range). If we leave the range argument <code>rr</code> free, the range is determined from the data. However, when we do this for our anomaly plot this has an undesired sideeffect:</p>
+<p>Note that we set the range argument to <code>c(-3,3)</code>. Fixing the range mostly makes sense when the range is known (e.g. for correlation plots), or when you want to compare several plots (e.g. for comparing mean square error of different NWP models, all plots should have the same range). If we leave the range argument <code>rr</code> free, the range is determined from the data. However, when we do this for our anomaly plot this has an undesired sideeffect:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>], <span class="st">&#39;ano&#39;</span>, 
           <span class="dt">mn =</span> <span class="st">&#39;October 2020 rainfall anomaly&#39;</span>,
           <span class="dt">low =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">mid =</span> <span class="st">&#39;white&#39;</span>, <span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>,
           <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>)</code></pre></div>
 <p><img src="02-plotting_files/figure-html/unnamed-chunk-6-1.png" width="480" /></p>
-<p>The color scale is no longer centered (white) at 0, but in the center of the (now asymetric) range. As a consequence, all gridpoints with anomaly 0 are shown in a light red. To fix this we can use the <code>midpoint</code> argument:</p>
+<p>The color scale is no longer centered (white) at 0, but in the center of the (now asymetric) range. As a consequence, all gridpoints with anomaly 0 are shown in a light red. To fix this, we can use the <code>midpoint</code> argument:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>], <span class="st">&#39;ano&#39;</span>, 
           <span class="dt">mn =</span> <span class="st">&#39;October 2020 rainfall anomaly&#39;</span>,
           <span class="dt">low =</span> <span class="st">&#39;red&#39;</span>, <span class="dt">mid =</span> <span class="st">&#39;white&#39;</span>, <span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>,
@@ -225,7 +226,7 @@ dt[,ano <span class="op">:</span><span class="er">=</span><span class="st"> </sp
           <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>)</code></pre></div>
 <p><img src="02-plotting_files/figure-html/unnamed-chunk-8-1.png" width="480" /></p>
 <p>Here, we set the midpoint to 0, which is the minimum of our data (since observed rainfall is never below 0). Consequently, the second half of the colorscale extending below 0 is ignored.</p>
-<p>Finally, the function allows to discretize the color scale. To this end we need to set the argument <code>discrete_cs</code> to <code>TRUE</code>. We can then control the breaks of the discrete colorscale by one of the arguments <code>binwidth</code>, <code>n.breaks</code>, or <code>breaks</code> (the latter takes a vector containing all breakpoints). The argument <code>n.breaks</code> (which is passed to the function <code>ggplot2::scale_fill_steps2</code>) tries to find 'nice' breaks and does not work reliably. To revisit the anomaly plot from above:</p>
+<p>Finally, the function allows to discretize the color scale. To this end the argument <code>discrete_cs</code> should be set to <code>TRUE</code>. We can then control the breaks of the discrete colorscale by one of the arguments <code>binwidth</code>, <code>n.breaks</code>, or <code>breaks</code> (the latter takes a vector containing all breakpoints). Using <code>binwidth</code> is recommended: The argument <code>n.breaks</code> (which is passed to the function <code>ggplot2::scale_fill_steps2</code>) tries to find 'nice' breaks and does not work reliably, and <code>breaks</code> is often a bit tedious. To revisit the anomaly plot from above:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot_dt</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>], <span class="st">&#39;ano&#39;</span>, 
           <span class="dt">mn =</span> <span class="st">&#39;October 2020 rainfall anomaly&#39;</span>,
           <span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>, <span class="dt">binwidth =</span> <span class="dv">2</span>,
@@ -233,7 +234,7 @@ dt[,ano <span class="op">:</span><span class="er">=</span><span class="st"> </sp
           <span class="dt">midpoint =</span> <span class="dv">0</span>,
           <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>)</code></pre></div>
 <p><img src="02-plotting_files/figure-html/unnamed-chunk-9-1.png" width="480" /></p>
-<p>For saving a created plot the syntax is as follows:</p>
+<p>For saving a created plot, we can use any of <code>R</code>s graphical devices, e.g.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pdf</span>(<span class="dt">file =</span> <span class="st">&#39;&lt;path to file and filename&gt;.pdf&#39;</span>, <span class="dt">width =</span> ...,<span class="dt">height =</span> ...)
   <span class="kw">print</span>(pp)
 <span class="kw">dev.off</span>()</code></pre></div>
@@ -256,7 +257,7 @@ dt[,ano <span class="op">:</span><span class="er">=</span><span class="st"> </sp
 <p><img src="02-plotting_files/figure-html/unnamed-chunk-11-1.png" width="480" /></p>
 <div id="plotting-values-for-selected-countries" class="section level2">
 <h2><span class="header-section-number">2.1</span> Plotting values for selected countries</h2>
-<p>Above, we have already seen an option how to restrict a plot to a particular country: by manually subsetting the data to a rectangle of longitudes and latitudes containing that specific country. This is of course quite tedious, and to make our lives easier we can use the <code>restrict_to_country</code>-function that takes a data table and a country name, and subsets the data table to only contain gridpoints in the specified country. Currently, the function accepts the following country names: Burundi, Eritrea, Ethiopia, Kenya, Rwanda, Somalia, South Sudan, Sudan, Tansania, Uganda.</p>
+<p>Above, we have already seen an option how to restrict a plot to a particular country: by manually subsetting the data to a rectangle of longitudes and latitudes containing that specific country. This is of course quite tedious, and to make our lives easier we can use the <code>restrict_to_country</code>-function that takes a data table and a country name, and subsets the data table to only contain gridpoints in the specified country. Currently, the function accepts the following country names: Burundi, Eritrea, Ethiopia, Kenya, Rwanda, Somalia, South Sudan, Sudan, Tanzania, Uganda.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_new =<span class="st"> </span><span class="kw">restrict_to_country</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>],<span class="st">&#39;Kenya&#39;</span>)
 <span class="kw">print</span>(dt_new)</code></pre></div>
 <pre><code>##       lon  lat      prec month year terc_cat     clim        ano
@@ -278,7 +279,7 @@ dt[,ano <span class="op">:</span><span class="er">=</span><span class="st"> </sp
           <span class="dt">midpoint =</span> <span class="dv">0</span>,
           <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>)</code></pre></div>
 <p><img src="02-plotting_files/figure-html/unnamed-chunk-12-1.png" width="480" /></p>
-<p>As we can see, the function restricts the data to all gridcells for which the centerpoint lies within the specified country. This is useful, for example, for calculating mean scores for the specified country. However, it is not optimal for plotting since every grid cell past the border is censored even though the original data table contained values there. To this end, the <code>restrict_to_country</code> function has a <code>rectangle</code>-argument that you can set to <code>TRUE</code> for plotting:</p>
+<p>As we can see, the function restricts the data to all gridcells for which the centerpoint lies within the specified country. This is useful, for example, for calculating mean scores for the specified country. However, it is not optimal for plotting, since all grid cells past the border are censored, even though the original data table contained values there. To this end, the <code>restrict_to_country</code> function has a <code>rectangle</code>-argument that you can set to <code>TRUE</code> for plotting:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_new =<span class="st"> </span><span class="kw">restrict_to_country</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>],<span class="st">&#39;Kenya&#39;</span>, <span class="dt">rectangle =</span> <span class="ot">TRUE</span>)
 <span class="kw">ggplot_dt</span>(dt_new, <span class="st">&#39;ano&#39;</span>, 
           <span class="dt">mn =</span> <span class="st">&#39;October 2020 rainfall anomaly&#39;</span>,
@@ -287,7 +288,7 @@ dt[,ano <span class="op">:</span><span class="er">=</span><span class="st"> </sp
           <span class="dt">midpoint =</span> <span class="dv">0</span>,
           <span class="dt">name =</span> <span class="st">&#39;mm/day&#39;</span>)</code></pre></div>
 <p><img src="02-plotting_files/figure-html/unnamed-chunk-13-1.png" width="480" /></p>
-<p>Instead of a single country name you can also pass multiple country names in a vector to the function. Moreover, when you use <code>rectangle = TRUE</code>, you can specify a tolerance <code>tol</code> in order to widen the plotting window:</p>
+<p>Instead of a single country name, you can also pass multiple country names in a vector to the function. Moreover, when you use <code>rectangle = TRUE</code>, you can specify a tolerance <code>tol</code> in order to widen the plotting window:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt_new =<span class="st"> </span><span class="kw">restrict_to_country</span>(dt[month <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">&amp;</span><span class="st"> </span>year <span class="op">==</span><span class="st"> </span><span class="dv">2020</span>],
                              <span class="kw">c</span>(<span class="st">&#39;Kenya&#39;</span>,<span class="st">&#39;Tanzania&#39;</span>),
                              <span class="dt">rectangle =</span> <span class="ot">TRUE</span>,<span class="dt">tol =</span> <span class="dv">2</span>)
@@ -302,7 +303,7 @@ dt[,ano <span class="op">:</span><span class="er">=</span><span class="st"> </sp
 </div>
 <div id="customized-plots" class="section level2">
 <h2><span class="header-section-number">2.2</span> Customized plots</h2>
-<p>The function <code>ggplot_dt</code> is, as its name suggests, based on the package <code>ggplot2</code>, see <a href="https://ggplot2-book.org/" class="uri">https://ggplot2-book.org/</a>. In <code>ggplot2</code>, plots are composed out of multiple layers, allowing for successive adding of layers. This can help us to generate highly customized plots. As an example, let's revisit the anomaly plot from above and add the location of Nairobi an Addis Abbaba to it:</p>
+<p>The function <code>ggplot_dt</code> is, as its name suggests, based on the package <code>ggplot2</code>. This is a widely-used package and there are many books and tutorials available for getting familiar with the syntax, e.g. (this one)[<a href="https://ggplot2-book.org/" class="uri">https://ggplot2-book.org/</a>]. In <code>ggplot2</code>, plots are composed out of multiple layers, allowing for successive adding of layers. This can help us to generate highly customized plots. As an example, let's revisit the anomaly plot from above and add the location of Nairobi an Addis Abbaba to it:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
 
 <span class="co"># get locations as data table:</span>
@@ -321,7 +322,7 @@ loc =<span class="st"> </span><span class="kw">data.table</span>(<span class="dt
 
 <span class="kw">print</span>(pp)</code></pre></div>
 <p><img src="02-plotting_files/figure-html/unnamed-chunk-15-1.png" width="480" /></p>
-<p>Here, we added two layers to the original plot, the first one being the <code>geom_point</code>-layer that creates the two points at the locations of the cities, and the second being the <code>geom_text</code>-layer that labels the points by the city names. <code>ggplot2</code> is a widely used package and there is a large variety of tutorials and books out there that can help you getting familiar with the syntax.</p>
+<p>Here, we added two layers to the original plot, the first one being the <code>geom_point</code>-layer that creates the two points at the locations of the cities, and the second being the <code>geom_text</code>-layer that labels the points by the city names.</p>
 <p>A frequently required operation is the changing of the font sizes of title and labels. The easiest way to do this is the command</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">theme_set</span>(<span class="kw">theme_bw</span>(<span class="dt">base_size =</span> <span class="dv">16</span>)) <span class="co"># defaults to 12</span>
 <span class="kw">print</span>(pp)</code></pre></div>

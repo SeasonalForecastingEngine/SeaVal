@@ -97,7 +97,7 @@ ggplot_dt(dt[month == 10 & year == 2020], 'ano',
 
 <img src="02-plotting_files/figure-html/unnamed-chunk-5-1.png" width="480" />
 
-Note that we set the range argument to `c(-3,3)`. Fixing the range makes mostly sense when the range is known (e.g. for correlation plots), or when you want to compare several plots (e.g. for comparing mean square error of different NWP models, all plots should have the same range). If we leave the range argument `rr` free, the range is determined from the data. However, when we do this for our anomaly plot this has an undesired sideeffect:
+Note that we set the range argument to `c(-3,3)`. Fixing the range mostly makes sense when the range is known (e.g. for correlation plots), or when you want to compare several plots (e.g. for comparing mean square error of different NWP models, all plots should have the same range). If we leave the range argument `rr` free, the range is determined from the data. However, when we do this for our anomaly plot this has an undesired sideeffect:
 
 ```r
 ggplot_dt(dt[month == 10 & year == 2020], 'ano', 
@@ -108,7 +108,7 @@ ggplot_dt(dt[month == 10 & year == 2020], 'ano',
 
 <img src="02-plotting_files/figure-html/unnamed-chunk-6-1.png" width="480" />
 
-The color scale is no longer centered (white) at 0, but in the center of the (now asymetric) range. As a consequence, all gridpoints with anomaly 0 are shown in a light red. To fix this we can use the `midpoint` argument:
+The color scale is no longer centered (white) at 0, but in the center of the (now asymetric) range. As a consequence, all gridpoints with anomaly 0 are shown in a light red. To fix this, we can use the `midpoint` argument:
 
 ```r
 ggplot_dt(dt[month == 10 & year == 2020], 'ano', 
@@ -134,7 +134,8 @@ ggplot_dt(dt[month == 10 & year == 2020], 'prec',
 
 Here, we set the midpoint to 0, which is the minimum of our data (since observed rainfall is never below 0). Consequently, the second half of the colorscale extending below 0 is ignored.
 
-Finally, the function allows to discretize the color scale. To this end we need to set the argument `discrete_cs` to `TRUE`. We can then control the breaks of the discrete colorscale by one of the arguments `binwidth`, `n.breaks`, or `breaks` (the latter takes a vector containing all breakpoints). The argument `n.breaks` (which is passed to the function  `ggplot2::scale_fill_steps2`) tries to find 'nice' breaks and does not work reliably. To revisit the anomaly plot from above:
+Finally, the function allows to discretize the color scale. To this end the argument `discrete_cs` should be set to `TRUE`. We can then control the breaks of the discrete colorscale by one of the arguments `binwidth`, `n.breaks`, or `breaks` (the latter takes a vector containing all breakpoints). Using `binwidth` is recommended: The argument `n.breaks` (which is passed to the function  `ggplot2::scale_fill_steps2`) tries to find 'nice' breaks and does not work reliably, and `breaks` is often a bit tedious. To revisit the anomaly plot from above:
+
 
 ```r
 ggplot_dt(dt[month == 10 & year == 2020], 'ano', 
@@ -148,7 +149,7 @@ ggplot_dt(dt[month == 10 & year == 2020], 'ano',
 <img src="02-plotting_files/figure-html/unnamed-chunk-9-1.png" width="480" />
 
 
-For saving a created plot the syntax is as follows:
+For saving a created plot, we can use any of `R`s graphical devices, e.g.
 
 ```r
 pdf(file = '<path to file and filename>.pdf', width = ...,height = ...)
@@ -187,7 +188,7 @@ ggplot_dt(chirps_monthly) # generates a plot of the precipitation of October 198
 
 ## Plotting values for selected countries
 
-Above, we have already seen an option how to restrict a plot to a particular country: by manually subsetting the data to a rectangle of longitudes and latitudes containing that specific country. This is of course quite tedious, and to make our lives easier we can use the `restrict_to_country`-function that takes a data table and a country name, and subsets the data table to only contain gridpoints in the specified country. Currently, the function accepts the following country names: Burundi, Eritrea, Ethiopia, Kenya, Rwanda, Somalia, South Sudan, Sudan, Tansania, Uganda.
+Above, we have already seen an option how to restrict a plot to a particular country: by manually subsetting the data to a rectangle of longitudes and latitudes containing that specific country. This is of course quite tedious, and to make our lives easier we can use the `restrict_to_country`-function that takes a data table and a country name, and subsets the data table to only contain gridpoints in the specified country. Currently, the function accepts the following country names: Burundi, Eritrea, Ethiopia, Kenya, Rwanda, Somalia, South Sudan, Sudan, Tanzania, Uganda.
 
 ```r
 dt_new = restrict_to_country(dt[month == 10 & year == 2020],'Kenya')
@@ -220,7 +221,7 @@ ggplot_dt(dt_new, 'ano',
 
 <img src="02-plotting_files/figure-html/unnamed-chunk-12-1.png" width="480" />
 
-As we can see, the function restricts the data to all gridcells for which the centerpoint lies within the specified country. This is useful, for example, for calculating mean scores for the specified country. However, it is not optimal for plotting since every grid cell past the border is censored even though the original data table contained values there. To this end, the `restrict_to_country` function has a `rectangle`-argument that you can set to `TRUE` for plotting:
+As we can see, the function restricts the data to all gridcells for which the centerpoint lies within the specified country. This is useful, for example, for calculating mean scores for the specified country. However, it is not optimal for plotting, since all grid cells past the border are censored, even though the original data table contained values there. To this end, the `restrict_to_country` function has a `rectangle`-argument that you can set to `TRUE` for plotting:
 
 ```r
 dt_new = restrict_to_country(dt[month == 10 & year == 2020],'Kenya', rectangle = TRUE)
@@ -234,7 +235,7 @@ ggplot_dt(dt_new, 'ano',
 
 <img src="02-plotting_files/figure-html/unnamed-chunk-13-1.png" width="480" />
 
-Instead of a single country name you can also pass multiple country names in a vector to the function. Moreover, when you use `rectangle = TRUE`, you can specify a tolerance `tol` in order to widen the plotting window:
+Instead of a single country name, you can also pass multiple country names in a vector to the function. Moreover, when you use `rectangle = TRUE`, you can specify a tolerance `tol` in order to widen the plotting window:
 
 ```r
 dt_new = restrict_to_country(dt[month == 10 & year == 2020],
@@ -255,7 +256,7 @@ The `tol = 2` argument means that the function will include a buffer zone of 2 d
 
 ## Customized plots
 
-The function `ggplot_dt` is, as its name suggests, based on the package `ggplot2`, see https://ggplot2-book.org/. In `ggplot2`, plots are composed out of multiple layers, allowing for successive adding of layers. This can help us to generate highly customized plots. As an example, let's revisit the anomaly plot from above and add the location of Nairobi an Addis Abbaba to it:
+The function `ggplot_dt` is, as its name suggests, based on the package `ggplot2`. This is a widely-used package and there are many books and tutorials available for getting familiar with the syntax, e.g. (this one)[https://ggplot2-book.org/]. In `ggplot2`, plots are composed out of multiple layers, allowing for successive adding of layers. This can help us to generate highly customized plots. As an example, let's revisit the anomaly plot from above and add the location of Nairobi an Addis Abbaba to it:
 
 ```r
 library(ggplot2)
@@ -285,7 +286,7 @@ print(pp)
 
 <img src="02-plotting_files/figure-html/unnamed-chunk-15-1.png" width="480" />
 
-Here, we added two layers to the original plot, the first one being the `geom_point`-layer that creates the two points at the locations of the cities, and the second being the `geom_text`-layer that labels the points by the city names. `ggplot2` is a widely used package and there is a large variety of tutorials and books out there that can help you getting familiar with the syntax.
+Here, we added two layers to the original plot, the first one being the `geom_point`-layer that creates the two points at the locations of the cities, and the second being the `geom_text`-layer that labels the points by the city names. 
 
 A frequently required operation is the changing of the font sizes of title and labels. The easiest way to do this is the command
 

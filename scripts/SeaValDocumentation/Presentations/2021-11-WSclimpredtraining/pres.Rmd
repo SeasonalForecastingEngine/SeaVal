@@ -1,0 +1,211 @@
+---
+#![](CONFERlogo.png){width=1in}  
+title: "Evaluating Seasonal Predictions"
+date: 2021-11-16
+author: Claudio Heinrich-Mertsching
+output: 
+  ioslides_presentation:
+    logo: CONFERlogo.png
+     #incremental: true
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(SeaVal)
+library(ggplot2)
+source('/nr/samba/user/claudio/pkg/SeaVal/R/utils.R')
+source('/nr/samba/user/claudio/pkg/SeaVal/R/confer_validation.R')
+
+# knitr::opts_chunk$set(fig.width = 6)
+# knitr::opts_chunk$set(fig.height = 6)
+
+```
+
+## In this talk:
+
+* How do we evaluate forecasts in general?
+* Evaluating Seasonal forecasts using the `R`-package `Seaval`
+* Example: evaluation of the October 2021 precipitation prediction issued at the September GHACOF
+
+
+## 
+
+* Evaluating past predictions helps us understand forecast deficits and strengths
+* Did the seasonal forecast exhibit skill (was it better than the climatology forecast)?
+* In what regions was skill high, where was it low?
+* We need to use performance measures that 
+  + reward better forecast
+  + allow comparison to climatology
+
+
+## Evaluation-pipeline:
+
+* load your prediction (in a suitable format)
+* get observations, including observations of past years!
+* scale observations and predictions onto the same grid
+* create climatology forecast for reference
+* Compare prediction and climatology forecast using objective performance metrics
+
+## Evaluating tercile forecasts
+
+<!-- *  -->
+<!-- * The threshold values low, normal and high depend on the local climatology -->
+<!-- * Emphasis lies on the category that gets predicted the highest probability, so we could think about evaluating like this: -->
+<!-- \[BS_{\max} = (p_{\max}-e_{\max})^2,\] -->
+<!-- where $p_{\max}$ is the probability assigned to the maximum probability category (between 0.33 and 1), and $e_{\max} = 1$ if the observation falls into that category and $0$ else.  -->
+<!-- * low values of $BS_{\max}$ seem to indicate a good forecast -->
+
+<!-- ## -->
+<!-- ```{r, echo=FALSE, out.width="100%", fig.cap=""} -->
+<!-- knitr::include_graphics("/nr/project/stat/CONFER/Presentations/CCH/2021-04-12 - time to stuff eval/CounterexampleBSonHighProbCat.PNG") -->
+<!-- ``` -->
+<!-- * Scores need to be *proper*, meaning that they systematically reward good forecasts. The $BS_\max$ is not proper. -->
+
+<!-- ## -->
+* Seasonal precipitation predictions are often issued in terms of three probabilities: one for low, one for normal, and one for high precipitation.
+
+* The following score is called the *multicategory Brier skill score*:
+\[MBSS := \frac{3}{2}(2/3 - (p_1 - e_1)^2 + (p_2 - e_2)^2 + (p_3 - e_3)^2).\]
+Here, $p_1,p_2,$ and $p_3$ are the predicted probabilities for the three categories, and $e_i$ is 1 if the observation falls in the $i$th category, and 0 else.
+  + $MBSS = 0$: your forecast is as good as climatology
+  + $MBSS > 0$: it is better
+  + $MBSS = 1$: your forecast is perfect.
+
+## The `SeaVal` package
+
+* `R` package for validation of seasonal forecasts 
+* Currently developed at the Norwegian Computing Center with input from ICPAC
+* Provides tools for evaluating forecasts, including data import/export and plotting
+* getting started:
+ + Install the open-source statistical programming software `R`
+ + type the following:
+ ```{r eval = FALSE, echo = TRUE}
+install.packages('devtools')
+devtools::install_github('SeasonalForecastingEngine/SeaVal')
+```
+should work on every laptop/server, wherever you are...
+
+## Example: evaluating the October 2021 precipitation forecast
+
+get the forecast as netcdf (not shown), and import as `R` data table:
+
+```{r,echo = TRUE}
+setwd('/nr/project/stat/CONFER/Data/validation/example_data/202109/') 
+prediction = netcdf_to_dt('PredictedProbabilityRain_Oct_Sep2021.nc',
+                          verbose = 0)
+print(prediction[!is.na(below)][1:5,])
+```
+
+
+## get observations:
+
+```{r,eval = FALSE, echo = TRUE}
+download_chirps(temp_res = 'monthly', 
+                save_dir = '/nr/project/stat/CONFER/Data/CHIRPS/')
+obs = process_chirps(temp_res = 'monthly',
+              chirps_dir = '/nr/project/stat/CONFER/Data/CHIRPS/')
+# subset October
+obs = obs[month == 10]
+print(obs)
+```
+```{r,echo = FALSE,eval = TRUE}
+obs = fread('/nr/project/stat/CONFER/Data/pres2021_11_15/obs.csv')
+obs[,month := 10]
+print(obs)
+```
+
+## derive climatology:
+
+```{r, echo = TRUE}
+obs = add_tercile_cat(obs)
+print(obs)
+```
+
+## join observation and prediction:
+
+```{r, echo = TRUE}
+eval_dt = merge(prediction, obs[year == 2021],
+                by = c('lon','lat'))
+eval_dt[,year := NULL][,month := NULL]
+print(eval_dt)
+```
+
+## plot observations:
+
+```{r,echo = FALSE,fig.height = 4,fig.width = 8}
+obs[,anomaly:= prec - mean(prec),by = .(lon,lat)]
+
+pp1 = ggplot_dt(eval_dt,'tercile_cat',low = 'red',high = 'blue') + ggtitle('Observed tercile category')
+pp2 = ggplot_dt(obs[year == 2021],'anomaly',low = 'red',high = 'blue',midpoint = 0) + ggtitle('Observed rainfall anomaly')
+
+ggpubr::ggarrange(pp1,pp2,ncol = 2)
+
+```
+
+
+## plot predictions:
+```{r,echo = FALSE}
+
+eval_dt[,below:=below/100]
+eval_dt[,above:=above/100]
+eval_dt[,normal:=normal/100]
+
+pp1 = ggplot_dt(eval_dt,
+                'below',high = 'red',low = 'blue',
+                midpoint = 1/3,discrete_cs = TRUE,binwidth = 0.1, 
+                guide = guide_colorbar(barwidth = 8,barheight = 0.5, direction = 'horizontal',title.position = 'top')) + ggtitle('predicted probability below') +
+  theme(legend.position = 'bottom')
+pp2 = ggplot_dt(eval_dt,
+                'normal',high = 'forestgreen',low = 'darkgoldenrod1',
+                midpoint = 1/3,discrete_cs = TRUE,binwidth = 0.1,
+                guide = guide_colorbar(barwidth = 8,barheight = 0.5, direction = 'horizontal',title.position = 'top')) + ggtitle('predicted probability normal') + 
+  theme(legend.position = 'bottom')
+pp3 = ggplot_dt(eval_dt,
+                'above',high = 'blue',low = 'red',
+                midpoint = 1/3,discrete_cs = TRUE,binwidth = 0.1,
+                guide = guide_colorbar(barwidth = 8,barheight = 0.5, direction = 'horizontal',title.position = 'top')) + ggtitle('predicted probability above') + 
+  theme(legend.position = 'bottom')
+
+ggpubr::ggarrange(pp1,pp2,pp3,ncol = 3)
+
+```
+
+## evaluate prediction
+
+<div style= "float:right;position: relative; ">
+```{r,fig.width = 4.5}
+mbss = MBSS_dt(eval_dt,obs_col = 'tercile_cat')
+pp = ggplot_dt(mbss,'MBSS',
+               high = 'darkgreen',low = 'purple',
+               discrete_cs = TRUE,binwidth = 0.2,
+               midpoint = 0, 
+               mn = 'MBSS for October prediction')
+plot(pp)
+```
+</div>
+
+
+- prediction performed better than climatology in the eastern part of the Kenya, southern Somalia and southern Ethipoia
+- everywhere else the prediction performed equally good as climatology
+
+
+
+## summary
+
+The `SeaVal` package provides functionality for:
+
+- importing predictions as netcdf
+- downloading observations (CHIRPS)
+- matching data on different grids
+- evaluating forecasts
+- plotting results
+- exporting netcdfs
+- more to come...
+
+
+
+More information is available at 
+
+[http://files.nr.no/samba/CONFER/SeaVal/]
+

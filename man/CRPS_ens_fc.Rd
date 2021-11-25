@@ -12,7 +12,8 @@ CRPS_ens_fc(
     names(fc_dt)),
   along_cns = c("year"),
   check_dimensions = T,
-  member_cn = "member"
+  member_cn = "member",
+  ens_size_correction = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 \item{along_cns}{column name(s) for the variable(s) along which is averaged, typically just 'year'.}
 
 \item{member_cn}{Name of the column identifying the ensemble member.}
+
+\item{ens_size_correction}{logical, passed on to crps_sample_na}
 
 \item{obs_dt}{Data table containing the observations. Pass NULL if the observations are contained in fc_dt.}
 

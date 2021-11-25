@@ -10,8 +10,7 @@ PCC_dt(
   obs_col = "obs",
   by_cols = intersect(c("month", "season", "lon", "lat", "system", "lead_time"),
     names(fc_obs_dt)),
-  along_cols = c("year"),
-  ...
+  along_cols = c("year")
 )
 }
 \arguments{
