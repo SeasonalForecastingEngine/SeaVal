@@ -3,3 +3,6 @@ scripts/SeaValDocumentation/bookdown/_temp.RData
 scripts/SeaValDocumentation/bookdown/_data_dir.RData
 scripts/SeaValDocumentation/bookdown/render_tutorial.R
 *.Rhistory
+scripts/SeaValDocumentation/bookdown/_book/
+scripts/SeaValDocumentation/bookdown/_bookdown_files/
+
