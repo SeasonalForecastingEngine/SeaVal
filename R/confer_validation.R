@@ -246,6 +246,7 @@ composite_analysis = function(var_dt,TC_dt,
 #' @param check_dimension Logical. If True, a simple test whether the dimensions match up is conducted:
 #' Namely, getting the mean grouped by by_cns AND along_cns should correspond to getting the ensemble mean. This is tested.
 #' @param member_cn Name of the column identifying the ensemble member.
+#' @param ens_size_correction logical, passed on to crps_sample_na
 #'
 #' @export
 
@@ -255,7 +256,8 @@ CRPS_ens_fc = function(fc_dt,fc_cn,
                        by_cns = intersect(c('month','season','lon','lat','system','lead_time'),names(fc_dt)),
                        along_cns = c('year'),
                        check_dimensions = T,
-                       member_cn = 'member')
+                       member_cn = 'member',
+                       ens_size_correction = FALSE)
 {
   fc_dt = fc_dt[!is.na(get(obs_cn)) & ! is.na(get(fc_cn))]
 
@@ -282,7 +284,7 @@ CRPS_ens_fc = function(fc_dt,fc_cn,
 
   obs = fc_dt_new[,get(obs_cn)]
 
-  crps_vals = crps_sample_na(obs,pred_mat)
+  crps_vals = crps_sample_na(obs,pred_mat, ens_size_correction = ens_size_correction)
 
   ret_dt = fc_dt_new[,.SD,.SDcols = c(along_cns,by_cns)][,CRPS := crps_vals]
   ret_dt = ret_dt[,.(CRPS = mean(CRPS)), by = by_cns]
@@ -351,17 +353,33 @@ CRPSS_ens_fc = function(fc_dt,fc_cn,
 #' @param obs vector of observations.
 #' @param pred either vector of predictions when a single observation is provided, or a matrix with nrow = length(obs)
 #' where the different columns are the different predictions.
+#' @param ens_size_correction logical. If TRUE, the correction for ensemble size proposed in Ferro et al. 2008: 'On the effect of ensemble size on the discrete and continuous
+#' ranked probability scores' is employed. This makes calculations slower, but should be done when you compare ensembles with different sizes!
 #'
 #' @importFrom scoringRules crps_sample
 #' @export
 
-crps_sample_na = function(obs, pred)
+crps_sample_na = function(obs, pred, ens_size_correction = FALSE)
 {
-  crps_sample_na_single_obs = function(single_obs,vector_pred)
+  if(ens_size_correction)
   {
-    vector_pred2 = vector_pred[!(is.na(vector_pred) | is.nan(vector_pred))]
-    crps = scoringRules::crps_sample(single_obs,vector_pred2)
-    return(crps)
+    crps_sample_na_single_obs = function(single_obs,vector_pred)
+    {
+      vector_pred2 = vector_pred[!(is.na(vector_pred) | is.nan(vector_pred))]
+
+      ens_size = length(vector_pred2)
+      mean_dist_xx = mean(stats::dist(vector_pred2))
+
+      crps = scoringRules::crps_sample(single_obs,vector_pred2) - mean_dist_xx/(2*ens_size)
+      return(crps)
+    }
+  } else {
+    crps_sample_na_single_obs = function(single_obs,vector_pred)
+    {
+      vector_pred2 = vector_pred[!(is.na(vector_pred) | is.nan(vector_pred))]
+      crps = scoringRules::crps_sample(single_obs,vector_pred2)
+      return(crps)
+    }
   }
 
   if(length(obs) == 1)
@@ -370,6 +388,7 @@ crps_sample_na = function(obs, pred)
   } else{
     crps = sapply(seq_along(obs), function(i) crps_sample_na_single_obs(obs[i], pred[i,]))
   }
+
 
   return(crps)
 }
@@ -389,7 +408,7 @@ crps_sample_na = function(obs, pred)
 
 
 MBSS_dt = function(fc_dt,fc_cols = c('below','normal','above'),
-                  obs_col = ifelse(is.null(obs_dt),yes = 'obs',no = fc_col),
+                  obs_col = 'tercile_cat',
                   by_cols = intersect(c('month','season','lon','lat','system','lead_time'),names(fc_dt)),
                   along_cols = c('year'))
 {

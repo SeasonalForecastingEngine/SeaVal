@@ -1,0 +1,111 @@
+
+R version 4.0.5 (2021-03-31) -- "Shake and Throw"
+Copyright (C) 2021 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> rm(list = ls())
+> 
+> library(SeaVal)
+Loading required package: data.table
+Loading required package: ForecastTools
+> 
+> data_dir = '/nr/project/stat/CONFER/Data/validation/example_data/202109/'
+> 
+> fns = list.files(data_dir)
+> #
+> #
+> # for(fn in fns)
+> # {
+> #   print(fn)
+> #   dt = netcdf_to_dt(paste0(data_dir,fn),verbose = 0)
+> #   print(dt)
+> # }
+> # dt = netcdf_to_dt(paste0(data_dir,'PredictedProbabilityRain_Oct_Sep2021.nc'),verbose = 0)
+> 
+> 
+> setwd('/nr/project/stat/CONFER/Data/validation/example_data/202109/')
+> 
+> prediction = netcdf_to_dt('PredictedProbabilityRain_Oct_Sep2021.nc')
+File PredictedProbabilityRain_Oct_Sep2021.nc (NC_FORMAT_CLASSIC):
+
+     3 variables (excluding dimension variables):
+        float below[lon,lat]   
+            lead: 1
+            average_op_ncl: dim_avg_n over dimension(s): model
+            type: 0
+            _FillValue: -1
+        float normal[lon,lat]   
+            lead: 1
+            average_op_ncl: dim_avg_n over dimension(s): model
+            type: 2
+            _FillValue: -1
+        float above[lon,lat]   
+            lead: 1
+            average_op_ncl: dim_avg_n over dimension(s): model
+            type: 2
+            _FillValue: -1
+
+     3 dimensions:
+        time  Size:0   *** is unlimited ***
+[1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"
+        lat  Size:381
+            units: degrees_north
+        lon  Size:326
+            units: degrees_east
+
+    6 global attributes:
+        units: mm
+        MonInit_month: 9
+        valid_time: Oct
+        creation_date: Thu Sep 30 19:11:54 EAT 2021
+        Conventions: None
+        title: Predicted Tercile probability 
+> prediction = prediction[!is.na(below)]
+> 
+> print(prediction)
+        lon   lat    below   normal    above
+    1: 20.5 -11.8 40.14280 28.69145 31.16575
+    2: 20.5 -11.7 39.71079 28.69912 31.59009
+    3: 20.5 -11.6 39.23802 28.73168 32.03030
+    4: 20.5 -11.5 38.64296 28.83887 32.51817
+    5: 20.5 -11.4 38.76350 28.00487 33.23163
+   ---                                      
+59344: 50.6  11.5 32.20811 33.32841 34.46347
+59345: 50.7  11.5 32.49971 33.22723 34.27306
+59346: 50.8  11.5 32.78868 33.12886 34.08246
+59347: 50.9  11.5 33.02057 33.11785 33.86158
+59348: 51.0  11.5 33.08122 33.36888 33.54990
+> 
+> 
+> 
+> chirps_dir = '/nr/project/stat/CONFER/Data/CHIRPS/'
+> obs_dt = ncdf_to_dt(paste0(chirps_dir,'CHIRPS_monthly.nc'))
+Units:
+X:   degree_east
+T:   months since 1960-01-01
+Y:   degree_north
+precipitation:   mm/month> 
+> setnames(obs_dt,c('lon','lat','month','prec'))
+> 
+> obs_dt[,year := floor(month/12) + 1960]
+> obs_dt[,month := floor(month)%%12 + 1]
+> obs_dt[,prec := prec/30] # calendar is 360 days, original unit is mm/month
+> 
+> obs_dt = obs_dt[month == 10]
+> 
+> obs_new = upscale_nested_griddings(obs_dt,uscol = 'prec',bycols = 'year',coarse_grid = prediction[,.(lon,lat)])
+Killed

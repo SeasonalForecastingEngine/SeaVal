@@ -61,6 +61,7 @@ ggplot_dt(dt[!is.na(corr)], # here we suppress missing values
           
 ```
 
+Similarly, for writing netcdf files from data tables, the package has a function `dt_to_netcdf`. The function requires a data table as input as well as the names of the columns containing the variables and dimension variables, and a filename to write to. The function will prompt you for units for all variables, but otherwise does not allow to include detailed descriptions in the netcdf. It also currently does not support writing netcdfs with multiple variables that have different dimension variables. You can use the Rpackage `ncdf4` for that.
 
 
 ## Reshaping data {#data-examples}
@@ -187,7 +188,7 @@ ggplot_dt(dt,'normal')
 
 ### Example: Upscaling observations {#us-obs}
 
-Here we prepare a dataset for evaluating tercile forecasts for the MAM season: In our example data directory `data_dir` (given above) there are three datasets we need to combine to this end. Predictions, past observations and the 2021-observation. Note that we require past observations in order to find the climatology terciles, so that we can check whether the observed rainfll at a gridpoint is indeed 'high' or 'low' for that gridpoint.,
+Here we prepare a dataset for evaluating tercile forecasts for the MAM season: In our example data directory `data_dir` (given above) there are three datasets we need to combine to this end. Predictions, past observations and the 2021-observation. Note that we require past observations in order to find the climatology terciles, so that we can check whether the observed rainfall at a gridpoint is indeed 'high' or 'low' for that gridpoint.,
 Our main challenge is that the 2021-observation file looks quite different from the others. In particular it is on a grid with higher resolution. 
 
 ```{r,cache = TRUE }
@@ -254,6 +255,7 @@ How to evaluate this dataset will be discussed in Section \@ref(eval-terciles).
 dt_tercile_forecast = copy(dt)
 ```
 
+Besides the function `upscale_to_half_degrees` there is another function called `upscale_nested_griddings` that is more general purpose and makes weaker assumptions about the grids, 
 
 
 

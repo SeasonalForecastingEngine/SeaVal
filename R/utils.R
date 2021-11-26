@@ -22,9 +22,9 @@ add_country_names = function(dt)
 #' @importFrom data.table as.data.table
 
 
-add_tercile_cat = function(dt,datacol = 'prec',bycols = intersect('month',names(dt)))
+add_tercile_cat = function(dt,datacol = 'prec',bycols = intersect(c('month','lon','lat'),names(dt)))
 {
-  dt[!(is.na(get(datacol))),tercile_cat := -1*(get(datacol) <= quantile(get(datacol),0.33)) + 1 *(get(datacol) >= quantile(get(datacol),0.67))]
+  dt[!(is.na(get(datacol))),tercile_cat := -1*(get(datacol) <= quantile(get(datacol),0.33)) + 1 *(get(datacol) >= quantile(get(datacol),0.67)),by = bycols]
   return(dt)
 }
 
@@ -91,15 +91,20 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 0.5)
 
 
 #'upscaling data from a finer to a coarser grid (by averaging) assumes the finer grid to be nested within the larger (only averages )
-#'Does not account for error by projection (lon/lat squares are treated as actual squares), so only use this near the equator.
+#'Does not account for error by projection (lon/lat squares are treated as actual squares), and assumes lon/lat gridcells to all have equal size, so only use this near the equator.
+#'
+#'@param dt Data table containing data for upscaling
+#'@param uscol The column name of the column to be upscaled by averaging
+#'@param coarse_grid The coarse grid as data table with colnames lon,lat.
+#'@param bycols column names of dt for grouping (usually time- or system-columns)
+#'
 #'
 #'@export
 
 upscale_nested_griddings = function(dt,
                                     uscol,
                                     coarse_grid,
-                                    bycols = intersect(c('month','year'),colnames(dt)),
-                                    type = 'within')
+                                    bycols = intersect(c('month','year'),colnames(dt)))
 {
   save_key_dt = key(dt)
 
@@ -117,7 +122,7 @@ upscale_nested_griddings = function(dt,
   d_lat = fine_lats[2] - fine_lats[1]
 
   dt[,min_lon := lon-d_lon/2][,max_lon := lon + d_lon/2][,min_lat := lat-d_lat/2][,max_lat := lat + d_lat/2]
-
+  fine_grid[,min_lon := lon-d_lon/2][,max_lon := lon + d_lon/2][,min_lat := lat-d_lat/2][,max_lat := lat + d_lat/2]
 
   # get grid size of coarse grid
   coarse_lons = sort(unique(coarse_grid[,lon]))
@@ -131,18 +136,28 @@ upscale_nested_griddings = function(dt,
   # overlapjoin in lon:
 
   setkey(dt,min_lon,max_lon)
+  setkey(fine_grid,min_lon,max_lon)
   setkey(coarse_grid,min_lon,max_lon)
 
-  temp = foverlaps(dt,coarse_grid,type = 'within')
+  # using foverlaps on the entire dt does not fit in memory for big data tables:
+
+  dt_sub = foverlaps(fine_grid,coarse_grid,type = 'within')
 
   # restrict to coarse cells that actually contain at least one fine cell:
-  temp = temp[!is.na(lon)&!is.na(lat)]
-  # restrict to latitudes within coarse gridcells
-  temp = temp[i.min_lat >=min_lat & i.max_lat <=  max_lat]
+  dt_sub = dt_sub[!is.na(lon)&!is.na(lat)]
+  # restrict to coordinates within coarse gridcells
+  dt_sub = dt_sub[ i.min_lat >=min_lat & i.max_lat <=  max_lat]
 
-  upscaled_values = temp[,lapply(.SD,mean,na.rm = T),.SDcols = uscol,by = c(bycols,'lon','lat')]
+  setnames(dt_sub,c('lon','lat','i.lon','i.lat'),c('new_lon','new_lat','lon','lat'))
 
-  return(upscaled_values)
+  dt = merge(dt,dt_sub[,.(lon,lat,new_lon,new_lat)],by = c('lon','lat'))
+
+
+  dt = dt[,lapply(.SD,mean,na.rm = T),.SDcols = uscol,by = c(bycols,'new_lon','new_lat')]
+
+  setnames(dt,c('new_lon','new_lat'),c('lon','lat'))
+
+  return(dt)
 }
 
 
@@ -204,17 +219,20 @@ upscale_to_half_degrees = function(dt,
 
 
   ### get weight matrices ###
+  for (ind in 1:4) {
+    temp = copy(coarse_grid)
+    setnames(temp, c(paste0("c", c("lon", "lat"), ind), paste0("ic",
+                                                               ind)))
+    fine_grid = merge(fine_grid, temp, by = paste0("c", c("lon",
+                                                          "lat"), ind))
+  }
+  setkey(fine_grid, lon, lat)
   for(ind in 1:4)
   {
-    temp = copy(coarse_grid)
-    setnames(temp,c(paste0('c',c('lon','lat'),ind),paste0('ic',ind)))
-    fine_grid = merge(fine_grid,temp,by = paste0('c',c('lon','lat'),ind))
-    setkey(fine_grid,lon,lat)
-
-    assign(paste0('Mat',ind),value = Matrix::sparseMatrix(i = fine_grid[,get(paste0('ic',ind))],
-                                                          j = fine_grid[,index_fine],
-                                                          x = fine_grid[,get(paste0('ol',ind))],
-                                                          dims = c(coarse_grid[,.N],fine_grid[,.N])))
+    assign(paste0("Mat", ind), value = Matrix::sparseMatrix(i = fine_grid[,
+                                                                          get(paste0("ic", ind))], j = fine_grid[, index_fine],
+                                                            x = fine_grid[, get(paste0("ol", ind))], dims = c(coarse_grid[,
+                                                                                                                          .N], fine_grid[, .N])))
   }
 
   multipl_matrix = Mat1 + Mat2 + Mat3 + Mat4
@@ -226,7 +244,7 @@ upscale_to_half_degrees = function(dt,
 
   coarse_grid[,inGHA := abs(rs) > 1e-5]
 
-  dt = dt[!is.na(prec)]
+  dt = dt[!is.na(get(uscol))]
 
   dt_new = data.table()
 

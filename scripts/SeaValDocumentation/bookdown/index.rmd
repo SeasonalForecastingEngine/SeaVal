@@ -1,9 +1,13 @@
 
 ---
 title: "The `SeaVal` package for validating seasonal weather forecasts"
-author: "Claudio Heinrich"
+author:
+  - Claudio Heinrich and Michael Scheuerer, with input from
+  - Masilin Gudoshava, Eunice Koech, Anthony Mwanthi, Zewdu Segele, Hussen Seid and Thordis Thorarinsdottir 
 output: html_document
 ---
+  
+    
 
 
 # Getting Started
