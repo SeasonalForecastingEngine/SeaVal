@@ -5,4 +5,7 @@ scripts/SeaValDocumentation/bookdown/render_tutorial.R
 *.Rhistory
 scripts/SeaValDocumentation/bookdown/_book/
 scripts/SeaValDocumentation/bookdown/_bookdown_files/
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2cdccf75ce8de899c0648cabdf087e660459e2e4
