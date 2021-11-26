@@ -5,17 +5,28 @@ chirps_dir = function(dir = '/nr/project/stat/CONFER/Data/CHIRPS/')
     return(dir)
 }
 
+GHA_bounding_box
+
 #' Download CHIRPS
 #'
 #' downloads CHIRPS data and saves it as netcdf. Can download both monthly and daily data. Monthly data is downloaded from http://digilib.icpac.net/SOURCES/.ICPAC/.CHIRPS-BLENDED/.monthly/.rainfall/.precipitation/.
 #' Daily data is downloaded from https://data.chc.ucsb.edu/products/CHIRPS-2.0/prelim/global_daily/netcdf/p05/
+#'
+#' There are several sources providing CHIRPS data, all of them with advantages and disadvantages:
+#' Sources for the monthly data:
+#' \itemize{
+#' \item the climate hazard center 'https://data.chc.ucsb.edu/products/CHIRPS-2.0/'. This is the original host (I think), but they only have a single .nc file covering the entire globe
+#' \item ICPACs data library, this is the CHIRPS-BLENDED dataset, but it sometimes lags a few months behind
+#' \item
+#' }
+#'
 #' @param temp_res temporal resolution. Either 'monthly' or 'daily'.
 #' @param years Which years to download. Only used when temp_res == 'daily', for monthly data, everything is downloaded.
 #' @param save_dir Where to save the netcdfs.
 #'
 #' @export
 
-download_chirps = function(temp_res = 'monthly', save_dir = '/nr/project/stat/CONFER/Data/CHIRPS/',update = TRUE, years = NULL, origin = 'chc.ucsb.edu')
+download_chirps = function(temp_res = 'monthly', save_dir = chirps_dir(), update = TRUE, years = NULL, origin = 'chc')
 {
   options(timeout = max(300, getOption("timeout")))
   if(temp_res == 'daily')
@@ -29,7 +40,10 @@ download_chirps = function(temp_res = 'monthly', save_dir = '/nr/project/stat/CO
   }
   if(temp_res == 'monthly')
   {
-
+    if(origin == 'chc')
+    {
+      url = 'https://data.chc.ucsb.edu/products/CHIRPS-2.0/global_monthly/netcdf/chirps-v2.0.monthly.nc'
+    }
     urll = 'http://digilib.icpac.net/SOURCES/.ICPAC/.CHIRPS-BLENDED/.monthly/.rainfall/.precipitation/data.nc'
     download.file(urll, destfile = paste0(save_dir,'CHIRPS_monthly.nc'), method = "auto",
                   quiet = FALSE, mode="wb", cacheOK = TRUE)
