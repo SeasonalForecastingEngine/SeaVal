@@ -88,7 +88,7 @@ head(dt_obs2021)
 # the 2021 observation is named differently...
 setnames(dt_obs2021,c('longitude','latitude','precip'),c('lon','lat','prec'))
 head(dt_obs2021)
-# ... and it is on higher resolution:
+
 ggplot_dt(dt_obs2021,'prec',high = 'blue',midpoint = 0)
 
 # we can upscale it to the same grid as dt_obs

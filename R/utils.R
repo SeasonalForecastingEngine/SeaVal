@@ -45,9 +45,11 @@ MSD_to_YM = function(dt,timecol = 'time',origin = '1981-01-01')
   or_year = year(as.Date(origin))
 
   mons = (dt[,get(timecol)] + or_mon ) %% 12
-  mons[mons == 0] = 12
+
   # in case the middle of the month is supplied (i.e. non-integer times):
   mons = floor(mons)
+
+  mons[mons == 0] = 12
 
   years = (dt[,get(timecol)] + or_mon ) %/% 12 + or_year
   years[mons == 12] = years[mons == 12] - 1

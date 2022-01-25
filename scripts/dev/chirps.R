@@ -5,7 +5,80 @@ chirps_dir = function(dir = '/nr/project/stat/CONFER/Data/CHIRPS/')
     return(dir)
 }
 
-GHA_bounding_box
+GHA_bounding_coords = function()
+{
+  return(data.table(lon = c(21.5,51.5),lat = c(-12,22.5)))
+}
+
+
+#' Downloads monthly CHIRPS-data
+#'
+#' downloads CHIRPS monthly data for the GHA-region and saves it as netcdf. The data is downloaded from the IRI data library (see function code for link), because this data library allows to subset before downloading,
+#' unlike the original source at UCSB or CHIRPS-blended at ICPAC. As of December 2021, the entire CHIRPS-monthly data for this region is roughly 800MB on disk.
+#'
+#' @param save_dir where should the data be saved?
+#' @param update Logical, if TRUE, files for previous years that already exist are not loaded again.
+#' @param years Which years do you want to load? NULL loads everything there is.
+#' @param timeout_limit how many seconds (per file, i.e. per year) before the download is aborted?
+#'
+#' @export
+
+
+download_chirps_monthly_iridl = function(save_dir = paste0(chirps_dir(),'monthly/iridl/'),
+                                         update = TRUE,
+                                         years = NULL,
+                                         timeout_limit = 300)
+{
+  options(timeout = max(timeout_limit, getOption("timeout")))
+
+  if(!dir.exists(save_dir))
+  {
+    yn = readline(prompt="The directory you try saving in does not exist, do you want to create it? y/n:")
+    if(yn == 'n') stop()
+  }
+
+  dir.create(save_dir,showWarnings = F,recursive = T)
+
+  if(is.null(years)) years = 1981:year(Sys.Date())
+
+
+  if(update)
+  {
+    fns = list.files(save_dir)
+    fns = fns[grep('.nc',fns)]
+    available_years = as.numeric(gsub(pattern = '.nc',replacement = '', x = fns))
+    #remove current year: even if that file exists you probably want to reload that, because there might be new months available since last download
+    available_years = setdiff(available_years,year(Sys.Date()))
+  } else {
+    available_years = NULL
+  }
+
+  for(yy in years)
+  {
+    if(!(yy %in% available_years))
+    {
+      print(yy)
+
+      filestr = paste0('http://iridl.ldeo.columbia.edu/SOURCES/.UCSB/.CHIRPS/.v2p0/.monthly/.global/.precipitation/T/%28Jan%20',yy,'%29%28Dec%20',yy,'%29RANGEEDGES/Y/%2822.5N%29%2812S%29RANGEEDGES/X/%2821.5E%29%2851.5E%29RANGEEDGES/data.nc')
+
+      # get data
+      download.file(filestr, destfile = paste0(save_dir,yy,'.nc'), method = "auto",
+                    quiet = FALSE, mode="wb", cacheOK = TRUE)
+    }
+
+  }
+}
+
+
+fn = 'http://iridl.ldeo.columbia.edu/SOURCES/.UCSB/.CHIRPS/.v2p0/.monthly/.global/.precipitation/T/%28Jan%201981%29%28Dec%201981%29RANGEEDGES/Y/%2822.5N%29%2812S%29RANGEEDGES/X/%2821.5E%29%2851.5E%29RANGEEDGES/data.nc'
+fn = 'http://iridl.ldeo.columbia.edu/SOURCES/.UCSB/.CHIRPS/.v2p0/.monthly/.global/.precipitation/T/%28Jan%202021%29%28Dec%202021%29RANGEEDGES/Y/%2849.875N%29%2849.975S%29RANGEEDGES/X/%28178.5W%29%28179.95E%29RANGEEDGES/data.nc'
+download_chirps_monthly_iridl()
+
+nc = nc_open(fn)
+
+
+
+######################################
 
 #' Download CHIRPS
 #'
@@ -36,6 +109,31 @@ download_chirps = function(temp_res = 'monthly', save_dir = chirps_dir(), update
     print(year)
     download.file(url = paste0('https://data.chc.ucsb.edu/products/CHIRPS-2.0/prelim/global_daily/netcdf/p05/chirps-v2.0.',year,'.days_p05.nc'),
                   destfile = paste0(save_dir,'CHIRPS_daily',year,'.nc'))
+    }
+  }
+  if(temp_res == 'monthly')
+  {
+    if(origin == 'chc')
+    {
+      url = 'https://data.chc.ucsb.edu/products/CHIRPS-2.0/global_monthly/netcdf/chirps-v2.0.monthly.nc'
+    }
+    urll = 'http://digilib.icpac.net/SOURCES/.ICPAC/.CHIRPS-BLENDED/.monthly/.rainfall/.precipitation/data.nc'
+    download.file(urll, destfile = paste0(save_dir,'CHIRPS_monthly.nc'), method = "auto",
+                  quiet = FALSE, mode="wb", cacheOK = TRUE)
+
+  }
+}
+
+download_chirps = function(temp_res = 'monthly', save_dir = chirps_dir(), update = TRUE, years = NULL, origin = 'chc')
+{
+  options(timeout = max(300, getOption("timeout")))
+  if(temp_res == 'daily')
+  {
+    for(year in years)
+    {
+      print(year)
+      download.file(url = paste0('https://data.chc.ucsb.edu/products/CHIRPS-2.0/prelim/global_daily/netcdf/p05/chirps-v2.0.',year,'.days_p05.nc'),
+                    destfile = paste0(save_dir,'CHIRPS_daily',year,'.nc'))
     }
   }
   if(temp_res == 'monthly')
