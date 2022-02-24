@@ -49,6 +49,12 @@ data_dir = function(set_dir = F)
       cat('Please type your data directory. \n
 Use / on Linux (e.g. /nr/project/stat/CONFER/Data/) and \\ on Windows (e.g. C:\\Users\\Documents\\).')
       rl3 = readline('Input:')
+
+      # check whether user has wrapped with ' or " and remove:
+      if(substr(rl3,nchar(rl3),nchar(rl3)) %in% c("'",'"') & substr(rl3,1,1) %in% c("'",'"'))
+      {
+        rl3 = substr(rl3,2,nchar(rl3)-1)
+      }
       # check whether a \ or / was put at the end, else add it:
       if(Sys.info()["sysname"] == 'Windows')
       {
