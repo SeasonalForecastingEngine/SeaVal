@@ -135,6 +135,8 @@ download_chirps_monthly = function(resolution = 'both',update = TRUE,
                                    upscale_grid = data.table(expand.grid(lon = seq(extent[1],extent[2],0.5),
                                                                          lat = seq(extent[3],extent[4],0.5))))
 {
+  message(paste0('The data is stored in\n',file.path(chirps_dir(),'monthly'),'\n For changing this, run data_dir(set_dir = TRUE).'))
+
   if(resolution == 'both')
   {
     download_chirps_monthly_high(update = update,
