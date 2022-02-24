@@ -4,11 +4,12 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>4 Validation | The SeaVal package for validating seasonal weather forecasts</title>
-  <meta name="description" content="4 Validation | The SeaVal package for validating seasonal weather forecasts" />
+  <title>5 Validation |  The SeaVal package for validating seasonal weather forecasts</title>
+  <meta name="description" content="<br />
+The <code>SeaVal</code> package for validating seasonal weather forecasts</p>" />
   <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="4 Validation | The SeaVal package for validating seasonal weather forecasts" />
+  <meta property="og:title" content="5 Validation |  The SeaVal package for validating seasonal weather forecasts" />
   <meta property="og:type" content="book" />
   
   
@@ -16,12 +17,13 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="4 Validation | The SeaVal package for validating seasonal weather forecasts" />
+  <meta name="twitter:title" content="5 Validation |  The SeaVal package for validating seasonal weather forecasts" />
   
   
   
 
-<meta name="author" content="Claudio Heinrich" />
+<meta name="author" content="Claudio Heinrich and Michael Scheuerer, with input from" />
+<meta name="author" content="Masilin Gudoshava, Eunice Koech, Anthony Mwanthi, Zewdu Segele, Hussen Seid and Thordis Thorarinsdottir" />
 
 
 
@@ -30,8 +32,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="data-import-and-processing.html"/>
-
+<link rel="prev" href="data-import-and-processing-1.html"/>
+<link rel="next" href="validation-1.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -54,25 +57,27 @@
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -81,9 +86,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -129,31 +134,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Getting Started</a><ul>
-<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#installation"><i class="fa fa-check"></i><b>1.1</b> Installation</a></li>
-<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#examples-of-data.table-syntax"><i class="fa fa-check"></i><b>1.2</b> examples of <code>data.table</code> syntax</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="1" data-path="getting-started.html"><a href="getting-started.html"><i class="fa fa-check"></i><b>1</b> Getting Started</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="getting-started.html"><a href="getting-started.html#installation"><i class="fa fa-check"></i><b>1.1</b> Installation</a></li>
+<li class="chapter" data-level="1.2" data-path="getting-started.html"><a href="getting-started.html#examples-of-data.table-syntax"><i class="fa fa-check"></i><b>1.2</b> examples of <code>data.table</code> syntax</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="plotting.html"><a href="plotting.html"><i class="fa fa-check"></i><b>2</b> Plotting</a><ul>
+<li class="chapter" data-level="2" data-path="plotting.html"><a href="plotting.html"><i class="fa fa-check"></i><b>2</b> Plotting</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="plotting.html"><a href="plotting.html#plotting-values-for-selected-countries"><i class="fa fa-check"></i><b>2.1</b> Plotting values for selected countries</a></li>
 <li class="chapter" data-level="2.2" data-path="plotting.html"><a href="plotting.html#customized-plots"><i class="fa fa-check"></i><b>2.2</b> Customized plots</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html"><i class="fa fa-check"></i><b>3</b> Data import and processing</a><ul>
+<li class="chapter" data-level="3" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html"><i class="fa fa-check"></i><b>3</b> Data import and processing</a>
+<ul>
 <li class="chapter" data-level="3.1" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#netcdf_to_dt"><i class="fa fa-check"></i><b>3.1</b> The function <code>netcdf_to_dt</code></a></li>
-<li class="chapter" data-level="3.2" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#data-examples"><i class="fa fa-check"></i><b>3.2</b> Reshaping data</a><ul>
-<li class="chapter" data-level="3.2.1" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#cv-data"><i class="fa fa-check"></i><b>3.2.1</b> Example: cross-validation data</a></li>
-<li class="chapter" data-level="3.2.2" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#ex-corrupted-netcdf"><i class="fa fa-check"></i><b>3.2.2</b> Example: ‘corrupted’ netcdf</a></li>
-<li class="chapter" data-level="3.2.3" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#us-obs"><i class="fa fa-check"></i><b>3.2.3</b> Example: Upscaling observations</a></li>
-<li class="chapter" data-level="3.2.4" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#data-ex-prexc"><i class="fa fa-check"></i><b>3.2.4</b> Example: preparing data for evaluating exceedence probabilities</a></li>
+<li class="chapter" data-level="3.2" data-path="data-import-and-processing.html"><a href="data-import-and-processing.html#downloading-and-processing-chirps-data"><i class="fa fa-check"></i><b>3.2</b> Downloading and processing CHIRPS data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="data-import-and-processing-1.html"><a href="data-import-and-processing-1.html"><i class="fa fa-check"></i><b>4</b> Data import and processing</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="data-import-and-processing-1.html"><a href="data-import-and-processing-1.html#data-examples"><i class="fa fa-check"></i><b>4.1</b> Reshaping data</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="data-import-and-processing-1.html"><a href="data-import-and-processing-1.html#cv-data"><i class="fa fa-check"></i><b>4.1.1</b> Example: cross-validation data</a></li>
+<li class="chapter" data-level="4.1.2" data-path="data-import-and-processing-1.html"><a href="data-import-and-processing-1.html#ex-corrupted-netcdf"><i class="fa fa-check"></i><b>4.1.2</b> Example: ‘corrupted’ netcdf</a></li>
+<li class="chapter" data-level="4.1.3" data-path="data-import-and-processing-1.html"><a href="data-import-and-processing-1.html#us-obs"><i class="fa fa-check"></i><b>4.1.3</b> Example: Upscaling observations</a></li>
+<li class="chapter" data-level="4.1.4" data-path="data-import-and-processing-1.html"><a href="data-import-and-processing-1.html#data-ex-prexc"><i class="fa fa-check"></i><b>4.1.4</b> Example: preparing data for evaluating exceedence probabilities</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="validation.html"><a href="validation.html"><i class="fa fa-check"></i><b>4</b> Validation</a><ul>
-<li class="chapter" data-level="4.1" data-path="validation.html"><a href="validation.html#cv-eval"><i class="fa fa-check"></i><b>4.1</b> Evaluating cross-validation predictions</a></li>
-<li class="chapter" data-level="4.2" data-path="validation.html"><a href="validation.html#evaluating-tercile-forecasts"><i class="fa fa-check"></i><b>4.2</b> Evaluating Tercile Forecasts</a><ul>
-<li class="chapter" data-level="4.2.1" data-path="validation.html"><a href="validation.html#eval-terciles"><i class="fa fa-check"></i><b>4.2.1</b> Proper scoring rules for full tercile forecasts</a></li>
-<li class="chapter" data-level="4.2.2" data-path="validation.html"><a href="validation.html#eval-terciles2"><i class="fa fa-check"></i><b>4.2.2</b> Evaluation when only the highest probability category is avaliable</a></li>
+<li class="chapter" data-level="5" data-path="validation.html"><a href="validation.html"><i class="fa fa-check"></i><b>5</b> Validation</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="validation.html"><a href="validation.html#cv-eval"><i class="fa fa-check"></i><b>5.1</b> Evaluating cross-validation predictions</a></li>
+<li class="chapter" data-level="5.2" data-path="validation.html"><a href="validation.html#evaluating-tercile-forecasts"><i class="fa fa-check"></i><b>5.2</b> Evaluating Tercile Forecasts</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="validation.html"><a href="validation.html#eval-terciles"><i class="fa fa-check"></i><b>5.2.1</b> Proper scoring rules for full tercile forecasts</a></li>
+<li class="chapter" data-level="5.2.2" data-path="validation.html"><a href="validation.html#eval-terciles2"><i class="fa fa-check"></i><b>5.2.2</b> Evaluation when only the highest probability category is avaliable</a></li>
 </ul></li>
-<li class="chapter" data-level="4.3" data-path="validation.html"><a href="validation.html#eval-ex-pr"><i class="fa fa-check"></i><b>4.3</b> Exceedence probabilities</a></li>
-<li class="chapter" data-level="4.4" data-path="validation.html"><a href="validation.html#temperature"><i class="fa fa-check"></i><b>4.4</b> Temperature</a></li>
+<li class="chapter" data-level="5.3" data-path="validation.html"><a href="validation.html#eval-ex-pr"><i class="fa fa-check"></i><b>5.3</b> Exceedence probabilities</a></li>
+<li class="chapter" data-level="5.4" data-path="validation.html"><a href="validation.html#temperature"><i class="fa fa-check"></i><b>5.4</b> Temperature</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="validation-1.html"><a href="validation-1.html"><i class="fa fa-check"></i><b>6</b> Validation</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="validation-1.html"><a href="validation-1.html#upscaling"><i class="fa fa-check"></i><b>6.1</b> Matching predictions and observations</a></li>
+<li class="chapter" data-level="6.2" data-path="validation-1.html"><a href="validation-1.html#evaluating-weekly-predictions-of-precipitation"><i class="fa fa-check"></i><b>6.2</b> Evaluating weekly predictions of precipitation</a></li>
 </ul></li>
 </ul>
 
@@ -164,7 +185,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The <code>SeaVal</code> package for validating seasonal weather forecasts</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><p><img src="logo_CONFER.png" style="width:2in" /><br />
+The <code>SeaVal</code> package for validating seasonal weather forecasts</p></a>
           </h1>
         </div>
 
@@ -172,14 +194,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="validation" class="section level1">
-<h1><span class="header-section-number">4</span> Validation</h1>
+<div id="validation" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Validation</h1>
 <p>In this section we look into validating different types of predictions. Our focus herby lies on proper scoring rules, as well as skill scores for comparison to climatology.</p>
-<div id="cv-eval" class="section level2">
-<h2><span class="header-section-number">4.1</span> Evaluating cross-validation predictions</h2>
-<p>Here we evaluate the cross-validation data prepared in Section <a href="data-import-and-processing.html#cv-data">3.2.1</a>.
+<div id="cv-eval" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> Evaluating cross-validation predictions</h2>
+<p>Here we evaluate the cross-validation data prepared in Section <a href="data-import-and-processing-1.html#cv-data">4.1.1</a>.
 The data table contains observations for past years for the seasons MAM and FMA, along with ‘best-guess-predictions’, meaning that they are single numbers, not probabilities:</p>
-<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb136-1" title="1"><span class="kw">print</span>(dt_cv)</a></code></pre></div>
+<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="validation.html#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dt_cv)</span></code></pre></div>
 <pre><code>##          lon   lat season prediction observation year month
 ##      1: 20.5 -11.5    FMA  316.19452   369.36932 1982     2
 ##      2: 20.5 -11.5    MAM  202.94411   208.28058 1982     2
@@ -194,56 +216,56 @@ The data table contains observations for past years for the seasons MAM and FMA,
 ## 167334: 51.5  22.5    FMA   26.00327    34.84376 2016     2</code></pre>
 <p>Such predictions are often called <em>point forecasts</em>, whereas forecasts specifying probabilities are called <em>probabilistic</em>.
 We already have the data in the shape we want it to be, containing both predictions and observations as one column each. Let’s have a look at the bias in our predictions:</p>
-<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb138-1" title="1"><span class="co">### check out local biases:</span></a>
-<a class="sourceLine" id="cb138-2" title="2">bias_dt =<span class="st"> </span>dt_cv[,.(<span class="dt">bias =</span> <span class="kw">mean</span>(prediction <span class="op">-</span><span class="st"> </span>observation)), by =<span class="st"> </span>.(lon,lat,season)] <span class="co"># grouping by lon,lat, and season means that the mean is taken over all years.</span></a>
-<a class="sourceLine" id="cb138-3" title="3">bias_dt[,<span class="kw">range</span>(bias)] <span class="co"># get an idea of the range for plotting</span></a></code></pre></div>
+<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="validation.html#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="do">### check out local biases:</span></span>
+<span id="cb150-2"><a href="validation.html#cb150-2" aria-hidden="true" tabindex="-1"></a>bias_dt <span class="ot">=</span> dt_cv[,.(<span class="at">bias =</span> <span class="fu">mean</span>(prediction <span class="sc">-</span> observation)), by <span class="ot">=</span> .(lon,lat,season)] <span class="co"># grouping by lon,lat, and season means that the mean is taken over all years.</span></span>
+<span id="cb150-3"><a href="validation.html#cb150-3" aria-hidden="true" tabindex="-1"></a>bias_dt[,<span class="fu">range</span>(bias)] <span class="co"># get an idea of the range for plotting</span></span></code></pre></div>
 <pre><code>## [1] -12.64276  15.80456</code></pre>
-<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb140-1" title="1">rr =<span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="dv">15</span>,<span class="dv">15</span>) <span class="co"># fix range, to make plots comparable</span></a>
-<a class="sourceLine" id="cb140-2" title="2"></a>
-<a class="sourceLine" id="cb140-3" title="3">pp1 =<span class="st"> </span><span class="kw">ggplot_dt</span>(bias_dt[season <span class="op">==</span><span class="st"> &#39;FMA&#39;</span>],</a>
-<a class="sourceLine" id="cb140-4" title="4">                <span class="dt">data_col =</span> <span class="st">&#39;bias&#39;</span>, </a>
-<a class="sourceLine" id="cb140-5" title="5">                <span class="dt">rr =</span> rr, <span class="co"># fix range to make it comparable to pp2</span></a>
-<a class="sourceLine" id="cb140-6" title="6">                <span class="dt">mn =</span> <span class="st">&#39;bias of FMA prediction&#39;</span>,</a>
-<a class="sourceLine" id="cb140-7" title="7">                <span class="dt">midpoint =</span> <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb140-8" title="8">pp2 =<span class="st"> </span><span class="kw">ggplot_dt</span>(bias_dt[season <span class="op">==</span><span class="st"> &#39;MAM&#39;</span>],</a>
-<a class="sourceLine" id="cb140-9" title="9">                <span class="dt">data_col =</span> <span class="st">&#39;bias&#39;</span>, </a>
-<a class="sourceLine" id="cb140-10" title="10">                <span class="dt">rr =</span> rr,</a>
-<a class="sourceLine" id="cb140-11" title="11">                <span class="dt">mn =</span> <span class="st">&#39;bias of MAM prediction&#39;</span>,</a>
-<a class="sourceLine" id="cb140-12" title="12">                <span class="dt">midpoint =</span> <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb140-13" title="13"></a>
-<a class="sourceLine" id="cb140-14" title="14"><span class="co"># show plots:</span></a>
-<a class="sourceLine" id="cb140-15" title="15">ggpubr<span class="op">::</span><span class="kw">ggarrange</span>(pp1,pp2) </a></code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-2-1.png" width="960" /></p>
+<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="validation.html#cb152-1" aria-hidden="true" tabindex="-1"></a>rr <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">15</span>,<span class="dv">15</span>) <span class="co"># fix range, to make plots comparable</span></span>
+<span id="cb152-2"><a href="validation.html#cb152-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb152-3"><a href="validation.html#cb152-3" aria-hidden="true" tabindex="-1"></a>pp1 <span class="ot">=</span> <span class="fu">ggplot_dt</span>(bias_dt[season <span class="sc">==</span> <span class="st">&#39;FMA&#39;</span>],</span>
+<span id="cb152-4"><a href="validation.html#cb152-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">data_col =</span> <span class="st">&#39;bias&#39;</span>, </span>
+<span id="cb152-5"><a href="validation.html#cb152-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">rr =</span> rr, <span class="co"># fix range to make it comparable to pp2</span></span>
+<span id="cb152-6"><a href="validation.html#cb152-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">mn =</span> <span class="st">&#39;bias of FMA prediction&#39;</span>,</span>
+<span id="cb152-7"><a href="validation.html#cb152-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">midpoint =</span> <span class="dv">0</span>)</span>
+<span id="cb152-8"><a href="validation.html#cb152-8" aria-hidden="true" tabindex="-1"></a>pp2 <span class="ot">=</span> <span class="fu">ggplot_dt</span>(bias_dt[season <span class="sc">==</span> <span class="st">&#39;MAM&#39;</span>],</span>
+<span id="cb152-9"><a href="validation.html#cb152-9" aria-hidden="true" tabindex="-1"></a>                <span class="at">data_col =</span> <span class="st">&#39;bias&#39;</span>, </span>
+<span id="cb152-10"><a href="validation.html#cb152-10" aria-hidden="true" tabindex="-1"></a>                <span class="at">rr =</span> rr,</span>
+<span id="cb152-11"><a href="validation.html#cb152-11" aria-hidden="true" tabindex="-1"></a>                <span class="at">mn =</span> <span class="st">&#39;bias of MAM prediction&#39;</span>,</span>
+<span id="cb152-12"><a href="validation.html#cb152-12" aria-hidden="true" tabindex="-1"></a>                <span class="at">midpoint =</span> <span class="dv">0</span>)</span>
+<span id="cb152-13"><a href="validation.html#cb152-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb152-14"><a href="validation.html#cb152-14" aria-hidden="true" tabindex="-1"></a><span class="co"># show plots:</span></span>
+<span id="cb152-15"><a href="validation.html#cb152-15" aria-hidden="true" tabindex="-1"></a>ggpubr<span class="sc">::</span><span class="fu">ggarrange</span>(pp1,pp2) </span></code></pre></div>
+<p><img src="05-Seasonal_validation_files/figure-html/unnamed-chunk-2-1.png" width="960" /></p>
 <p>We can use the function <code>MSESS_dt</code> to compute MSE skill scores. The skill is computed relative to leave-one-year-out climatology, which is calculated automatically in the process.</p>
-<div class="sourceCode" id="cb141"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb141-1" title="1"><span class="co">### analyze mean square error skill scores</span></a>
-<a class="sourceLine" id="cb141-2" title="2">msess =<span class="st"> </span><span class="kw">MSESS_dt</span>(dt_cv,</a>
-<a class="sourceLine" id="cb141-3" title="3">                 <span class="dt">fc_col =</span> <span class="st">&#39;prediction&#39;</span>, <span class="co"># column name of forecasts</span></a>
-<a class="sourceLine" id="cb141-4" title="4">                 <span class="dt">obs_col =</span> <span class="st">&#39;observation&#39;</span>, <span class="co"># column name of observations</span></a>
-<a class="sourceLine" id="cb141-5" title="5">                 <span class="dt">by_cols =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>,<span class="st">&#39;season&#39;</span>)) <span class="co"># the skill scores should be computed for each location and each season separately</span></a>
-<a class="sourceLine" id="cb141-6" title="6"></a>
-<a class="sourceLine" id="cb141-7" title="7"><span class="co"># get range for plotting:</span></a>
-<a class="sourceLine" id="cb141-8" title="8">msess[,<span class="kw">range</span>(MSESS)]</a></code></pre></div>
+<div class="sourceCode" id="cb153"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb153-1"><a href="validation.html#cb153-1" aria-hidden="true" tabindex="-1"></a><span class="do">### analyze mean square error skill scores</span></span>
+<span id="cb153-2"><a href="validation.html#cb153-2" aria-hidden="true" tabindex="-1"></a>msess <span class="ot">=</span> <span class="fu">MSESS_dt</span>(dt_cv,</span>
+<span id="cb153-3"><a href="validation.html#cb153-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fc_col =</span> <span class="st">&#39;prediction&#39;</span>, <span class="co"># column name of forecasts</span></span>
+<span id="cb153-4"><a href="validation.html#cb153-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">obs_col =</span> <span class="st">&#39;observation&#39;</span>, <span class="co"># column name of observations</span></span>
+<span id="cb153-5"><a href="validation.html#cb153-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">by_cols =</span> <span class="fu">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>,<span class="st">&#39;season&#39;</span>)) <span class="co"># the skill scores should be computed for each location and each season separately</span></span>
+<span id="cb153-6"><a href="validation.html#cb153-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb153-7"><a href="validation.html#cb153-7" aria-hidden="true" tabindex="-1"></a><span class="co"># get range for plotting:</span></span>
+<span id="cb153-8"><a href="validation.html#cb153-8" aria-hidden="true" tabindex="-1"></a>msess[,<span class="fu">range</span>(MSESS)]</span></code></pre></div>
 <pre><code>## [1] -0.3447786  0.3436327</code></pre>
-<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb143-1" title="1">rr =<span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="fl">0.35</span>,<span class="fl">0.35</span>)</a>
-<a class="sourceLine" id="cb143-2" title="2"></a>
-<a class="sourceLine" id="cb143-3" title="3">pp1 =<span class="st"> </span><span class="kw">ggplot_dt</span>(msess[season <span class="op">==</span><span class="st"> &#39;FMA&#39;</span>], </a>
-<a class="sourceLine" id="cb143-4" title="4">                <span class="dt">data_col =</span> <span class="st">&#39;MSESS&#39;</span>, </a>
-<a class="sourceLine" id="cb143-5" title="5">                <span class="dt">rr=</span>rr,</a>
-<a class="sourceLine" id="cb143-6" title="6">                <span class="dt">mn =</span> <span class="st">&#39;MSE skill score, FMA&#39;</span>)</a>
-<a class="sourceLine" id="cb143-7" title="7"></a>
-<a class="sourceLine" id="cb143-8" title="8">pp2 =<span class="st"> </span><span class="kw">ggplot_dt</span>(msess[season <span class="op">==</span><span class="st"> &#39;MAM&#39;</span>], </a>
-<a class="sourceLine" id="cb143-9" title="9">                <span class="dt">data_col =</span> <span class="st">&#39;MSESS&#39;</span>, </a>
-<a class="sourceLine" id="cb143-10" title="10">                <span class="dt">rr=</span>rr,</a>
-<a class="sourceLine" id="cb143-11" title="11">                <span class="dt">mn =</span> <span class="st">&#39;MSE skill score, MAM&#39;</span>)</a>
-<a class="sourceLine" id="cb143-12" title="12"></a>
-<a class="sourceLine" id="cb143-13" title="13"><span class="kw">ggarrange</span>(pp1,pp2)</a></code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-3-1.png" width="960" />
+<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb155-1"><a href="validation.html#cb155-1" aria-hidden="true" tabindex="-1"></a>rr <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.35</span>,<span class="fl">0.35</span>)</span>
+<span id="cb155-2"><a href="validation.html#cb155-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb155-3"><a href="validation.html#cb155-3" aria-hidden="true" tabindex="-1"></a>pp1 <span class="ot">=</span> <span class="fu">ggplot_dt</span>(msess[season <span class="sc">==</span> <span class="st">&#39;FMA&#39;</span>], </span>
+<span id="cb155-4"><a href="validation.html#cb155-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">data_col =</span> <span class="st">&#39;MSESS&#39;</span>, </span>
+<span id="cb155-5"><a href="validation.html#cb155-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">rr=</span>rr,</span>
+<span id="cb155-6"><a href="validation.html#cb155-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">mn =</span> <span class="st">&#39;MSE skill score, FMA&#39;</span>)</span>
+<span id="cb155-7"><a href="validation.html#cb155-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb155-8"><a href="validation.html#cb155-8" aria-hidden="true" tabindex="-1"></a>pp2 <span class="ot">=</span> <span class="fu">ggplot_dt</span>(msess[season <span class="sc">==</span> <span class="st">&#39;MAM&#39;</span>], </span>
+<span id="cb155-9"><a href="validation.html#cb155-9" aria-hidden="true" tabindex="-1"></a>                <span class="at">data_col =</span> <span class="st">&#39;MSESS&#39;</span>, </span>
+<span id="cb155-10"><a href="validation.html#cb155-10" aria-hidden="true" tabindex="-1"></a>                <span class="at">rr=</span>rr,</span>
+<span id="cb155-11"><a href="validation.html#cb155-11" aria-hidden="true" tabindex="-1"></a>                <span class="at">mn =</span> <span class="st">&#39;MSE skill score, MAM&#39;</span>)</span>
+<span id="cb155-12"><a href="validation.html#cb155-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb155-13"><a href="validation.html#cb155-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(pp1,pp2)</span></code></pre></div>
+<p><img src="05-Seasonal_validation_files/figure-html/unnamed-chunk-3-1.png" width="960" />
 Here, as for all skill scores, positive values indicate that the prediction has higher skill than climatology, negative values indicates lower skill. Skill scores are moreover ‘standardized’ such that a score of 1 corresponds to a perfect forecast.
 Note that there is also a (faster) function <code>MSE_dt</code> if we’re not interested in skill scores, but simply want to compute MSEs. Both function can also handle ensemble predictions, see function documentation.
 If we want to analyze results by countries, we can use the function <code>add_country_names</code> that adds a column with country names to the data table:</p>
-<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb144-1" title="1"><span class="co"># check out average MSEs and MSESSs per country:</span></a>
-<a class="sourceLine" id="cb144-2" title="2">msess =<span class="st"> </span><span class="kw">add_country_names</span>(msess)</a>
-<a class="sourceLine" id="cb144-3" title="3"><span class="kw">print</span>(msess)</a></code></pre></div>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="validation.html#cb156-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check out average MSEs and MSESSs per country:</span></span>
+<span id="cb156-2"><a href="validation.html#cb156-2" aria-hidden="true" tabindex="-1"></a>msess <span class="ot">=</span> <span class="fu">add_country_names</span>(msess)</span>
+<span id="cb156-3"><a href="validation.html#cb156-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(msess)</span></code></pre></div>
 <pre><code>##        lon  lat season       MSE  clim_MSE        MSESS country
 ##    1: 23.0 11.0    MAM 303.14287 308.54726  0.017515586   Sudan
 ##    2: 23.5  9.0    MAM 751.99749 731.22747 -0.028404319   Sudan
@@ -256,10 +278,10 @@ If we want to analyze results by countries, we can use the function <code>add_co
 ## 2705: 50.5 10.0    MAM  28.67013  27.39041 -0.046721342 Somalia
 ## 2706: 50.5 11.0    MAM  55.81477  54.05239 -0.032604992 Somalia
 ## 2707: 50.5 11.5    MAM  60.25333  60.52558  0.004498041 Somalia</code></pre>
-<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb146-1" title="1">msess_by_country =<span class="st"> </span>msess[,.(<span class="dt">MSE =</span> <span class="kw">mean</span>(MSE),</a>
-<a class="sourceLine" id="cb146-2" title="2">                            <span class="dt">MSESS =</span> <span class="kw">mean</span>(MSESS)), by =<span class="st"> </span>country] <span class="co"># take averages by country</span></a>
-<a class="sourceLine" id="cb146-3" title="3"></a>
-<a class="sourceLine" id="cb146-4" title="4"><span class="kw">print</span>(msess_by_country)</a></code></pre></div>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="validation.html#cb158-1" aria-hidden="true" tabindex="-1"></a>msess_by_country <span class="ot">=</span> msess[,.(<span class="at">MSE =</span> <span class="fu">mean</span>(MSE),</span>
+<span id="cb158-2"><a href="validation.html#cb158-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">MSESS =</span> <span class="fu">mean</span>(MSESS)), by <span class="ot">=</span> country] <span class="co"># take averages by country</span></span>
+<span id="cb158-3"><a href="validation.html#cb158-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb158-4"><a href="validation.html#cb158-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(msess_by_country)</span></code></pre></div>
 <pre><code>##         country       MSE       MSESS
 ##  1:       Sudan  358.0374 0.015229343
 ##  2: South Sudan  901.2060 0.021752470
@@ -272,9 +294,9 @@ If we want to analyze results by countries, we can use the function <code>add_co
 ##  9:     Eritrea  447.6274 0.009834729
 ## 10:     Somalia 1121.8166 0.023641155
 ## 11:    Djibouti  111.1771 0.029694437</code></pre>
-<p>Skill scores strongly depend on the skill of the climatological prediction, see Section <a href="validation.html#eval-ex-pr">4.3</a>. This makes it somewhat problematic to average them in space, as skill scores for different grid points with different climatologies have different meanings. A more appropriate way to see whether the prediction outperformed climatology on average for a given country is by considering average score differences:</p>
-<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb148-1" title="1"><span class="co"># positive values indicate better performance than climatology:</span></a>
-<a class="sourceLine" id="cb148-2" title="2">msess[,.(<span class="dt">score_diff =</span> <span class="kw">mean</span>(clim_MSE <span class="op">-</span><span class="st"> </span>MSE)),by =<span class="st"> </span>country]</a></code></pre></div>
+<p>Skill scores strongly depend on the skill of the climatological prediction, see Section <a href="validation.html#eval-ex-pr">5.3</a>. This makes it somewhat problematic to average them in space, as skill scores for different grid points with different climatologies have different meanings. A more appropriate way to see whether the prediction outperformed climatology on average for a given country is by considering average score differences:</p>
+<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="validation.html#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="co"># positive values indicate better performance than climatology:</span></span>
+<span id="cb160-2"><a href="validation.html#cb160-2" aria-hidden="true" tabindex="-1"></a>msess[,.(<span class="at">score_diff =</span> <span class="fu">mean</span>(clim_MSE <span class="sc">-</span> MSE)),by <span class="ot">=</span> country]</span></code></pre></div>
 <pre><code>##         country  score_diff
 ##  1:       Sudan   3.9749273
 ##  2: South Sudan  26.8968614
@@ -289,59 +311,59 @@ If we want to analyze results by countries, we can use the function <code>add_co
 ## 11:    Djibouti   5.0474522</code></pre>
 <p>The MSE (and its associated skill score) penalizes both systematic forecast errors (i.e. biases) and non-systematic forecast errors. The latter are a consequence of general forecast uncertainty and there is no easy way to reduce them. Biases, however, can often be removed through statistical post-processing, and it is therefore interesting to consider measures for forecast performance that penalize only non-systematic forecast errors, thus giving an idea of the <em>potential skill</em> of a forecast system.</p>
 <p>The standard metric to assess the <em>potential skill</em> is the <em>Pearson correlation coefficient (PCC)</em>. This is the usual correlation coefficient where forecasts and observations are standardized by their respective climatological means and standard deviations, and then the average product of these standardized variables is calculated. The function <code>PCC_dt</code> performs these calculations and is used in the same way as <code>MSESS_dt</code> above.</p>
-<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb150-1" title="1"><span class="co">### calculate Pearson correlation coefficients</span></a>
-<a class="sourceLine" id="cb150-2" title="2">PCC =<span class="st"> </span><span class="kw">PCC_dt</span>(dt_cv,</a>
-<a class="sourceLine" id="cb150-3" title="3">             <span class="dt">fc_col =</span> <span class="st">&#39;prediction&#39;</span>, <span class="co"># column name of forecasts</span></a>
-<a class="sourceLine" id="cb150-4" title="4">             <span class="dt">obs_col =</span> <span class="st">&#39;observation&#39;</span>, <span class="co"># column name of observations</span></a>
-<a class="sourceLine" id="cb150-5" title="5">             <span class="dt">by_cols =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>,<span class="st">&#39;season&#39;</span>)) <span class="co"># the correlation coefficient should be computed for each location and each season separately</span></a>
-<a class="sourceLine" id="cb150-6" title="6"></a>
-<a class="sourceLine" id="cb150-7" title="7"><span class="co"># the maximal range for a correlation coefficient is [-1,1], but sometimes it is useful to narrow it:</span></a>
-<a class="sourceLine" id="cb150-8" title="8">rr =<span class="st"> </span><span class="kw">c</span>(<span class="op">-</span><span class="fl">0.75</span>,<span class="fl">0.75</span>)</a>
-<a class="sourceLine" id="cb150-9" title="9"></a>
-<a class="sourceLine" id="cb150-10" title="10">pp1 =<span class="st"> </span><span class="kw">ggplot_dt</span>(PCC[season <span class="op">==</span><span class="st"> &#39;FMA&#39;</span>], </a>
-<a class="sourceLine" id="cb150-11" title="11">                <span class="dt">data_col =</span> <span class="st">&#39;rho&#39;</span>, </a>
-<a class="sourceLine" id="cb150-12" title="12">                <span class="dt">rr=</span>rr,</a>
-<a class="sourceLine" id="cb150-13" title="13">                <span class="dt">mn =</span> <span class="st">&#39;Pearson correlation coefficient, FMA&#39;</span>)</a>
-<a class="sourceLine" id="cb150-14" title="14"></a>
-<a class="sourceLine" id="cb150-15" title="15">pp2 =<span class="st"> </span><span class="kw">ggplot_dt</span>(PCC[season <span class="op">==</span><span class="st"> &#39;MAM&#39;</span>], </a>
-<a class="sourceLine" id="cb150-16" title="16">                <span class="dt">data_col =</span> <span class="st">&#39;rho&#39;</span>, </a>
-<a class="sourceLine" id="cb150-17" title="17">                <span class="dt">rr=</span>rr,</a>
-<a class="sourceLine" id="cb150-18" title="18">                <span class="dt">mn =</span> <span class="st">&#39;Pearson correlation coefficient, MAM&#39;</span>)</a>
-<a class="sourceLine" id="cb150-19" title="19"></a>
-<a class="sourceLine" id="cb150-20" title="20"><span class="kw">ggarrange</span>(pp1,pp2)</a></code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-6-1.png" width="960" /></p>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="validation.html#cb162-1" aria-hidden="true" tabindex="-1"></a><span class="do">### calculate Pearson correlation coefficients</span></span>
+<span id="cb162-2"><a href="validation.html#cb162-2" aria-hidden="true" tabindex="-1"></a>PCC <span class="ot">=</span> <span class="fu">PCC_dt</span>(dt_cv,</span>
+<span id="cb162-3"><a href="validation.html#cb162-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">fc_col =</span> <span class="st">&#39;prediction&#39;</span>, <span class="co"># column name of forecasts</span></span>
+<span id="cb162-4"><a href="validation.html#cb162-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">obs_col =</span> <span class="st">&#39;observation&#39;</span>, <span class="co"># column name of observations</span></span>
+<span id="cb162-5"><a href="validation.html#cb162-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">by_cols =</span> <span class="fu">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>,<span class="st">&#39;season&#39;</span>)) <span class="co"># the correlation coefficient should be computed for each location and each season separately</span></span>
+<span id="cb162-6"><a href="validation.html#cb162-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb162-7"><a href="validation.html#cb162-7" aria-hidden="true" tabindex="-1"></a><span class="co"># the maximal range for a correlation coefficient is [-1,1], but sometimes it is useful to narrow it:</span></span>
+<span id="cb162-8"><a href="validation.html#cb162-8" aria-hidden="true" tabindex="-1"></a>rr <span class="ot">=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.75</span>,<span class="fl">0.75</span>)</span>
+<span id="cb162-9"><a href="validation.html#cb162-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb162-10"><a href="validation.html#cb162-10" aria-hidden="true" tabindex="-1"></a>pp1 <span class="ot">=</span> <span class="fu">ggplot_dt</span>(PCC[season <span class="sc">==</span> <span class="st">&#39;FMA&#39;</span>], </span>
+<span id="cb162-11"><a href="validation.html#cb162-11" aria-hidden="true" tabindex="-1"></a>                <span class="at">data_col =</span> <span class="st">&#39;rho&#39;</span>, </span>
+<span id="cb162-12"><a href="validation.html#cb162-12" aria-hidden="true" tabindex="-1"></a>                <span class="at">rr=</span>rr,</span>
+<span id="cb162-13"><a href="validation.html#cb162-13" aria-hidden="true" tabindex="-1"></a>                <span class="at">mn =</span> <span class="st">&#39;Pearson correlation coefficient, FMA&#39;</span>)</span>
+<span id="cb162-14"><a href="validation.html#cb162-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb162-15"><a href="validation.html#cb162-15" aria-hidden="true" tabindex="-1"></a>pp2 <span class="ot">=</span> <span class="fu">ggplot_dt</span>(PCC[season <span class="sc">==</span> <span class="st">&#39;MAM&#39;</span>], </span>
+<span id="cb162-16"><a href="validation.html#cb162-16" aria-hidden="true" tabindex="-1"></a>                <span class="at">data_col =</span> <span class="st">&#39;rho&#39;</span>, </span>
+<span id="cb162-17"><a href="validation.html#cb162-17" aria-hidden="true" tabindex="-1"></a>                <span class="at">rr=</span>rr,</span>
+<span id="cb162-18"><a href="validation.html#cb162-18" aria-hidden="true" tabindex="-1"></a>                <span class="at">mn =</span> <span class="st">&#39;Pearson correlation coefficient, MAM&#39;</span>)</span>
+<span id="cb162-19"><a href="validation.html#cb162-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb162-20"><a href="validation.html#cb162-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(pp1,pp2)</span></code></pre></div>
+<p><img src="05-Seasonal_validation_files/figure-html/unnamed-chunk-6-1.png" width="960" /></p>
 <p>While there is no technical requirement that the forecasts and observations follow a particular probability distribution when the Pearson correlation coefficient is employed, this metric is best suited for continuous distributions (i.e. it is unlikely to encounter duplicate values) that are relatively symmetric around the mean. For shorter (e.g. weekly) accumulation periods and in dry climates, the distribution of precipitation usually becomes rather skewed and contains a number of zeros. A new metric, the coefficient of predictive ability (CPA), has recently been developed and constitutes an excellent alternative to the PCC as a measure of potential forecast skill in that situation of strongly asymmetric distributions with multiple identical values. See <a href="MotivationCPA.pdf">here</a> for more background information about the CPA. The function <code>CPA_dt</code> performs the calculations and is used in the same way as <code>MSESS_dt</code> and <code>PCC_dt</code> above.</p>
-<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb151-1" title="1"><span class="co">### calculate coefficient of predictive ability</span></a>
-<a class="sourceLine" id="cb151-2" title="2">CPA =<span class="st"> </span><span class="kw">CPA_dt</span>(dt_cv,</a>
-<a class="sourceLine" id="cb151-3" title="3">             <span class="dt">fc_col =</span> <span class="st">&#39;prediction&#39;</span>, <span class="co"># column name of forecasts</span></a>
-<a class="sourceLine" id="cb151-4" title="4">             <span class="dt">obs_col =</span> <span class="st">&#39;observation&#39;</span>, <span class="co"># column name of observations</span></a>
-<a class="sourceLine" id="cb151-5" title="5">             <span class="dt">by_cols =</span> <span class="kw">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>,<span class="st">&#39;season&#39;</span>)) <span class="co"># the CPA should be computed for each location and each season separately</span></a>
-<a class="sourceLine" id="cb151-6" title="6"></a>
-<a class="sourceLine" id="cb151-7" title="7"><span class="co"># the maximal range for the CPA is [0,1]</span></a>
-<a class="sourceLine" id="cb151-8" title="8"><span class="co"># a value of 0.5 corresponds to no skill (more details can be found in the document under the link given above) </span></a>
-<a class="sourceLine" id="cb151-9" title="9">rr =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb151-10" title="10"></a>
-<a class="sourceLine" id="cb151-11" title="11">pp1 =<span class="st"> </span><span class="kw">ggplot_dt</span>(CPA[season <span class="op">==</span><span class="st"> &#39;FMA&#39;</span>], </a>
-<a class="sourceLine" id="cb151-12" title="12">                <span class="dt">data_col =</span> <span class="st">&#39;cpa&#39;</span>, </a>
-<a class="sourceLine" id="cb151-13" title="13">                <span class="dt">rr=</span>rr,</a>
-<a class="sourceLine" id="cb151-14" title="14">                <span class="dt">mn =</span> <span class="st">&#39;Coefficient of predictive ability, FMA&#39;</span>)</a>
-<a class="sourceLine" id="cb151-15" title="15"></a>
-<a class="sourceLine" id="cb151-16" title="16">pp2 =<span class="st"> </span><span class="kw">ggplot_dt</span>(CPA[season <span class="op">==</span><span class="st"> &#39;MAM&#39;</span>], </a>
-<a class="sourceLine" id="cb151-17" title="17">                <span class="dt">data_col =</span> <span class="st">&#39;cpa&#39;</span>, </a>
-<a class="sourceLine" id="cb151-18" title="18">                <span class="dt">rr=</span>rr,</a>
-<a class="sourceLine" id="cb151-19" title="19">                <span class="dt">mn =</span> <span class="st">&#39;Coefficient of predictive ability, MAM&#39;</span>)</a>
-<a class="sourceLine" id="cb151-20" title="20"></a>
-<a class="sourceLine" id="cb151-21" title="21"><span class="kw">ggarrange</span>(pp1,pp2)</a></code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-7-1.png" width="960" /></p>
+<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="validation.html#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="do">### calculate coefficient of predictive ability</span></span>
+<span id="cb163-2"><a href="validation.html#cb163-2" aria-hidden="true" tabindex="-1"></a>CPA <span class="ot">=</span> <span class="fu">CPA_dt</span>(dt_cv,</span>
+<span id="cb163-3"><a href="validation.html#cb163-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">fc_col =</span> <span class="st">&#39;prediction&#39;</span>, <span class="co"># column name of forecasts</span></span>
+<span id="cb163-4"><a href="validation.html#cb163-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">obs_col =</span> <span class="st">&#39;observation&#39;</span>, <span class="co"># column name of observations</span></span>
+<span id="cb163-5"><a href="validation.html#cb163-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">by_cols =</span> <span class="fu">c</span>(<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>,<span class="st">&#39;season&#39;</span>)) <span class="co"># the CPA should be computed for each location and each season separately</span></span>
+<span id="cb163-6"><a href="validation.html#cb163-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb163-7"><a href="validation.html#cb163-7" aria-hidden="true" tabindex="-1"></a><span class="co"># the maximal range for the CPA is [0,1]</span></span>
+<span id="cb163-8"><a href="validation.html#cb163-8" aria-hidden="true" tabindex="-1"></a><span class="co"># a value of 0.5 corresponds to no skill (more details can be found in the document under the link given above) </span></span>
+<span id="cb163-9"><a href="validation.html#cb163-9" aria-hidden="true" tabindex="-1"></a>rr <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb163-10"><a href="validation.html#cb163-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb163-11"><a href="validation.html#cb163-11" aria-hidden="true" tabindex="-1"></a>pp1 <span class="ot">=</span> <span class="fu">ggplot_dt</span>(CPA[season <span class="sc">==</span> <span class="st">&#39;FMA&#39;</span>], </span>
+<span id="cb163-12"><a href="validation.html#cb163-12" aria-hidden="true" tabindex="-1"></a>                <span class="at">data_col =</span> <span class="st">&#39;cpa&#39;</span>, </span>
+<span id="cb163-13"><a href="validation.html#cb163-13" aria-hidden="true" tabindex="-1"></a>                <span class="at">rr=</span>rr,</span>
+<span id="cb163-14"><a href="validation.html#cb163-14" aria-hidden="true" tabindex="-1"></a>                <span class="at">mn =</span> <span class="st">&#39;Coefficient of predictive ability, FMA&#39;</span>)</span>
+<span id="cb163-15"><a href="validation.html#cb163-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb163-16"><a href="validation.html#cb163-16" aria-hidden="true" tabindex="-1"></a>pp2 <span class="ot">=</span> <span class="fu">ggplot_dt</span>(CPA[season <span class="sc">==</span> <span class="st">&#39;MAM&#39;</span>], </span>
+<span id="cb163-17"><a href="validation.html#cb163-17" aria-hidden="true" tabindex="-1"></a>                <span class="at">data_col =</span> <span class="st">&#39;cpa&#39;</span>, </span>
+<span id="cb163-18"><a href="validation.html#cb163-18" aria-hidden="true" tabindex="-1"></a>                <span class="at">rr=</span>rr,</span>
+<span id="cb163-19"><a href="validation.html#cb163-19" aria-hidden="true" tabindex="-1"></a>                <span class="at">mn =</span> <span class="st">&#39;Coefficient of predictive ability, MAM&#39;</span>)</span>
+<span id="cb163-20"><a href="validation.html#cb163-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb163-21"><a href="validation.html#cb163-21" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(pp1,pp2)</span></code></pre></div>
+<p><img src="05-Seasonal_validation_files/figure-html/unnamed-chunk-7-1.png" width="960" /></p>
 <p>Just like the MSESS, PCC and CPA can be averaged by country using the function <code>add_country_names</code>:</p>
-<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb152-1" title="1"><span class="co"># check out average PCCs and CPAs per country:</span></a>
-<a class="sourceLine" id="cb152-2" title="2">PCC =<span class="st"> </span><span class="kw">add_country_names</span>(PCC)</a>
-<a class="sourceLine" id="cb152-3" title="3">CPA =<span class="st"> </span><span class="kw">add_country_names</span>(CPA)</a>
-<a class="sourceLine" id="cb152-4" title="4"></a>
-<a class="sourceLine" id="cb152-5" title="5">PCC_by_country =<span class="st"> </span>PCC[,.(<span class="dt">rho =</span> <span class="kw">mean</span>(rho)), by =<span class="st"> </span>country]</a>
-<a class="sourceLine" id="cb152-6" title="6">CPA_by_country =<span class="st"> </span>CPA[,.(<span class="dt">cpa =</span> <span class="kw">mean</span>(cpa)), by =<span class="st"> </span>country]</a>
-<a class="sourceLine" id="cb152-7" title="7"></a>
-<a class="sourceLine" id="cb152-8" title="8"><span class="kw">print</span>(PCC_by_country)</a></code></pre></div>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="validation.html#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check out average PCCs and CPAs per country:</span></span>
+<span id="cb164-2"><a href="validation.html#cb164-2" aria-hidden="true" tabindex="-1"></a>PCC <span class="ot">=</span> <span class="fu">add_country_names</span>(PCC)</span>
+<span id="cb164-3"><a href="validation.html#cb164-3" aria-hidden="true" tabindex="-1"></a>CPA <span class="ot">=</span> <span class="fu">add_country_names</span>(CPA)</span>
+<span id="cb164-4"><a href="validation.html#cb164-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb164-5"><a href="validation.html#cb164-5" aria-hidden="true" tabindex="-1"></a>PCC_by_country <span class="ot">=</span> PCC[,.(<span class="at">rho =</span> <span class="fu">mean</span>(rho)), by <span class="ot">=</span> country]</span>
+<span id="cb164-6"><a href="validation.html#cb164-6" aria-hidden="true" tabindex="-1"></a>CPA_by_country <span class="ot">=</span> CPA[,.(<span class="at">cpa =</span> <span class="fu">mean</span>(cpa)), by <span class="ot">=</span> country]</span>
+<span id="cb164-7"><a href="validation.html#cb164-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb164-8"><a href="validation.html#cb164-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(PCC_by_country)</span></code></pre></div>
 <pre><code>##         country         rho
 ##  1:       Sudan -0.19636469
 ##  2: South Sudan -0.16295459
@@ -354,7 +376,7 @@ If we want to analyze results by countries, we can use the function <code>add_co
 ##  9:     Eritrea -0.14705925
 ## 10:     Somalia -0.08751838
 ## 11:    Djibouti -0.05427490</code></pre>
-<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb154-1" title="1"><span class="kw">print</span>(CPA_by_country)</a></code></pre></div>
+<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="validation.html#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(CPA_by_country)</span></code></pre></div>
 <pre><code>##         country       cpa
 ##  1:       Sudan 0.3989506
 ##  2: South Sudan 0.4130657
@@ -368,12 +390,12 @@ If we want to analyze results by countries, we can use the function <code>add_co
 ## 10:     Somalia 0.4713838
 ## 11:    Djibouti 0.5031902</code></pre>
 </div>
-<div id="evaluating-tercile-forecasts" class="section level2">
-<h2><span class="header-section-number">4.2</span> Evaluating Tercile Forecasts</h2>
+<div id="evaluating-tercile-forecasts" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> Evaluating Tercile Forecasts</h2>
 <p>Next, we’ll turn our attention to one of the main products disseminated at GHACOFs, the probabilistic forecasts whether the coming season will see a below normal-, normal-, or above normal amount of rainfall. Since these three categories are defined by climatological terciles, we call them tercile forecasts. From an evaluation perspective, there are two different scenarios: Either we get the prediction as a vector of three probabilities, or we just get the probability for the most likely category. Evaluating a vector of three probabilities is preferrable, because it conveys more detailed information about the forecast: Say, for example, two competing models predicted the probabilities (0.5, 0.3, 0.2) and (0.5, 0.49, 0.01), respectively (in the order below, normal, high). Say now, after observing the predicted season, it turns out that the rainfall was in fact above normal. In this case, both predictions were pretty bad, but the first model at least assigned a 20% chance to above-normal-rainfall, whereas the second model only assigned a 1% chance to that outcome. So the first prediction was substantially better. However, if we only look at the category with the highest predicted probability, the two models can’t be distinguished, as they both appear as (0.5,-,-).</p>
 <p>Therefore, considering all three probabilities of the prediction allows for better forecast evaluation. This does not mean, however, that the communication of the prediction to the public needs to contain all three probabilities, which would likely be more confusing than helpful. In the next subsection we’ll discuss how to evaluate a fully probability forecast (vector of three probabilities). In the section thereafter, we address the case where only the most likely category is known.</p>
-<div id="eval-terciles" class="section level3">
-<h3><span class="header-section-number">4.2.1</span> Proper scoring rules for full tercile forecasts</h3>
+<div id="eval-terciles" class="section level3" number="5.2.1">
+<h3><span class="header-section-number">5.2.1</span> Proper scoring rules for full tercile forecasts</h3>
 <p>Proper scoring rules are tools for evaluating predictive performance. Given a prediction and the corresponding observation, a proper score returns a single number. We consider negatively oriented scores, that is, lower scores indicate better performance. Popular examples are the Brier Score, Mean Square Error (MSE), Log-likelihood score or the continuous ranked probability score (CRPS).</p>
 <p>When we’re dealing with tercile forecasts of precipitation, we can use the <em>Multicategory Brier Score (MBS)</em>. It is defined as
 <span class="math display">\[\text{MBS} :=  (p_1 - e_1)^2 + (p_2 - e_2)^2 + (p_3 - e_3)^2.\]</span>
@@ -387,9 +409,9 @@ Like other skill scores, this score is normalized in the sense that a perfect fo
 Note that, for the MBSS, higher values indicate better performance, unlike for the MBS (similar as for other scores such as MSE).</p>
 <p>Tercile forecasts are a particular situation where the skill score is a strictly proper scoring rule itself (albeit positively oriented). This means in particular that we may average Multicategory Brier Skill Scores accross different grid points without being concerned about different scales of precipitation.
 If, for example, the average MBSS of our prediction over all gridpoints in Ethiopia is above 0, our prediction for Ethiopia was on average better than climatology.</p>
-<p>Let’s now look at a data example, contained in the <code>data_dir</code> specified <a href="data-import-and-processing.html#netcdf_to_dt">here</a>. The core function is simply called <code>MBSS_dt</code>. The main work is organizing the data in one data table of the correct format, which was done in Section <a href="data-import-and-processing.html#us-obs">3.2.3</a>. In particular, recall that we can use the function <code>add_tercile_cat</code> to determine which observations are in the lower or upper climatology tercile.</p>
-<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb156-1" title="1">dt =<span class="st"> </span>dt_tercile_forecast</a>
-<a class="sourceLine" id="cb156-2" title="2"><span class="kw">print</span>(dt)</a></code></pre></div>
+<p>Let’s now look at a data example, contained in the <code>data_dir</code> specified <a href="data-import-and-processing.html#netcdf_to_dt">here</a>. The core function is simply called <code>MBSS_dt</code>. The main work is organizing the data in one data table of the correct format, which was done in Section <a href="data-import-and-processing-1.html#us-obs">4.1.3</a>. In particular, recall that we can use the function <code>add_tercile_cat</code> to determine which observations are in the lower or upper climatology tercile.</p>
+<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="validation.html#cb168-1" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">=</span> dt_tercile_forecast</span>
+<span id="cb168-2"><a href="validation.html#cb168-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dt)</span></code></pre></div>
 <pre><code>##        lon   lat    normal     above     below      prec year tercile_cat
 ##    1: 22.0 -11.5 0.2794044 0.3959641 0.3246315 271.66216 2021           1
 ##    2: 22.0 -11.0 0.3176142 0.3509704 0.3314154 279.13827 2021           1
@@ -397,11 +419,11 @@ If, for example, the average MBSS of our prediction over all gridpoints in Ethio
 ##    4: 22.0 -10.0 0.3133837 0.3520903 0.3345260 332.45370 2021           1
 ##    5: 22.0  -9.5 0.3076811 0.3480890 0.3442299 407.19163 2021           1
 ##   ---                                                                    
-## 2939: 51.5  20.0        NA        NA        NA  26.43442 2021          -1
-## 2940: 51.5  20.5        NA        NA        NA  25.20947 2021          -1
-## 2941: 51.5  21.0        NA        NA        NA  21.71183 2021          -1
-## 2942: 51.5  21.5        NA        NA        NA  23.18140 2021          -1
-## 2943: 51.5  22.0        NA        NA        NA  23.29202 2021          -1
+## 2939: 51.5  20.0        NA        NA        NA  26.43442 2021           1
+## 2940: 51.5  20.5        NA        NA        NA  25.20947 2021           1
+## 2941: 51.5  21.0        NA        NA        NA  21.71183 2021           1
+## 2942: 51.5  21.5        NA        NA        NA  23.18140 2021           1
+## 2943: 51.5  22.0        NA        NA        NA  23.29202 2021           1
 ##            clim
 ##    1: 200.78224
 ##    2: 218.82563
@@ -414,50 +436,50 @@ If, for example, the average MBSS of our prediction over all gridpoints in Ethio
 ## 2941:  13.75870
 ## 2942:  14.37246
 ## 2943:  17.47911</code></pre>
-<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb158-1" title="1"><span class="co"># get Multicategory Brier Skill Score:</span></a>
-<a class="sourceLine" id="cb158-2" title="2">mbss =<span class="st"> </span><span class="kw">MBSS_dt</span>(dt,<span class="dt">obs_col =</span> <span class="st">&#39;tercile_cat&#39;</span>)</a>
-<a class="sourceLine" id="cb158-3" title="3"><span class="kw">ggplot_dt</span>(mbss,<span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>,<span class="dt">low =</span> <span class="st">&#39;purple&#39;</span>,<span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>,<span class="dt">binwidth =</span> <span class="fl">0.2</span>,<span class="dt">midpoint =</span> <span class="dv">0</span>, <span class="dt">mn =</span> <span class="st">&#39;MBSS for MAM tercile forecast 2021&#39;</span>)</a></code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-9-1.png" width="480" /></p>
+<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="validation.html#cb170-1" aria-hidden="true" tabindex="-1"></a><span class="co"># get Multicategory Brier Skill Score:</span></span>
+<span id="cb170-2"><a href="validation.html#cb170-2" aria-hidden="true" tabindex="-1"></a>mbss <span class="ot">=</span> <span class="fu">MBSS_dt</span>(dt,<span class="at">obs_col =</span> <span class="st">&#39;tercile_cat&#39;</span>)</span>
+<span id="cb170-3"><a href="validation.html#cb170-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot_dt</span>(mbss,<span class="at">high =</span> <span class="st">&#39;darkgreen&#39;</span>,<span class="at">low =</span> <span class="st">&#39;purple&#39;</span>,<span class="at">discrete_cs =</span> <span class="cn">TRUE</span>,<span class="at">binwidth =</span> <span class="fl">0.2</span>,<span class="at">midpoint =</span> <span class="dv">0</span>, <span class="at">mn =</span> <span class="st">&#39;MBSS for MAM tercile forecast 2021&#39;</span>)</span></code></pre></div>
+<p><img src="05-Seasonal_validation_files/figure-html/unnamed-chunk-9-1.png" width="480" /></p>
 <p>Areas colored in green show where the prediction was better than climatology, areas colored in purple indicate worse performance. The MBSS indicates, for example, good forecast performance over most of Tanzania.</p>
 <p>To see whether the forecast was overall better than climatology, we average the MBSS:</p>
-<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb159-1" title="1"><span class="co"># check out the MBSS by country:</span></a>
-<a class="sourceLine" id="cb159-2" title="2">mbss =<span class="st"> </span><span class="kw">add_country_names</span>(mbss)</a>
-<a class="sourceLine" id="cb159-3" title="3">mean_mbss =<span class="st"> </span>mbss[,.(<span class="dt">mean_mbss =</span> <span class="kw">mean</span>(MBSS,<span class="dt">na.rm =</span> T)), by =<span class="st"> </span>country]</a>
-<a class="sourceLine" id="cb159-4" title="4"><span class="kw">print</span>(mean_mbss)</a></code></pre></div>
+<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb171-1"><a href="validation.html#cb171-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check out the MBSS by country:</span></span>
+<span id="cb171-2"><a href="validation.html#cb171-2" aria-hidden="true" tabindex="-1"></a>mbss <span class="ot">=</span> <span class="fu">add_country_names</span>(mbss)</span>
+<span id="cb171-3"><a href="validation.html#cb171-3" aria-hidden="true" tabindex="-1"></a>mean_mbss <span class="ot">=</span> mbss[,.(<span class="at">mean_mbss =</span> <span class="fu">mean</span>(MBSS,<span class="at">na.rm =</span> T)), by <span class="ot">=</span> country]</span>
+<span id="cb171-4"><a href="validation.html#cb171-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(mean_mbss)</span></code></pre></div>
 <pre><code>##         country    mean_mbss
-##  1:       Sudan -0.101016447
-##  2: South Sudan -0.064356237
+##  1:       Sudan  0.098439671
+##  2: South Sudan  0.092564026
 ##  3:      Rwanda  0.061607937
-##  4:    Tanzania  0.136468567
+##  4:    Tanzania  0.166882194
 ##  5:     Burundi  0.114454899
 ##  6:      Uganda  0.118914478
-##  7:    Ethiopia -0.002694009
-##  8:       Kenya  0.009083932
-##  9:     Eritrea -0.045155095
-## 10:     Somalia -0.033277965
-## 11:    Djibouti  0.009452135</code></pre>
+##  7:    Ethiopia  0.004924431
+##  8:       Kenya  0.071575657
+##  9:     Eritrea -0.030340763
+## 10:     Somalia  0.037938177
+## 11:    Djibouti -0.015321119</code></pre>
 <p>Finally, let’s check whether this makes sense, by comparing climatology to the prediction:</p>
-<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb161-1" title="1">dt[,anomaly<span class="op">:</span><span class="er">=</span><span class="st"> </span>prec <span class="op">-</span><span class="st"> </span>clim]</a>
-<a class="sourceLine" id="cb161-2" title="2"></a>
-<a class="sourceLine" id="cb161-3" title="3"><span class="kw">ggplot_dt</span>(dt[year <span class="op">==</span><span class="st"> </span><span class="dv">2021</span>],<span class="st">&#39;anomaly&#39;</span>,<span class="dt">high =</span> <span class="st">&#39;blue&#39;</span>,<span class="dt">low =</span> <span class="st">&#39;red&#39;</span>,<span class="dt">midpoint =</span> <span class="dv">0</span>, <span class="dt">mn =</span> <span class="st">&#39;observed 2021 MAM precip anomaly&#39;</span>)</a></code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-11-1.png" width="480" /></p>
-<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb162-1" title="1"><span class="co"># or, as discrete plot:</span></a>
-<a class="sourceLine" id="cb162-2" title="2">pp1 =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt[year <span class="op">==</span><span class="st"> </span><span class="dv">2021</span>],<span class="st">&#39;anomaly&#39;</span>,</a>
-<a class="sourceLine" id="cb162-3" title="3">                <span class="dt">high =</span> <span class="st">&#39;blue&#39;</span>,<span class="dt">low =</span> <span class="st">&#39;red&#39;</span>,<span class="dt">midpoint =</span> <span class="dv">0</span>,</a>
-<a class="sourceLine" id="cb162-4" title="4">                <span class="dt">rr =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">100</span>,<span class="dv">100</span>),<span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>,<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="op">-</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">40</span>),</a>
-<a class="sourceLine" id="cb162-5" title="5">                <span class="dt">mn =</span> <span class="st">&#39;observed 2021 MAM precip anomaly&#39;</span>)</a>
-<a class="sourceLine" id="cb162-6" title="6"></a>
-<a class="sourceLine" id="cb162-7" title="7"><span class="co"># also, let&#39;s plot the predicted probabilities:</span></a>
-<a class="sourceLine" id="cb162-8" title="8">pp2 =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt,<span class="st">&#39;below&#39;</span>,<span class="dt">midpoint =</span> <span class="fl">0.33</span>,<span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>,<span class="dt">binwidth =</span> <span class="fl">0.05</span>,<span class="dt">mn =</span> <span class="st">&#39;predicted probability below&#39;</span>)</a>
-<a class="sourceLine" id="cb162-9" title="9">pp3 =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt,<span class="st">&#39;normal&#39;</span>,<span class="dt">midpoint =</span> <span class="fl">0.33</span>,<span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>,<span class="dt">binwidth =</span> <span class="fl">0.05</span>,<span class="dt">mn =</span> <span class="st">&#39;predicted probability normal&#39;</span>)</a>
-<a class="sourceLine" id="cb162-10" title="10">pp4 =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt,<span class="st">&#39;above&#39;</span>,<span class="dt">midpoint =</span> <span class="fl">0.33</span>,<span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>,<span class="dt">binwidth =</span> <span class="fl">0.05</span>,<span class="dt">mn =</span> <span class="st">&#39;predicted probability above&#39;</span>)</a>
-<a class="sourceLine" id="cb162-11" title="11"></a>
-<a class="sourceLine" id="cb162-12" title="12">ggpubr<span class="op">::</span><span class="kw">ggarrange</span>(pp1,pp2,pp3,pp4,<span class="dt">ncol =</span> <span class="dv">4</span>)</a></code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-12-1.png" width="1920" />
+<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="validation.html#cb173-1" aria-hidden="true" tabindex="-1"></a>dt[,anomaly<span class="sc">:</span><span class="er">=</span> prec <span class="sc">-</span> clim]</span>
+<span id="cb173-2"><a href="validation.html#cb173-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb173-3"><a href="validation.html#cb173-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot_dt</span>(dt[year <span class="sc">==</span> <span class="dv">2021</span>],<span class="st">&#39;anomaly&#39;</span>,<span class="at">high =</span> <span class="st">&#39;blue&#39;</span>,<span class="at">low =</span> <span class="st">&#39;red&#39;</span>,<span class="at">midpoint =</span> <span class="dv">0</span>, <span class="at">mn =</span> <span class="st">&#39;observed 2021 MAM precip anomaly&#39;</span>)</span></code></pre></div>
+<p><img src="05-Seasonal_validation_files/figure-html/unnamed-chunk-11-1.png" width="480" /></p>
+<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="validation.html#cb174-1" aria-hidden="true" tabindex="-1"></a><span class="co"># or, as discrete plot:</span></span>
+<span id="cb174-2"><a href="validation.html#cb174-2" aria-hidden="true" tabindex="-1"></a>pp1 <span class="ot">=</span> <span class="fu">ggplot_dt</span>(dt[year <span class="sc">==</span> <span class="dv">2021</span>],<span class="st">&#39;anomaly&#39;</span>,</span>
+<span id="cb174-3"><a href="validation.html#cb174-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">high =</span> <span class="st">&#39;blue&#39;</span>,<span class="at">low =</span> <span class="st">&#39;red&#39;</span>,<span class="at">midpoint =</span> <span class="dv">0</span>,</span>
+<span id="cb174-4"><a href="validation.html#cb174-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">rr =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">100</span>,<span class="dv">100</span>),<span class="at">discrete_cs =</span> <span class="cn">TRUE</span>,<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">40</span>),</span>
+<span id="cb174-5"><a href="validation.html#cb174-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">mn =</span> <span class="st">&#39;observed 2021 MAM precip anomaly&#39;</span>)</span>
+<span id="cb174-6"><a href="validation.html#cb174-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb174-7"><a href="validation.html#cb174-7" aria-hidden="true" tabindex="-1"></a><span class="co"># also, let&#39;s plot the predicted probabilities:</span></span>
+<span id="cb174-8"><a href="validation.html#cb174-8" aria-hidden="true" tabindex="-1"></a>pp2 <span class="ot">=</span> <span class="fu">ggplot_dt</span>(dt,<span class="st">&#39;below&#39;</span>,<span class="at">midpoint =</span> <span class="fl">0.33</span>,<span class="at">discrete_cs =</span> <span class="cn">TRUE</span>,<span class="at">binwidth =</span> <span class="fl">0.05</span>,<span class="at">mn =</span> <span class="st">&#39;predicted probability below&#39;</span>)</span>
+<span id="cb174-9"><a href="validation.html#cb174-9" aria-hidden="true" tabindex="-1"></a>pp3 <span class="ot">=</span> <span class="fu">ggplot_dt</span>(dt,<span class="st">&#39;normal&#39;</span>,<span class="at">midpoint =</span> <span class="fl">0.33</span>,<span class="at">discrete_cs =</span> <span class="cn">TRUE</span>,<span class="at">binwidth =</span> <span class="fl">0.05</span>,<span class="at">mn =</span> <span class="st">&#39;predicted probability normal&#39;</span>)</span>
+<span id="cb174-10"><a href="validation.html#cb174-10" aria-hidden="true" tabindex="-1"></a>pp4 <span class="ot">=</span> <span class="fu">ggplot_dt</span>(dt,<span class="st">&#39;above&#39;</span>,<span class="at">midpoint =</span> <span class="fl">0.33</span>,<span class="at">discrete_cs =</span> <span class="cn">TRUE</span>,<span class="at">binwidth =</span> <span class="fl">0.05</span>,<span class="at">mn =</span> <span class="st">&#39;predicted probability above&#39;</span>)</span>
+<span id="cb174-11"><a href="validation.html#cb174-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb174-12"><a href="validation.html#cb174-12" aria-hidden="true" tabindex="-1"></a>ggpubr<span class="sc">::</span><span class="fu">ggarrange</span>(pp1,pp2,pp3,pp4,<span class="at">ncol =</span> <span class="dv">4</span>)</span></code></pre></div>
+<p><img src="05-Seasonal_validation_files/figure-html/unnamed-chunk-12-1.png" width="1920" />
 As we can see, the season was very wet overall. The prediction was overall wet as well, especially over the western part of the considered region, where the prediction also got assigned a positive MBSS.</p>
 </div>
-<div id="eval-terciles2" class="section level3">
-<h3><span class="header-section-number">4.2.2</span> Evaluation when only the highest probability category is avaliable</h3>
+<div id="eval-terciles2" class="section level3" number="5.2.2">
+<h3><span class="header-section-number">5.2.2</span> Evaluation when only the highest probability category is avaliable</h3>
 <p>As argued above, it is preferrable to evaluate tercile forecasts that are given as full probability vector containing all three probabilities. However, we might still face scenarios where we only have the highest probability category available, e.g. some older forecasts for which only this has been saved. What can we do in this case?</p>
 <p>Intuitively, a promising candidate for a proper score seems to be the two-category-Brier score on the category with the highest probability
 <span class="math display">\[BS_{\max} = (p_{\max}-e_{\max})^2,\]</span>
@@ -476,11 +498,11 @@ This means that climatology achieves a score of 4/9 with probability 1/3 (when <
 <span class="math display">\[cBSS_\max := 1 - \frac{27}{24}cBS_\max.\]</span>
 Note that this is not a skill score in the strict sense, but can be interpretet similarly: values above 0 indicate higher skill than climatology on average, with a <span class="math inline">\(cBSS_\max\)</span> of 1 corresponding to a perfect forecast.</p>
 <p>To try this out in action, let us look at the 2021 tercile forecasts</p>
-<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb163-1" title="1"><span class="co"># data_dir = &#39;/nr/project/stat/CONFER/Data/validation/example_data/202102/&#39; # as in section 3</span></a>
-<a class="sourceLine" id="cb163-2" title="2">fn =<span class="st"> &#39;Ens_Prec_1monLead_MAM_Prob_EnsRegrCPT-avg.nc&#39;</span></a>
-<a class="sourceLine" id="cb163-3" title="3"></a>
-<a class="sourceLine" id="cb163-4" title="4">dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn))</a></code></pre></div>
-<pre><code>## File ~/nr/project/stat/CONFER/Data/validation/example_data/202102/Ens_Prec_1monLead_MAM_Prob_EnsRegrCPT-avg.nc (NC_FORMAT_CLASSIC):
+<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="validation.html#cb175-1" aria-hidden="true" tabindex="-1"></a><span class="co"># data_dir = &#39;/nr/project/stat/CONFER/Data/validation/example_data/202102/&#39; # as in section 3</span></span>
+<span id="cb175-2"><a href="validation.html#cb175-2" aria-hidden="true" tabindex="-1"></a>fn <span class="ot">=</span> <span class="st">&#39;Ens_Prec_1monLead_MAM_Prob_EnsRegrCPT-avg.nc&#39;</span></span>
+<span id="cb175-3"><a href="validation.html#cb175-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb175-4"><a href="validation.html#cb175-4" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">=</span> <span class="fu">netcdf_to_dt</span>(<span class="fu">paste0</span>(data_dir,fn))</span></code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/Ens_Prec_1monLead_MAM_Prob_EnsRegrCPT-avg.nc (NC_FORMAT_CLASSIC):
 ## 
 ##      3 variables (excluding dimension variables):
 ##         float below[lon,lat]   
@@ -500,11 +522,10 @@ Note that this is not a skill score in the strict sense, but can be interpretet 
 ##             average_op_ncl: dim_avg_n over dimension(s): model
 ## 
 ##      3 dimensions:
-##         time  Size:0   *** is unlimited ***
-## [1] &quot;vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point&quot;
-##         lat  Size:381
+##         time  Size:0   *** is unlimited *** (no dimvar)
+##         lat  Size:381 
 ##             units: degrees_north
-##         lon  Size:326
+##         lon  Size:326 
 ##             units: degrees_east
 ## 
 ##     7 global attributes:
@@ -518,13 +539,13 @@ Note that this is not a skill score in the strict sense, but can be interpretet 
 ## Mon Feb 22 10:28:26 2021: ncrename -d LON,lon Ens_Prec_1monLead_MAM_Prob_EnsRegrCPT-avg.nc
 ## Mon Feb 22 10:27:42 2021: ncrename -d LAT,lat Ens_Prec_1monLead_MAM_Prob_EnsRegrCPT-avg.nc
 ##         NCO: netCDF Operators version 4.9.3 (Homepage = http://nco.sf.net, Code = http://github.com/nco/nco)</code></pre>
-<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb165-1" title="1">dt =<span class="st"> </span>dt[<span class="op">!</span><span class="kw">is.na</span>(below) <span class="op">|</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(normal) <span class="op">|</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span> (above)]</a>
-<a class="sourceLine" id="cb165-2" title="2"></a>
-<a class="sourceLine" id="cb165-3" title="3">p1 =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt,<span class="dt">data_col =</span> <span class="st">&#39;below&#39;</span>, <span class="dt">midpoint =</span> dt[,<span class="kw">min</span>(below,<span class="dt">na.rm =</span> <span class="ot">TRUE</span>)])</a>
-<a class="sourceLine" id="cb165-4" title="4">p2 =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt,<span class="dt">data_col =</span> <span class="st">&#39;normal&#39;</span>, <span class="dt">midpoint =</span> dt[,<span class="kw">min</span>(normal,<span class="dt">na.rm =</span> <span class="ot">TRUE</span>)], <span class="dt">high =</span> <span class="st">&#39;darkgoldenrod&#39;</span>) <span class="co"># see https://www.r-graph-gallery.com/ggplot2-color.html for an overview of color names.</span></a>
-<a class="sourceLine" id="cb165-5" title="5">p3 =<span class="st"> </span><span class="kw">ggplot_dt</span>(dt,<span class="dt">data_col =</span> <span class="st">&#39;above&#39;</span>, <span class="dt">midpoint =</span> dt[,<span class="kw">min</span>(above,<span class="dt">na.rm =</span> <span class="ot">TRUE</span>)], <span class="dt">high =</span> <span class="st">&#39;darkgreen&#39;</span>)</a>
-<a class="sourceLine" id="cb165-6" title="6"></a>
-<a class="sourceLine" id="cb165-7" title="7"><span class="kw">ggarrange</span>(p1,p2,p3,<span class="dt">ncol =</span> <span class="dv">3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="validation.html#cb177-1" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">=</span> dt[<span class="sc">!</span><span class="fu">is.na</span>(below) <span class="sc">|</span> <span class="sc">!</span><span class="fu">is.na</span>(normal) <span class="sc">|</span> <span class="sc">!</span><span class="fu">is.na</span> (above)]</span>
+<span id="cb177-2"><a href="validation.html#cb177-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb177-3"><a href="validation.html#cb177-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">=</span> <span class="fu">ggplot_dt</span>(dt,<span class="at">data_col =</span> <span class="st">&#39;below&#39;</span>, <span class="at">midpoint =</span> dt[,<span class="fu">min</span>(below,<span class="at">na.rm =</span> <span class="cn">TRUE</span>)])</span>
+<span id="cb177-4"><a href="validation.html#cb177-4" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">=</span> <span class="fu">ggplot_dt</span>(dt,<span class="at">data_col =</span> <span class="st">&#39;normal&#39;</span>, <span class="at">midpoint =</span> dt[,<span class="fu">min</span>(normal,<span class="at">na.rm =</span> <span class="cn">TRUE</span>)], <span class="at">high =</span> <span class="st">&#39;darkgoldenrod&#39;</span>) <span class="co"># see https://www.r-graph-gallery.com/ggplot2-color.html for an overview of color names.</span></span>
+<span id="cb177-5"><a href="validation.html#cb177-5" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">=</span> <span class="fu">ggplot_dt</span>(dt,<span class="at">data_col =</span> <span class="st">&#39;above&#39;</span>, <span class="at">midpoint =</span> dt[,<span class="fu">min</span>(above,<span class="at">na.rm =</span> <span class="cn">TRUE</span>)], <span class="at">high =</span> <span class="st">&#39;darkgreen&#39;</span>)</span>
+<span id="cb177-6"><a href="validation.html#cb177-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb177-7"><a href="validation.html#cb177-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggarrange</span>(p1,p2,p3,<span class="at">ncol =</span> <span class="dv">3</span>)</span></code></pre></div>
 <pre><code>## Warning: Raster pixels are placed at uneven horizontal intervals and will be
 ## shifted. Consider using geom_tile() instead.</code></pre>
 <pre><code>## Warning: Raster pixels are placed at uneven vertical intervals and will be
@@ -537,11 +558,11 @@ Note that this is not a skill score in the strict sense, but can be interpretet 
 ## shifted. Consider using geom_tile() instead.</code></pre>
 <pre><code>## Warning: Raster pixels are placed at uneven vertical intervals and will be
 ## shifted. Consider using geom_tile() instead.</code></pre>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-14-1.png" width="1152" /></p>
+<p><img src="05-Seasonal_validation_files/figure-html/unnamed-chunk-14-1.png" width="1152" /></p>
 <p><em>In order to evaluate these forecast the high resolution CHIRPS-data of the past is missing!</em></p>
-<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb172-1" title="1">fn =<span class="st"> &quot;PredictedProbabilityRain_Mar-May_Feb2021_new.nc&quot;</span></a>
-<a class="sourceLine" id="cb172-2" title="2">dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn))</a></code></pre></div>
-<pre><code>## File ~/nr/project/stat/CONFER/Data/validation/example_data/202102/PredictedProbabilityRain_Mar-May_Feb2021_new.nc (NC_FORMAT_NETCDF4):
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="validation.html#cb184-1" aria-hidden="true" tabindex="-1"></a>fn <span class="ot">=</span> <span class="st">&quot;PredictedProbabilityRain_Mar-May_Feb2021_new.nc&quot;</span></span>
+<span id="cb184-2"><a href="validation.html#cb184-2" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">=</span> <span class="fu">netcdf_to_dt</span>(<span class="fu">paste0</span>(data_dir,fn))</span></code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/PredictedProbabilityRain_Mar-May_Feb2021_new.nc (NC_FORMAT_NETCDF4):
 ## 
 ##      3 variables (excluding dimension variables):
 ##         float normal[lon,lat]   (Contiguous storage)  
@@ -558,22 +579,22 @@ Note that this is not a skill score in the strict sense, but can be interpretet 
 ##             type: 0
 ## 
 ##      2 dimensions:
-##         lat  Size:77
+##         lat  Size:77 
 ##             _FillValue: NaN
 ##             units: degrees_north
-##         lon  Size:66
+##         lon  Size:66 
 ##             _FillValue: NaN
 ##             units: degrees_east</code></pre>
-<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb174-1" title="1">dt[,normal <span class="op">:</span><span class="er">=</span><span class="st"> </span>normal<span class="op">/</span><span class="dv">100</span>][,above <span class="op">:</span><span class="er">=</span><span class="st"> </span>above<span class="op">/</span><span class="dv">100</span>][,below <span class="op">:</span><span class="er">=</span><span class="st"> </span>below<span class="op">/</span><span class="dv">100</span>]</a></code></pre></div>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="validation.html#cb186-1" aria-hidden="true" tabindex="-1"></a>dt[,normal <span class="sc">:</span><span class="er">=</span> normal<span class="sc">/</span><span class="dv">100</span>][,above <span class="sc">:</span><span class="er">=</span> above<span class="sc">/</span><span class="dv">100</span>][,below <span class="sc">:</span><span class="er">=</span> below<span class="sc">/</span><span class="dv">100</span>]</span></code></pre></div>
 </div>
 </div>
-<div id="eval-ex-pr" class="section level2">
-<h2><span class="header-section-number">4.3</span> Exceedence probabilities</h2>
+<div id="eval-ex-pr" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> Exceedence probabilities</h2>
 <p>Another forecast product issued at GHACOFs are exceedence probabilities of precipitation for certain thresholds, generally related to crops important for the region.
 A proper scoring rule based on the predicted exceedence probability <span class="math inline">\(p_\text{exc}(c)\)</span> of a threshold <span class="math inline">\(c\)</span> is the Brier score of exceedence
 <span class="math display">\[BS_{ex}(c) := (p_\text{exc}(c) - 1\{y&gt;c\})^2,\]</span>
-where <span class="math inline">\(1\{y&gt;c\}\)</span> equals 1 if the observation <span class="math inline">\(y\)</span> exceeded threshold <span class="math inline">\(c\)</span>, and 0 else. Skill scores for comparison with a climatological forecast can be calculated in the usual way. The climatological forecast for the exceedence probability is the fraction of past observations that exceeded the threshold. In Section <a href="data-import-and-processing.html#data-ex-prexc">3.2.4</a> we already derived this dataset:</p>
-<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb175-1" title="1"><span class="kw">print</span>(dt_prexc)</a></code></pre></div>
+where <span class="math inline">\(1\{y&gt;c\}\)</span> equals 1 if the observation <span class="math inline">\(y\)</span> exceeded threshold <span class="math inline">\(c\)</span>, and 0 else. Skill scores for comparison with a climatological forecast can be calculated in the usual way. The climatological forecast for the exceedence probability is the fraction of past observations that exceeded the threshold. In Section <a href="data-import-and-processing-1.html#data-ex-prexc">4.1.4</a> we already derived this dataset:</p>
+<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="validation.html#cb187-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(dt_prexc)</span></code></pre></div>
 <pre><code>##          lon   lat month year rthr            model pexcd clim prec
 ##      1: 21.5 -12.0     2 2021  200         GEM-NEMO 0.996   NA   NA
 ##      2: 21.5 -12.0     2 2021  200          CanCM4i 0.995   NA   NA
@@ -587,9 +608,9 @@ where <span class="math inline">\(1\{y&gt;c\}\)</span> equals 1 if the observati
 ## 632447: 51.5  23.5     5 2021  400     Meteo_France 0.000   NA   NA
 ## 632448: 51.5  23.5     5 2021  400             UKMO 0.000   NA   NA</code></pre>
 <p>This dataset contains predictions of exceedence (by different models) for several thresholds (rthr), as well as observed rainfall and a climatological prediction for the exceedence probabilities. This is everything we need to compute the <span class="math inline">\(BS_{ex}\)</span>-skill score. To this end, we have the function <code>BSS_ex_dt</code>. If we would not have a climatological exceedence forecast available, we could have still computed the <span class="math inline">\(BS_{ex}\)</span>-score using the function <code>BS_ex_dt</code>. This is still usefull for comparing competing models (see below), but does not tell us where the prediction is better or worse than climatology.</p>
-<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb177-1" title="1">bss_dt =<span class="st"> </span><span class="kw">BSS_ex_dt</span>(dt_prexc,<span class="dt">fc_col =</span> <span class="st">&#39;pexcd&#39;</span>,<span class="dt">threshold_col =</span> <span class="st">&#39;rthr&#39;</span>,<span class="dt">obs_col =</span> <span class="st">&#39;prec&#39;</span>,<span class="dt">by_cols =</span> <span class="kw">c</span>(<span class="st">&#39;model&#39;</span>,<span class="st">&#39;month&#39;</span>,<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>))</a>
-<a class="sourceLine" id="cb177-2" title="2"></a>
-<a class="sourceLine" id="cb177-3" title="3"><span class="kw">print</span>(bss_dt[<span class="op">!</span><span class="kw">is.na</span>(BS_ex)])</a></code></pre></div>
+<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="validation.html#cb189-1" aria-hidden="true" tabindex="-1"></a>bss_dt <span class="ot">=</span> <span class="fu">BSS_ex_dt</span>(dt_prexc,<span class="at">fc_col =</span> <span class="st">&#39;pexcd&#39;</span>,<span class="at">threshold_col =</span> <span class="st">&#39;rthr&#39;</span>,<span class="at">obs_col =</span> <span class="st">&#39;prec&#39;</span>,<span class="at">by_cols =</span> <span class="fu">c</span>(<span class="st">&#39;model&#39;</span>,<span class="st">&#39;month&#39;</span>,<span class="st">&#39;lon&#39;</span>,<span class="st">&#39;lat&#39;</span>))</span>
+<span id="cb189-2"><a href="validation.html#cb189-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb189-3"><a href="validation.html#cb189-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(bss_dt[<span class="sc">!</span><span class="fu">is.na</span>(BS_ex)])</span></code></pre></div>
 <pre><code>##                    model month  lon   lat rthr        BS_ex clim_BS_ex
 ##      1: COLA-RSMAS-CCSM4     2 22.0 -12.0  200 9.000183e-06   0.390625
 ##      2: COLA-RSMAS-CCSM4     2 22.0 -12.0  300 9.063039e-01   0.000625
@@ -616,32 +637,32 @@ where <span class="math inline">\(1\{y&gt;c\}\)</span> equals 1 if the observati
 ## 436472:     0.0000000</code></pre>
 <p>Skill scores are generally not defined when the climatological prediction is perfect and the climatological score is zero. This happens frequently for exceedence probabilities (e.g. lines 3 and 4 in the data table above) at locations where the considered threshold has never been exceeded in the observation. Simply for plotting reasons we put the skill score to -1 in this case if the prediction scores above 0 (since the climatological prediction wwas better in this case), and to 0 if both climatology and prediction assign a probability of 0.
 Let us look at the skill scores by the different models for the March forecast for exceedence level 200mm:</p>
-<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb179-1" title="1"><span class="co"># make a list of skill score plots:</span></a>
-<a class="sourceLine" id="cb179-2" title="2"><span class="kw">theme_set</span>(<span class="kw">theme_bw</span>(<span class="dt">base_size =</span> <span class="dv">10</span>)) <span class="co"># smaller font</span></a>
-<a class="sourceLine" id="cb179-3" title="3">plot_list =<span class="st"> </span><span class="kw">list</span>()</a>
-<a class="sourceLine" id="cb179-4" title="4"><span class="cf">for</span>(mod <span class="cf">in</span> <span class="kw">unique</span>(bss_dt[,model])) <span class="co"># 1 plot for each model</span></a>
-<a class="sourceLine" id="cb179-5" title="5">{</a>
-<a class="sourceLine" id="cb179-6" title="6">  plot_list =<span class="st"> </span><span class="kw">c</span>(plot_list,<span class="kw">list</span>(<span class="kw">ggplot_dt</span>( bss_dt[model <span class="op">==</span><span class="st"> </span>mod <span class="op">&amp;</span><span class="st"> </span>month <span class="op">==</span><span class="st"> </span><span class="dv">3</span> <span class="op">&amp;</span><span class="st"> </span>rthr <span class="op">==</span><span class="st"> </span><span class="dv">200</span>],</a>
-<a class="sourceLine" id="cb179-7" title="7">                                          <span class="st">&#39;BSS_ex&#39;</span>,</a>
-<a class="sourceLine" id="cb179-8" title="8">                                          <span class="dt">mn =</span> mod, </a>
-<a class="sourceLine" id="cb179-9" title="9">                                          <span class="dt">high =</span> <span class="st">&#39;red&#39;</span>,</a>
-<a class="sourceLine" id="cb179-10" title="10">                                          <span class="dt">midpoint =</span> <span class="dv">0</span>,</a>
-<a class="sourceLine" id="cb179-11" title="11">                                          <span class="dt">rr=</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb179-12" title="12">                                          <span class="dt">guide =</span> <span class="kw">guide_colorbar</span>(<span class="dt">title =</span> <span class="ot">NULL</span>, <span class="dt">barwidth =</span> <span class="dv">75</span>, <span class="dt">direction =</span> <span class="st">&#39;horizontal&#39;</span>))))</a>
-<a class="sourceLine" id="cb179-13" title="13">  </a>
-<a class="sourceLine" id="cb179-14" title="14">}</a>
-<a class="sourceLine" id="cb179-15" title="15"></a>
-<a class="sourceLine" id="cb179-16" title="16">ggpubr<span class="op">::</span><span class="kw">ggarrange</span>(<span class="dt">plotlist =</span> plot_list,<span class="dt">ncol =</span> <span class="dv">3</span>,<span class="dt">nrow =</span> <span class="dv">3</span>,<span class="dt">common.legend =</span> <span class="ot">TRUE</span>,<span class="dt">legend =</span> <span class="st">&#39;bottom&#39;</span>)</a></code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-18-1.png" width="480" />
+<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="validation.html#cb191-1" aria-hidden="true" tabindex="-1"></a><span class="co"># make a list of skill score plots:</span></span>
+<span id="cb191-2"><a href="validation.html#cb191-2" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">10</span>)) <span class="co"># smaller font</span></span>
+<span id="cb191-3"><a href="validation.html#cb191-3" aria-hidden="true" tabindex="-1"></a>plot_list <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb191-4"><a href="validation.html#cb191-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(mod <span class="cf">in</span> <span class="fu">unique</span>(bss_dt[,model])) <span class="co"># 1 plot for each model</span></span>
+<span id="cb191-5"><a href="validation.html#cb191-5" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb191-6"><a href="validation.html#cb191-6" aria-hidden="true" tabindex="-1"></a>  plot_list <span class="ot">=</span> <span class="fu">c</span>(plot_list,<span class="fu">list</span>(<span class="fu">ggplot_dt</span>( bss_dt[model <span class="sc">==</span> mod <span class="sc">&amp;</span> month <span class="sc">==</span> <span class="dv">3</span> <span class="sc">&amp;</span> rthr <span class="sc">==</span> <span class="dv">200</span>],</span>
+<span id="cb191-7"><a href="validation.html#cb191-7" aria-hidden="true" tabindex="-1"></a>                                          <span class="st">&#39;BSS_ex&#39;</span>,</span>
+<span id="cb191-8"><a href="validation.html#cb191-8" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">mn =</span> mod, </span>
+<span id="cb191-9"><a href="validation.html#cb191-9" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">high =</span> <span class="st">&#39;red&#39;</span>,</span>
+<span id="cb191-10"><a href="validation.html#cb191-10" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">midpoint =</span> <span class="dv">0</span>,</span>
+<span id="cb191-11"><a href="validation.html#cb191-11" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">rr=</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb191-12"><a href="validation.html#cb191-12" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">guide =</span> <span class="fu">guide_colorbar</span>(<span class="at">title =</span> <span class="cn">NULL</span>, <span class="at">barwidth =</span> <span class="dv">75</span>, <span class="at">direction =</span> <span class="st">&#39;horizontal&#39;</span>))))</span>
+<span id="cb191-13"><a href="validation.html#cb191-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb191-14"><a href="validation.html#cb191-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb191-15"><a href="validation.html#cb191-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb191-16"><a href="validation.html#cb191-16" aria-hidden="true" tabindex="-1"></a>ggpubr<span class="sc">::</span><span class="fu">ggarrange</span>(<span class="at">plotlist =</span> plot_list,<span class="at">ncol =</span> <span class="dv">3</span>,<span class="at">nrow =</span> <span class="dv">3</span>,<span class="at">common.legend =</span> <span class="cn">TRUE</span>,<span class="at">legend =</span> <span class="st">&#39;bottom&#39;</span>)</span></code></pre></div>
+<p><img src="05-Seasonal_validation_files/figure-html/unnamed-chunk-18-1.png" width="480" />
 Here, red color indicates better performance of the prediction than climatology. Large areas of the map are blue, which indicates better performance of the climatological forecast than of the prediction models. However, these are mostly areas where the observations never exceeded 200mm. Therefore, the climatological forecast issued a 0% chance of rainfall exceeding 200mm, whereas all actual prediction models issued a small positive probability and therefore performed ‘worse’. This not so much highlights a problem of the forecasts than rather a problem of skill scores, which become degenerate whenever the climatological prediction is near perfect.</p>
 <p>For comparing overall performance, we can average scores spatially. Note that, because of the above-mentioned effect, it is important not to average skill scores. However, since we have a climatology forecast in our data table, we can compute a spatially averaged score for climatology as well. Thus, we can compare whether the prediction models performed on average better or worse than climatology.</p>
-<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb180-1" title="1">mean_scores =<span class="st"> </span>bss_dt[,.(<span class="dt">BS_ex =</span> <span class="kw">mean</span>(BS_ex,<span class="dt">na.rm =</span> T)),by =<span class="st"> </span>.(model,month,rthr)]</a>
-<a class="sourceLine" id="cb180-2" title="2"><span class="co"># get climatology score as well:</span></a>
-<a class="sourceLine" id="cb180-3" title="3">mean_clim_score =<span class="st"> </span>bss_dt[model <span class="op">==</span><span class="st"> </span>model[<span class="dv">1</span>],.(<span class="dt">BS_ex =</span> <span class="kw">mean</span>(clim_BS_ex,<span class="dt">na.rm =</span> T)),by =<span class="st"> </span>.(month,rthr)]</a>
-<a class="sourceLine" id="cb180-4" title="4">mean_clim_score[,model <span class="op">:</span><span class="er">=</span><span class="st"> &#39;clim&#39;</span>]</a>
-<a class="sourceLine" id="cb180-5" title="5"></a>
-<a class="sourceLine" id="cb180-6" title="6">mean_scores =<span class="st"> </span><span class="kw">rbindlist</span>(<span class="kw">list</span>(mean_scores,mean_clim_score),<span class="dt">use.names =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb180-7" title="7"><span class="kw">print</span>(mean_scores)</a></code></pre></div>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="validation.html#cb192-1" aria-hidden="true" tabindex="-1"></a>mean_scores <span class="ot">=</span> bss_dt[,.(<span class="at">BS_ex =</span> <span class="fu">mean</span>(BS_ex,<span class="at">na.rm =</span> T)),by <span class="ot">=</span> .(model,month,rthr)]</span>
+<span id="cb192-2"><a href="validation.html#cb192-2" aria-hidden="true" tabindex="-1"></a><span class="co"># get climatology score as well:</span></span>
+<span id="cb192-3"><a href="validation.html#cb192-3" aria-hidden="true" tabindex="-1"></a>mean_clim_score <span class="ot">=</span> bss_dt[model <span class="sc">==</span> model[<span class="dv">1</span>],.(<span class="at">BS_ex =</span> <span class="fu">mean</span>(clim_BS_ex,<span class="at">na.rm =</span> T)),by <span class="ot">=</span> .(month,rthr)]</span>
+<span id="cb192-4"><a href="validation.html#cb192-4" aria-hidden="true" tabindex="-1"></a>mean_clim_score[,model <span class="sc">:</span><span class="er">=</span> <span class="st">&#39;clim&#39;</span>]</span>
+<span id="cb192-5"><a href="validation.html#cb192-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb192-6"><a href="validation.html#cb192-6" aria-hidden="true" tabindex="-1"></a>mean_scores <span class="ot">=</span> <span class="fu">rbindlist</span>(<span class="fu">list</span>(mean_scores,mean_clim_score),<span class="at">use.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb192-7"><a href="validation.html#cb192-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(mean_scores)</span></code></pre></div>
 <pre><code>##                 model month rthr        BS_ex
 ##   1: COLA-RSMAS-CCSM4     2  200 0.3206483211
 ##   2: COLA-RSMAS-CCSM4     2  300 0.3043674982
@@ -655,19 +676,19 @@ Here, red color indicates better performance of the prediction than climatology.
 ## 159:             clim     5  350 0.0015935347
 ## 160:             clim     5  400 0.0006833022</code></pre>
 <p>Here, every model gets assigned a single mean score for each month and each threshold (the mean score over all gridpoints). Lower values indicate better overall performance. Let us plot the data:</p>
-<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb182-1" title="1">pp =<span class="st"> </span><span class="kw">ggplot</span>(mean_scores) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> month,<span class="dt">y =</span> BS_ex,<span class="dt">color =</span> model,<span class="dt">linetype =</span> model)) <span class="op">+</span><span class="st"> </span><span class="kw">facet_wrap</span>(<span class="op">~</span>rthr,<span class="dt">nrow =</span> <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb182-2" title="2"></a>
-<a class="sourceLine" id="cb182-3" title="3"><span class="kw">print</span>(pp)</a></code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-20-1.png" width="480" /></p>
+<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb194-1"><a href="validation.html#cb194-1" aria-hidden="true" tabindex="-1"></a>pp <span class="ot">=</span> <span class="fu">ggplot</span>(mean_scores) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> month,<span class="at">y =</span> BS_ex,<span class="at">color =</span> model,<span class="at">linetype =</span> model)) <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>rthr,<span class="at">nrow =</span> <span class="dv">1</span>)</span>
+<span id="cb194-2"><a href="validation.html#cb194-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb194-3"><a href="validation.html#cb194-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(pp)</span></code></pre></div>
+<p><img src="05-Seasonal_validation_files/figure-html/unnamed-chunk-20-1.png" width="480" /></p>
 <p>The plot shows that, averaging over all grid points, a climatological forecast does much better than all the systems, which probably indicates that the systems need to be bias corrected.</p>
 </div>
-<div id="temperature" class="section level2">
-<h2><span class="header-section-number">4.4</span> Temperature</h2>
+<div id="temperature" class="section level2" number="5.4">
+<h2><span class="header-section-number">5.4</span> Temperature</h2>
 <p>In our folder of example data we also have a file containing temperature predictions.
 The file already contains correlations as well. Here we simply visualize these correlations as plots:</p>
-<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb183-1" title="1">fn =<span class="st"> &#39;TrefEnsRegr_monthly.nc&#39;</span></a>
-<a class="sourceLine" id="cb183-2" title="2">dt =<span class="st"> </span><span class="kw">netcdf_to_dt</span>(<span class="kw">paste0</span>(data_dir,fn))</a></code></pre></div>
-<pre><code>## File ~/nr/project/stat/CONFER/Data/validation/example_data/202102/TrefEnsRegr_monthly.nc (NC_FORMAT_CLASSIC):
+<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="validation.html#cb195-1" aria-hidden="true" tabindex="-1"></a>fn <span class="ot">=</span> <span class="st">&#39;TrefEnsRegr_monthly.nc&#39;</span></span>
+<span id="cb195-2"><a href="validation.html#cb195-2" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">=</span> <span class="fu">netcdf_to_dt</span>(<span class="fu">paste0</span>(data_dir,fn))</span></code></pre></div>
+<pre><code>## File /nr/project/stat/CONFER/Data/validation/example_data/202102/TrefEnsRegr_monthly.nc (NC_FORMAT_CLASSIC):
 ## 
 ##      6 variables (excluding dimension variables):
 ##         float below[lon,lat,model,lead]   
@@ -690,40 +711,40 @@ The file already contains correlations as well. Here we simply visualize these c
 ##             _FillValue: -9999
 ## 
 ##      4 dimensions:
-##         lon  Size:66
+##         lon  Size:66 
 ##             units: degreesE
 ##             long_name: lon
-##         lat  Size:77
+##         lat  Size:77 
 ##             units: degreesN
 ##             long_name: lat
-##         model  Size:5
+##         model  Size:5 
 ##             units: number
 ##             long_name: model
-##         lead  Size:3
+##         lead  Size:3 
 ##             units: month
 ##             long_name: lead</code></pre>
-<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb185-1" title="1"><span class="co"># plot correlations of predictions for all five models at all lead_times:</span></a>
-<a class="sourceLine" id="cb185-2" title="2"><span class="co"># create list of plots:</span></a>
-<a class="sourceLine" id="cb185-3" title="3">plot_list =<span class="st"> </span><span class="kw">list</span>()</a>
-<a class="sourceLine" id="cb185-4" title="4"><span class="cf">for</span>(leadtime <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb185-5" title="5">{</a>
-<a class="sourceLine" id="cb185-6" title="6">  <span class="cf">for</span>(mod <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb185-7" title="7">  {</a>
-<a class="sourceLine" id="cb185-8" title="8">      plot_list =<span class="st"> </span><span class="kw">c</span>(plot_list,<span class="kw">list</span>(<span class="kw">ggplot_dt</span>(dt[model <span class="op">==</span><span class="st"> </span>mod <span class="op">&amp;</span><span class="st"> </span>lead <span class="op">==</span><span class="st"> </span>leadtime],</a>
-<a class="sourceLine" id="cb185-9" title="9">                                        <span class="st">&#39;corr&#39;</span>,</a>
-<a class="sourceLine" id="cb185-10" title="10">                                        <span class="dt">rr =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb185-11" title="11">                                        <span class="dt">mn =</span> <span class="kw">paste0</span>(<span class="st">&#39;model &#39;</span>,mod,<span class="st">&#39;, lead &#39;</span>,leadtime),</a>
-<a class="sourceLine" id="cb185-12" title="12">                                        <span class="dt">discrete_cs =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb185-13" title="13">                                        <span class="dt">binwidth =</span> <span class="fl">0.2</span>,</a>
-<a class="sourceLine" id="cb185-14" title="14">                                        <span class="dt">guide =</span> <span class="kw">guide_colorbar</span>(<span class="dt">title =</span> <span class="ot">NULL</span>, </a>
-<a class="sourceLine" id="cb185-15" title="15">                                                               <span class="dt">barwidth =</span> <span class="dv">75</span>,</a>
-<a class="sourceLine" id="cb185-16" title="16">                                                               <span class="dt">direction =</span> <span class="st">&#39;horizontal&#39;</span>))))   }  </a>
-<a class="sourceLine" id="cb185-17" title="17">}</a>
-<a class="sourceLine" id="cb185-18" title="18"></a>
-<a class="sourceLine" id="cb185-19" title="19"></a>
-<a class="sourceLine" id="cb185-20" title="20"><span class="co">#plot as grid:</span></a>
-<a class="sourceLine" id="cb185-21" title="21"><span class="kw">do.call</span>(<span class="st">&#39;ggarrange&#39;</span>, <span class="kw">c</span>(plot_list,<span class="dt">ncol =</span> <span class="dv">5</span>,<span class="dt">nrow =</span> <span class="dv">3</span>,<span class="dt">common.legend =</span> <span class="ot">TRUE</span>,<span class="dt">legend =</span> <span class="st">&#39;bottom&#39;</span>))</a></code></pre></div>
-<p><img src="04-Validation_files/figure-html/unnamed-chunk-21-1.png" width="960" /></p>
+<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb197-1"><a href="validation.html#cb197-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot correlations of predictions for all five models at all lead_times:</span></span>
+<span id="cb197-2"><a href="validation.html#cb197-2" aria-hidden="true" tabindex="-1"></a><span class="co"># create list of plots:</span></span>
+<span id="cb197-3"><a href="validation.html#cb197-3" aria-hidden="true" tabindex="-1"></a>plot_list <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb197-4"><a href="validation.html#cb197-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(leadtime <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb197-5"><a href="validation.html#cb197-5" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb197-6"><a href="validation.html#cb197-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(mod <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb197-7"><a href="validation.html#cb197-7" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb197-8"><a href="validation.html#cb197-8" aria-hidden="true" tabindex="-1"></a>      plot_list <span class="ot">=</span> <span class="fu">c</span>(plot_list,<span class="fu">list</span>(<span class="fu">ggplot_dt</span>(dt[model <span class="sc">==</span> mod <span class="sc">&amp;</span> lead <span class="sc">==</span> leadtime],</span>
+<span id="cb197-9"><a href="validation.html#cb197-9" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">&#39;corr&#39;</span>,</span>
+<span id="cb197-10"><a href="validation.html#cb197-10" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">rr =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb197-11"><a href="validation.html#cb197-11" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">mn =</span> <span class="fu">paste0</span>(<span class="st">&#39;model &#39;</span>,mod,<span class="st">&#39;, lead &#39;</span>,leadtime),</span>
+<span id="cb197-12"><a href="validation.html#cb197-12" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">discrete_cs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb197-13"><a href="validation.html#cb197-13" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">binwidth =</span> <span class="fl">0.2</span>,</span>
+<span id="cb197-14"><a href="validation.html#cb197-14" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">guide =</span> <span class="fu">guide_colorbar</span>(<span class="at">title =</span> <span class="cn">NULL</span>, </span>
+<span id="cb197-15"><a href="validation.html#cb197-15" aria-hidden="true" tabindex="-1"></a>                                                               <span class="at">barwidth =</span> <span class="dv">75</span>,</span>
+<span id="cb197-16"><a href="validation.html#cb197-16" aria-hidden="true" tabindex="-1"></a>                                                               <span class="at">direction =</span> <span class="st">&#39;horizontal&#39;</span>))))   }  </span>
+<span id="cb197-17"><a href="validation.html#cb197-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb197-18"><a href="validation.html#cb197-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb197-19"><a href="validation.html#cb197-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb197-20"><a href="validation.html#cb197-20" aria-hidden="true" tabindex="-1"></a><span class="co">#plot as grid:</span></span>
+<span id="cb197-21"><a href="validation.html#cb197-21" aria-hidden="true" tabindex="-1"></a><span class="fu">do.call</span>(<span class="st">&#39;ggarrange&#39;</span>, <span class="fu">c</span>(plot_list,<span class="at">ncol =</span> <span class="dv">5</span>,<span class="at">nrow =</span> <span class="dv">3</span>,<span class="at">common.legend =</span> <span class="cn">TRUE</span>,<span class="at">legend =</span> <span class="st">&#39;bottom&#39;</span>))</span></code></pre></div>
+<p><img src="05-Seasonal_validation_files/figure-html/unnamed-chunk-21-1.png" width="960" /></p>
 
 </div>
 </div>
@@ -732,8 +753,8 @@ The file already contains correlations as well. Here we simply visualize these c
           </div>
         </div>
       </div>
-<a href="data-import-and-processing.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="data-import-and-processing-1.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="validation-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
