@@ -36,7 +36,7 @@ Make sure you put a / or \\ at the end.')
       print("Thanks, you're set up.")
     }
   }
-  dir = readLines(con = '~/.config_SeaVal')
+  dir = suppressWarnings(readLines(con = '~/.config_SeaVal'))
   return(dir)
 }
 
@@ -45,10 +45,11 @@ Make sure you put a / or \\ at the end.')
 #' @param dir The directory
 #' @export
 
-chirps_dir = function(dir = paste0(data_dir(),'CHIRPS/'))
+chirps_dir = function(dir = file.path(data_dir(),'CHIRPS'))
 {
     return(dir)
 }
+
 
 
 #' Returns a lon/lat bounding box for the greater horn of Africa region. Format is c(xmin,xmax,ymin,ymax), as for raster::extent
@@ -99,6 +100,7 @@ download_chirps_monthly = function(resolution = 'both',update = TRUE,
                                  extent = extent,
                                  timeout_limit = timeout_limit)
 
+    message('download complete, moving to upscaling')
     upscale_chirps(update = update,
                    years = years,
                    months = months,
@@ -131,7 +133,7 @@ download_chirps_monthly_high = function(update,
                                         extent,
                                         timeout_limit)
 {
-  save_dir = paste0(chirps_dir(),'monthly/')
+  save_dir = file.path(chirps_dir(),'monthly')
   options(timeout = max(timeout_limit, getOption("timeout")))
 
   if(!dir.exists(save_dir))
@@ -182,12 +184,19 @@ download_chirps_monthly_high = function(update,
     {
       if(update)
       {
-        if(file.exists(paste0(save_dir,yy,'_',mm,'.nc')))
+        if(file.exists(file.path(save_dir,paste0(yy,'_',mm,'.nc'))))
         {
           next
         }
       }
 
+      # skip future months:
+      if(yy == year(Sys.Date()) & month(Sys.Date()) < mm)
+      {
+        next
+      }
+
+      message(paste0('downloading ',mm,'/',yy))
       mon = mon_to_str(mm)
 
 
@@ -195,12 +204,13 @@ download_chirps_monthly_high = function(update,
                        mon,'%20',yy,'%29%28',mon,'%20',yy,'%29RANGEEDGES/Y/%28',upper,'%29%28',lower,'%29RANGEEDGES/X/%28',left,'%29%28',right,'%29RANGEEDGES/data.nc')
 
       # the newest data might not be available, but we don't want the download_chirps_monthly function to exit with an error when that happens (e.g. because then it'd skip the upscaling for resolution = 'both')
-      res = try(download.file(filestr, destfile = paste0(save_dir,yy,'_',mm,'.nc'), method = "auto",
-                    quiet = FALSE, mode="wb", cacheOK = TRUE))
-      if(inherits(res, "try-error"))
+      res = tryCatch(suppressWarnings(download.file(filestr, destfile = file.path(save_dir,paste0(yy,'_',mm,'.nc')), method = "auto",quiet = TRUE, mode="wb", cacheOK = TRUE)),
+                     error = function(cond)
+                     {message('This data is not yet available.')})
+      if(inherits(res, "error"))
       {
-        #error handling code, maybe just skip this iteration using
-        next
+         #error handling code, maybe just skip this iteration using
+         next
       }
     }
   }
@@ -218,7 +228,7 @@ download_chirps_monthly_low = function(update,
                                        timeout_limit,
                                        upscale_grid)
 {
-  save_dir = paste0(chirps_dir(),'monthly/')
+  save_dir = file.path(chirps_dir(),'monthly')
   options(timeout = max(timeout_limit, getOption("timeout")))
 
   if(!dir.exists(save_dir))
@@ -245,14 +255,14 @@ download_chirps_monthly_low = function(update,
     existing_yms = 12*existing_years + existing_months
 
     yms = yms[!(ym %in% existing_yms)]
+
+    yms = yms[!(year == year(Sys.Date()) & month > month(Sys.Date()))]
   }
 
   # use the first file to temporarily save the weights for upscaling:
 
   if(yms[,.N] > 0)
   {
-    print(paste0(1,'/',yms[,.N]))
-
     mon_to_str = function(x)
     {
       return(c('Jan','Feb','Mar','Apr','May','Apr','Jun','Jul','Aug','Sep','Oct','Nov','Dec')[x])
@@ -293,51 +303,61 @@ download_chirps_monthly_low = function(update,
     filestr = paste0('http://iridl.ldeo.columbia.edu/SOURCES/.UCSB/.CHIRPS/.v2p0/.monthly/.global/.precipitation/T/%28',
                      mon,'%20',yy,'%29%28',mon,'%20',yy,'%29RANGEEDGES/Y/%28',upper,'%29%28',lower,'%29RANGEEDGES/X/%28',left,'%29%28',right,'%29RANGEEDGES/data.nc')
 
-    res = try(download.file(filestr, destfile = paste0(save_dir,yy,'_',mm,'.nc'), method = "auto",
-                            quiet = FALSE, mode="wb", cacheOK = TRUE))
+    message(paste0('downloading ',mm,'/',yy))
+
+    skip_to_next = FALSE
+    res = tryCatch(suppressWarnings(download.file(filestr, destfile = file.path(save_dir,paste0(yy,'_',mm,'.nc')), method = "auto",quiet = TRUE, mode="wb", cacheOK = TRUE)),
+                   error = function(cond)
+                   {message('This data is not yet available.')
+                     skip_to_next <<- TRUE
+                     })
 
 
-    # upscale first file and save weights for upscaling:
+    if(! skip_to_next)
+    {
+      # upscale first file and save weights for upscaling:
 
-    fn = paste0(save_dir,yy,'_',mm,'.nc')
-    dt_temp = netcdf_to_dt(fn,verbose = 0)
-    setnames(dt_temp,c('X','Y'),c('lon','lat'))
-    dt_temp = upscale_regular_lon_lat(dt_temp,upscale_grid,'precipitation',
-                                      bycols = 'T',save_weights = paste0(save_dir,'temp.csv'))
+      fn = file.path(save_dir,paste0(yy,'_',mm,'.nc'))
+      dt_temp = netcdf_to_dt(fn,verbose = 0)
+      setnames(dt_temp,c('X','Y'),c('lon','lat'))
+      dt_temp = upscale_regular_lon_lat(dt_temp,upscale_grid,'precipitation',
+                                        bycols = 'T',save_weights = file.path(save_dir,paste0('temp.csv')))
 
-    nc_out = copy(fn)
-    nc_out = substr(nc_out,1,nchar(nc_out)-3)
-    nc_out = paste0(nc_out,'_us.nc')
+      nc_out = copy(fn)
+      nc_out = substr(nc_out,1,nchar(nc_out)-3)
+      nc_out = paste0(nc_out,'_us.nc')
 
-    dt_to_netcdf(dt_temp,'precipitation',
-                 units = 'mm/month',
-                 dim_vars = c('lon','lat','T'),
-                 dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
-                 nc_out = nc_out,
-                 check = 'y')
+      dt_to_netcdf(dt_temp,'precipitation',
+                   units = 'mm/month',
+                   dim_vars = c('lon','lat','T'),
+                   dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
+                   nc_out = nc_out,
+                   check = 'y')
 
-    invisible(file.remove(fn))
-
-    # now for all following year-month combinations:
+      invisible(file.remove(fn))
+    }
+    ### now for all following year-month combinations: ###
 
     if(yms[,.N] > 1)
     {
-      upscale_weights = fread(paste0(save_dir,'temp.csv'))
+      upscale_weights = fread(file.path(save_dir,paste0('temp.csv')))
 
       for(i in 2:yms[,.N])
       {
-        print(paste0(i,'/',yms[,.N]))
-
         mm = yms[i,month]
         mon = mon_to_str(mm)
         yy = yms[i,year]
 
+        message(paste0('downloading ',mm,'/',yy,'...'))
+        skip_to_next = FALSE
         filestr = paste0('http://iridl.ldeo.columbia.edu/SOURCES/.UCSB/.CHIRPS/.v2p0/.monthly/.global/.precipitation/T/%28',
                          mon,'%20',yy,'%29%28',mon,'%20',yy,'%29RANGEEDGES/Y/%28',upper,'%29%28',lower,'%29RANGEEDGES/X/%28',left,'%29%28',right,'%29RANGEEDGES/data.nc')
         # use try in case some data is not available
-        res = try(download.file(filestr, destfile = paste0(save_dir,yy,'_',mm,'.nc'), method = "auto",
-                                quiet = FALSE, mode="wb", cacheOK = TRUE))
-        if(inherits(res, "try-error"))
+        res = tryCatch(suppressWarnings(download.file(filestr, destfile = file.path(save_dir,paste0(yy,'_',mm,'.nc')), method = "auto",quiet = TRUE, mode="wb", cacheOK = TRUE)),
+                       error = function(cond)
+                       {message('This data is not yet available.')
+                         skip_to_next <<- TRUE})
+        if(skip_to_next)
         {
           #error handling code, maybe just skip this iteration using
           next
@@ -346,7 +366,7 @@ download_chirps_monthly_low = function(update,
 
         #upscaling
 
-        fn = paste0(save_dir,yy,'_',mm,'.nc')
+        fn = file.path(save_dir,paste0(yy,'_',mm,'.nc'))
         dt_temp = netcdf_to_dt(fn,verbose = 0)
 
         # get the fine grid index as in upscale_regular_lon_lat
@@ -379,10 +399,8 @@ download_chirps_monthly_low = function(update,
         invisible(file.remove(fn))
       }
     }
+    suppressWarnings(invisible(file.remove(file.path(save_dir,'temp.csv'))))
   }
-
-  file.remove(paste0(save_dir,'temp.csv'))
-
 }
 
 
@@ -407,7 +425,7 @@ upscale_chirps = function(update = TRUE,
                           upscale_grid = data.table(expand.grid(lon = seq(GHA_extent()[1],GHA_extent()[2],0.5),
                                                                 lat = seq(GHA_extent()[3],GHA_extent()[4],0.5))))
 {
-  save_dir = paste0(chirps_dir(),'monthly/')
+  save_dir = file.path(chirps_dir(),'monthly')
 
   all_files = list.files(save_dir)
 
@@ -431,6 +449,11 @@ upscale_chirps = function(update = TRUE,
   already_upscaled = unlist(strsplit(us_files,split = '_us.nc'))
   files_for_us = unlist(strsplit(files_for_us,split = '.nc'))
   files_for_us = setdiff(files_for_us,already_upscaled)
+  if(length(files_for_us) == 0)
+  {
+    message('Everything is already upscaled.')
+    return() # just to skip rest of function.
+  }
   files_for_us = paste0(files_for_us,'.nc')
   }
 
@@ -440,11 +463,11 @@ upscale_chirps = function(update = TRUE,
   {
     print(paste0(1,'/',length(files_for_us)))
 
-    fn = paste0(save_dir,files_for_us[1])
+    fn = file.path(save_dir,files_for_us[1])
     dt_temp = netcdf_to_dt(fn,verbose = 0)
     setnames(dt_temp,c('X','Y'),c('lon','lat'))
     dt_temp = upscale_regular_lon_lat(dt_temp,upscale_grid,'precipitation',
-                                      bycols = 'T',save_weights = paste0(save_dir,'temp.csv'))
+                                      bycols = 'T',save_weights = file.path(save_dir,'temp.csv'))
 
     nc_out = copy(fn)
     nc_out = substr(nc_out,1,nchar(nc_out)-3)
@@ -460,12 +483,12 @@ upscale_chirps = function(update = TRUE,
 
   if(length(files_for_us) > 1)
   {
-    upscale_weights = fread(paste0(save_dir,'temp.csv'))
+    upscale_weights = fread(file.path(save_dir,'temp.csv'))
 
     for(i in 2:length(files_for_us))
     {
       print(paste0(i,'/',length(files_for_us)))
-      fn = paste0(save_dir,files_for_us[i])
+      fn = file.path(save_dir,files_for_us[i])
       dt_temp = netcdf_to_dt(fn,verbose = 0)
 
       # get the fine grid index as in upscale_regular_lon_lat
@@ -497,7 +520,7 @@ upscale_chirps = function(update = TRUE,
     }
   }
 
-  file.remove(paste0(save_dir,'temp.csv'))
+  file.remove(file.path(save_dir,'temp.csv'))
 }
 
 
@@ -521,7 +544,7 @@ upscale_chirps = function(update = TRUE,
 
 load_chirps = function(years =  NULL, months = NULL, us = T)
 {
-  ch_dir = paste0(chirps_dir(),'monthly/')
+  ch_dir = file.path(chirps_dir(),'monthly')
 
   if(is.null(years) & is.null(months) & !us)
   {
@@ -558,7 +581,7 @@ load_chirps = function(years =  NULL, months = NULL, us = T)
   for(i in 1:seq_along(fns))
   {
     ff = fns[i]
-    dt_temp = netcdf_to_dt(paste0(ch_dir,ff),verbose = 2)
+    dt_temp = netcdf_to_dt(file.path(ch_dir,ff))
     if(!us) setnames(dt_temp,c('X','Y','precipitation'),c('lon','lat','prec'))
     if(us) setnames(dt_temp,c('precipitation'),c('prec'))
 
