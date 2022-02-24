@@ -45,7 +45,7 @@ Make sure you put a / or \\ at the end.')
 #' @param dir The directory
 #' @export
 
-chirps_dir = function(dir = file.path(data_dir(),'CHIRPS'))
+chirps_dir = function(dir = paste0(data_dir(),'CHIRPS/'))
 {
     return(dir)
 }
