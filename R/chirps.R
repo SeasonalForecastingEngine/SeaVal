@@ -6,34 +6,77 @@
 
 data_dir = function(set_dir = F)
 {
-  if(set_dir)
+  if(file.exists('~/.config_SeaVal'))
   {
-    file.remove('~/.config_SeaVal')
+    dir = suppressWarnings(readLines(con = '~/.config_SeaVal'))
   }
+
+  if(set_dir & file.exists('~/.config_SeaVal'))
+  {
+    if(!interactive()) stop('Setting a new data directory is only allowed in an interactive R session.')
+
+    mm = menu(choices = c('yes','no'),
+              title = paste0('Your current data directory is:\n',dir,'\nDo you want to change it?'))
+    if(mm == 1)
+    {
+      file.remove('~/.config_SeaVal')
+    }
+  }
+
   if(!file.exists('~/.config_SeaVal'))
   {
     if(!interactive()) stop('Your data directory does not yet seem to be configured. Please call data_dir() in an interactive session first.')
+
     m1 = menu(choices = c('yes','no'),
-              title = 'Please set up a directory for saving data. Do you use the package from inside the Norwegian Computing Center?')
+              title = 'Please provide a directory for saving data.\nDo you use the package from inside the Norwegian Computing Center?')
     if(m1 == 1)
     {
       if(Sys.info()["sysname"] == 'Windows')
       {
-        cat('M:\\CONFER\\Data\\',file = '~/.config_SeaVal')
+        dir = 'M:\\CONFER\\Data\\'
       } else {
-        cat('/nr/project/stat/CONFER/Data/\n',file = '~/.config_SeaVal')
+        dir = '/nr/project/stat/CONFER/Data/'
       }
-      print("Thanks, you're set up.")
+      if(!dir.exists(dir))
+      {
+        stop(paste0('Working at NR, the data directory should be\n',dir,'\nBut that directory does not exist in your current setup.\nPlease rerun and specify your data directory manually.'))
+      }
+      cat(dir,file = '~/.config_SeaVal')
+      message(paste0('Setup complete. Your data directory is:\n',dir))
     }
     if(m1 == 2)
     {
       cat('Please type your data directory. \n
-Do not use quotation marks. \n
-Use / on Linux (e.g. /nr/project/stat/CONFER/Data/) and \\ on Windows (e.g. C:\\Users\\Documents\\). \n
-Make sure you put a / or \\ at the end.')
+Use / on Linux (e.g. /nr/project/stat/CONFER/Data/) and \\ on Windows (e.g. C:\\Users\\Documents\\).')
       rl3 = readline('Input:')
+      # check whether a \ or / was put at the end, else add it:
+      if(Sys.info()["sysname"] == 'Windows')
+      {
+        if(!substr(rl3,nchar(rl3),nchar(rl3)) == '\\')
+        {rl3 = paste0(rl3,'\\')}
+      }
+      if(Sys.info()["sysname"] != 'Windows')
+      {
+        if(!substr(rl3,nchar(rl3),nchar(rl3)) == '/')
+        {rl3 = paste0(rl3,'/')}
+      }
       cat(paste0(rl3,'\n'),file = '~/.config_SeaVal')
-      print("Thanks, you're set up.")
+    }
+
+    dir = suppressWarnings(readLines(con = '~/.config_SeaVal'))
+
+    if(!dir.exists(dir))
+    {
+      m3 = menu(choices = c('yes','abort'), title = "The data directory does not yet exist, do you want to create it?")
+        if(m3 == 1)
+        {
+          dir.create(dir,showWarnings = FALSE,recursive = T)
+        }
+        if(m3 == 2)
+        {
+          stop('Aborted.')
+        }
+      message(paste0('Setup complete. Your data directory is:\n',dir,'\nIf you need to change your data directory, run data_dir(set_dir = TRUE)'))
     }
   }
   dir = suppressWarnings(readLines(con = '~/.config_SeaVal'))
@@ -92,6 +135,8 @@ download_chirps_monthly = function(resolution = 'both',update = TRUE,
                                    upscale_grid = data.table(expand.grid(lon = seq(extent[1],extent[2],0.5),
                                                                          lat = seq(extent[3],extent[4],0.5))))
 {
+  message(paste0('The data is stored in\n',file.path(chirps_dir(),'monthly'),'\n For changing this, run data_dir(set_dir = TRUE).'))
+
   if(resolution == 'both')
   {
     download_chirps_monthly_high(update = update,
@@ -135,12 +180,6 @@ download_chirps_monthly_high = function(update,
 {
   save_dir = file.path(chirps_dir(),'monthly')
   options(timeout = max(timeout_limit, getOption("timeout")))
-
-  if(!dir.exists(save_dir))
-  {
-    yn = readline(prompt="The directory you try save in does not exist, do you want to create it? y/n:")
-    if(yn == 'n') stop()
-  }
 
   dir.create(save_dir,showWarnings = F,recursive = T)
 
@@ -230,12 +269,6 @@ download_chirps_monthly_low = function(update,
 {
   save_dir = file.path(chirps_dir(),'monthly')
   options(timeout = max(timeout_limit, getOption("timeout")))
-
-  if(!dir.exists(save_dir))
-  {
-    yn = readline(prompt = "The directory you try save in does not exist, do you want to create it? y/n:")
-    if(yn == 'n') stop()
-  }
 
   dir.create(save_dir,showWarnings = F,recursive = T)
 
