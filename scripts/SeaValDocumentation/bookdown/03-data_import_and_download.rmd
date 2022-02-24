@@ -74,12 +74,9 @@ In order to download all available CHIRPS monthly mean data to your local machin
 download_chirps_monthly()
 ```
 
-The first time you run this function, it will ask you to specify a data directory on your local machine. This path is saved and from now on generally used by the `SeaVal` package for storing and loading data. You can later look up which data directory you specified by typing 
-```{r, eval = FALSE, echo = TRUE}
-data_dir()
-```
+The first time you run this function, it will ask you to specify a data directory on your local machine. This path is saved and from now on generally used by the `SeaVal` package for storing and loading data. You can later look up which data directory you specified by running `data_dir()`. In theory you should not change your data directory. If, for some reason, you have to you can run `data_dir(set_dir = TRUE)`. However, this simply generates a new empty data directory and specifies the new directory as lookup path for the `SeaVal` package. It does not move over or delete data in the old data directory - you have to do that manually.
 
-The `download_chirps_monthly` function comes with several useful options. You can specify `months` and `years` you want to download (the default is to download everything there is). Moreover, the function automatically looks up which months have been downloaded previously and only loads the data for months that you are still missing. If you want to re-download and overwrite existing files, you can set `update = FALSE`.
+The `download_chirps_monthly` function comes with several useful options. You can specify `months` and `years` you want to download (the default is to download everything there is). Moreover, the function automatically looks up which months have been downloaded previously and only loads the data for months that you are still missing. If you want to re-download and overwrite existing files, you can set `update = FALSE`. 
 
 The CHIRPS data is on the very high spatial resolution of 0.05 degree lon/lat. While this makes for great-looking plots, it also means that the entire CHIRPS data is roughly 800 MB on disk, even though it is just monthly means. Moreover loading and processing this data can take a long time. To avoid this, the function provides you options to derive an upscaled version with a coarser spatial resolution (default is 0.5 degree lon/lat). The three possible options are 
 

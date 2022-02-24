@@ -578,10 +578,10 @@ load_chirps = function(years =  NULL, months = NULL, us = T)
   }
   dt = list()
 
-  for(i in 1:seq_along(fns))
+  for(i in seq_along(fns))
   {
     ff = fns[i]
-    dt_temp = netcdf_to_dt(file.path(ch_dir,ff))
+    dt_temp = netcdf_to_dt(file.path(ch_dir,ff),verbose = 0)
     if(!us) setnames(dt_temp,c('X','Y','precipitation'),c('lon','lat','prec'))
     if(us) setnames(dt_temp,c('precipitation'),c('prec'))
 
