@@ -20,8 +20,9 @@ data_dir = function(set_dir = F)
       if(Sys.info()["sysname"] == 'Windows')
       {
         cat('M:\\CONFER\\Data\\',file = '~/.config_SeaVal')
+      } else {
+        cat('/nr/project/stat/CONFER/Data/\n',file = '~/.config_SeaVal')
       }
-      cat('/nr/project/stat/CONFER/Data/\n',file = '~/.config_SeaVal')
       print("Thanks, you're set up.")
     }
     if(m1 == 2)
