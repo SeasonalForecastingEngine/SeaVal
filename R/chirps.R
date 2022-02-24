@@ -14,15 +14,23 @@ data_dir = function(set_dir = F)
   {
     if(!interactive()) stop('Your data directory does not yet seem to be configured. Please call data_dir() in an interactive session first.')
     m1 = menu(choices = c('yes','no'),
-              title = 'You have to set up a directory for saving data. Do you use the package from inside the Norwegian Computing Center?')
+              title = 'Please set up a directory for saving data. Do you use the package from inside the Norwegian Computing Center?')
     if(m1 == 1)
     {
+      if(Sys.info()["sysname"] == 'Windows')
+      {
+        cat('M:\\CONFER\\Data\\',file = '~/.config_SeaVal')
+      }
       cat('/nr/project/stat/CONFER/Data/\n',file = '~/.config_SeaVal')
       print("Thanks, you're set up.")
     }
     if(m1 == 2)
     {
-      rl3 = readline('Please type your data directory. For example /nr/project/stat/CONFER/Data/:')
+      cat('Please type your data directory. \n
+Do not use quotation marks. \n
+Use / on Linux (e.g. /nr/project/stat/CONFER/Data/) and \\ on Windows (e.g. C:\\Users\\Documents\\). \n
+Make sure you put a / or \\ at the end.')
+      rl3 = readline('Input:')
       cat(paste0(rl3,'\n'),file = '~/.config_SeaVal')
       print("Thanks, you're set up.")
     }
@@ -36,7 +44,7 @@ data_dir = function(set_dir = F)
 #' @param dir The directory
 #' @export
 
-chirps_dir = function(dir = paste0(data_dir(),'CHIRPS/'))
+chirps_dir = function(dir = file.path(data_dir(),'CHIRPS'))
 {
     return(dir)
 }
@@ -70,7 +78,7 @@ GHA_extent = function()
 #' @param years,months Which years and months do you want to load? NULL loads everything there is.
 #' @param extent vector of length four (xmin,xmax,ymin,ymax), restricting the spatial area.
 #' @param timeout_limit how many seconds (per file, i.e. per year) before the download is aborted?
-#' @param upscale_grid The coarse grid to which the data is upscaled (only used when resolution is either 'both' or 'high').
+#' @param upscale_grid The coarse grid to which the data is upscaled (only used when resolution is either 'both' or 'high'). Only change this if you really have to.
 #'
 #' @export
 
