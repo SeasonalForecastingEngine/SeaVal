@@ -4,7 +4,11 @@
 \alias{add_tercile_cat}
 \title{adds a column with the tercile category to a data table}
 \usage{
-add_tercile_cat(dt, datacol = "prec", bycols = intersect("month", names(dt)))
+add_tercile_cat(
+  dt,
+  datacol = "prec",
+  bycols = intersect(c("month", "lon", "lat"), names(dt))
+)
 }
 \arguments{
 \item{dt}{the data table.}

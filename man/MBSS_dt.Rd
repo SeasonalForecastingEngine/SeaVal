@@ -7,7 +7,7 @@
 MBSS_dt(
   fc_dt,
   fc_cols = c("below", "normal", "above"),
-  obs_col = ifelse(is.null(obs_dt), yes = "obs", no = fc_col),
+  obs_col = "tercile_cat",
   by_cols = intersect(c("month", "season", "lon", "lat", "system", "lead_time"),
     names(fc_dt)),
   along_cols = c("year")

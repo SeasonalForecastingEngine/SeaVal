@@ -6,6 +6,8 @@ plotting-values-for-selected-countries
 customized-plots
 data-import-and-processing
 netcdf_to_dt
+downloading-and-processing-chirps-data
+data-import-and-processing-1
 data-examples
 cv-data
 ex-corrupted-netcdf
@@ -18,3 +20,6 @@ eval-terciles
 eval-terciles2
 eval-ex-pr
 temperature
+validation-1
+upscaling
+evaluating-weekly-predictions-of-precipitation

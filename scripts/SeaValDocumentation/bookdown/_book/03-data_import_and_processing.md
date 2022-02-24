@@ -15,7 +15,7 @@ print(data_dir) # the directory the data is stored in, you need to adjust this t
 ```
 
 ```
-## [1] "~/nr/project/stat/CONFER/Data/validation/example_data/202102/"
+## [1] "/nr/project/stat/CONFER/Data/validation/example_data/202102/"
 ```
 
 ```r
@@ -24,7 +24,7 @@ dt = netcdf_to_dt(paste0(data_dir,fn))
 ```
 
 ```
-## File ~/nr/project/stat/CONFER/Data/validation/example_data/202102/CorrelationSkillRain_Feb-Apr_Feb2021.nc (NC_FORMAT_CLASSIC):
+## File /nr/project/stat/CONFER/Data/validation/example_data/202102/CorrelationSkillRain_Feb-Apr_Feb2021.nc (NC_FORMAT_CLASSIC):
 ## 
 ##      1 variables (excluding dimension variables):
 ##         float corr[lon,lat]   
@@ -109,6 +109,7 @@ ggplot_dt(dt[!is.na(corr)], # here we suppress missing values
 
 <img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-3-1.png" width="480" />
 
+Similarly, for writing netcdf files from data tables, the package has a function `dt_to_netcdf`. The function requires a data table as input as well as the names of the columns containing the variables and dimension variables, and a filename to write to. The function will prompt you for units for all variables, but otherwise does not allow to include detailed descriptions in the netcdf. It also currently does not support writing netcdfs with multiple variables that have different dimension variables. You can use the Rpackage `ncdf4` for that.
 
 
 ## Reshaping data {#data-examples}
@@ -134,7 +135,7 @@ dt_pred2 = netcdf_to_dt(paste0(data_dir,fn_pred2))
 ```
 
 ```
-## File ~/nr/project/stat/CONFER/Data/validation/example_data/202102/CrossValidatedPredictedRain_Mar-May_Feb2021.nc (NC_FORMAT_CLASSIC):
+## File /nr/project/stat/CONFER/Data/validation/example_data/202102/CrossValidatedPredictedRain_Mar-May_Feb2021.nc (NC_FORMAT_CLASSIC):
 ## 
 ##      1 variables (excluding dimension variables):
 ##         float prec[lon,lat,time]   
@@ -219,7 +220,7 @@ dt_obs2 = netcdf_to_dt(paste0(data_dir,fn_obs2) )
 ```
 
 ```
-## File ~/nr/project/stat/CONFER/Data/validation/example_data/202102/ObservedRain_Mar-May_Feb2021_update.nc (NC_FORMAT_CLASSIC):
+## File /nr/project/stat/CONFER/Data/validation/example_data/202102/ObservedRain_Mar-May_Feb2021_update.nc (NC_FORMAT_CLASSIC):
 ## 
 ##      1 variables (excluding dimension variables):
 ##         float prec[lon,lat,time]   
@@ -319,7 +320,7 @@ dt = netcdf_to_dt(paste0(data_dir,fn))
 ```
 
 ```
-## File ~/nr/project/stat/CONFER/Data/validation/example_data/202102/PredictedProbabilityRain_Feb-Apr_Feb2021.nc (NC_FORMAT_CLASSIC):
+## File /nr/project/stat/CONFER/Data/validation/example_data/202102/PredictedProbabilityRain_Feb-Apr_Feb2021.nc (NC_FORMAT_CLASSIC):
 ## 
 ##      3 variables (excluding dimension variables):
 ##         float below[lon,lat]   
@@ -504,7 +505,7 @@ ggplot_dt(dt,'normal')
 
 ### Example: Upscaling observations {#us-obs}
 
-Here we prepare a dataset for evaluating tercile forecasts for the MAM season: In our example data directory `data_dir` (given above) there are three datasets we need to combine to this end. Predictions, past observations and the 2021-observation. Note that we require past observations in order to find the climatology terciles, so that we can check whether the observed rainfll at a gridpoint is indeed 'high' or 'low' for that gridpoint.,
+Here we prepare a dataset for evaluating tercile forecasts for the MAM season: In our example data directory `data_dir` (given above) there are three datasets we need to combine to this end. Predictions, past observations and the 2021-observation. Note that we require past observations in order to find the climatology terciles, so that we can check whether the observed rainfall at a gridpoint is indeed 'high' or 'low' for that gridpoint.,
 Our main challenge is that the 2021-observation file looks quite different from the others. In particular it is on a grid with higher resolution. 
 
 
@@ -665,6 +666,16 @@ setnames(dt_obs2021,c('longitude','latitude','precip'),c('lon','lat','prec'))
 ggplot_dt(dt_obs2021,'prec',high = 'blue',midpoint = 0)
 ```
 
+```
+## Warning: Raster pixels are placed at uneven horizontal intervals and will be
+## shifted. Consider using geom_tile() instead.
+```
+
+```
+## Warning: Raster pixels are placed at uneven vertical intervals and will be
+## shifted. Consider using geom_tile() instead.
+```
+
 <img src="03-data_import_and_processing_files/figure-html/unnamed-chunk-13-1.png" width="480" />
 
 ```r
@@ -774,11 +785,11 @@ print(dt)
 ##    4: 22.0 -10.0 0.3133837 0.3520903 0.3345260 332.45370 2021           1
 ##    5: 22.0  -9.5 0.3076811 0.3480890 0.3442299 407.19163 2021           1
 ##   ---                                                                    
-## 2939: 51.5  20.0        NA        NA        NA  26.43442 2021          -1
-## 2940: 51.5  20.5        NA        NA        NA  25.20947 2021          -1
-## 2941: 51.5  21.0        NA        NA        NA  21.71183 2021          -1
-## 2942: 51.5  21.5        NA        NA        NA  23.18140 2021          -1
-## 2943: 51.5  22.0        NA        NA        NA  23.29202 2021          -1
+## 2939: 51.5  20.0        NA        NA        NA  26.43442 2021           1
+## 2940: 51.5  20.5        NA        NA        NA  25.20947 2021           1
+## 2941: 51.5  21.0        NA        NA        NA  21.71183 2021           1
+## 2942: 51.5  21.5        NA        NA        NA  23.18140 2021           1
+## 2943: 51.5  22.0        NA        NA        NA  23.29202 2021           1
 ##            clim
 ##    1: 200.78224
 ##    2: 218.82563
@@ -796,6 +807,7 @@ print(dt)
 How to evaluate this dataset will be discussed in Section \@ref(eval-terciles).
 
 
+Besides the function `upscale_to_half_degrees` there is another function called `upscale_nested_griddings` that is more general purpose and makes weaker assumptions about the grids, 
 
 
 
@@ -810,7 +822,7 @@ dt = netcdf_to_dt(paste0(data_dir,fn))
 ```
 
 ```
-## File ~/nr/project/stat/CONFER/Data/validation/example_data/202102/PrecRegPeXcd_3monthSeasonal.nc (NC_FORMAT_CLASSIC):
+## File /nr/project/stat/CONFER/Data/validation/example_data/202102/PrecRegPeXcd_3monthSeasonal.nc (NC_FORMAT_CLASSIC):
 ## 
 ##      1 variables (excluding dimension variables):
 ##         float pexcd[lon,lat,model,lead,rthr]   
