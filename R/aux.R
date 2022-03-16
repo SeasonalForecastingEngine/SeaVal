@@ -57,9 +57,10 @@ checks_terc_fc_score = function()
   o = parent.frame(1)$o
   dt = parent.frame(1)$dt
   by = parent.frame(1)$by
+  pool = parent.frame(1)$pool
   dim.check = parent.frame(1)$dim.check
 
-  if(dim.check) run_dimension_check_ens_fc_score()
+  if(dim.check) run_dimension_check_terc_forecast()
 
   if(length(intersect(c('f','o','by','pool'),names(dt))) > 0)
   {
@@ -218,7 +219,7 @@ The following columns are classified as coordinate but were not included in by, 
 #' Auxiliary Function called inside functions that calculate scores
 #' for ensemble forecasts. Checks whether the provided data table has the right format.
 
-run_dimension_check_tercile_forecast = function()
+run_dimension_check_terc_forecast = function()
 {
   # inherit arguments passed to parent:
   dt = parent.frame(1)$dt
@@ -241,7 +242,7 @@ run_dimension_check_tercile_forecast = function()
 #' @export
 space_coords = function(dt = NULL)
 {
-  options = c('lon','lat','X','Y')
+  options = c('country','lon','lat','X','Y')
   if(is.null(dt))
   {
     return(options)
