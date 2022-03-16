@@ -11,7 +11,7 @@
 #'
 #' @source \href{http://digilib.icpac.net/SOURCES/.ICPAC/.CHIRPS-BLENDED/.monthly/.rainfall/.precipitation/}
 #'
-#' @example print(data(chirps_monthly))
+#' @examples print(data(chirps_monthly))
 "chirps_monthly"
 
 #' Monthly mean precipitation forecast example dataset
@@ -27,5 +27,5 @@
 #'
 #' @source \href{https://cds.climate.copernicus.eu}
 #'
-#' @example print(data(ecmwf_monthly))
+#' @examples print(data(ecmwf_monthly))
 "ecmwf_monthly"

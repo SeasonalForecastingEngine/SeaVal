@@ -19,4 +19,7 @@ The unit of precipitation is mm/day. Only the greater horn of Africa is covered,
 which are derived from the full 25 member ensemble. The probability for a tercile for a given year, month and location is always computed as the fraction of ensemble members falling into that
 tercile, computed from all ensemble predictions for the month and location under consideration.
 }
+\examples{
+print(data(ecmwf_monthly))
+}
 \keyword{datasets}

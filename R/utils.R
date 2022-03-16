@@ -21,12 +21,65 @@ add_country_names = function(dt)
 #' @export
 #' @importFrom data.table as.data.table
 
-
 add_tercile_cat = function(dt,datacol = 'prec',bycols = intersect(c('month','lon','lat'),names(dt)))
 {
   dt[!(is.na(get(datacol))),tercile_cat := -1*(get(datacol) <= quantile(get(datacol),0.33)) + 1 *(get(datacol) >= quantile(get(datacol),0.67)),by = bycols]
   return(dt)
 }
+
+#' Returns a leave-one-year-out climatology-based ensemble forecast
+#'
+#' for a given year, the ensemble forecast simply consists of the observations in all other years.
+#' This is essentially an auxiliary function for computing skill scores relative to climatology.
+#'
+#' @param obs_dt Data table containing observations, must contain a column 'year'.
+#' @param by_cols character vector containing the column names of the grouping variables, e.g. \code{c('month','lon','lat')}.
+#'
+#' @return Long data table with the typical ensemble-forecast looks, i.e. containing a column 'member'.
+#' @export
+
+climatology_ens_forecast = function(obs_dt,
+                                    by)
+{
+  years = unique(obs_dt[,year])
+
+  ret_dt = data.table()
+  for(yy in years)
+  {
+    dt_temp = obs_dt[year != yy][,member := 1:.N,by = by][,year:=yy]
+    ret_dt = rbindlist(list(ret_dt,dt_temp))
+  }
+  return(ret_dt)
+}
+
+#' Get climatological prediction for exceedence probabilities.
+#'
+#' The climatological prediction for exceedence probabilities is the fraction of observed years where the observation exceeded the threshold.
+#' It's calculated from leave-one-year-out climatology.
+#'
+#' @param obs_dt Data table containing observations.
+#' @param obs_col column name of the observation. Mostly observed precipitation in mm.
+#' @param by_cols By which columns should be grouped?
+#' @param thresholds vector of thresholds for which the exceedence probabilities should be derived.
+#'
+#' @export
+
+climatology_threshold_exceedence = function(obs_dt,
+                                            obs_col = 'prec',
+                                            by_cols = intersect(c('lon','lat','month','season'),names(obs_dt)),
+                                            thresholds = c(200,300,350,400))
+{
+  clim_dt = climatology_ens_forecast(obs_dt,by_cols = by_cols)
+  ret_dt = data.table()
+  for(thr in thresholds)
+  {
+    thr_dt = clim_dt[,.(pexcd = mean(get(obs_col) > thr)),by = c(by_cols,'year')]
+    thr_dt[,threshold := thr]
+    ret_dt = rbindlist(list(ret_dt,thr_dt))
+  }
+  return(ret_dt)
+}
+
 
 #' Converts time given as 'months since date' (MSD) into years and months (YM)
 #' @param dt a data table.

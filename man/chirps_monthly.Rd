@@ -19,4 +19,7 @@ The unit of precipitation is mm/day. Only the greater horn of Africa is covered.
 (lowest tercile for this location and month), 0 is normal and 1 is above normal.
 The data source is CHIRPS-blended, upscaled to a half-degree grid.
 }
+\examples{
+print(data(chirps_monthly))
+}
 \keyword{datasets}
