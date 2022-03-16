@@ -4,7 +4,7 @@
 \alias{chirps_dir}
 \title{Auxiliary function to access/set the directory for loading and saving CHIRPS data.}
 \usage{
-chirps_dir(dir = paste0(data_dir(), "CHIRPS/"))
+chirps_dir(dir = file.path(data_dir(), "CHIRPS"))
 }
 \arguments{
 \item{dir}{The directory}

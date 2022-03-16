@@ -4,21 +4,12 @@
 \alias{load_chirps}
 \title{Function for reading in (previously downloaded) CHIRPS (monthly) data.}
 \usage{
-load_chirps(
-  ch_dir = paste0(chirps_dir(), "monthly/"),
-  years = NULL,
-  months = NULL,
-  us = T
-)
+load_chirps(years = NULL, months = NULL, us = T)
 }
 \arguments{
-\item{ch_dir}{directory where the CHIRPS netcdfs are stored}
-
 \item{years, months}{Optional subset of years and months you want to load}
 
-\item{grid}{optional. A data table containing (a regular grid of) lons and lats. The chirps data is upscaled to this grid.}
-
-\item{save_file}{If you want to save the resulting data table, provide a filename here (including path and .csv at the end). If nothing is provided, the result is not saved, only returned}
+\item{us}{logical. If TRUE, the upscaled version is loaded.}
 }
 \value{
 the derived data table

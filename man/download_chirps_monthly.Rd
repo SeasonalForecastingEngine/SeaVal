@@ -30,7 +30,7 @@ download_chirps_monthly(
 
 \item{timeout_limit}{how many seconds (per file, i.e. per year) before the download is aborted?}
 
-\item{upscale_grid}{The coarse grid to which the data is upscaled (only used when resolution is either 'both' or 'high').}
+\item{upscale_grid}{The coarse grid to which the data is upscaled (only used when resolution is either 'both' or 'high'). Only change this if you really have to.}
 }
 \description{
 downloads CHIRPS monthly data for the GHA-region and saves it as netcdfs.
