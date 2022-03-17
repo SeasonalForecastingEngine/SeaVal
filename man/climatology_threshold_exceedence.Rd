@@ -7,7 +7,7 @@
 climatology_threshold_exceedence(
   obs_dt,
   obs_col = "prec",
-  by_cols = intersect(c("lon", "lat", "month", "season"), names(obs_dt)),
+  by = intersect(c("lon", "lat", "month", "season"), names(obs_dt)),
   thresholds = c(200, 300, 350, 400)
 )
 }
@@ -16,7 +16,7 @@ climatology_threshold_exceedence(
 
 \item{obs_col}{column name of the observation. Mostly observed precipitation in mm.}
 
-\item{by_cols}{By which columns should be grouped?}
+\item{by}{By which columns should be grouped?}
 
 \item{thresholds}{vector of thresholds for which the exceedence probabilities should be derived.}
 }
