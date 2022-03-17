@@ -7,7 +7,7 @@
 #' @export
 by_cols_ens_fc_score = function(dt = NULL)
 {
-  return(setdiff(coords(dt),c('year','member')))
+  return(setdiff(dimvars(dt),c('year','member')))
 }
 
 #' Auxiliary function returning the default column names to group by when calculating scores of ensemble forecasts.
@@ -16,7 +16,7 @@ by_cols_ens_fc_score = function(dt = NULL)
 #' @export
 by_cols_terc_fc_score = function(dt = NULL)
 {
-  return(setdiff(coords(dt),'year'))
+  return(setdiff(dimvars(dt),'year'))
 }
 
 
@@ -78,9 +78,9 @@ checks_terc_fc_score = function()
 #'Return the default column names that are considered to be coordinates rather than values:
 #'@export
 
-coords = function(dt = NULL)
+dimvars = function(dt = NULL)
 {
-  options = c(obs_coords(),'lead_time','member','nwp','system')
+  options = c(obs_dimvars(),'lead_time','member','nwp','system')
   if(is.null(dt))
   {
     return(options)
@@ -183,9 +183,9 @@ Use / on Linux (e.g. /nr/project/stat/CONFER/Data/) and \\ on Windows (e.g. C:\\
 #'
 #' @param dt optional. You can provide a data table, then the function returns the names of spatial coordinate columns in this data table.
 #' @export
-obs_coords = function(dt = NULL)
+obs_dimvars = function(dt = NULL)
 {
-  options = c(space_coords(),'month','season','year')
+  options = c(space_dimvars(),'month','season','year')
   if(is.null(dt))
   {
     return(options)
@@ -206,7 +206,7 @@ run_dimension_check_ens_fc_score = function()
   pool = parent.frame(1)$pool
   mem = parent.frame(1)$mem
 
-  cc = setdiff(coords(dt),c(by,pool,mem))
+  cc = setdiff(dimvars(dt),c(by,pool,mem))
   check = unique(dt[,.SD,.SDcols = c(by,pool,mem)])[,.N] == dt[,.N]
 
   if(!check & length(cc) == 0) stop('Dimension check failed.\nProbably you have multiple layers per ensemble member and year after grouping.
@@ -226,7 +226,7 @@ run_dimension_check_terc_forecast = function()
   by = parent.frame(1)$by
   pool = parent.frame(1)$pool
 
-  cc = setdiff(coords(dt),c(by,pool))
+  cc = setdiff(dimvars(dt),c(by,pool))
   check = unique(dt[,.SD,.SDcols = c(by,pool)])[,.N] == dt[,.N]
 
   if(!check & length(cc) == 0) stop('Dimension check failed.\nProbably you have multiple layers per ensemble member and year
@@ -240,7 +240,7 @@ run_dimension_check_terc_forecast = function()
 #' Auxiliary function returning all column names indicating a spatial coordinate.
 #' @param dt optional. You can provide a data table, then the function returns the names of spatial coordinate columns in this data table.
 #' @export
-space_coords = function(dt = NULL)
+space_dimvars = function(dt = NULL)
 {
   options = c('country','lon','lat','X','Y')
   if(is.null(dt))

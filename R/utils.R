@@ -5,7 +5,6 @@
 #' @export
 #' @importFrom data.table as.data.table
 
-
 add_country_names = function(dt)
 {
   data(countries)
@@ -33,7 +32,7 @@ add_tercile_cat = function(dt,datacol = 'prec',by = intersect(c('month','lon','l
 #' This is essentially an auxiliary function for computing skill scores relative to climatology.
 #'
 #' @param obs_dt Data table containing observations, must contain a column 'year'.
-#' @param by_cols character vector containing the column names of the grouping variables, e.g. \code{c('month','lon','lat')}.
+#' @param by_col character vector containing the column names of the grouping variables, e.g. \code{c('month','lon','lat')}.
 #'
 #' @return Long data table with the typical ensemble-forecast looks, i.e. containing a column 'member'.
 #' @export
@@ -59,21 +58,21 @@ climatology_ens_forecast = function(obs_dt,
 #'
 #' @param obs_dt Data table containing observations.
 #' @param obs_col column name of the observation. Mostly observed precipitation in mm.
-#' @param by_cols By which columns should be grouped?
+#' @param by By which columns should be grouped?
 #' @param thresholds vector of thresholds for which the exceedence probabilities should be derived.
 #'
 #' @export
 
 climatology_threshold_exceedence = function(obs_dt,
                                             obs_col = 'prec',
-                                            by_cols = intersect(c('lon','lat','month','season'),names(obs_dt)),
+                                            by = intersect(c('lon','lat','month','season'),names(obs_dt)),
                                             thresholds = c(200,300,350,400))
 {
-  clim_dt = climatology_ens_forecast(obs_dt,by_cols = by_cols)
+  clim_dt = climatology_ens_forecast(obs_dt,by = by)
   ret_dt = data.table()
   for(thr in thresholds)
   {
-    thr_dt = clim_dt[,.(pexcd = mean(get(obs_col) > thr)),by = c(by_cols,'year')]
+    thr_dt = clim_dt[,.(pexcd = mean(get(obs_col) > thr)),by = c(by,'year')]
     thr_dt[,threshold := thr]
     ret_dt = rbindlist(list(ret_dt,thr_dt))
   }
@@ -115,7 +114,8 @@ MSD_to_YM = function(dt,timecol = 'time',origin = '1981-01-01')
 
 
 #' restricts data to a specified country
-#' Only the following 10 countries can be used in this function: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tansania, Uganda, Rwanda, Burundi
+#' Only the following 10 countries can be used in this function: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tansania, Uganda, Rwanda, Burundi.
+#' This function assumes the lon/lat grid to be a regular half degree or full degree grid.
 #' @param dt the data table.
 #' @param ct name of the country, or vector containing multiple country names
 #' @param rectangle logical. If FALSE (default), the data is restricted to the gridcells for which the centerpoint lies within the selected country (e.g. for computing mean scores for a country).
@@ -178,8 +178,11 @@ restrict_to_confer_region = function(dt,rectangle = FALSE,tol = 0.5)
 
 
 
+#'This function is deprecated! Please use ForecastTools::upscale_regular_lon_lat instead.
+#'
 #'upscaling data from a finer to a coarser grid (by averaging) assumes the finer grid to be nested within the larger (only averages )
-#'Does not account for error by projection (lon/lat squares are treated as actual squares), and assumes lon/lat gridcells to all have equal size, so only use this near the equator.
+#'Does not account for error by projection (lon/lat squares are treated as actual squares), and assumes lon/lat gridcells to all have equal size,
+#'so only use this near the equator.
 #'
 #'@param dt Data table containing data for upscaling
 #'@param uscol The column name of the column to be upscaled by averaging
@@ -249,7 +252,8 @@ upscale_nested_griddings = function(dt,
 }
 
 
-
+#'This function is deprecated! Please use ForecastTools::upscale_regular_lon_lat instead.
+#'
 #' @importFrom Matrix sparseMatrix rowSums
 #' @export
 
