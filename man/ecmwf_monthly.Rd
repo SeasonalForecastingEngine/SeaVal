@@ -8,7 +8,7 @@
 An object of class \code{data.table} (inherits from \code{data.frame}) with 868560 rows and 9 columns.
 }
 \source{
-\href{https://cds.climate.copernicus.eu}
+\href{https://cds.climate.copernicus.eu}{Copernicus Climate Data Store}
 }
 \usage{
 data(ecmwf_monthly)

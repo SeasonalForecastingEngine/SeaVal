@@ -9,7 +9,7 @@
 #'
 #' @usage data(chirps_monthly)
 #'
-#' @source \href{http://digilib.icpac.net/SOURCES/.ICPAC/.CHIRPS-BLENDED/.monthly/.rainfall/.precipitation/}
+#' @source \href{https://digilib.icpac.net/SOURCES/.ICPAC/.CHIRPS-BLENDED/.monthly/.rainfall/.precipitation/}{digilib.icpac.net}
 #'
 #' @examples print(data(chirps_monthly))
 "chirps_monthly"
@@ -25,7 +25,7 @@
 #'
 #' @usage data(ecmwf_monthly)
 #'
-#' @source \href{https://cds.climate.copernicus.eu}
+#' @source \href{https://cds.climate.copernicus.eu}{Copernicus Climate Data Store}
 #'
 #' @examples print(data(ecmwf_monthly))
 "ecmwf_monthly"

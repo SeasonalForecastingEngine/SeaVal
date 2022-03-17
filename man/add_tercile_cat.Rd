@@ -7,7 +7,7 @@
 add_tercile_cat(
   dt,
   datacol = "prec",
-  bycols = intersect(c("month", "lon", "lat"), names(dt))
+  by = intersect(c("month", "lon", "lat"), names(dt))
 )
 }
 \arguments{

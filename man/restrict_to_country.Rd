@@ -3,7 +3,8 @@
 \name{restrict_to_country}
 \alias{restrict_to_country}
 \title{restricts data to a specified country
-Only the following 10 countries can be used in this function: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tansania, Uganda, Rwanda, Burundi}
+Only the following 10 countries can be used in this function: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tansania, Uganda, Rwanda, Burundi.
+This function assumes the lon/lat grid to be a regular half degree or full degree grid.}
 \usage{
 restrict_to_country(dt, ct, rectangle = FALSE, tol = 0.5)
 }
@@ -20,5 +21,6 @@ for a specific country.}
 }
 \description{
 restricts data to a specified country
-Only the following 10 countries can be used in this function: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tansania, Uganda, Rwanda, Burundi
+Only the following 10 countries can be used in this function: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tansania, Uganda, Rwanda, Burundi.
+This function assumes the lon/lat grid to be a regular half degree or full degree grid.
 }
