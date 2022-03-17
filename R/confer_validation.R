@@ -1,5 +1,3 @@
-
-
 #' Assess score uncertainty by bootstrapping
 #'
 #' @param dt Data table containing scores.
@@ -146,11 +144,3 @@ crps_sample_na = function(obs, pred, ens_size_correction = FALSE)
 
   return(crps)
 }
-
-
-
-
-
-
-
-
