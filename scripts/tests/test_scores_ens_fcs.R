@@ -58,14 +58,3 @@ ggplot_dt(test,'rho')
 cpa = CPA(dt,f = 'prec',o = 'obs')
 ggplot_dt(cpa,'cpa')
 
-################################ test scores for tercile forecasts #############################
-
-# get rid of ensemble forecast structure:
-dt_tc = unique(dt[,.(lon,lat,year,month,below,normal,above,obs)])
-# set up for tercile forecast evaluation:
-add_tercile_cat(dt_tc,'obs',
-                bycols = c('lon','lat','month'))
-
-mbss = MBSS(dt_tc)
-
-ggplot_dt(mbss[month == 10],'MBSS')
