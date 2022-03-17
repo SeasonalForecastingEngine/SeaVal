@@ -8,7 +8,7 @@
 An object of class \code{data.table} (inherits from \code{data.frame}) with 418080 rows and 6 columns.
 }
 \source{
-\href{http://digilib.icpac.net/SOURCES/.ICPAC/.CHIRPS-BLENDED/.monthly/.rainfall/.precipitation/}
+\href{https://digilib.icpac.net/SOURCES/.ICPAC/.CHIRPS-BLENDED/.monthly/.rainfall/.precipitation/}{digilib.icpac.net}
 }
 \usage{
 data(chirps_monthly)

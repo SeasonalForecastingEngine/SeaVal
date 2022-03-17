@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{upscale_nested_griddings}
 \alias{upscale_nested_griddings}
-\title{upscaling data from a finer to a coarser grid (by averaging) assumes the finer grid to be nested within the larger (only averages )
-Does not account for error by projection (lon/lat squares are treated as actual squares), and assumes lon/lat gridcells to all have equal size, so only use this near the equator.}
+\title{This function is deprecated! Please use ForecastTools::upscale_regular_lon_lat instead.}
 \usage{
 upscale_nested_griddings(
   dt,
@@ -23,5 +22,6 @@ upscale_nested_griddings(
 }
 \description{
 upscaling data from a finer to a coarser grid (by averaging) assumes the finer grid to be nested within the larger (only averages )
-Does not account for error by projection (lon/lat squares are treated as actual squares), and assumes lon/lat gridcells to all have equal size, so only use this near the equator.
+Does not account for error by projection (lon/lat squares are treated as actual squares), and assumes lon/lat gridcells to all have equal size,
+so only use this near the equator.
 }
