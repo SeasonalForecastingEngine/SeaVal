@@ -21,7 +21,7 @@ add_country_names = function(dt)
 #' @export
 #' @importFrom data.table as.data.table
 
-add_tercile_cat = function(dt,datacol = 'prec',by = intersect(c('month','lon','lat'),names(dt)))
+add_tercile_cat = function(dt,data_col = 'prec',by = intersect(c('month','lon','lat'),names(dt)))
 {
   dt[!(is.na(get(datacol))),tercile_cat := -1*(get(datacol) <= quantile(get(datacol),0.33)) + 1 *(get(datacol) >= quantile(get(datacol),0.67)),by = by]
   return(dt)

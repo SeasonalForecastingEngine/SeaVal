@@ -7,7 +7,8 @@
 load_chirps(years = NULL, months = NULL, us = T)
 }
 \arguments{
-\item{years, months}{Optional subset of years and months you want to load}
+\item{years, months}{Optional subset of years and months you want to load. The default is to load everything that has been downloaded locally.
+You can update your local CHIRPS download by calling download_chirps_monthly}
 
 \item{us}{logical. If TRUE, the upscaled version is loaded.}
 }
