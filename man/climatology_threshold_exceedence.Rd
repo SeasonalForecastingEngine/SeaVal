@@ -6,19 +6,19 @@
 \usage{
 climatology_threshold_exceedence(
   obs_dt,
-  obs_col = "prec",
-  by_cols = intersect(c("lon", "lat", "month", "season"), names(obs_dt)),
+  o = "prec",
+  by = setdiff(coords(obs_dt), "year"),
   thresholds = c(200, 300, 350, 400)
 )
 }
 \arguments{
 \item{obs_dt}{Data table containing observations.}
 
+\item{thresholds}{vector of thresholds for which the exceedence probabilities should be derived.}
+
 \item{obs_col}{column name of the observation. Mostly observed precipitation in mm.}
 
 \item{by_cols}{By which columns should be grouped?}
-
-\item{thresholds}{vector of thresholds for which the exceedence probabilities should be derived.}
 }
 \description{
 The climatological prediction for exceedence probabilities is the fraction of observed years where the observation exceeded the threshold.
