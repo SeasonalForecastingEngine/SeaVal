@@ -18,7 +18,7 @@ climatology_threshold_exceedence(
 
 \item{obs_col}{column name of the observation. Mostly observed precipitation in mm.}
 
-\item{by_cols}{By which columns should be grouped?}
+\item{by}{By which columns should be grouped?}
 }
 \description{
 The climatological prediction for exceedence probabilities is the fraction of observed years where the observation exceeded the threshold.
