@@ -64,15 +64,15 @@ climatology_ens_forecast = function(obs_dt,
 #' @export
 
 climatology_threshold_exceedence = function(obs_dt,
-                                            obs_col = 'prec',
-                                            by = intersect(c('lon','lat','month','season'),names(obs_dt)),
+                                            o = 'prec',
+                                            by = setdiff(coords(obs_dt),'year'),
                                             thresholds = c(200,300,350,400))
 {
   clim_dt = climatology_ens_forecast(obs_dt,by = by)
   ret_dt = data.table()
   for(thr in thresholds)
   {
-    thr_dt = clim_dt[,.(pexcd = mean(get(obs_col) > thr)),by = c(by,'year')]
+    thr_dt = clim_dt[,.(pexcd = mean(get(o) > thr)),by = c(by,'year')]
     thr_dt[,threshold := thr]
     ret_dt = rbindlist(list(ret_dt,thr_dt))
   }

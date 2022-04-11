@@ -8,16 +8,21 @@
 An object of class \code{data.table} (inherits from \code{data.frame}) with 868560 rows and 9 columns.
 }
 \source{
-\href{https://cds.climate.copernicus.eu}{Copernicus Climate Data Store}
+\url{https://cds.climate.copernicus.eu}
 }
 \usage{
 data(ecmwf_monthly)
 }
 \description{
-This dataset contains hindcasts of the monthly mean precipitation for October - December 1993-2020. The forecasts are issued by the ECMWF SEAS 5 model and initialized in August.
-The unit of precipitation is mm/day. Only the greater horn of Africa is covered, and only the first 5 ensemble members are provided. The dataset also contains tercile probability forecasts,
-which are derived from the full 25 member ensemble. The probability for a tercile for a given year, month and location is always computed as the fraction of ensemble members falling into that
-tercile, computed from all ensemble predictions for the month and location under consideration.
+This dataset contains hindcasts of the monthly mean precipitation for October
+- December 1993-2020. The forecasts are issued by the ECMWF SEAS 5 model and
+initialized in August. The unit of precipitation is mm/day. Only the greater
+horn of Africa is covered, and only the first 5 ensemble members are
+provided. The dataset also contains tercile probability forecasts, which are
+derived from the full 25 member ensemble. The probability for a tercile for a
+given year, month and location is always computed as the fraction of ensemble
+members falling into that tercile, computed from all ensemble predictions for
+the month and location under consideration.
 }
 \examples{
 print(data(ecmwf_monthly))

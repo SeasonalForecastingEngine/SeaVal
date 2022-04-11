@@ -341,6 +341,7 @@ download_chirps_monthly_low = function(update,
 
 #' Upscales the monthly CHIRPS data to a coarser grid and saves the resulting files as netcdf
 #'
+#' this is mostly auxiliary and called from download_chirps_monthly.
 #' Uses the function ForecastTools::upscale_regular_lon_lat, but derives the weights for upscaling only once for efficiency and avoids simultaneous loading of all CHIRPS data.
 #'
 #' @param save_dir where should the data be saved?
@@ -464,7 +465,8 @@ upscale_chirps = function(update = TRUE,
 #'
 #' The resulting data table contains precip in unit mm/day.
 #'
-#' @param years,months Optional subset of years and months you want to load
+#' @param years,months Optional subset of years and months you want to load. The default is to load everything that has been downloaded locally.
+#' You can update your local CHIRPS download by calling download_chirps_monthly
 #' @param us logical. If TRUE, the upscaled version is loaded.
 #'
 #' @return the derived data table
