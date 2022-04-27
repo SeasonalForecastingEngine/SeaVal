@@ -156,43 +156,57 @@ CPA_dt = CPA
 #'
 #' @export
 
-CRPS = function(dt,f,o = 'obs',
+CRPS = function(dt, f, o = "obs",
                 by = by_cols_ens_fc_score(),
-                pool = 'year',
-                mem = 'member',
+                pool = "year",
+                mem = "member",
                 dim.check = T,
                 ens_size_correction = FALSE)
 {
-  by = intersect(by,names(dt))
-  dt = dt[!is.na(get(o)) & ! is.na(get(f))]
+  by = intersect(by, names(dt))
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  SeaVal:::checks_ens_fc_score()
 
-  #checks:
-  checks_ens_fc_score()
+  if(!ens_size_correction)  ret_dt = dt[,.(CRPS = crps_aux(get(o),get(f))),by = c(by,pool)]
+  if(ens_size_correction)  ret_dt = dt[,.(CRPS = crps_aux_esc(get(o),get(f))),by = c(by,pool)]
 
-
-
-  #expand for application of crps:
-  if(!is.null(by))
-  {
-    ff = paste0('year + ',o,' + ',paste(by,collapse = ' + '),' ~ ',mem)
-  } else {
-    ff = paste0('year + ',o,'~ ',mem)
-  }
-
-  dt_new = dcast(dt,formula = as.formula(ff),fun.aggregate = mean,value.var = f,na.rm = T)
-
-  pred_cols = (length(by) + length(pool) + 2) : ncol(dt_new) # that's a bit hacked
-
-  pred_mat = as.matrix(dt_new[,pred_cols,with = FALSE])
-
-  obs = dt_new[,get(o)]
-
-  crps_vals = crps_sample_na(obs,pred_mat, ens_size_correction = ens_size_correction)
-
-  ret_dt = dt_new[,.SD,.SDcols = c(pool,by)][,CRPS := crps_vals]
-  ret_dt = ret_dt[,.(CRPS = mean(CRPS)), by = by]
+  ret_dt = ret_dt[, .(CRPS = mean(CRPS)), by = by]
   return(ret_dt)
 }
+
+#' Auxiliary function for calculating crps.
+#' Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
+#' but is just repeated (which is why only y[1]) is used.
+
+crps_aux = function(y,dat)
+{
+
+  c_1n <- 1/length(dat)
+  x <- sort(dat)
+  a <- seq.int(0.5 * c_1n, 1 - 0.5 * c_1n, length.out = length(dat))
+  ret <- 2 * c_1n * sum(((y[1] < x) - a) * (x - y[1]))
+  return(ret)
+}
+
+#' Auxiliary function for calculating crps with ensemble size correction by Ferro et al. 2008.
+#' Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
+#' but is just repeated (which is why only y[1]) is used.
+
+crps_aux_esc = function(y,dat)
+{
+  c_1n <- 1/length(dat)
+  x <- sort(dat)
+  a <- seq.int(0.5 * c_1n, 1 - 0.5 * c_1n, length.out = length(dat))
+  ret <- 2 * c_1n * sum(((y[1] < x) - a) * (x - y[1]))
+
+  #ensemble size correction:
+  ens_size = length(dat)
+  mean_dist_xx = mean(stats::dist(dat))
+  ret = ret - mean_dist_xx/(2*ens_size)
+  return(ret)
+}
+
+
 
 #' Function got renamed, please check CRPS
 #' @export
