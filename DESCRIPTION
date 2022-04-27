@@ -17,7 +17,8 @@ Depends:
   ForecastTools
 Imports:
   ncdf4,
-  scoringRules
+  scoringRules,
+  Matrix
 LazyData: true
 RoxygenNote: 7.1.2
 Collate: 
