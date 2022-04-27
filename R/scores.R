@@ -420,7 +420,7 @@ CPA_dt = CPA
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #' @export
 
-MBSS = function(dt,f = c('below','normal','above'),
+MBS = function(dt,f = c('below','normal','above'),
                 o = 'tercile_cat',
                 by = by_cols_terc_fc_score(),
                 pool = 'year',
@@ -432,13 +432,14 @@ MBSS = function(dt,f = c('below','normal','above'),
 
   # Multicategory Brier skill score:
 
-  MBSS_dt = dt[,.(MBSS = 3/2 * (2/3 - mean((get(f[1]) - (get(o) == -1))^2 + (get(f[2]) - (get(o) == 0))^2 + (get(f[3]) - (get(o) == 1))^2))),by = by]
+  MBSS_dt = dt[,.(MBS = 3/2 * (2/3 - mean((get(f[1]) - (get(o) == -1))^2 + (get(f[2]) - (get(o) == 0))^2 + (get(f[3]) - (get(o) == 1))^2))),by = by]
   return(MBSS_dt)
 }
 
 
 #' Function got renamed, please see MBSS
 #' @export
+
 MBSS_dt = MBSS
 
 #######################
@@ -680,5 +681,3 @@ HSS = function(dt,f = c('below','normal','above'),
   HSS_dt = HS_dt[,.(HSS = HS1-HS3),by = by]
   return(HSS_dt)
 }
-
-
