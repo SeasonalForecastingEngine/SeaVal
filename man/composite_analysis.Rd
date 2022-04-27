@@ -22,6 +22,8 @@ composite_analysis(
 
 \item{by_cols}{Character vector containing the column names of the grouping variables by which the composite analysis is supposed to be conducted. Default is \code{c('month','lon','lat')}.}
 
+\item{average_along_cols}{Along which columns is averaged.}
+
 \item{var_name}{Column name of the weather variable in var_dt. Default is first column not contained in \code{by_cols} and not named 'year'.}
 }
 \value{

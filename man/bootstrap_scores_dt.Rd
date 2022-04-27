@@ -13,8 +13,10 @@ bootstrap_scores_dt(dt, r = 100, score_col, bycols = NULL, mc_cores = 1)
 
 \item{score_col}{column name of the scores}
 
-\item{by_cols}{should the mean score be aggregated? E.g. if you have a data table with scores from different systems,
+\item{bycols}{should the mean score be aggregated? E.g. if you have a data table with scores from different systems,
 putting 'system' here gives you a bootstrap estimate for the mean score of each system, which is usually what you want}
+
+\item{mc_cores}{Number of cores for parallelization}
 }
 \description{
 Assess score uncertainty by bootstrapping

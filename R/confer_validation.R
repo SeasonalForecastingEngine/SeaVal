@@ -3,8 +3,11 @@
 #' @param dt Data table containing scores.
 #' @param r how many bootstrap-resamples of the mean score should be considered?
 #' @param score_col column name of the scores
-#' @param by_cols should the mean score be aggregated? E.g. if you have a data table with scores from different systems,
+#' @param bycols should the mean score be aggregated? E.g. if you have a data table with scores from different systems,
 #' putting 'system' here gives you a bootstrap estimate for the mean score of each system, which is usually what you want
+#' @param mc_cores Number of cores for parallelization
+#'
+#' @importFrom boot boot
 #' @export
 
 bootstrap_scores_dt = function(dt,r = 100,score_col,bycols = NULL,mc_cores = 1)
@@ -63,6 +66,7 @@ bootstrap_scores_dt = function(dt,r = 100,score_col,bycols = NULL,mc_cores = 1)
 #'@param TC_dt Data table containing the values of the teleconnection index (such as IOD), typically indexed by year and month.
 #'@param TC_name Character string containing the column name of TC_dt where the values of the teleconnection index are stored. Default is third column.
 #'@param by_cols Character vector containing the column names of the grouping variables by which the composite analysis is supposed to be conducted. Default is \code{c('month','lon','lat')}.
+#'@param average_along_cols Along which columns is averaged.
 #'@param var_name Column name of the weather variable in var_dt. Default is first column not contained in \code{by_cols} and not named 'year'.
 #'
 #'@return A data table containing the composites x_plus and x_minus for each value of by_cols

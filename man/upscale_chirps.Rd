@@ -18,8 +18,6 @@ upscale_chirps(
 \item{years, months}{Which years and months do you want to upscale? NULL upscales everything there is (except if update is TRUE).}
 
 \item{upscale_grid}{A regular lon/lat grid for upscaling. Defaults to half degrees.}
-
-\item{save_dir}{where should the data be saved?}
 }
 \description{
 this is mostly auxiliary and called from download_chirps_monthly.

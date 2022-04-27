@@ -28,8 +28,8 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 
 \item{mem}{Name of the column identifying the ensemble member. Only used if check_dimension is TRUE. Is NULL for a point forecast.}
 
-\item{check_dimension}{Logical. If True, a crude test whether the data table is in the correct shape is conducted
-Namely, getting the mean grouped by by AND pool should correspond to getting the ensemble mean. This is tested.}
+\item{dim.check}{Logical. If True, a simple test whether the dimensions match up is conducted:
+The data table should only have one row for each level of c(by,pool,mem)}
 }
 \description{
 Taking MSEs of ensemble forecasts stored in long data tables. Can also handle point forecast

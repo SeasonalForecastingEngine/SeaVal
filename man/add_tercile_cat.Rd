@@ -15,7 +15,7 @@ add_tercile_cat(
 
 \item{datacol}{Name of the column where the data is stored}
 
-\item{bycols}{names of columns to group by}
+\item{by}{names of columns to group by}
 }
 \description{
 adds a column with the tercile category to a data table

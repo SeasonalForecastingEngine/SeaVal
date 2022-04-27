@@ -76,6 +76,8 @@ checks_terc_fc_score = function()
 }
 
 #'Return the default column names that are considered to be coordinates rather than values:
+#'@param dt Optional data table. If a data table is provided only the dimvars of the data table are returned.
+#'
 #'@export
 
 dimvars = function(dt = NULL)

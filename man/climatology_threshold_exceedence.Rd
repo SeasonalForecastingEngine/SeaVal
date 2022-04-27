@@ -14,11 +14,11 @@ climatology_threshold_exceedence(
 \arguments{
 \item{obs_dt}{Data table containing observations.}
 
+\item{o}{column name of the observation. Mostly observed precipitation in mm.}
+
 \item{by}{By which columns should be grouped?}
 
 \item{thresholds}{vector of thresholds for which the exceedence probabilities should be derived.}
-
-\item{obs_col}{column name of the observation. Mostly observed precipitation in mm.}
 }
 \description{
 The climatological prediction for exceedence probabilities is the fraction of observed years where the observation exceeded the threshold.

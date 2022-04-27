@@ -9,7 +9,7 @@ climatology_ens_forecast(obs_dt, by)
 \arguments{
 \item{obs_dt}{Data table containing observations, must contain a column 'year'.}
 
-\item{by_col}{character vector containing the column names of the grouping variables, e.g. \code{c('month','lon','lat')}.}
+\item{by}{character vector containing the column names of the grouping variables, e.g. \code{c('month','lon','lat')}.}
 }
 \value{
 Long data table with the typical ensemble-forecast looks, i.e. containing a column 'member'.

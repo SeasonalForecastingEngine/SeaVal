@@ -6,6 +6,7 @@
 #' @param obs column name of the observations. Can either be logical (exceedence or not) or real valued, containing precipitation (or the variable for which exceedence should be checked).
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
+#' @param pool column name(s) for the variable(s) over which is averaged. Typically just 'year'.
 #' @export
 
 BS_ex_dt = function(dt,fc,threshold_col,
@@ -91,6 +92,53 @@ BSS_ex_dt = function(dt,
 # It is absolutely crucial that the data table unique(dt[,.(grouping variables, pool-variables,member column)]) has the same number of entries as the original data.table!!!
 # Otherwise, your data contains multiple forecasts/observations for the same coordinate, making it impossible to calculate a score.
 
+
+#' Function for calculating coefficients of predictive ability (CPAs) of ensemble mean forecasts stored in long data tables:
+#'
+#' Can also handle point forecasts.
+#' Warning: This metric always needs several years of data since the ranks on which it is based are calculated across multi-year samples.
+#' @param dt Data table containing the predictions.
+#' @param f column name of the prediction.
+#' @param o column name of the observations.
+#' @param by column names of grouping variables, all of which need to be columns in dt. A separate CPA is computed for each value of the grouping variables.
+#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
+#' @param pool column name(s) for the variable(s) along which is averaged. Needs to contain 'year' per warning above.
+#' @param dim.check Logical. If True, a simple test whether the dimensions match up is conducted:
+#' The data table should only have one row for each level of c(by,pool,mem)
+#'
+#' @export
+
+CPA = function(dt, f, o = 'obs',
+               by = by_cols_ens_fc_score(dt),
+               pool = 'year',
+               mem = 'member',
+               dim.check = TRUE)
+{
+  by = intersect(by,names(dt))
+  pool = intersect(pool,names(dt))
+  mem = intersect(mem,names(dt))
+
+  checks_ens_fc_score()
+
+  # get forecast mean (= mean over all ensemble members)
+  dt[, fc_mean:=mean(get(f), na.rm=T), by=c(by,pool)]
+
+  # combine data into a single DT and remove rows with missing data
+  dt = na.omit(dt[, .SD, .SDcols=c("fc_mean",o,by,pool)])
+
+  # calculate the CPA
+  dt[, fc_midrank:=frank(fc_mean,ties.method="average"), by=by]
+  dt[, obs_class:=frank(get(o),ties.method="dense"), by=by]
+  dt[, obs_midrank:=frank(get(o),ties.method="average"), by=by]
+  CPA_dt = dt[, .(cpa=0.5*(1.+cov(obs_class,fc_midrank)/cov(obs_class,obs_midrank))), by=by]
+
+  return(CPA_dt)
+}
+
+#' Function changed name, see CPA
+#' @export
+
+CPA_dt = CPA
 
 #' Taking CRPSs of ensemble forecasts stored in long data tables:
 #'
@@ -218,9 +266,9 @@ CRPSS_ens_fc = CRPSS
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
-#' @param check_dimension Logical. If True, a crude test whether the data table is in the correct shape is conducted
-#' Namely, getting the mean grouped by by AND pool should correspond to getting the ensemble mean. This is tested.
 #' @param mem Name of the column identifying the ensemble member. Only used if check_dimension is TRUE. Is NULL for a point forecast.
+#' @param dim.check Logical. If True, a simple test whether the dimensions match up is conducted:
+#' The data table should only have one row for each level of c(by,pool,mem)
 #' @export
 
 
@@ -324,6 +372,9 @@ MSESS_dt = MSES
 #' @param by column names of grouping variables, all of which need to be columns in dt. A separate PCC is computed for each value of the grouping variables.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged. Needs to contain 'year' per warning above.
+#' @param mem Name of the column identifying the ensemble member. Only used if check_dimension is TRUE. Is NULL for a point forecast.
+#' @param dim.check Logical. If True, a simple test whether the dimensions match up is conducted:
+#' The data table should only have one row for each level of c(by,pool,mem)
 #'
 #' @export
 
@@ -357,50 +408,7 @@ PCC = function(dt, f,
 
 PCC_dt = PCC
 
-#' Function for calculating coefficients of predictive ability (CPAs) of ensemble mean forecasts stored in long data tables:
-#'
-#' Can also handle point forecasts.
-#' Warning: This metric always needs several years of data since the ranks on which it is based are calculated across multi-year samples.
-#' @param dt Data table containing the predictions.
-#' @param f column name of the prediction.
-#' @param o column name of the observations.
-#' @param by column names of grouping variables, all of which need to be columns in dt. A separate CPA is computed for each value of the grouping variables.
-#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
-#' @param pool column name(s) for the variable(s) along which is averaged. Needs to contain 'year' per warning above.
-#'
-#' @export
 
-CPA = function(dt, f, o = 'obs',
-               by = by_cols_ens_fc_score(dt),
-               pool = 'year',
-               mem = 'member',
-               dim.check = TRUE)
-{
-  by = intersect(by,names(dt))
-  pool = intersect(pool,names(dt))
-  mem = intersect(mem,names(dt))
-
-  checks_ens_fc_score()
-
-  # get forecast mean (= mean over all ensemble members)
-  dt[, fc_mean:=mean(get(f), na.rm=T), by=c(by,pool)]
-
-  # combine data into a single DT and remove rows with missing data
-  dt = na.omit(dt[, .SD, .SDcols=c("fc_mean",o,by,pool)])
-
-  # calculate the CPA
-  dt[, fc_midrank:=frank(fc_mean,ties.method="average"), by=by]
-  dt[, obs_class:=frank(get(o),ties.method="dense"), by=by]
-  dt[, obs_midrank:=frank(get(o),ties.method="average"), by=by]
-  CPA_dt = dt[, .(cpa=0.5*(1.+cov(obs_class,fc_midrank)/cov(obs_class,obs_midrank))), by=by]
-
-  return(CPA_dt)
-}
-
-#' Function changed name, see CPA
-#' @export
-
-CPA_dt = CPA
 
 ############################################
 ####### Scores for tercile forecasts #######

@@ -24,6 +24,8 @@ BS_ex_dt(
 
 \item{by}{column names of grouping variables, all of which need to be columns in dt.
 Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.}
+
+\item{pool}{column name(s) for the variable(s) over which is averaged. Typically just 'year'.}
 }
 \description{
 Calculate exceedence Brier score

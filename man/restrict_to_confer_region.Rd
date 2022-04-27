@@ -15,8 +15,6 @@ If TRUE, the data is kept for a rectangle containing the entire country, therefo
 for a specific country.}
 
 \item{tol}{Only used when \code{rectangle == TRUE}. A tolerance value for widening the plotting window, making things look a bit nicer.}
-
-\item{ct}{name of the country, or vector containing multiple country names}
 }
 \description{
 restricts data to CONFER region

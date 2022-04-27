@@ -6,6 +6,9 @@
 \usage{
 dimvars(dt = NULL)
 }
+\arguments{
+\item{dt}{Optional data table. If a data table is provided only the dimvars of the data table are returned.}
+}
 \description{
 Return the default column names that are considered to be coordinates rather than values:
 }

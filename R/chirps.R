@@ -344,7 +344,6 @@ download_chirps_monthly_low = function(update,
 #' this is mostly auxiliary and called from download_chirps_monthly.
 #' Uses the function ForecastTools::upscale_regular_lon_lat, but derives the weights for upscaling only once for efficiency and avoids simultaneous loading of all CHIRPS data.
 #'
-#' @param save_dir where should the data be saved?
 #' @param update Logical, if TRUE, files that have already been upscaled are skipped
 #' @param years,months Which years and months do you want to upscale? NULL upscales everything there is (except if update is TRUE).
 #' @param upscale_grid A regular lon/lat grid for upscaling. Defaults to half degrees.
