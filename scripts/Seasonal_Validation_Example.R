@@ -18,7 +18,6 @@ plot_dir = data_dir # (in case you want to save your plots in a different direct
 #devtools::install_github('SeasonalForecastingEngine/ForecastTools')
 #devtools::install_github('SeasonalForecastingEngine/SeaVal')
 setwd(data_dir)
-library(Cairo)
 library(SeaVal)
 
 
@@ -29,21 +28,14 @@ fn = paste0("CorrelationSkillRain_",season,"_",init,"2021.nc")
 dt = netcdf_to_dt(paste0(data_dir,fn))
 print(dt)
 #
-Cairo(file=paste0("CORR_SKILL_",season,"_INIT_",init,".PNG"),
-      type="png",
-      units="in",
-      width=8,
-      height=8,
-      pointsize=12,
-      dpi=900,
-      bg = "white")
-ggplot_dt(dt,
+pp = ggplot_dt(dt,
           mn = paste0('Corr. skill rain ',season, ', ' ,init, '  initialized'), # title
           rr = c(-1,1), # range of the colorbar
           discrete_cs = TRUE,binwidth = 0.4) # discretize colorbar
-dev.off()
-#
-#
+pp
+# you can save this plot with ggsave(pp, file = <directory-and-filename>)
+
+
 # get the CV-file:
 fn_pred = paste0("CrossValidatedPredictedRain_",season,"_",init,year,".nc")
 
@@ -66,6 +58,7 @@ head(dt)
 # remove all rows with missing predictions:
 dt = dt[!is.na(prediction)]
 head(dt)
+
 # convert time from the 'months since date' (MSD) format to years and months (YM)
 dt = MSD_to_YM(dt,origin = '1981-01-01') # (the origin was documented in the netcdf, see above.)
 head(dt)
@@ -79,12 +72,18 @@ dt = netcdf_to_dt(paste0(data_dir,'PredictedProbabilityRain_',season,'_',init,ye
 head(dt)
 #print(dt)
 
+#########################################
+#### get observations: Alternative 1 ####
+# This is 'the old way', but still works:
+
 # past observations:
 dt_obs = netcdf_to_dt(paste0(data_dir,'ObservedRain_',season,'_',init,year,'.nc'))
 head(dt_obs)
+
 # 2021 observation:
 dt_obs2021 = netcdf_to_dt(paste0(data_dir,'ObservedChirpsRainTotal_',sea,year,'.nc'))
 head(dt_obs2021)
+
 # the 2021 observation is named differently...
 setnames(dt_obs2021,c('longitude','latitude','precip'),c('lon','lat','prec'))
 head(dt_obs2021)
@@ -109,18 +108,9 @@ na_locs = na_locs[!(V3)] # only keep rows for which V3 is FALSE
 # Restrict to region not masked out
 dt_obs2021 = merge(dt_obs2021,na_locs[,.(lon,lat)],by = c('lon','lat'))
 
-Cairo(file=paste0(plot_dir,"OBS_",sea,"_TOTAL_CHIRPS.PNG"),
-      type="png",
-      units="in",
-      width=8,
-      height=8,
-      pointsize=12,
-      dpi=900,
-      bg = "white")
-ggplot_dt(dt_obs2021, 'prec',high = 'blue',midpoint = 0)
-dev.off()
+pp2 = ggplot_dt(dt_obs2021, 'prec',high = 'blue',midpoint = 0)
+pp2
 
-################################################################3
 # combine with old observations:
 dt_obs[,month:=NULL]
 dt_obs2021[,'month':=NULL]
@@ -128,33 +118,36 @@ dt_obs2021[,'month':=NULL]
 dt_obs = rbindlist(list(dt_obs,dt_obs2021),use.names = TRUE)
 dt_obs = dt_obs[!is.na(prec)]
 
+### End of Alternative 1 ###########################
+####################################################
+### Alternative 2: Use the load_chirps function ####
+# This makes things much easier, but you need to have run
+# download_chirps_monthly previously:
+
+download_chirps_monthly()
+
+dt_obs = load_chirps(months = 6:9)# season was June to September
+
+# take seasonal mean:
+dt_obs = dt_obs[,.(prec = mean(prec)), by = .(lon,lat,year)]
+
+### End of Alternative 2 ###########################
+####################################################
+
 # in which climatology tercile lies the observation for which year?
 dt_obs = add_tercile_cat(dt_obs)
 # let's also add climatology and anomaly for later use:
 dt_obs[,clim := mean(prec),by = .(lon,lat)]
 dt_obs[,anomaly := prec - mean(prec),by = .(lon,lat)]
 
-Cairo(file=paste0(plot_dir,"ANOMALY_JJAS_TOTAL_CHIRPS.PNG"),
-      type="png",
-      units="in",
-      width=8,
-      height=8,
-      pointsize=12,
-      dpi=900,
-      bg = "white")
-ggplot_dt(dt_obs[year == 2021], 'anomaly',high = 'blue',low = 'red',midpoint = 0,rr = c(-250,250))
-dev.off()
+# plot anomaly:
+pp3 = ggplot_dt(dt_obs[year == 2021], 'anomaly',high = 'blue',low = 'red',midpoint = 0)
+pp3
 
-Cairo(file=paste0(plot_dir,"TERCILE_",sea,"_OBS.PNG"),
-      type="png",
-      units="in",
-      width=8,
-      height=8,
-      pointsize=12,
-      dpi=900,
-      bg = "white")
-ggplot_dt(dt_obs[year == 2021],'tercile_cat',low = 'orange',high = 'green')
-dev.off()
+
+pp4 = ggplot_dt(dt_obs[year == 2021],'tercile_cat',low = 'orange',high = 'green')
+pp4
+
 
 # merge prediction and corresponding observation:
 dt = merge(dt,dt_obs[year == 2021],by = c('lon','lat'))
@@ -166,14 +159,6 @@ dt[,below := below/100]
 print(dt)
 
 # get Multicategory Brier Skill Score:
-mbss = MBSS_dt(dt,obs_col = 'tercile_cat')
-Cairo(file=paste0(plot_dir,"MBSS_",sea,"_FORECAST_INIT_FEB.PNG"),
-      type="png",
-      units="in",
-      width=8,
-      height=8,
-      pointsize=12,
-      dpi=900,
-      bg = "white")
-ggplot_dt(mbss,high = 'darkgreen',low = 'purple',discrete_cs = TRUE,binwidth = 0.2,midpoint = 0, mn = 'MBSS for JJAS tercile forecast 2021')
-dev.off()
+mbss = MBS(dt,o = 'tercile_cat')
+pp5 = ggplot_dt(mbss,high = 'darkgreen',low = 'purple',discrete_cs = TRUE,binwidth = 0.2,midpoint = 0, mn = 'MBSS for JJAS tercile forecast 2021')
+pp5

@@ -21,7 +21,7 @@ Imports:
 LazyData: true
 RoxygenNote: 7.1.2
 Collate: 
-    'aux.R'
+    'auxiliary_functions.R'
     'chirps.R'
     'confer_validation.R'
     'data_documentation.R'

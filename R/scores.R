@@ -440,7 +440,7 @@ MBS = function(dt,f = c('below','normal','above'),
 #' Function got renamed, please see MBSS
 #' @export
 
-MBSS_dt = MBSS
+MBSS_dt = MBS
 
 #######################
 
