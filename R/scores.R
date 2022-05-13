@@ -297,6 +297,8 @@ MSE = function(dt,
   pool = intersect(pool,names(dt))
   mem = intersect(mem,names(dt))
 
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
   #checks:
   checks_ens_fc_score()
 
@@ -341,6 +343,8 @@ MSES = function(dt,f,
 {
   by = intersect(by,names(dt))
   if(!('year' %in% pool)) stop('skill scores are with respect to leave-one-year-out climatology, so your pool must contain "year".')
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
 
   # get climatological loyo-prediction
   obs_dt = unique(dt[,.SD,.SDcols = c(o,obs_coords(dt))])
@@ -403,6 +407,8 @@ PCC = function(dt, f,
   pool = intersect(pool,names(dt))
   mem = intersect(mem,names(dt))
 
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
   # checks:
   checks_ens_fc_score()
 
@@ -457,6 +463,8 @@ HS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
   checks_terc_fc_score()
 
   # Hit score:
@@ -465,8 +473,8 @@ HS = function(dt,f = c('below','normal','above'),
   ddt = ddt[,min_cat:=c(-1,0,1)[max.col(-1*ddt[,mget(f)])]]
   ddt = ddt[,hit:=as.numeric(get(o)==max_cat)]
   ddt = ddt[,hit3:=as.numeric(get(o)==min_cat)]
-  HS_dt = ddt[,.(HS_above = mean(hit), HS_below = mean(hit3)),by = by]
-  HS_dt = HS_dt[,HS_normal:=1-HS_above-HS_below]
+  HS_dt = ddt[,.(HS_max = mean(hit), HS_min = mean(hit3)),by = by]
+  HS_dt = HS_dt[,HS_mid:=1-HS_max-HS_min]
   return(HS_dt)
 }
 
@@ -493,12 +501,14 @@ HSS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
   checks_terc_fc_score()
 
   # Hit skill score:
 
   HS_dt = HS(dt,f,o,by,pool)
-  HSS_dt = HS_dt[,.(HSS = HS_above-HS_below),by = by]
+  HSS_dt = HS_dt[,.(HSS = HS_max-HS_min),by = by]
   return(HSS_dt)
 }
 
@@ -526,6 +536,8 @@ EIR = function(dt,f = c('below','normal','above'),
                dim.check = TRUE)
 {
   by = intersect(by,names(dt))
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
 
   checks_terc_fc_score()
 
@@ -570,13 +582,15 @@ IGS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
   checks_terc_fc_score()
 
   # Ignorance score:
 
-  IGS_dt = dt[,.(IGS = - mean((indicator_times_value_aux((get(o) == -1),log2(f[1])) +
-                                 indicator_times_value_aux((get(o) == 0),log2(f[2])) +
-                                 indicator_times_value_aux((get(o) == 1),log2(f[3]))))),
+  IGS_dt = dt[,.(IGS = - mean((indicator_times_value_aux((get(o) == -1),log2(get(f[1]))) +
+                                 indicator_times_value_aux((get(o) == 0),log2(get(f[2]))) +
+                                 indicator_times_value_aux((get(o) == 1),log2(get(f[3])))))),
               by = by]
 
   return(IGS_dt)
@@ -608,13 +622,15 @@ IGSS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
   checks_terc_fc_score()
 
   # Ignorance score:
 
-  IGSS_dt = dt[,.(IGSS = 1 - mean((indicator_times_value_aux((get(o) == -1),log2(f[1])) +
-                                     indicator_times_value_aux((get(o) == 0),log2(f[2])) +
-                                     indicator_times_value_aux((get(o) == 1),log2(f[3]))))/log2(1/3)),
+  IGSS_dt = dt[,.(IGSS = 1 - mean((indicator_times_value_aux((get(o) == -1),log2(get(f[1]))) +
+                                     indicator_times_value_aux((get(o) == 0),log2(get(f[2]))) +
+                                     indicator_times_value_aux((get(o) == 1),log2(get(f[3])))))/log2(1/3)),
                by = by]
 
   return(IGSS_dt)
@@ -643,6 +659,8 @@ MBS = function(dt,f = c('below','normal','above'),
                dim.check = TRUE)
 {
   by = intersect(by,names(dt))
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
 
   checks_terc_fc_score()
 
@@ -707,6 +725,8 @@ ROCS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
   checks_terc_fc_score()
 
   # ROC score:
@@ -741,6 +761,8 @@ RPS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
   checks_terc_fc_score()
 
   # Ranked Probability score:
@@ -764,7 +786,6 @@ RPS = function(dt,f = c('below','normal','above'),
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #' @export
 
-# Does this the right thing??? Same for Heidke Skill score
 
 RPSS = function(dt,f = c('below','normal','above'),
                o = 'tercile_cat',
@@ -773,6 +794,8 @@ RPSS = function(dt,f = c('below','normal','above'),
                dim.check = TRUE)
 {
   by = intersect(by,names(dt))
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
 
   checks_terc_fc_score()
 

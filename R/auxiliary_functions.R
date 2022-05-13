@@ -234,8 +234,8 @@ run_dimension_check_terc_forecast = function()
   {
     m1 = menu(choices = c('abort','by','pool'),
               title = "Your data contains a column named 'member' which is unusual for tercile forecasts.
-\nIf your data table contains the same tercile-probabilities for each member, please abort and reduce your data using unique.
-\nOtherwise, you need to select whether to separate results by member or pool members.")
+\nIf your data table contains multiple members, but the same tercile-probabilities for each member, please reduce your data (e.g. by dt = dt[member == 1]) and delete the member column.
+\nOtherwise, you need to select whether to include member in either 'by' or 'pool', see function documentation.")
     if(m1 == 1)
       {
       #stop without error:
@@ -246,12 +246,12 @@ run_dimension_check_terc_forecast = function()
     if(m1 == 2)
     {
       by = c(by,'member')
-      parent.frame(1)$by = by
+      assign('by',by,pos = parent.frame(1))
     }
     if(m1 == 3)
     {
       pool = c(pool,'member')
-      parent.frame(1)$pool = pool
+      assign('pool',pool,pos = parent.frame(1))
     }
   }
 

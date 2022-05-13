@@ -14,12 +14,16 @@ Remotes:
   github::SeasonalForecastingEngine/ForecastTools
 Depends: 
   data.table,
-  ForecastTools
+  ForecastTools,
+  ggplot2
 Imports:
-  boot,
-  ncdf4,
-  scoringRules,
-  Matrix
+    boot,
+    ncdf4,
+    scoringRules,
+    Matrix,
+    RColorBrewer,
+    ggplotify,
+    ggpubr
 LazyData: true
 RoxygenNote: 7.1.2
 Collate: 
@@ -28,5 +32,6 @@ Collate:
     'confer_validation.R'
     'data_documentation.R'
     'data_wrangling.R'
+    'diagrams.R'
     'scores.R'
     'utils.R'
