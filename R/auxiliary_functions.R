@@ -16,7 +16,7 @@ by_cols_ens_fc_score = function(dt = NULL)
 #' @export
 by_cols_terc_fc_score = function(dt = NULL)
 {
-  return(setdiff(dimvars(dt),'year'))
+  return(setdiff(dimvars(dt),c('year','member')))
 }
 
 
@@ -215,7 +215,7 @@ run_dimension_check_ens_fc_score = function()
 \nMaybe you forgot to include a grouping variable in by or a column to average over in pool?')
   if(!check & length(cc) > 0) stop(paste(c('Dimension check failed.\nProbably you have multiple layers per coordinate\n.
 The following columns are classified as coordinate but were not included in by, pool, or mem:\n',cc)))
-  if(length(cc)>0 & check) warning(paste(c('The following columns are classified as coordinate but were not included in by, pool, or mem:\n',cc)))
+  if(length(cc)>0 & check) warning(paste(c('The following columns are classified as dimension variable but were not included in by, pool, or mem:\n',cc)))
 }
 
 #' Auxiliary Function called inside functions that calculate scores
@@ -229,13 +229,39 @@ run_dimension_check_terc_forecast = function()
   pool = parent.frame(1)$pool
 
   cc = setdiff(dimvars(dt),c(by,pool))
+
+  if('member' %in%  names(dt))
+  {
+    m1 = menu(choices = c('abort','by','pool'),
+              title = "Your data contains a column named 'member' which is unusual for tercile forecasts.
+\nIf your data table contains multiple members, but the same tercile-probabilities for each member, please reduce your data (e.g. by dt = dt[member == 1]) and delete the member column.
+\nOtherwise, you need to select whether to include member in either 'by' or 'pool', see function documentation.")
+    if(m1 == 1)
+      {
+      #stop without error:
+      opt <- options(show.error.messages = FALSE)
+      on.exit(options(opt))
+      stop()
+    }
+    if(m1 == 2)
+    {
+      by = c(by,'member')
+      assign('by',by,pos = parent.frame(1))
+    }
+    if(m1 == 3)
+    {
+      pool = c(pool,'member')
+      assign('pool',pool,pos = parent.frame(1))
+    }
+  }
+
   check = unique(dt[,.SD,.SDcols = c(by,pool)])[,.N] == dt[,.N]
 
   if(!check & length(cc) == 0) stop('Dimension check failed.\nProbably you have multiple layers per ensemble member and year
                   after grouping.\nMaybe you forgot to include a grouping variable in by or a column to average over in pool?')
   if(!check & length(cc) > 0) stop(paste(c('Dimension check failed.\nProbably you have multiple layers per coordinate\n.
                                    The following columns are classified as coordinate but were not included in by, pool, or mem:\n',cc)))
-  if(length(cc)>0 & check) warning(paste(c('The following columns are classified as coordinate but were not included in by, pool, or mem:\n',cc)))
+  if(length(cc)>0 & check) warning(paste(c('The following columns are classified as dimension variable but were not included in by, pool, or mem:\n',cc)))
 }
 
 

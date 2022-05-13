@@ -156,43 +156,57 @@ CPA_dt = CPA
 #'
 #' @export
 
-CRPS = function(dt,f,o = 'obs',
+CRPS = function(dt, f, o = "obs",
                 by = by_cols_ens_fc_score(),
-                pool = 'year',
-                mem = 'member',
+                pool = "year",
+                mem = "member",
                 dim.check = T,
                 ens_size_correction = FALSE)
 {
-  by = intersect(by,names(dt))
-  dt = dt[!is.na(get(o)) & ! is.na(get(f))]
+  by = intersect(by, names(dt))
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  SeaVal:::checks_ens_fc_score()
 
-  #checks:
-  checks_ens_fc_score()
+  if(!ens_size_correction)  ret_dt = dt[,.(CRPS = crps_aux(get(o),get(f))),by = c(by,pool)]
+  if(ens_size_correction)  ret_dt = dt[,.(CRPS = crps_aux_esc(get(o),get(f))),by = c(by,pool)]
 
-
-
-  #expand for application of crps:
-  if(!is.null(by))
-  {
-    ff = paste0('year + ',o,' + ',paste(by,collapse = ' + '),' ~ ',mem)
-  } else {
-    ff = paste0('year + ',o,'~ ',mem)
-  }
-
-  dt_new = dcast(dt,formula = as.formula(ff),fun.aggregate = mean,value.var = f,na.rm = T)
-
-  pred_cols = (length(by) + length(pool) + 2) : ncol(dt_new) # that's a bit hacked
-
-  pred_mat = as.matrix(dt_new[,pred_cols,with = FALSE])
-
-  obs = dt_new[,get(o)]
-
-  crps_vals = crps_sample_na(obs,pred_mat, ens_size_correction = ens_size_correction)
-
-  ret_dt = dt_new[,.SD,.SDcols = c(pool,by)][,CRPS := crps_vals]
-  ret_dt = ret_dt[,.(CRPS = mean(CRPS)), by = by]
+  ret_dt = ret_dt[, .(CRPS = mean(CRPS)), by = by]
   return(ret_dt)
 }
+
+#' Auxiliary function for calculating crps.
+#' Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
+#' but is just repeated (which is why only y[1]) is used.
+
+crps_aux = function(y,dat)
+{
+
+  c_1n <- 1/length(dat)
+  x <- sort(dat)
+  a <- seq.int(0.5 * c_1n, 1 - 0.5 * c_1n, length.out = length(dat))
+  ret <- 2 * c_1n * sum(((y[1] < x) - a) * (x - y[1]))
+  return(ret)
+}
+
+#' Auxiliary function for calculating crps with ensemble size correction by Ferro et al. 2008.
+#' Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
+#' but is just repeated (which is why only y[1]) is used.
+
+crps_aux_esc = function(y,dat)
+{
+  c_1n <- 1/length(dat)
+  x <- sort(dat)
+  a <- seq.int(0.5 * c_1n, 1 - 0.5 * c_1n, length.out = length(dat))
+  ret <- 2 * c_1n * sum(((y[1] < x) - a) * (x - y[1]))
+
+  #ensemble size correction:
+  ens_size = length(dat)
+  mean_dist_xx = mean(stats::dist(dat))
+  ret = ret - mean_dist_xx/(2*ens_size)
+  return(ret)
+}
+
+
 
 #' Function got renamed, please check CRPS
 #' @export
@@ -283,6 +297,8 @@ MSE = function(dt,
   pool = intersect(pool,names(dt))
   mem = intersect(mem,names(dt))
 
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
   #checks:
   checks_ens_fc_score()
 
@@ -327,6 +343,8 @@ MSES = function(dt,f,
 {
   by = intersect(by,names(dt))
   if(!('year' %in% pool)) stop('skill scores are with respect to leave-one-year-out climatology, so your pool must contain "year".')
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
 
   # get climatological loyo-prediction
   obs_dt = unique(dt[,.SD,.SDcols = c(o,obs_coords(dt))])
@@ -389,6 +407,8 @@ PCC = function(dt, f,
   pool = intersect(pool,names(dt))
   mem = intersect(mem,names(dt))
 
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
   # checks:
   checks_ens_fc_score()
 
@@ -414,9 +434,16 @@ PCC_dt = PCC
 ####### Scores for tercile forecasts #######
 ############################################
 
-#' Compute the Multicategory Brier Skill score
+
+
+#######################
+
+
+#' Compute the Hit score
 #'
-#' This score is suitable for tercile category forecasts.
+#' This score is suitable for tercile category forecasts. This score is the frequency at which the highest probability category actually
+#' happens. The function also provides the frequency at which the second-highest probability category, and lowest probability category,
+#' actually happens.
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
@@ -428,29 +455,110 @@ PCC_dt = PCC
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #' @export
 
-MBS = function(dt,f = c('below','normal','above'),
-                o = 'tercile_cat',
-                by = by_cols_terc_fc_score(),
-                pool = 'year',
-                dim.check = TRUE)
+HS = function(dt,f = c('below','normal','above'),
+              o = 'tercile_cat',
+              by = by_cols_terc_fc_score(),
+              pool = 'year',
+              dim.check = TRUE)
 {
   by = intersect(by,names(dt))
 
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
   checks_terc_fc_score()
 
-  # Multicategory Brier skill score:
+  # Hit score:
+  ddt = copy(dt)
+  ddt = ddt[,max_cat:=c(-1,0,1)[max.col(ddt[,mget(f)])]] #max.col breaks ties at random
+  ddt = ddt[,min_cat:=c(-1,0,1)[max.col(-1*ddt[,mget(f)])]]
+  ddt = ddt[,hit:=as.numeric(get(o)==max_cat)]
+  ddt = ddt[,hit3:=as.numeric(get(o)==min_cat)]
+  HS_dt = ddt[,.(HS_max = mean(hit), HS_min = mean(hit3)),by = by]
+  HS_dt = HS_dt[,HS_mid:=1-HS_max-HS_min]
+  return(HS_dt)
+}
 
-  MBSS_dt = dt[,.(MBS = 3/2 * (2/3 - mean((get(f[1]) - (get(o) == -1))^2 + (get(f[2]) - (get(o) == 0))^2 + (get(f[3]) - (get(o) == 1))^2))),by = by]
-  return(MBSS_dt)
+#' Compute the Hit skill score
+#'
+#' This score is suitable for tercile category forecasts. The skill score is the difference between the hit scores
+#' for the categories with the highest and lowest probabilities.
+#'
+#' @param dt Data table containing the predictions.
+#' @param f column names of the prediction.
+#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param by column names of grouping variables, all of which need to be columns in dt.
+#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
+#' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
+#' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+#' @export
+
+HSS = function(dt,f = c('below','normal','above'),
+               o = 'tercile_cat',
+               by = by_cols_terc_fc_score(),
+               pool = 'year',
+               dim.check = TRUE)
+{
+  by = intersect(by,names(dt))
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
+  checks_terc_fc_score()
+
+  # Hit skill score:
+
+  HS_dt = HS(dt,f,o,by,pool)
+  HSS_dt = HS_dt[,.(HSS = HS_max-HS_min),by = by]
+  return(HSS_dt)
 }
 
 
-#' Function got renamed, please see MBSS
+#' Compute the effective interest rate
+#'
+#' This score is suitable for tercile category forecasts. Using log2 for now (?). According to Mason, the averaging here
+#' should be over many years at a single locations and for discrete time-periods (so Mason prefers to take the average after
+#' is one wants to average over different locations, but I keep it like this for now).
+#'
+#' @param dt Data table containing the predictions.
+#' @param f column names of the prediction.
+#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param by column names of grouping variables, all of which need to be columns in dt.
+#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
+#' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
+#' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #' @export
 
-MBSS_dt = MBS
+EIR = function(dt,f = c('below','normal','above'),
+               o = 'tercile_cat',
+               by = by_cols_terc_fc_score(),
+               pool = 'year',
+               dim.check = TRUE)
+{
+  by = intersect(by,names(dt))
 
-#######################
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
+  checks_terc_fc_score()
+
+  # Ignorance skill score:
+
+  EIR_dt = dt[,.(EIR =2^(-log2(1/3) + mean(indicator_times_value_aux((get(o) == -1),log2(get(f[1]))) +
+                                             indicator_times_value_aux((get(o) == 0),log2(get(f[2]))) +
+                                             indicator_times_value_aux((get(o) == 1),log2(get(f[3])))))-1),by = by]
+
+  return(EIR_dt)
+}
+
+
+#' Auxiliary function for ignorance score: 0log(0) should be 0:
+
+indicator_times_value_aux = function(indicator,value)
+{
+  ret_vec = rep(0, length(indicator))
+  ret_vec[indicator] = value[indicator]
+  return(ret_vec)
+}
 
 #' Compute the Ignorance score
 #'
@@ -474,15 +582,21 @@ IGS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
   checks_terc_fc_score()
 
   # Ignorance score:
 
-  IGS_dt = dt[,.(IGS =mean(-((get(o) == -1)*log2(get(f[1])) + (get(o) == 0)*log2(get(f[2]))
-                             + (get(o) == 1)*log2(get(f[3]))))),by = by]
+  IGS_dt = dt[,.(IGS = - mean((indicator_times_value_aux((get(o) == -1),log2(get(f[1]))) +
+                                 indicator_times_value_aux((get(o) == 0),log2(get(f[2]))) +
+                                 indicator_times_value_aux((get(o) == 1),log2(get(f[3])))))),
+              by = by]
 
   return(IGS_dt)
 }
+
+
 
 
 #' Compute the Ignorance Skill score
@@ -501,29 +615,32 @@ IGS = function(dt,f = c('below','normal','above'),
 #' @export
 
 IGSS = function(dt,f = c('below','normal','above'),
-               o = 'tercile_cat',
-               by = by_cols_terc_fc_score(),
-               pool = 'year',
-               dim.check = TRUE)
+                 o = 'tercile_cat',
+                 by = by_cols_terc_fc_score(),
+                 pool = 'year',
+                 dim.check = TRUE)
 {
   by = intersect(by,names(dt))
 
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
   checks_terc_fc_score()
 
-  # Ignorance skill score:
+  # Ignorance score:
 
-  IGSS_dt = dt[,.(IGSS =1 - mean((get(o) == -1)*log2(get(f[1])) + (get(o) == 0)*log2(get(f[2]))
-                                 + (get(o) == 1)*log2(get(f[3])))/log2(1/3)),
+  IGSS_dt = dt[,.(IGSS = 1 - mean((indicator_times_value_aux((get(o) == -1),log2(get(f[1]))) +
+                                     indicator_times_value_aux((get(o) == 0),log2(get(f[2]))) +
+                                     indicator_times_value_aux((get(o) == 1),log2(get(f[3])))))/log2(1/3)),
                by = by]
 
   return(IGSS_dt)
 }
 
-#' Compute the effective interest rate
+
+
+#' Compute the Multicategory Brier Skill score
 #'
-#' This score is suitable for tercile category forecasts. Using log2 for now (?). According to Mason, the averaging here
-#' should be over many years at a single locations and for discrete time-periods (so Mason prefers to take the average after
-#' is one wants to average over different locations, but I keep it like this for now).
+#' This score is suitable for tercile category forecasts.
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
@@ -535,7 +652,72 @@ IGSS = function(dt,f = c('below','normal','above'),
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #' @export
 
-EIR = function(dt,f = c('below','normal','above'),
+MBS = function(dt,f = c('below','normal','above'),
+               o = 'tercile_cat',
+               by = by_cols_terc_fc_score(),
+               pool = 'year',
+               dim.check = TRUE)
+{
+  by = intersect(by,names(dt))
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
+  checks_terc_fc_score()
+
+  # Multicategory Brier skill score:
+
+  MBSS_dt = dt[,.(MBS = 3/2 * (2/3 - mean((get(f[1]) - (get(o) == -1))^2 + (get(f[2]) - (get(o) == 0))^2 + (get(f[3]) - (get(o) == 1))^2))),by = by]
+  return(MBSS_dt)
+}
+
+
+#' Function got renamed, please see MBSS
+#' @export
+
+MBSS_dt = MBS
+
+
+#' Calculate the area under curve (AUC) or ROC-score from a vector of probabilities and corresponding observations
+#' Formula (1a) from Mason&2018 is used in the calculation, corresponding to trapezoidal interpolation.
+#' Mostly auxiliary function for the ROCS function, but also used in the ROC-diagram function, where the AUC is added to the diagrams.
+#'
+#' @param probs vector with probabilities (between 0 and 1)
+#' @param obs vector with categorical observations
+#'
+#' @export
+
+roc_score_vec = function(probs,obs)
+{
+  #use data tables fast order:
+  temp = data.table(prob = probs,obs = obs)
+  setorder(temp,prob,obs)
+
+  n1 = temp[(obs),.N]
+  n0 = temp[!(obs),.N]
+  temp[,countzeros := cumsum(!obs)/n0]
+  temp[,countzeros2 := 0.5*cumsum(!obs)/n0,by = prob]
+
+  ROCscore = temp[(obs),sum(countzeros + countzeros2)/n1]
+  return(ROCscore)
+}
+
+
+#' Compute the ROC-score/Area Under Curve(AUC)
+#'
+#' This score is not proper, but can be used to assess the resolution of a tercile forecast.
+#'
+#' @param dt Data table containing the predictions.
+#' @param f column names of the prediction.
+#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param by column names of grouping variables, all of which need to be columns in dt.
+#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
+#' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
+#' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+#' @export
+
+
+ROCS = function(dt,f = c('below','normal','above'),
                 o = 'tercile_cat',
                 by = by_cols_terc_fc_score(),
                 pool = 'year',
@@ -543,17 +725,19 @@ EIR = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
   checks_terc_fc_score()
 
-  # Ignorance skill score:
+  # ROC score:
+  res_above = dt[,.(ROC_above = roc_score_vec(get(f[3]),get(o) == 1)),by = by]
+  res_normal = dt[,.(ROC_normal = roc_score_vec(get(f[2]),get(o) == 0)),by = by]
+  res_below = dt[,.(ROC_below = roc_score_vec(get(f[1]),get(o) == -1)),by = by]
 
-  EIR_dt = dt[,.(EIR =2^(-log2(1/3)+mean((get(o) == -1)*log2(get(f[1])) + (get(o) == 0)*log2(get(f[2])) +
-                                           (get(o) == 1)*log2(get(f[3]))))-1),by = by]
-
-  return(EIR_dt)
+  res = res_above[,ROC_normal := res_normal[,ROC_normal]]
+  res[,ROC_below := res_below[,ROC_below]]
+  return(res)
 }
-
-
 
 #' Compute the Ranked Probability score
 #'
@@ -576,6 +760,8 @@ RPS = function(dt,f = c('below','normal','above'),
                 dim.check = TRUE)
 {
   by = intersect(by,names(dt))
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
 
   checks_terc_fc_score()
 
@@ -600,6 +786,7 @@ RPS = function(dt,f = c('below','normal','above'),
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #' @export
 
+
 RPSS = function(dt,f = c('below','normal','above'),
                o = 'tercile_cat',
                by = by_cols_terc_fc_score(),
@@ -607,6 +794,8 @@ RPSS = function(dt,f = c('below','normal','above'),
                dim.check = TRUE)
 {
   by = intersect(by,names(dt))
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
 
   checks_terc_fc_score()
 
@@ -620,72 +809,3 @@ RPSS = function(dt,f = c('below','normal','above'),
   return(RPSS_dt)
 }
 
-
-#' Compute the Hit score
-#'
-#' This score is suitable for tercile category forecasts. This score is the frequency at which the highest probability category actually
-#' happens. The function also provides the frequency at which the second-highest probability category, and lowest probability category,
-#' actually happens.
-#'
-#' @param dt Data table containing the predictions.
-#' @param f column names of the prediction.
-#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
-#' @param by column names of grouping variables, all of which need to be columns in dt.
-#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
-#' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
-#' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
-#' @export
-
-HS = function(dt,f = c('below','normal','above'),
-               o = 'tercile_cat',
-               by = by_cols_terc_fc_score(),
-               pool = 'year',
-               dim.check = TRUE)
-{
-  by = intersect(by,names(dt))
-
-  checks_terc_fc_score()
-
-  # Hit score:
-  ddt = copy(dt)
-  ddt = ddt[,max_cat:=c(-1,0,1)[max.col(ddt[,mget(f)])]] #max.col breaks ties at random
-  ddt = ddt[,min_cat:=c(-1,0,1)[max.col(-1*ddt[,mget(f)])]]
-  ddt = ddt[,hit:=as.numeric(get(o)==max_cat)]
-  ddt = ddt[,hit3:=as.numeric(get(o)==min_cat)]
-  HS_dt = ddt[,.(HS1 = mean(hit), HS3=mean(hit3)),by = by]
-  HS_dt = HS_dt[,HS2:=1-HS1-HS3]
-  return(HS_dt)
-}
-
-#' Compute the Hit skill score
-#'
-#' This score is suitable for tercile category forecasts. The skill score is the difference between the hit scores
-#' for the categories with the highest and lowest probabilities.
-#'
-#' @param dt Data table containing the predictions.
-#' @param f column names of the prediction.
-#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
-#' @param by column names of grouping variables, all of which need to be columns in dt.
-#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
-#' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
-#' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
-#' @export
-
-HSS = function(dt,f = c('below','normal','above'),
-              o = 'tercile_cat',
-              by = by_cols_terc_fc_score(),
-              pool = 'year',
-              dim.check = TRUE)
-{
-  by = intersect(by,names(dt))
-
-  checks_terc_fc_score()
-
-  # Hit skill score:
-
-  HS_dt = HS(dt,f,o,by,pool)
-  HSS_dt = HS_dt[,.(HSS = HS1-HS3),by = by]
-  return(HSS_dt)
-}
