@@ -69,7 +69,7 @@ ggplot_dt(hss, 'HSS', discrete_cs = T,breaks = c(-1,-0.5,0.5,1)) + ggtitle('Hit 
 
 # ROC curves and reliability diagrams:
 
-#ROC_curve(dt) # I've tried this but something seems to be wrong with the function, got to double-check
+ROC_curve(dt) # I've tried this but something seems to be wrong with the function, got to double-check
 rel_diag(dt)
 
 
