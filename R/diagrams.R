@@ -101,6 +101,8 @@ rel_diag = function(dt,
                     binwidth = 0.05,
                     dim.check = TRUE)
 {
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
   # check for correct naming of columns etc.
   checks_terc_fc_score()
 
@@ -286,6 +288,7 @@ ROC_curve = function(dt,
                      interpolate = TRUE,
                      dim.check = TRUE)
 {
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
   # check for correct naming of columns etc.
   checks_terc_fc_score()
 
@@ -394,6 +397,9 @@ ver_map = function(dt,o = 'obs',yy = dt[,max(year)],
   {
     dt_temp = rbindlist(list(dt_temp,dt[year == yy]))
   }
+
+  # remove missing gridpoints:
+  dt_temp = dt_temp[!is.na(get(o))]
 
   # check that there is only one level per coordinate
   if(dt_temp[,.N] != unique(dt_temp[,.(lon,lat,year)])[,.N])
