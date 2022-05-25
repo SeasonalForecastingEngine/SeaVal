@@ -398,6 +398,9 @@ ver_map = function(dt,o = 'obs',yy = dt[,max(year)],
     dt_temp = rbindlist(list(dt_temp,dt[year == yy]))
   }
 
+  # remove missing gridpoints:
+  dt_temp = dt_temp[!is.na(get(o))]
+
   # check that there is only one level per coordinate
   if(dt_temp[,.N] != unique(dt_temp[,.(lon,lat,year)])[,.N])
   {
