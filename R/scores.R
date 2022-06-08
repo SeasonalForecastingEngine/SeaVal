@@ -235,8 +235,8 @@ CRPSS = function(dt,f,
   if(!('year' %in% pool)) stop('skill scores are with respect to leave-one-year-out climatology, so the pool-argument must contain "year".')
 
   # get climatological loyo-prediction
-  obs_dt = unique(dt[,.SD,.SDcols = c(o,obs_coords(dt))])
-  obs_by = intersect(by,obs_coords(dt))
+  obs_dt = unique(dt[,.SD,.SDcols = c(o,obs_dimvars(dt))])
+  obs_by = intersect(by,obs_dimvars(dt))
   climatology_prediction = climatology_ens_forecast(obs_dt = obs_dt,
                                                     by = obs_by)
 
@@ -347,8 +347,8 @@ MSES = function(dt,f,
   dt = dt[!is.na(get(o)) & !is.na(get(f))]
 
   # get climatological loyo-prediction
-  obs_dt = unique(dt[,.SD,.SDcols = c(o,obs_coords(dt))])
-  obs_by = intersect(by,obs_coords(dt))
+  obs_dt = unique(dt[,.SD,.SDcols = c(o,obs_dimvars(dt))])
+  obs_by = intersect(by,obs_dimvars(dt))
   climatology_prediction = climatology_ens_forecast(obs_dt = obs_dt,
                                                     by = obs_by)
   setnames(climatology_prediction,o,'clim')

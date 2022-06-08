@@ -385,6 +385,7 @@ ROC_curve = function(dt,
 #' @importFrom ggplotify as.ggplot
 #' @importFrom RColorBrewer brewer.pal
 #'
+#' @export
 
 ver_map = function(dt,o = 'obs',yy = dt[,max(year)],
                    climatology_period = unique(dt[,year]),
