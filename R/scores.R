@@ -438,7 +438,6 @@ PCC_dt = PCC
 
 #######################
 
-
 #' Compute the Hit score
 #'
 #' This score is suitable for tercile category forecasts. This score is the frequency at which the highest probability category actually
@@ -469,10 +468,15 @@ HS = function(dt,f = c('below','normal','above'),
 
   # Hit score:
   ddt = copy(dt)
-  ddt = ddt[,max_cat:=c(-1,0,1)[max.col(ddt[,mget(f)])]] #max.col breaks ties at random
-  ddt = ddt[,min_cat:=c(-1,0,1)[max.col(-1*ddt[,mget(f)])]]
+  ddt = ddt[,max_cat:=c(-1,0,1)[max.col(ddt[,mget(f)],"first")]] #not breaking ties at random
+  ddt = ddt[,min_cat:=c(-1,0,1)[max.col(-1*ddt[,mget(f)],"first")]]
   ddt = ddt[,hit:=as.numeric(get(o)==max_cat)]
   ddt = ddt[,hit3:=as.numeric(get(o)==min_cat)]
+  ddt[get(f[1])==get(f[3]) & get(f[1])==get(f[2]),':=' (hit=1/3, hit3=1/3)] #tie between b,n,a
+  ddt[tercile_cat==-1 & get(f[1])==get(f[2]) & get(f[2])>get(f[3]) ,':=' (hit=1/2, hit3=0)] #tie between b, n
+  ddt[tercile_cat==0 & get(f[1])==get(f[2]) & get(f[2])>get(f[3]) ,':=' (hit=1/2, hit3=0)] #tie between b, n
+  ddt[tercile_cat==0 & get(f[2])==get(f[3]) & get(f[2])>get(f[1]) ,':=' (hit=1/2, hit3=0)] #tie between n, a
+  ddt[tercile_cat==1 & get(f[2])==get(f[3]) & get(f[2])>get(f[1]) ,':=' (hit=1/2, hit3=0)] #tie between n, a
   HS_dt = ddt[,.(HS_max = mean(hit), HS_min = mean(hit3)),by = by]
   HS_dt = HS_dt[,HS_mid:=1-HS_max-HS_min]
   return(HS_dt)
@@ -682,7 +686,7 @@ MBSS_dt = MBS
 #' Mostly auxiliary function for the ROCS function, but also used in the ROC-diagram function, where the AUC is added to the diagrams.
 #'
 #' @param probs vector with probabilities (between 0 and 1)
-#' @param obs vector with categorical observations
+#' @param obs vector with categorical observations (as TRUE/FALSE)
 #'
 #' @export
 
@@ -738,6 +742,91 @@ ROCS = function(dt,f = c('below','normal','above'),
   res[,ROC_below := res_below[,ROC_below]]
   return(res)
 }
+
+
+#' Calculate the Generalized discrimination score from a data.table with data belonging to a single group (as defined by the
+#' by variable in the DISS function), for example a single location and month.
+#' Formula (5a) from Mason&2018 is used in the calculation. Mostly auxiliary function for the DISS function.
+#'
+#' @param year  a vector of pool variables, typically year.
+#' @param obs   a vector of observations the observation column, needs to contain -1 if it falls into the first category,
+#'  0 for the second and 1 for the third category.
+#' @param pB    a vector of probabilities for the first category.
+#' @param pN    a vector of probabilities for the second category.
+#' @param pA    a vector of probabilities for the third category.
+#'
+#' @export
+
+disc_score_dt = function(year,obs,pB,pN,pA)
+{
+  dt = data.table(year=year,tercile_cat=obs,below=pB,normal=pN,above=pA)
+  mm <- dim(dt)[1]
+  ll <- table(dt$tercile_cat)
+  if (length(ll)>1){
+    if (length(ll)==3){
+      nn <- ll["-1"]*sum(ll[c("0","1")])+ll["0"]*ll["1"]
+    }else{
+      nn <- ll[1]*ll[2]
+    }
+    dte <- data.table(matrix(0,nrow = nn, ncol = 5))
+    colnames(dte) <- c("year0","year1","k","l","F")
+    ii <- 1
+    for (i in 1:mm){
+      idy <- which(dt$tercile_cat!=dt$tercile_cat[i] & dt$year>dt$year[i])
+      if (length(idy)==0) next
+      set(dte, i = ii:(ii+length(idy)-1), j ="year0",value = c(rep(dt$year[i],length(idy))))
+      set(dte, i = ii:(ii+length(idy)-1), j ="year1",value = dt$year[idy])
+      set(dte, i = ii:(ii+length(idy)-1), j ="k",value = c(rep(dt$tercile_cat[i],length(idy))))
+      set(dte, i = ii:(ii+length(idy)-1), j ="l",value = dt$tercile_cat[idy])
+      p0 <- as.numeric(dt[i,c("below","normal","above")])
+      p1s <- as.matrix(dt[idy,c("below","normal","above")])
+      ff <- (p0[1]*(p1s[,2]+p1s[,3])+p0[2]*p1s[,3])/(1-(p0[1]*p1s[,1]+p0[2]*p1s[,2]+p0[3]*p1s[,3]))
+      set(dte, i = ii:(ii+length(idy)-1), j ="F",value = ff)
+      ii <- ii+length(idy)
+    }
+
+    dte[,I:=fifelse(F==0.5,0.5,as.numeric(F>0.5))]
+    dd <- as.numeric(sum(dte$I)/nn)
+  }else{
+    dd <- as.numeric(NA)
+  }
+  return(dd)
+}
+
+
+#' Compute the Generalized discrimination score
+#'
+#' A generalisation of the ROC score for more than two categories.
+#' This score is not proper (??), but can be used to assess the discrimination of a tercile forecast.
+#'
+#' @param dt Data table containing the predictions.
+#' @param f column names of the prediction.
+#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param by column names of grouping variables, all of which need to be columns in dt.
+#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
+#' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
+#' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+#' @export
+
+
+DISS = function(dt,f = c('below','normal','above'),
+                o = 'tercile_cat',
+                by = by_cols_terc_fc_score(),
+                pool = 'year',
+                dim.check = TRUE)
+{
+  by = intersect(by,names(dt))
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
+  checks_terc_fc_score()
+
+  # ROC score:
+  res = dt[,.(DIS = disc_score_dt(get(pool),get(o),get(f[1]),get(f[2]),get(f[3]))),by = by]
+  return(res)
+}
+
 
 #' Compute the Ranked Probability score
 #'
@@ -808,4 +897,71 @@ RPSS = function(dt,f = c('below','normal','above'),
 
   return(RPSS_dt)
 }
+
+
+#' Compute Resolution scores
+#'
+#' Either resolution component of the Brier score or resolution component of the Ignorance score.
+#' Requires the specification of probability bins. One score for each category.
+#'
+#' @param dt Data table containing the predictions.
+#' @param score "BS" or "IGS"
+#' @bins probability bins, defaults to c("<30", "30-35",">35")
+#' @param f column names of the prediction.
+#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param by column names of grouping variables, all of which need to be columns in dt.
+#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
+#' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
+#' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+#' @export
+#'
+#' #### NOT DONE ######################
+
+RES = function(dt,score="BS",bins=c(0.30,0.35001),f = c('below','normal','above'),
+               o = 'tercile_cat',
+               by = by_cols_terc_fc_score(),
+               pool = 'year',
+               dim.check = TRUE)
+{
+  by = intersect(by,names(dt))
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
+  checks_terc_fc_score()
+
+  #
+  mm <- length(bins)
+  dt[,pB:=rep(mm+1,dim(dt)[1])]
+  dt[,pN:=rep(mm+1,dim(dt)[1])]
+  dt[,pA:=rep(mm+1,dim(dt)[1])]
+  for (i in 1:mm){
+    dt[get(f[1])<bins[i] & pB==mm+1,pB:=i]
+    dt[get(f[2])<bins[i] & pN==mm+1,pN:=i]
+    dt[get(f[3])<bins[i] & pA==mm+1,pA:=i]
+  }
+
+  dt[,obsA:=fifelse(get(o) == 1,1,0)]
+  dt[,obsN:=fifelse(get(o) == 0,1,0)]
+  dt[,obsB:=fifelse(get(o) == -1,1,0)]
+
+  #RS_dt = dt[,.(resB=res_vec(pB,obsB),resN=res_vec(pN,obsN),resA=res_vec(pA,obsA)),by = by]
+  RS_dt_B = dt[,.(obs_freqB = mean(obsB),count = .N),by = c(by,"pB")]
+  RS_dt_N = dt[,.(obs_freqN = mean(obsN),count = .N),by = c(by,"pN")]
+  RS_dt_A = dt[,.(obs_freqA = mean(obsA),count = .N),by = c(by,"pA")]
+  RS_dt_Bg = dt[,.(obs_freqB_gen = mean(obsB)),by = by]
+  RS_dt_Ng = dt[,.(obs_freqN_gen= mean(obsN)),by = by]
+  RS_dt_Ag = dt[,.(obs_freqA_gen= mean(obsA)),by = by]
+  RS_dt_B = merge(RS_dt_B,RS_dt_Bg,by=by)
+  RS_dt_N = merge(RS_dt_N,RS_dt_Ng,by=by)
+  RS_dt_A = merge(RS_dt_A,RS_dt_Ag,by=by)
+  RS_bs_B = RS_dt_B[,.(bsB=sum(count*(obs_freqB-obs_freqB_gen)^2)/sum(count)),by=by]
+  RS_bs_N = RS_dt_N[,.(bsN=sum(count*(obs_freqN-obs_freqN_gen)^2)/sum(count)),by=by]
+  RS_bs_A = RS_dt_A[,.(bsA=sum(count*(obs_freqA-obs_freqA_gen)^2)/sum(count)),by=by]
+  RS_dt = merge(RS_bs_B,RS_bs_N,by=by)
+  RS_dt = merge(RS_dt,RS_bs_A,by=by)
+  dt[, c("pB","pN","pA","obsB","obsN","obsA"):=NULL]
+  return(RS_dt)
+}
+
 
