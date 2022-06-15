@@ -2,7 +2,6 @@ rm(list = ls())
 
 library(SeaVal)
 
-
 #prepare example data:
 
 obs = chirps_monthly

@@ -102,7 +102,7 @@ rel_diag = function(dt,
                     dim.check = TRUE)
 {
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
   # check for correct naming of columns etc.
   checks_terc_fc_score()
 
@@ -288,7 +288,7 @@ ROC_curve = function(dt,
                      interpolate = TRUE,
                      dim.check = TRUE)
 {
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
   # check for correct naming of columns etc.
   checks_terc_fc_score()
 

@@ -164,7 +164,7 @@ CRPS = function(dt, f, o = "obs",
                 ens_size_correction = FALSE)
 {
   by = intersect(by, names(dt))
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
   SeaVal:::checks_ens_fc_score()
 
   if(!ens_size_correction)  ret_dt = dt[,.(CRPS = crps_aux(get(o),get(f))),by = c(by,pool)]
@@ -297,7 +297,7 @@ MSE = function(dt,
   pool = intersect(pool,names(dt))
   mem = intersect(mem,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   #checks:
   checks_ens_fc_score()
@@ -344,7 +344,7 @@ MSES = function(dt,f,
   by = intersect(by,names(dt))
   if(!('year' %in% pool)) stop('skill scores are with respect to leave-one-year-out climatology, so your pool must contain "year".')
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   # get climatological loyo-prediction
   obs_dt = unique(dt[,.SD,.SDcols = c(o,obs_dimvars(dt))])
@@ -407,7 +407,7 @@ PCC = function(dt, f,
   pool = intersect(pool,names(dt))
   mem = intersect(mem,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   # checks:
   checks_ens_fc_score()
@@ -463,7 +463,7 @@ HS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -501,7 +501,7 @@ HSS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -537,7 +537,7 @@ EIR = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -582,7 +582,7 @@ IGS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -622,7 +622,7 @@ IGSS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -660,7 +660,7 @@ MBS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -725,7 +725,7 @@ ROCS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -761,7 +761,7 @@ RPS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -795,7 +795,7 @@ RPSS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
