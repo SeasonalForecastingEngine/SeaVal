@@ -8,12 +8,14 @@ the forecast relative frequency for each probability bin. The diagram shows the 
 Moreover, it shows a regression line fitted by weighted linear regression where the forecast relative frequencies are used as weights.
 A horizontal and vertical line indicate the frequency of observation = TRUE over the entire dataset.}
 \usage{
-rel_diag_vec(discrete_probs, obs)
+rel_diag_vec(discrete_probs, obs, slope_only = FALSE)
 }
 \arguments{
 \item{discrete_probs}{Vector of (rounded) probabilites.}
 
 \item{obs}{Vector of logical observations.}
+
+\item{slope_only}{logical. If set to TRUE, only the slope of the reliability curve is returned}
 }
 \description{
 Create a reliability diagram from a vector of probabilities and observations. The probabilities have to be rounded beforehand

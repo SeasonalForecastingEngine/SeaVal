@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxiliary_functions.R
 \name{by_cols_terc_fc_score}
 \alias{by_cols_terc_fc_score}
-\title{Auxiliary function returning the default column names to group by when calculating scores of ensemble forecasts.}
+\title{Auxiliary function returning the default column names to group by when calculating scores for tercile forecasts.}
 \usage{
 by_cols_terc_fc_score(dt = NULL)
 }
@@ -10,5 +10,5 @@ by_cols_terc_fc_score(dt = NULL)
 \item{dt}{optional. You can provide a data table, then the function returns the names of grouping variables in this data table.}
 }
 \description{
-Auxiliary function returning the default column names to group by when calculating scores of ensemble forecasts.
+Auxiliary function returning the default column names to group by when calculating scores for tercile forecasts.
 }

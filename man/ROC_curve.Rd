@@ -12,7 +12,7 @@ ROC_curve(
   f = c("below", "normal", "above"),
   o = "tercile_cat",
   by = NULL,
-  pool = dimvars(dt),
+  pool = setdiff(dimvars(dt), by),
   interpolate = TRUE,
   dim.check = TRUE
 )

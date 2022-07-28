@@ -257,7 +257,7 @@ CRPSS = function(dt,f,
                         by = by,
                         pool = pool,...)
 
-  CRPS_dt = merge(CRPS_dt,climatology_CRPS)
+  CRPS_dt = merge(CRPS_dt,climatology_CRPS,by = by)
   CRPS_dt[,CRPSS := (clim_CRPS - CRPS)/clim_CRPS]
 
   return(CRPS_dt)
@@ -551,7 +551,7 @@ EIR = function(dt,f = c('below','normal','above'),
 }
 
 
-#' Auxiliary function for ignorance score: 0log(0) should be 0:
+#' Auxiliary function for multiplying two numbers such that 0 x infty is 0. Needed for the ignorance score: 0log(0) should be 0.
 
 indicator_times_value_aux = function(indicator,value)
 {
@@ -690,14 +690,14 @@ roc_score_vec = function(probs,obs)
 {
   #use data tables fast order:
   temp = data.table(prob = probs,obs = obs)
-  setorder(temp,prob,obs)
+  setorder(temp,prob,obs) # sort by probability. For multiple entries with equal probabilities, sort the ones with obs == TRUE last.
 
   n1 = temp[(obs),.N]
   n0 = temp[!(obs),.N]
-  temp[,countzeros := cumsum(!obs)/n0]
-  temp[,countzeros2 := 0.5*cumsum(!obs)/n0,by = prob]
+  temp[,countzeros := cumsum(!obs)] # counts for each entry how many zero-observations have happened previously, including the ones with the same probability as the entry.
+  temp[,countzeros2 := 0.5*cumsum(!obs),by = prob] # counts for each entry how many zero-observations have happened with the same probability as the entry.
 
-  ROCscore = temp[(obs),sum(countzeros + countzeros2)/n1]
+  ROCscore = temp[(obs),sum(countzeros - countzeros2)/(n1 * n0)]
   return(ROCscore)
 }
 
@@ -706,12 +706,14 @@ roc_score_vec = function(probs,obs)
 #'
 #' This score is not proper, but can be used to assess the resolution of a tercile forecast.
 #'
+#' The ROC score requires more datapoints to be robust than e.g. the ignorance or Brier score. Therefore the default is to pool the data in space and only calculate one score per season.
+#'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
 #' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
 #' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
-#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
+#' Default is to group by all instances of month, season, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #' @export
@@ -719,12 +721,10 @@ roc_score_vec = function(probs,obs)
 
 ROCS = function(dt,f = c('below','normal','above'),
                 o = 'tercile_cat',
-                by = by_cols_terc_fc_score(),
-                pool = 'year',
+                by = by_cols_terc_fc_score_sp(dt),
+                pool = c('year',space_dimvars(dt)),
                 dim.check = TRUE)
 {
-  by = intersect(by,names(dt))
-
   dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
@@ -807,5 +807,48 @@ RPSS = function(dt,f = c('below','normal','above'),
   RPSS_dt = RPS_dt[,RPSS := 1-RPS/RPS_clim]
 
   return(RPSS_dt)
+}
+
+#' Compute the slope of the reliability curve
+#'
+#' Values below 1 indicate a lack of resolution or overconfidence, 1 is perfect, above means underconfident.
+#' This score requires more datapoints to be robust than e.g. the ignorance or Brier score. Therefore the default is to pool the data in space and only calculate one score per season.
+#'
+#' @param dt Data table containing the predictions.
+#' @param f column names of the prediction.
+#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param by column names of grouping variables, all of which need to be columns in dt.
+#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
+#' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
+#' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+#' @export
+
+
+SRC = function(dt,f = c('below','normal','above'),
+                o = 'tercile_cat',
+                by = by_cols_terc_fc_score_sp(dt),
+                pool = c('year',space_dimvars(dt)),
+                dim.check = TRUE)
+{
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
+
+  checks_terc_fc_score()
+
+  rdv_wrapper = function(discrete_probs, obs)
+  {
+    ret_val = suppressWarnings(rel_diag_vec(discrete_probs, obs, slope_only = TRUE))
+    return(ret_val)
+  }
+
+
+  # ROC score:
+  res_above = dt[,.(SRC_above = rdv_wrapper(get(f[3]),get(o) == 1)),by = by]
+  res_normal = dt[,.(SRC_normal = rdv_wrapper(get(f[2]),get(o) == 0)),by = by]
+  res_below = dt[,.(SRC_below = rdv_wrapper(get(f[1]),get(o) == -1)),by = by]
+
+  res = res_above[,SRC_normal := res_normal[,SRC_normal]]
+  res[,SRC_below := res_below[,SRC_below]]
+  return(res)
 }
 

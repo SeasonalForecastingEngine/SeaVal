@@ -13,7 +13,7 @@ rel_diag(
   f = c("below", "normal", "above"),
   o = "tercile_cat",
   by = NULL,
-  pool = dimvars(dt),
+  pool = setdiff(dimvars(dt), by),
   binwidth = 0.05,
   dim.check = TRUE
 )
