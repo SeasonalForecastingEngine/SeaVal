@@ -901,12 +901,17 @@ RPSS = function(dt,f = c('below','normal','above'),
 
 #' Compute Resolution scores
 #'
-#' Either resolution component of the Brier score or resolution component of the Ignorance score.
-#' Requires the specification of probability bins. One score for each category.
+#' Computes both the resolution component of the Brier score or resolution component of the Ignorance score.
+#' Mason claims to prefer the ignorance score version, but this has a very high chance of being NA (much higher
+#' than for the full ignorance score itself, I think we should drop it for that reason). Mason writes that the
+#' scores are unstable for single locations and that one should pool over many locations.
+#' Requires the specification of probability bins. One score for each category (below, normal, above) and
+#' also the sum of the scores.
+#'
+#' Values close to 0 means low resolution. Higher values mean higher resolution.
 #'
 #' @param dt Data table containing the predictions.
-#' @param score "BS" or "IGS"
-#' @bins probability bins, defaults to c("<30", "30-35",">35")
+#' @param bins probability bins, defaults to c("<30", "30-35",">35")
 #' @param f column names of the prediction.
 #' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
 #' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
@@ -916,9 +921,9 @@ RPSS = function(dt,f = c('below','normal','above'),
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #' @export
 #'
-#' #### NOT DONE ######################
 
-RES = function(dt,score="BS",bins=c(0.30,0.35001),f = c('below','normal','above'),
+
+RES = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
                o = 'tercile_cat',
                by = by_cols_terc_fc_score(),
                pool = 'year',
@@ -930,7 +935,7 @@ RES = function(dt,score="BS",bins=c(0.30,0.35001),f = c('below','normal','above'
 
   checks_terc_fc_score()
 
-  #
+  # Determining when each of the 3 probabilities fall into which probability bin (where the bins are numbered 1, 2,...)
   mm <- length(bins)
   dt[,pB:=rep(mm+1,dim(dt)[1])]
   dt[,pN:=rep(mm+1,dim(dt)[1])]
@@ -945,23 +950,130 @@ RES = function(dt,score="BS",bins=c(0.30,0.35001),f = c('below','normal','above'
   dt[,obsN:=fifelse(get(o) == 0,1,0)]
   dt[,obsB:=fifelse(get(o) == -1,1,0)]
 
-  #RS_dt = dt[,.(resB=res_vec(pB,obsB),resN=res_vec(pN,obsN),resA=res_vec(pA,obsA)),by = by]
   RS_dt_B = dt[,.(obs_freqB = mean(obsB),count = .N),by = c(by,"pB")]
   RS_dt_N = dt[,.(obs_freqN = mean(obsN),count = .N),by = c(by,"pN")]
   RS_dt_A = dt[,.(obs_freqA = mean(obsA),count = .N),by = c(by,"pA")]
   RS_dt_Bg = dt[,.(obs_freqB_gen = mean(obsB)),by = by]
   RS_dt_Ng = dt[,.(obs_freqN_gen= mean(obsN)),by = by]
   RS_dt_Ag = dt[,.(obs_freqA_gen= mean(obsA)),by = by]
-  RS_dt_B = merge(RS_dt_B,RS_dt_Bg,by=by)
-  RS_dt_N = merge(RS_dt_N,RS_dt_Ng,by=by)
-  RS_dt_A = merge(RS_dt_A,RS_dt_Ag,by=by)
+  if (length(by)==0){
+    RS_dt_B = RS_dt_B[,obs_freqB_gen:=as.numeric(RS_dt_Bg)]
+    RS_dt_N = RS_dt_N[,obs_freqN_gen:=as.numeric(RS_dt_Ng)]
+    RS_dt_A = RS_dt_A[,obs_freqA_gen:=as.numeric(RS_dt_Ag)]
+  }else{
+    RS_dt_B = merge(RS_dt_B,RS_dt_Bg,by=by)
+    RS_dt_N = merge(RS_dt_N,RS_dt_Ng,by=by)
+    RS_dt_A = merge(RS_dt_A,RS_dt_Ag,by=by)
+  }
+
+  #  Resolution component of the Brier score
   RS_bs_B = RS_dt_B[,.(bsB=sum(count*(obs_freqB-obs_freqB_gen)^2)/sum(count)),by=by]
   RS_bs_N = RS_dt_N[,.(bsN=sum(count*(obs_freqN-obs_freqN_gen)^2)/sum(count)),by=by]
   RS_bs_A = RS_dt_A[,.(bsA=sum(count*(obs_freqA-obs_freqA_gen)^2)/sum(count)),by=by]
-  RS_dt = merge(RS_bs_B,RS_bs_N,by=by)
-  RS_dt = merge(RS_dt,RS_bs_A,by=by)
+  RS_dt = cbind(RS_bs_B,RS_bs_N[,.(bsN)], RS_bs_A[,.(bsA)])
+  RS_dt[,bs:=bsB+bsN+bsA]
+
+  #  Resolution component of the Ignorance score
+  RS_ig_B = RS_dt_B[,.(igsB=sum(count*(obs_freqB*log2(obs_freqB/obs_freqB_gen) + (1-obs_freqB)*log2((1-obs_freqB)/(1-obs_freqB_gen)))/sum(count))),by=by]
+  RS_ig_N = RS_dt_N[,.(igsN=sum(count*(obs_freqN*log2(obs_freqN/obs_freqN_gen) + (1-obs_freqN)*log2((1-obs_freqN)/(1-obs_freqN_gen)))/sum(count))),by=by]
+  RS_ig_A = RS_dt_A[,.(igsA=sum(count*(obs_freqA*log2(obs_freqA/obs_freqA_gen) + (1-obs_freqA)*log2((1-obs_freqA)/(1-obs_freqA_gen)))/sum(count))),by=by]
+  RS_dt2 = cbind(RS_ig_B,RS_ig_N[,.(igsN)], RS_ig_A[,.(igsA)])
+  RS_dt2[,igs:=igsB+igsN+igsA]
+
+  RS_dt = cbind(RS_dt, RS_dt2[,.(igsB,igsN,igsA,igs)])
   dt[, c("pB","pN","pA","obsB","obsN","obsA"):=NULL]
   return(RS_dt)
 }
+
+#' Compute Reliability scores
+#'
+#' Computes both the reliability component of the Brier score or reliability component of the Ignorance score.
+#' Mason claims to prefer the ignorance score version, but this has a very high chance of being NA. Mason writes that the
+#' scores are unstable for single locations and that one should pool over many locations.
+#' Requires the specification of probability bins. One score for each category (below, normal, above) and
+#' also the sum of the scores.
+#'
+#' Values close to 0 indicate reliable forecasts. Higher values mean less reliable forecasts.
+#'
+#' @param dt Data table containing the predictions.
+#' @param bins probability bins, defaults to ("<30", "30-35",">35") which is given as c(0.30, 0.35001).
+#' @param f column names of the prediction.
+#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param by column names of grouping variables, all of which need to be columns in dt.
+#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
+#' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
+#' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+#' @export
+#'
+
+
+REL = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
+               o = 'tercile_cat',
+               by = by_cols_terc_fc_score(),
+               pool = 'year',
+               dim.check = TRUE)
+{
+  by = intersect(by,names(dt))
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+
+  checks_terc_fc_score()
+
+  # Determining when each of the 3 probabilities fall into which probability bin
+  # (where the bins are numbered 1, 2,... from the lower probability to higher)
+  mm <- length(bins)
+  bins_ext <- c(0,bins,1)
+  probs <- cumsum(bins_ext)[2:(mm+2)]/2
+  bins_dt <- data.table(bin=1:(mm+1),prob=probs)
+  dt[,pB:=rep(mm+1,dim(dt)[1])]
+  dt[,pN:=rep(mm+1,dim(dt)[1])]
+  dt[,pA:=rep(mm+1,dim(dt)[1])]
+  for (i in 1:mm){
+    dt[get(f[1])<bins[i] & pB==mm+1,pB:=i]
+    dt[get(f[2])<bins[i] & pN==mm+1,pN:=i]
+    dt[get(f[3])<bins[i] & pA==mm+1,pA:=i]
+  }
+
+  dt[,obsA:=fifelse(get(o) == 1,1,0)]
+  dt[,obsN:=fifelse(get(o) == 0,1,0)]
+  dt[,obsB:=fifelse(get(o) == -1,1,0)]
+
+  RS_dt_B = dt[,.(obs_freqB = mean(obsB),count = .N),by = c(by,"pB")]
+  RS_dt_N = dt[,.(obs_freqN = mean(obsN),count = .N),by = c(by,"pN")]
+  RS_dt_A = dt[,.(obs_freqA = mean(obsA),count = .N),by = c(by,"pA")]
+  # RS_dt_Bg = dt[,.(obs_freqB_gen = mean(obsB)),by = by]
+  # RS_dt_Ng = dt[,.(obs_freqN_gen= mean(obsN)),by = by]
+  # RS_dt_Ag = dt[,.(obs_freqA_gen= mean(obsA)),by = by]
+  # if (length(by)==0){
+  #   RS_dt_B = RS_dt_B[,obs_freqB_gen:=as.numeric(RS_dt_Bg)]
+  #   RS_dt_N = RS_dt_N[,obs_freqN_gen:=as.numeric(RS_dt_Ng)]
+  #   RS_dt_A = RS_dt_A[,obs_freqA_gen:=as.numeric(RS_dt_Ag)]
+  # }else{
+    RS_dt_B = merge(RS_dt_B,bins_dt,by.x="pB",by.y="bin")
+    RS_dt_N = merge(RS_dt_N,bins_dt,by.x="pN",by.y="bin")
+    RS_dt_A = merge(RS_dt_A,bins_dt,by.x="pA",by.y="bin")
+  #}
+
+  #  Resliability component of the Brier score
+  RS_bs_B = RS_dt_B[,.(bsB=sum(count*(obs_freqB-prob)^2)/sum(count)),by=by]
+  RS_bs_N = RS_dt_N[,.(bsN=sum(count*(obs_freqN-prob)^2)/sum(count)),by=by]
+  RS_bs_A = RS_dt_A[,.(bsA=sum(count*(obs_freqA-prob)^2)/sum(count)),by=by]
+  RS_dt = cbind(RS_bs_B,RS_bs_N[,.(bsN)], RS_bs_A[,.(bsA)])
+  RS_dt[,bs:=bsB+bsN+bsA]
+
+  #  Resolution component of the Ignorance score
+  RS_ig_B = RS_dt_B[,.(igsB=sum(count*(obs_freqB*log2(obs_freqB/prob) + (1-obs_freqB)*log2((1-obs_freqB)/(1-prob)))/sum(count))),by=by]
+  RS_ig_N = RS_dt_N[,.(igsN=sum(count*(obs_freqN*log2(obs_freqN/prob) + (1-obs_freqN)*log2((1-obs_freqN)/(1-prob)))/sum(count))),by=by]
+  RS_ig_A = RS_dt_A[,.(igsA=sum(count*(obs_freqA*log2(obs_freqA/prob) + (1-obs_freqA)*log2((1-obs_freqA)/(1-prob)))/sum(count))),by=by]
+  RS_dt2 = cbind(RS_ig_B,RS_ig_N[,.(igsN)], RS_ig_A[,.(igsA)])
+  RS_dt2[,igs:=igsB+igsN+igsA]
+
+  RS_dt = cbind(RS_dt, RS_dt2[,.(igsB,igsN,igsA,igs)])
+  dt[, c("pB","pN","pA","obsB","obsN","obsA"):=NULL]
+  return(RS_dt)
+}
+
+
 
 
