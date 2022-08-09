@@ -4,13 +4,23 @@
 \alias{load_chirps}
 \title{Function for reading in (previously downloaded) CHIRPS (monthly) data.}
 \usage{
-load_chirps(years = NULL, months = NULL, us = T)
+load_chirps(
+  years = NULL,
+  months = NULL,
+  version = "UCSB",
+  resolution = "low",
+  us = (resolution == "low")
+)
 }
 \arguments{
 \item{years, months}{Optional subset of years and months you want to load. The default is to load everything that has been downloaded locally.
 You can update your local CHIRPS download by calling download_chirps_monthly}
 
-\item{us}{logical. If TRUE, the upscaled version is loaded.}
+\item{version}{Either 'UCSB' to load the original version from UCSB or 'ICPAC' to load CHIRPS blended (both need to be downloaded first).}
+
+\item{resolution}{Either 'low' for loading the coarser upscaled version, or 'high' for loading the data on full resolution}
+
+\item{us}{logical. If TRUE, the upscaled version is loaded. Takes precedence over resolution.}
 }
 \value{
 the derived data table

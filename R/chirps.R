@@ -6,7 +6,7 @@
 
 chirps_dir = function(dir = file.path(data_dir(),'CHIRPS'))
 {
-    return(dir)
+  return(dir)
 }
 
 
@@ -23,7 +23,7 @@ GHA_extent = function()
 #' Downloads monthly CHIRPS-data
 #'
 #' downloads CHIRPS monthly data for the GHA-region and saves it as netcdfs.
-#' The data is downloaded from the IRI data library (see function code for link), because this data library allows to subset before downloading,
+#' The data is downloaded either from the IRI data library or from ICPAC (depending on \code{version}), because these data library allows to subset before downloading,
 #' unlike the original source at UCSB.
 #' As of Feb 2022, the entire CHIRPS-monthly data for the GHA-region is roughly 800MB on disk.
 #' The original spatial resolution of CHIRPS is 0.05 degree lon/lat. However, for many applications a coarser resolution is perfectly fine.
@@ -36,14 +36,16 @@ GHA_extent = function()
 #'  \item{'low'}{(for saving disk space) downloads the original resolution, upscales immediately and only saves the upscaled version.}
 #' }
 #' @param update Logical, if TRUE, previously created files are skipped.
+#' @param version Should be 'UCSB' (for University of California Santa Barbara, the original source of CHIRPS) or 'ICPAC' (for downloading the ICPAC version CHIRPS blended)
 #' @param years,months Which years and months do you want to load? NULL loads everything there is.
 #' @param extent vector of length four (xmin,xmax,ymin,ymax), restricting the spatial area.
-#' @param timeout_limit how many seconds (per file, i.e. per year) before the download is aborted?
-#' @param upscale_grid The coarse grid to which the data is upscaled (only used when resolution is either 'both' or 'high'). Only change this if you really have to.
+#' @param timeout_limit how many seconds (per file, i.e. per yearmonth) before the download is aborted?
+#' @param upscale_grid The coarse grid to which the data is upscaled (only used when resolution is either 'both' or 'high'). Only change this if you know what you are doing.
 #'
 #' @export
 
 download_chirps_monthly = function(resolution = 'both',update = TRUE,
+                                   version = 'UCSB',
                                    years = NULL,
                                    months = NULL,
                                    extent = GHA_extent(),
@@ -51,13 +53,15 @@ download_chirps_monthly = function(resolution = 'both',update = TRUE,
                                    upscale_grid = data.table(expand.grid(lon = seq(extent[1],extent[2],0.5),
                                                                          lat = seq(extent[3],extent[4],0.5))))
 {
-  dir = file.path(chirps_dir(),'monthly')
+  dir = file.path(chirps_dir(),version)
+  dir.create(dir,recursive = T,showWarnings = FALSE)
 
   if(resolution == 'both')
   {
 
     message(paste0('The data is stored in\n',dir,'\nFor changing this, run data_dir(set_dir = TRUE).'))
     download_chirps_monthly_high(update = update,
+                                 version = version,
                                  years = years,
                                  months = months,
                                  extent = extent,
@@ -75,6 +79,7 @@ download_chirps_monthly = function(resolution = 'both',update = TRUE,
   {
     message(paste0('The data is stored in\n',dir,'\nFor changing this, run data_dir(set_dir = TRUE).'))
     download_chirps_monthly_high(update = update,
+                                 version = version,
                                  years = years,
                                  months = months,
                                  extent = extent,
@@ -85,6 +90,7 @@ download_chirps_monthly = function(resolution = 'both',update = TRUE,
   {
     message(paste0('The data is stored in\n',file.path(dir,'upscaled'),'\nFor changing this, run data_dir(set_dir = TRUE).'))
     download_chirps_monthly_low(update = update,
+                                version = version,
                                 years = years,
                                 months = months,
                                 extent = extent,
@@ -99,16 +105,16 @@ download_chirps_monthly = function(resolution = 'both',update = TRUE,
 #' Auxiliary function called by download_chirps_monthly
 
 download_chirps_monthly_high = function(update,
+                                        version,
                                         years,
                                         months,
                                         extent,
                                         timeout_limit,
-                                        save_dir = file.path(chirps_dir(),'monthly'))
+                                        save_dir = file.path(chirps_dir(),version))
 {
 
-  options(timeout = max(timeout_limit, getOption("timeout")))
 
-  dir.create(save_dir,showWarnings = F,recursive = T)
+  options(timeout = max(timeout_limit, getOption("timeout")))
 
   if(is.null(years)) years = 1981:year(Sys.Date())
   if(is.null(months)) months = 1:12
@@ -117,6 +123,8 @@ download_chirps_monthly_high = function(update,
   {
     return(c('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec')[x])
   }
+
+  extent = GHA_extent()
 
   ### get corner coordinates in the right format:
   left = extent[1]
@@ -165,19 +173,22 @@ download_chirps_monthly_high = function(update,
       message(paste0(mm,'/',yy))
       mon = mon_to_str(mm)
 
-      filestr = paste0('http://iridl.ldeo.columbia.edu/SOURCES/.UCSB/.CHIRPS/.v2p0/.monthly/.global/.precipitation/T/%28',
+      if(version == 'ICPAC') source_path = 'http://digilib.icpac.net/SOURCES/.ICPAC/.CHIRPS-BLENDED/.monthly/.rainfall/.precipitation/'
+      if(version == 'UCSB') source_path = 'http://iridl.ldeo.columbia.edu/SOURCES/.UCSB/.CHIRPS/.v2p0/.monthly/.global/.precipitation/'
+
+      filestr = paste0(source_path,'T/%28',
                        mon,'%20',yy,'%29%28',mon,'%20',yy,'%29RANGEEDGES/Y/%28',upper,'%29%28',lower,'%29RANGEEDGES/X/%28',left,'%29%28',right,'%29RANGEEDGES/data.nc')
 
       # the newest data might not be available, but we don't want the download_chirps_monthly function to exit with an error when that happens (e.g. because then it'd skip the upscaling for resolution = 'both')
       res = tryCatch(suppressWarnings(download.file(filestr, destfile = file.path(save_dir,paste0(yy,'_',mm,'.nc')), method = "auto",quiet = TRUE, mode="wb", cacheOK = TRUE)),
                      error = function(cond)
-                     {message('Not yet available on the IRI data library. Trying to download preliminary version from UCSB.')
+                     {message('Final version not yet available. Trying to download preliminary version from UCSB.')
 
                        res_prelim = tryCatch(suppressWarnings(download_chirps_prelim_aux(years = yy,
-                                                                        months = mm,
-                                                                        extent = extent,
-                                                                        timeout_limit = timeout_limit,
-                                                                        nonprelim_dir = save_dir)),
+                                                                                         months = mm,
+                                                                                         extent = extent,
+                                                                                         timeout_limit = timeout_limit,
+                                                                                         nonprelim_dir = save_dir)),
                                              error = function(cond)
                                              {message('This data is not yet available.')})
                      })
@@ -189,16 +200,16 @@ download_chirps_monthly_high = function(update,
 
 
 
-
 #' Auxiliary function called by download_chirps_monthly
 
 download_chirps_monthly_low = function(update,
+                                       version,
                                        years,
                                        months,
                                        extent,
                                        timeout_limit,
                                        upscale_grid,
-                                       root_dir = file.path(chirps_dir(),'monthly'))
+                                       root_dir = file.path(chirps_dir(),version))
 {
   save_dir = file.path(root_dir,'upscaled')
   dir.create(save_dir,showWarnings = F,recursive = T)
@@ -218,7 +229,7 @@ download_chirps_monthly_low = function(update,
 
   if(update)
   {
-    existing_files = list.files(save_dir)
+    existing_files = list.files(save_dir,pattern = '.nc')
 
     existing_years =  as.integer(substr(existing_files,1,4))
     existing_months =  as.integer(substr(existing_files,6,nchar(existing_files)-3))
@@ -228,7 +239,7 @@ download_chirps_monthly_low = function(update,
     yms = yms[!(ym %in% existing_yms)]
 
     # keep track of the year-months for which the preliminary data has been loaded:
-    existing_files_prelim = list.files(save_dir_prelim)
+    existing_files_prelim = list.files(save_dir_prelim, pattern = '.nc')
 
     existing_years_prelim =  as.integer(substr(existing_files_prelim,1,4))
     existing_months_prelim =  as.integer(substr(existing_files_prelim,6,nchar(existing_files_prelim)-3))
@@ -270,7 +281,9 @@ download_chirps_monthly_low = function(update,
     } else {upper = paste0(upper,'N')}
 
 
+    error_files = c()
     # download files:
+
     for(i in 1:yms[,.N])
     {
       # download high-resolution file:
@@ -279,17 +292,21 @@ download_chirps_monthly_low = function(update,
       mon = mon_to_str(mm)
       yy = yms[i,year]
 
-      filestr = paste0('http://iridl.ldeo.columbia.edu/SOURCES/.UCSB/.CHIRPS/.v2p0/.monthly/.global/.precipitation/T/%28',
-                       mon,'%20',yy,'%29%28',mon,'%20',yy,'%29RANGEEDGES/Y/%28',upper,'%29%28',lower,'%29RANGEEDGES/X/%28',left,'%29%28',right,'%29RANGEEDGES/data.nc')
+      if(version == 'ICPAC') source_path = 'http://digilib.icpac.net/SOURCES/.ICPAC/.CHIRPS-BLENDED/.monthly/.rainfall/.precipitation/'
+      if(version == 'UCSB') source_path = 'http://iridl.ldeo.columbia.edu/SOURCES/.UCSB/.CHIRPS/.v2p0/.monthly/.global/.precipitation/'
 
+      filestr = paste0(source_path,'T/%28',
+                       mon,'%20',yy,'%29%28',mon,'%20',yy,'%29RANGEEDGES/Y/%28',upper,'%29%28',lower,'%29RANGEEDGES/X/%28',left,'%29%28',right,'%29RANGEEDGES/data.nc')
       message(paste0(mm,'/',yy))
 
-      skip_to_next = FALSE # For data that is not available
+
+      skip = FALSE # for skipping upscaling if the function for downloading preliminary data is used, see below.
+
       res = tryCatch(suppressWarnings(download.file(filestr, destfile = file.path(root_dir,paste0(yy,'_',mm,'.nc')), method = "auto",quiet = TRUE, mode="wb", cacheOK = TRUE)),
                      error = function(cond)
-                       {
-                       skip_to_next <<- TRUE # If preliminary data is downloaded or neither preliminary nor non-preliminary data is available, the upscaling part of the loop is skipped.
-                       message('Not yet available on the IRI data library. Trying to download preliminary version from UCSB.')
+                     {
+                      skip <<- TRUE # If preliminary data is downloaded or neither preliminary nor non-preliminary data is available, the upscaling part of the loop is skipped.
+                       message('Final version not yet available. Trying to download preliminary version from UCSB.')
                        res_prelim = tryCatch(suppressWarnings(download_chirps_prelim_aux(years = yy,
                                                                                          months = mm,
                                                                                          extent = extent,
@@ -302,13 +319,15 @@ download_chirps_monthly_low = function(update,
                                              # root_dir/upscaled, the preliminary data is directly upscaled to the grid we want, as part of the download function.
                                              # The upscaling matrix is not saved, but newly derived for every preliminary file, but I guess that's fine, since there should
                                              # be at most 2 preliminary files, and in the vast majority of cases only 1 or 0.
+                                             #
                                              error = function(cond)
                                              {
                                                message('This data is not yet available.')
                                              })
                      })
 
-      if(skip_to_next) next
+
+      if(skip) next
 
       # check whether the 'temp.csv' file exists (containing the weights for upscaling), if not create it
 
@@ -318,7 +337,13 @@ download_chirps_monthly_low = function(update,
       if(create_temp)
       {
         fn = file.path(root_dir,paste0(yy,'_',mm,'.nc'))
-        dt_temp = netcdf_to_dt(fn,verbose = 0)
+        dt_temp = tryCatch(netcdf_to_dt(fn,verbose = 0),error = function(e) e)
+        if(inherits(dt_temp, 'error'))
+        {
+          error_files = c(error_files,paste0(yy,'_',mm,'.nc'))
+          file.remove(fn)
+          next
+        }
         setnames(dt_temp,c('X','Y'),c('lon','lat'))
         dt_temp = upscale_regular_lon_lat(dt_temp,upscale_grid,'precipitation',
                                           bycols = 'T',save_weights = file.path(save_dir,paste0('temp.csv')))
@@ -341,7 +366,13 @@ download_chirps_monthly_low = function(update,
 
         #upscaling
         fn = file.path(root_dir,paste0(yy,'_',mm,'.nc'))
-        dt_temp = netcdf_to_dt(fn,verbose = 0)
+        dt_temp = tryCatch(netcdf_to_dt(fn,verbose = 0),error = function(e) e)
+        if(inherits(dt_temp, 'error'))
+        {
+          error_files = c(error_files,paste0(yy,'_',mm,'.nc'))
+          file.remove(fn)
+          next
+        }
 
         # get the fine grid index as in upscale_regular_lon_lat
         setnames(dt_temp,c('X','Y'),c('lon','lat'))
@@ -387,6 +418,8 @@ download_chirps_monthly_low = function(update,
 #' @param update Logical, if TRUE, files that have already been upscaled are skipped
 #' @param years,months Which years and months do you want to upscale? NULL upscales everything there is (except if update is TRUE).
 #' @param upscale_grid A regular lon/lat grid for upscaling. Defaults to half degrees.
+#' @param root_dir directory where the high-resolution file is stored.
+#' @param us_dir Directory where the low-resolution file will be stored.
 #'
 #' @export
 
@@ -395,9 +428,16 @@ upscale_chirps = function(update = TRUE,
                           months = NULL,
                           upscale_grid = data.table(expand.grid(lon = seq(GHA_extent()[1],GHA_extent()[2],0.5),
                                                                 lat = seq(GHA_extent()[3],GHA_extent()[4],0.5))),
-                          root_dir = file.path(chirps_dir(),'monthly'),
+                          root_dir,
                           us_dir = file.path(root_dir,'upscaled'))
 {
+
+  prelim_dir = file.path(root_dir,'prelim')
+  prelim_us_dir = file.path(us_dir,'prelim')
+
+  dir.create(us_dir,showWarnings = FALSE)
+  dir.create(prelim_dir,showWarnings = FALSE)
+  dir.create(prelim_us_dir,showWarnings = FALSE)
 
   message('upscaling...')
 
@@ -409,86 +449,173 @@ upscale_chirps = function(update = TRUE,
   yys = rep(years,each = length(months))
   mms = rep(months,length(years))
 
-  files_for_us = list.files(root_dir)
-  if(length(grep('temp',files_for_us)) > 0 ) files_for_us = files_for_us[-grep('temp',files_for_us)]
+  files_for_us = list.files(root_dir,pattern = '.nc')
+  prelim_files_for_us = list.files(prelim_dir,pattern = '.nc')
 
   if(update)
   {
-    already_upscaled = list.files(us_dir)
-    if(length(grep('temp',already_upscaled)) > 0 ) already_upscaled = already_upscaled[-grep('temp',already_upscaled)]
-
+    already_upscaled = list.files(us_dir,pattern = '.nc')
+    prelim_already_upscaled = list.files(prelim_us_dir,pattern = '.nc')
     # subtract from files for upscaling:
     files_for_us = setdiff(files_for_us,already_upscaled)
-    # avoid listed directories:
-    files_for_us = files_for_us[grep('.nc',files_for_us)]
-    if(length(files_for_us) == 0)
+    prelim_files_for_us = setdiff(prelim_files_for_us,prelim_already_upscaled)
+
+    if(length(files_for_us) + length(prelim_files_for_us) == 0)
     {
-      message('Everything is already upscaled.')
+      message('Everything upscaled.')
       return() # just to skip rest of function.
     }
   }
+
+
+  error_files = c() # mainly required for ICPACs CHIRPS blended...
 
   # use the first file to temporarily save the weights for upscaling:
 
   if(length(files_for_us) > 0)
   {
-    print(paste0(1,'/',length(files_for_us)))
 
-    fn = file.path(root_dir,files_for_us[1])
-    dt_temp = netcdf_to_dt(fn,verbose = 0)
-    setnames(dt_temp,c('X','Y'),c('lon','lat'))
-    dt_temp = upscale_regular_lon_lat(dt_temp,upscale_grid,'precipitation',
-                                      bycols = 'T',save_weights = file.path(us_dir,'temp.csv'))
+    for(i in seq_along(files_for_us))
+    {
+      message(paste0(i,'/',length(files_for_us)))
 
-    nc_out = file.path(us_dir,files_for_us[1])
+      fn = file.path(root_dir,files_for_us[i])
+      # this is the part that crashes if the netcdf is corrupted:
+      dt_temp = tryCatch(netcdf_to_dt(fn,verbose = 0) ,
+                         error = function(cond){cond})
+                         # {error_files = c(error_files, files_for_us[i]) # keep track which ones don't work
+                         # next
+                         #})
+      if(inherits(dt_temp,'error'))
+      {
+        error_files = c(error_files, files_for_us[i]) # keep track which ones don't work
+        next
+      }
 
-    dt_to_netcdf(dt_temp,'precipitation',
-                 units = 'mm/month',
-                 dim_vars = c('lon','lat','T'),
-                 dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
-                 nc_out = nc_out,
-                 check = 'y')
+      setnames(dt_temp,c('X','Y'),c('lon','lat'))
+
+
+      # if the upscale weights are not saved yet, derive them:
+      # (This is usually happening for the first file that is upscaled. But ICPACs CHIRPS blended sometimes has erroneous files that can't be upscaled and this can also happen to be the first file.)
+      if(!file.exists(file.path(us_dir,'temp.csv')))
+      {
+        dt_temp = upscale_regular_lon_lat(dt_temp,upscale_grid,'precipitation',
+                                                   bycols = 'T',save_weights = file.path(us_dir,'temp.csv'))
+        nc_out = file.path(us_dir,files_for_us[1])
+
+        dt_to_netcdf(dt_temp,'precipitation',
+                     units = 'mm/month',
+                     dim_vars = c('lon','lat','T'),
+                     dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
+                     nc_out = nc_out,
+                     check = 'y')
+      } else { # now it follows the upscale part for situations where the weights have been saved already.
+        upscale_weights = fread(file.path(us_dir,'temp.csv'))
+
+        # get the same fine grid index as in upscale_regular_lon_lat
+        setkey(dt_temp,lon,lat)
+        dt_temp[,fg_index := 1:.N]
+
+        # last bit of the upscaling function:
+        dt_temp = merge(dt_temp,upscale_weights,'fg_index',allow.cartesian = TRUE)
+
+        # take the weighted average for upscaling:
+        dt_temp= dt_temp[!is.na(precipitation)]
+        dt_temp = dt_temp[,lapply(.SD,FUN = function(x) sum(area_contr * x,na.rm = T)),.SDcols = 'precipitation',by = c('T','cg_lon','cg_lat')]
+
+        setnames(dt_temp,c('cg_lon','cg_lat'),c('lon','lat'))
+
+        # get name for save file
+        nc_out = file.path(us_dir,files_for_us[i])
+
+        # save:
+        dt_to_netcdf(dt_temp,'precipitation',
+                     units = 'mm/month',
+                     dim_vars = c('lon','lat','T'),
+                     dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
+                     nc_out = nc_out,
+                     check = 'y')
+        }
+    }
+    file.remove(file.path(us_dir,'temp.csv'),showWarnings = FALSE)
+  }
+
+  if(length(prelim_files_for_us) > 0)
+  {
+    message('upscaling preliminary files:')
+    for(i in seq_along(prelim_files_for_us))
+    {
+      fn = file.path(prelim_dir,prelim_files_for_us[i])
+      # this is the part that crashes if the netcdf is corrupted:
+      dt_temp = tryCatch(netcdf_to_dt(fn,verbose = 0) ,
+                         error = function(cond){cond})
+      # {error_files = c(error_files, files_for_us[i]) # keep track which ones don't work
+      # next
+      #})
+      if(inherits(dt_temp,'error'))
+      {
+        error_files = c(error_files, prelim_files_for_us[i]) # keep track which ones don't work
+        next
+      }
+
+      setnames(dt_temp,c('X','Y'),c('lon','lat'))
+
+
+      # if the upscale weights are not saved yet, derive them:
+      # (This is usually happening for the first file that is upscaled. But ICPACs CHIRPS blended sometimes has erroneous files that can't be upscaled and this can also happen to be the first file.)
+      if(!file.exists(file.path(prelim_us_dir,'temp.csv')))
+      {
+        dt_temp = upscale_regular_lon_lat(dt_temp,upscale_grid,'precip',
+                                          bycols = 'T',save_weights = file.path(prelim_us_dir,'temp.csv'))
+        nc_out = file.path(prelim_us_dir,prelim_files_for_us[1])
+
+        dt_to_netcdf(dt_temp,'precip',
+                     units = 'mm/month',
+                     dim_vars = c('lon','lat','T'),
+                     dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
+                     nc_out = nc_out,
+                     check = 'y')
+      } else { # now it follows the upscale part for situations where the weights have been saved already.
+        upscale_weights = fread(file.path(prelim_us_dir,'temp.csv'))
+
+        # get the same fine grid index as in upscale_regular_lon_lat
+        setkey(dt_temp,lon,lat)
+        dt_temp[,fg_index := 1:.N]
+
+        # last bit of the upscaling function:
+        dt_temp = merge(dt_temp,upscale_weights,'fg_index',allow.cartesian = TRUE)
+
+        # take the weighted average for upscaling:
+        dt_temp= dt_temp[!is.na(precip)]
+        dt_temp = dt_temp[,lapply(.SD,FUN = function(x) sum(area_contr * x,na.rm = T)),.SDcols = 'precip',by = c('T','cg_lon','cg_lat')]
+
+        setnames(dt_temp,c('cg_lon','cg_lat'),c('lon','lat'))
+
+        # get name for save file
+        nc_out = file.path(prelim_us_dir,prelim_files_for_us[i])
+
+        # save:
+        dt_to_netcdf(dt_temp,'precip',
+                     units = 'mm/month',
+                     dim_vars = c('lon','lat','T'),
+                     dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
+                     nc_out = nc_out,
+                     check = 'y')
+      }
+    }
+    file.remove(file.path(prelim_us_dir,'temp.csv'),showWarnings = FALSE)
   }
 
 
-  if(length(files_for_us) > 1)
+  if(length(error_files)>0)
   {
-    upscale_weights = fread(file.path(us_dir,'temp.csv'))
-
-    for(i in 2:length(files_for_us))
+    warn_str = paste('The following files are corrupt (could not be opened by nc_open) and have been removed:',error_files,sep = '\n',collapse = '\n')
+    warning(warn_str)
+    for (i in seq_along(error_files))
     {
-      print(paste0(i,'/',length(files_for_us)))
-      fn = file.path(root_dir,files_for_us[i])
-      dt_temp = netcdf_to_dt(fn,verbose = 0)
-
-      # get the fine grid index as in upscale_regular_lon_lat
-      setnames(dt_temp,c('X','Y'),c('lon','lat'))
-      setkey(dt_temp,lon,lat)
-      dt_temp[,fg_index := 1:.N]
-
-      # last bit of the upscaling function:
-      dt_temp = merge(dt_temp,upscale_weights,'fg_index',allow.cartesian = TRUE)
-
-      # take the weighted average for upscaling:
-      dt_temp= dt_temp[!is.na(precipitation)]
-      dt_temp = dt_temp[,lapply(.SD,FUN = function(x) sum(area_contr * x,na.rm = T)),.SDcols = 'precipitation',by = c('T','cg_lon','cg_lat')]
-
-      setnames(dt_temp,c('cg_lon','cg_lat'),c('lon','lat'))
-
-      # get name for save file
-      nc_out = file.path(us_dir,files_for_us[i])
-
-      # save:
-      dt_to_netcdf(dt_temp,'precipitation',
-                   units = 'mm/month',
-                   dim_vars = c('lon','lat','T'),
-                   dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
-                   nc_out = nc_out,
-                   check = 'y')
+      file.remove(file.path(root_dir,error_files[i]))
     }
   }
-
-  file.remove(file.path(us_dir,'temp.csv'))
 }
 
 
@@ -505,26 +632,30 @@ upscale_chirps = function(update = TRUE,
 #'
 #' @param years,months Optional subset of years and months you want to load. The default is to load everything that has been downloaded locally.
 #' You can update your local CHIRPS download by calling download_chirps_monthly
-#' @param us logical. If TRUE, the upscaled version is loaded.
+#' @param version Either 'UCSB' to load the original version from UCSB or 'ICPAC' to load CHIRPS blended (both need to be downloaded first).
+#' @param resolution Either 'low' for loading the coarser upscaled version, or 'high' for loading the data on full resolution
+#' @param us logical. If TRUE, the upscaled version is loaded. Takes precedence over resolution.
 #'
 #' @return the derived data table
 #'
 #' @export
 
-load_chirps = function(years =  NULL, months = NULL, us = T)
+load_chirps = function(years =  NULL, months = NULL, version = 'UCSB',resolution = 'low', us = (resolution == 'low'))
 {
-  ch_dir = ifelse(us, no = file.path(chirps_dir(),'monthly'), yes = file.path(chirps_dir(),'monthly','upscaled'))
+  # get directory:
+  ch_dir = file.path(chirps_dir(),version)
+  if(us) ch_dir = file.path(ch_dir,'upscaled')
+
   prelim_dir = file.path(ch_dir,'prelim')
 
   if(is.null(years) & is.null(months) & !us)
   {
-    rl = readline(prompt = 'You are trying to load all years and months of the CHIRPS data on the original scale. That is potentially a lot of data (roughly 8GB in memory). do you want to proceed? y/n')
+    rl = readline(prompt = 'You are trying to load all years and months of the CHIRPS data on the original scale. That is a lot of data (roughly 8GB in memory). do you want to proceed? y/n')
     if(rl == 'n') stop('loading aborted')
   }
 
-  fns = list.files(ch_dir)
-  fns=  fns[grep('.nc',fns)]
-  fns_prelim = list.files(prelim_dir)
+  fns = list.files(ch_dir,pattern = '.nc')
+  fns_prelim = list.files(prelim_dir,pattern = '.nc')
 
   # subset by years
   if(!is.null(years))
@@ -540,22 +671,26 @@ load_chirps = function(years =  NULL, months = NULL, us = T)
     fns = fns[mms %in% months]
   }
 
-  if(length(fns) == 0)
+  if(length(fns) + length(fns_prelim) == 0)
   {
     stop('You need to download this data first. Use download_chirps_monthly' )
   }
 
   dt = list()
 
-  for(i in seq_along(fns))
+  if(length(fns) > 0)
   {
-    ff = fns[i]
-    dt_temp = netcdf_to_dt(file.path(ch_dir,ff),verbose = 0)
-    if(!us) setnames(dt_temp,c('X','Y','precipitation'),c('lon','lat','prec'))
-    if(us) setnames(dt_temp,c('precipitation'),c('prec'))
+    for(i in seq_along(fns))
+    {
+      ff = fns[i]
+      dt_temp = netcdf_to_dt(file.path(ch_dir,ff),verbose = 0)
+      if(!us) setnames(dt_temp,c('X','Y','precipitation'),c('lon','lat','prec'))
+      if(us) setnames(dt_temp,c('precipitation'),c('prec'))
 
-    dt[[i]] = dt_temp
+      dt[[i]] = dt_temp
+    }
   }
+
 
   dt = rbindlist(dt)
 
@@ -577,7 +712,6 @@ load_chirps = function(years =  NULL, months = NULL, us = T)
 
     dt_prelim = list()
 
-
     for(i in seq_along(fns_prelim))
     {
       ff = fns_prelim[i]
@@ -585,7 +719,7 @@ load_chirps = function(years =  NULL, months = NULL, us = T)
 
       dt_temp = netcdf_to_dt(file.path(prelim_dir,ff),verbose = 0)
       if(!us) setnames(dt_temp,c('X','Y','precipitation'),c('lon','lat','prec'))
-      if(us) setnames(dt_temp,c('precipitation'),c('prec'))
+      if(us) setnames(dt_temp,c('precip'),c('prec'))
 
       dt_prelim[[i]] = dt_temp
     }
@@ -671,6 +805,8 @@ download_chirps_prelim_aux = function(years,
       times = as.Date(times, origin = '1980-01-01')
       times_new = 12*(year(times)-1960) + month(times) - 0.5# convert to weird format used by IRI data library:
 
+      precip = ncdf4::ncvar_get(nc,varid = 'precip',start = c(lons_start,lats_start,1),count = c(lons_count,lats_count,-1))
+
       ncdf4::nc_close(nc)
 
       dt = data.table(lon = rep(rel_lons,lats_count),lat = rep(rel_lats,each = lons_count),precip = as.vector(precip))
@@ -682,7 +818,7 @@ download_chirps_prelim_aux = function(years,
       {
         ref_files = ref_files[-grep(pattern = 'temp',ref_files)]
       }
-      if(length(ref_files == 0))
+      if(length(ref_files) == 0)
       {
         file.remove(file.path(save_dir,'temp.nc'))
 

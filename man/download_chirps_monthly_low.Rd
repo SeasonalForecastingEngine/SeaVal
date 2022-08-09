@@ -6,11 +6,13 @@
 \usage{
 download_chirps_monthly_low(
   update,
+  version,
   years,
   months,
   extent,
   timeout_limit,
-  upscale_grid
+  upscale_grid,
+  root_dir = file.path(chirps_dir(), version)
 )
 }
 \description{
