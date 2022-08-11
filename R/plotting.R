@@ -47,6 +47,8 @@ ggplot_dt = function(dt,
                      ...,
                      binwidth = NULL,bin_midpoint = midpoint)
 {
+  # for devtools::check():
+  long = group = NULL
 
   if(!('lon' %in% names(dt) & 'lat' %in% names(dt))) stop('The data table has to contain columns called "lon" and "lat".')
 

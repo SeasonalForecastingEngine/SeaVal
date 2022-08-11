@@ -318,3 +318,9 @@ space_dimvars = function(dt = NULL)
 }
 
 
+#' @importFrom utils globalVariables
+# For including all possible dimension variables in the devtools::check() run:
+utils::globalVariables(dimvars())
+# while we're at it, let's include the following data.table syntax quirks:
+utils::globalVariables(c('.'))
+utils::globalVariables(c('countries'))

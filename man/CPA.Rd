@@ -26,6 +26,8 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 
 \item{pool}{column name(s) for the variable(s) along which is averaged. Needs to contain 'year' per warning above.}
 
+\item{mem}{Number of column containing the number of the ensemble member.}
+
 \item{dim.check}{Logical. If True, a simple test whether the dimensions match up is conducted:
 The data table should only have one row for each level of c(by,pool,mem)}
 }

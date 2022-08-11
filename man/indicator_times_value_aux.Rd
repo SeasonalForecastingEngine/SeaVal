@@ -6,6 +6,14 @@
 \usage{
 indicator_times_value_aux(indicator, value)
 }
+\arguments{
+\item{indicator}{logical input vector}
+
+\item{value}{numeric input vector}
+}
+\value{
+indicator x value with 0*infty = 0
+}
 \description{
 Auxiliary function for multiplying two numbers such that 0 x infty is 0. Needed for the ignorance score: 0log(0) should be 0.
 }

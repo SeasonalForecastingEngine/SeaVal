@@ -7,7 +7,7 @@
 climatology_threshold_exceedence(
   obs_dt,
   o = "prec",
-  by = setdiff(coords(obs_dt), "year"),
+  by = setdiff(dimvars(obs_dt), "year"),
   thresholds = c(200, 300, 350, 400)
 )
 }

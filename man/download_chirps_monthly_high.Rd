@@ -14,6 +14,11 @@ download_chirps_monthly_high(
   save_dir = file.path(chirps_dir(), version)
 )
 }
+\arguments{
+\item{update, version, years, months, extent, timeout_limit}{see \code{download_chirps_monthly}.}
+
+\item{save_dir}{directory where the chirps data is stored.}
+}
 \description{
 Auxiliary function called by download_chirps_monthly
 }

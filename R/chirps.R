@@ -42,6 +42,8 @@ GHA_extent = function()
 #' @param timeout_limit how many seconds (per file, i.e. per yearmonth) before the download is aborted?
 #' @param upscale_grid The coarse grid to which the data is upscaled (only used when resolution is either 'both' or 'high'). Only change this if you know what you are doing.
 #'
+#' @importFrom utils download.file
+#'
 #' @export
 
 download_chirps_monthly = function(resolution = 'both',update = TRUE,
@@ -103,7 +105,11 @@ download_chirps_monthly = function(resolution = 'both',update = TRUE,
 }
 
 #' Auxiliary function called by download_chirps_monthly
-
+#'@param update,version,years,months,extent,timeout_limit see \code{download_chirps_monthly}.
+#'@param save_dir directory where the chirps data is stored.
+#'
+#'@importFrom utils download.file
+#'
 download_chirps_monthly_high = function(update,
                                         version,
                                         years,
@@ -112,7 +118,6 @@ download_chirps_monthly_high = function(update,
                                         timeout_limit,
                                         save_dir = file.path(chirps_dir(),version))
 {
-
 
   options(timeout = max(timeout_limit, getOption("timeout")))
 
@@ -180,7 +185,7 @@ download_chirps_monthly_high = function(update,
                        mon,'%20',yy,'%29%28',mon,'%20',yy,'%29RANGEEDGES/Y/%28',upper,'%29%28',lower,'%29RANGEEDGES/X/%28',left,'%29%28',right,'%29RANGEEDGES/data.nc')
 
       # the newest data might not be available, but we don't want the download_chirps_monthly function to exit with an error when that happens (e.g. because then it'd skip the upscaling for resolution = 'both')
-      res = tryCatch(suppressWarnings(download.file(filestr, destfile = file.path(save_dir,paste0(yy,'_',mm,'.nc')), method = "auto",quiet = TRUE, mode="wb", cacheOK = TRUE)),
+      res = tryCatch(suppressWarnings(utils::download.file(filestr, destfile = file.path(save_dir,paste0(yy,'_',mm,'.nc')), method = "auto",quiet = TRUE, mode="wb", cacheOK = TRUE)),
                      error = function(cond)
                      {message('Final version not yet available. Trying to download preliminary version from UCSB.')
 
@@ -201,6 +206,11 @@ download_chirps_monthly_high = function(update,
 
 
 #' Auxiliary function called by download_chirps_monthly
+#'@param update,version,years,months,extent,timeout_limit see \code{download_chirps_monthly}.
+#'@param upscale_grid To which grid shall we upscale? Needs a data table with lon/lat columns
+#'@param root_dir directory where the high-dimensional chirps data would be stored. The upscaled data is then stored in root_dir/upscaled/.
+#'
+#'@importFrom utils download.file
 
 download_chirps_monthly_low = function(update,
                                        version,
@@ -211,6 +221,9 @@ download_chirps_monthly_low = function(update,
                                        upscale_grid,
                                        root_dir = file.path(chirps_dir(),version))
 {
+  # for devtools::check():
+  ym = fg_index = precipitation = area_contr = NULL
+
   save_dir = file.path(root_dir,'upscaled')
   dir.create(save_dir,showWarnings = F,recursive = T)
 
@@ -302,7 +315,7 @@ download_chirps_monthly_low = function(update,
 
       skip = FALSE # for skipping upscaling if the function for downloading preliminary data is used, see below.
 
-      res = tryCatch(suppressWarnings(download.file(filestr, destfile = file.path(root_dir,paste0(yy,'_',mm,'.nc')), method = "auto",quiet = TRUE, mode="wb", cacheOK = TRUE)),
+      res = tryCatch(suppressWarnings(utils::download.file(filestr, destfile = file.path(root_dir,paste0(yy,'_',mm,'.nc')), method = "auto",quiet = TRUE, mode="wb", cacheOK = TRUE)),
                      error = function(cond)
                      {
                       skip <<- TRUE # If preliminary data is downloaded or neither preliminary nor non-preliminary data is available, the upscaling part of the loop is skipped.
@@ -431,6 +444,8 @@ upscale_chirps = function(update = TRUE,
                           root_dir,
                           us_dir = file.path(root_dir,'upscaled'))
 {
+  # for devtools::check():
+  area_contr = precip = precipitation = fg_index = NULL
 
   prelim_dir = file.path(root_dir,'prelim')
   prelim_us_dir = file.path(us_dir,'prelim')
@@ -642,6 +657,9 @@ upscale_chirps = function(update = TRUE,
 
 load_chirps = function(years =  NULL, months = NULL, version = 'UCSB',resolution = 'low', us = (resolution == 'low'))
 {
+  # for devtools::check():
+  prec = NULL
+
   # get directory:
   ch_dir = file.path(chirps_dir(),version)
   if(us) ch_dir = file.path(ch_dir,'upscaled')
@@ -756,6 +774,8 @@ load_chirps = function(years =  NULL, months = NULL, version = 'UCSB',resolution
 #' @param nonprelim_dir Directory where the non-preliminary CHIRPS data is stored.
 #' @param save_dir Directory where the function stores the preliminary data.
 #'
+#' @importFrom utils download.file
+#'
 #' @export
 
 
@@ -779,7 +799,7 @@ download_chirps_prelim_aux = function(years,
       if(file.exists(file.path(nonprelim_dir,paste0(yy,'_',mm,'.nc'))) | file.exists(fn)) next
 
       mstr = ifelse(mm<10,yes = paste0(0,mm),no = mm)
-      suppressMessages(download.file(url = paste0('https://data.chc.ucsb.edu/products/CHIRPS-2.0/prelim/global_monthly/netcdf/chirps-v2.0.',yy,'.',mstr,'.nc'),
+      suppressMessages(utils::download.file(url = paste0('https://data.chc.ucsb.edu/products/CHIRPS-2.0/prelim/global_monthly/netcdf/chirps-v2.0.',yy,'.',mstr,'.nc'),
                                      destfile = file.path(save_dir,'temp.nc')))
 
 
@@ -849,7 +869,9 @@ The preliminary data has been removed again."),call. = FALSE)
 }
 
 
-#' Auxiliary function cleaning out the directories
+#' Auxiliary function cleaning out the directories, called at the end of the download
+#' @param dir the directory of the high dimensional CHIRPS data.
+
 delete_redundant_files = function(dir)
 {
   temp_files = list.files(dir,pattern = 'temp',recursive = 'TRUE')

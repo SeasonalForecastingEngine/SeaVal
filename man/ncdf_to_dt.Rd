@@ -10,6 +10,8 @@ ncdf_to_dt(nc, subset_list = NULL, printunits = TRUE)
 \item{nc}{either character string with the name of the .nc file (including path), or an object of type ncdf4}
 
 \item{subset_list}{named list for subsetting. The names must match dimension names of the nc file. The range of the vector contained on each page defines which subset of the data is read out.}
+
+\item{printunits}{Logical: Should the units be printed}
 }
 \value{
 long data table.
@@ -17,13 +19,6 @@ long data table.
 \description{
 This function is deprecated, use netcdf_to_dt instead. It crashes when the netcdf has 'empty' dimension variables that are not used by any variable.
 This is the case for some netcdfs provided by ICPAC and CORDEX.
-}
-\examples{
-{
-fn = '/nr/user/claudio/bigdisk/SFE/ERA_monthly_nc/total_precipitation_era_1979_1.nc'
-ncdf_to_dt(fn, subset_list = list('latitude' = -50:50)) # will read out everything between lat -50 and lat 50 (not only the latitudes matching -50:50)
-}
-
 }
 \author{
 Claudio

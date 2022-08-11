@@ -14,15 +14,19 @@
 #' @param ... arguments passed to FUN
 #'
 #' @importFrom ggpubr ggarrange
+#' @importFrom utils menu
 
 create_diagram_by_level = function(FUN,by,dt,...)
 {
+  # for devtools::check():
+  ..ii = NULL
+
   by_dt = unique(dt[,.SD,.SDcols = by])
   nby = by_dt[,.N]
-  if(nby >= 12)
+  if(nby >= 12 & interactive())
   {
-    mm = menu(choices = c('yes','no'),
-              title = paste0("Your choice of 'by' would result in ",4*nby," plots.\nDo you want to proceed?"))
+    mm = utils::menu(choices = c('yes','no'),
+                     title = paste0("Your choice of 'by' would result in ",4*nby," plots.\nDo you want to proceed?"))
     if(mm == 2)
     {
       #stop without error:
@@ -63,6 +67,7 @@ create_diagram_by_level = function(FUN,by,dt,...)
 #' These graphs really only make sense if you have 50 or less observations. Typical application would be when you compare seasonal mean forecasts to station data for a single location.
 #'
 #' @param dt Data table containing tercile forecasts
+#' @param accumulative Logic. Should the accumulative profit be plotted or the profit per forecast?
 #' @param f column names of the prediction columns
 #' @param o column name of the observation column
 #' @param by column names of grouping variables. Default is NULL.
@@ -81,6 +86,8 @@ profit_graph = function(dt, accumulative = TRUE,
                         pool = setdiff(dimvars(dt),by),
                         dim.check = TRUE)
 {
+  # for devtools::check():
+  below = tercile_cat = normal = above = profit = acc_profit = index = NULL
 
   dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
   # check for correct naming of columns etc.
@@ -151,9 +158,14 @@ round_probs = function(probs,binwidth = 0.05)
 #' @param discrete_probs Vector of (rounded) probabilites.
 #' @param obs Vector of logical observations.
 #' @param slope_only logical. If set to TRUE, only the slope of the reliability curve is returned
+#'
+#' @importFrom stats lm coef
 
 rel_diag_vec = function(discrete_probs, obs, slope_only = FALSE)
 {
+  # for devtools::check():
+  prob = count = frequency = obs_freq = NULL
+
   temp = data.table(prob = 100*discrete_probs,obs = obs)
   rel_diag_dt = temp[,.(obs_freq = mean(obs) * 100,
                         count = .N,
@@ -175,9 +187,9 @@ rel_diag_vec = function(discrete_probs, obs, slope_only = FALSE)
 
   # add linear regression line:
 
-  model = lm(obs_freq ~ prob,data = rel_diag_dt,weights = frequency)
+  model = stats::lm(obs_freq ~ prob,data = rel_diag_dt,weights = frequency)
 
-  if(slope_only) return(coef(model)[[2]])
+  if(slope_only) return(stats::coef(model)[[2]])
 
   pp = ggplot(rel_diag_dt) +
     geom_vline(xintercept = total_freq,color = 'gray') +
@@ -210,10 +222,12 @@ rel_diag_vec = function(discrete_probs, obs, slope_only = FALSE)
 #' @param by column names of grouping variables. Default is to not group.
 #' @param pool column names of pooling variables (used for the dimension check). Default is all dimvars.
 #' @param dim.check Logical. If TRUE, the function checks whether the columns in by and pool span the entire data table.
+#' @param binwidth bin width for discretizing probabilities.
 #'
 #' @return A list of gg objects which can be plotted by ggpubr::ggarrange (for example)
 #'
 #' @importFrom ggpubr ggarrange
+#' @importFrom utils menu
 #' @export
 
 rel_diag = function(dt,
@@ -224,6 +238,8 @@ rel_diag = function(dt,
                     binwidth = 0.05,
                     dim.check = TRUE)
 {
+  # for devtools::check():
+  ..ii =  NULL
 
   dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
   # check for correct naming of columns etc.
@@ -271,10 +287,10 @@ rel_diag = function(dt,
   {
     by_dt = unique(dt[,.SD,.SDcols = by])
     nby = by_dt[,.N]
-    if(nby >= 12)
+    if(nby >= 12 & interactive())
     {
-      mm = menu(choices = c('yes','no'),
-                title = paste0("Your choice of 'by' would result in ",4*nby," plots.\nDo you want to proceed?"))
+      mm = utils::menu(choices = c('yes','no'),
+                       title = paste0("Your choice of 'by' would result in ",4*nby," plots.\nDo you want to proceed?"))
       if(mm == 2)
       {
         #stop without error:
@@ -303,9 +319,9 @@ rel_diag = function(dt,
         rps2 = dt_sub[,get(f[2])]
         rps3 = dt_sub[,get(f[1])]
       } else {
-        rps1 = round_probs(dt_sub[,get(f[3])],binwidth = bindwidth)
-        rps2 = round_probs(dt_sub[,get(f[2])],binwidth = bindwidth)
-        rps3 = round_probs(dt_sub[,get(f[1])],binwidth = bindwidth)
+        rps1 = round_probs(dt_sub[,get(f[3])],binwidth = binwidth)
+        rps2 = round_probs(dt_sub[,get(f[2])],binwidth = binwidth)
+        rps3 = round_probs(dt_sub[,get(f[1])],binwidth = binwidth)
       }
 
 
@@ -343,6 +359,9 @@ rel_diag = function(dt,
 
 roc_curve_vec = function(probs,obs,interpolate = TRUE)
 {
+  # for devtools::check():
+  prob = level = hit_rate = false_alarm_rate = NULL
+  x = y = label = NULL
 
   temp = data.table(prob = probs,obs = obs)
   setorder(temp,-prob,obs)
@@ -397,6 +416,7 @@ roc_curve_vec = function(probs,obs,interpolate = TRUE)
 #' @param by column names of grouping variables. Default is to not group.
 #' @param pool column names of pooling variables (used for the dimension check). Default is all dimvars.
 #' @param dim.check Logical. If TRUE, the function checks whether the columns in by and pool span the entire data table.
+#' @param interpolate Logical. If TRUE, the curve connects the dots making up the ROC curve (which looks nicer), if not a step function is drawn (which is closer to the mathematical definition of the ROC curve).
 #'
 #' @return A list of gg objects which can be plotted by ggpubr::ggarrange (for example)
 #'
@@ -411,6 +431,9 @@ ROC_curve = function(dt,
                      interpolate = TRUE,
                      dim.check = TRUE)
 {
+  # for devtools::check():
+  ..ii = NULL
+
   dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
   # check for correct naming of columns etc.
   checks_terc_fc_score()
@@ -445,10 +468,10 @@ ROC_curve = function(dt,
   {
     by_dt = unique(dt[,.SD,.SDcols = by])
     nby = by_dt[,.N]
-    if(nby >= 12)
+    if(nby >= 12 & interactive())
     {
-      mm = menu(choices = c('yes','no'),
-                title = paste0("Your choice of 'by' would result in ",4*nby," plots.\nDo you want to proceed?"))
+      mm = utils::menu(choices = c('yes','no'),
+                       title = paste0("Your choice of 'by' would result in ",4*nby," plots.\nDo you want to proceed?"))
       if(mm == 2)
       {
         #stop without error:
@@ -512,6 +535,8 @@ tendency_diag = function(dt,
                          pool = setdiff(dimvars(dt),by),
                          dim.check = TRUE)
 {
+  # for devtools::check():
+  x = y = type = NULL
 
   dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
   # check for correct naming of columns etc.
@@ -579,6 +604,9 @@ ver_map = function(dt,o = 'obs',yy = dt[,max(year)],
                    out_file = NULL)
 
 {
+  # for devtools::check()
+  lon = lat = is_yy = sample_quantile = how_many_ties = NULL
+
   # get data in shape
   dt_temp = copy(dt[year %in% climatology_period])
   if(!(yy %in% climatology_period))

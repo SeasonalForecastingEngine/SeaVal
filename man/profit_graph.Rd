@@ -17,6 +17,8 @@ profit_graph(
 \arguments{
 \item{dt}{Data table containing tercile forecasts}
 
+\item{accumulative}{Logic. Should the accumulative profit be plotted or the profit per forecast?}
+
 \item{f}{column names of the prediction columns}
 
 \item{o}{column name of the observation column}

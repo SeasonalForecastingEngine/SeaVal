@@ -1,4 +1,3 @@
-
 #' function for converting netcdfs to long data tables.
 #'
 #' @description This function is deprecated, use netcdf_to_dt instead. It crashes when the netcdf has 'empty' dimension variables that are not used by any variable.
@@ -6,14 +5,10 @@
 #'
 #' @param nc either character string with the name of the .nc file (including path), or an object of type ncdf4
 #' @param subset_list named list for subsetting. The names must match dimension names of the nc file. The range of the vector contained on each page defines which subset of the data is read out.
+#' @param printunits Logical: Should the units be printed
 #' @return long data table.
 #'
 #' @import ncdf4
-#'
-#' @examples {
-#' fn = '/nr/user/claudio/bigdisk/SFE/ERA_monthly_nc/total_precipitation_era_1979_1.nc'
-#' ncdf_to_dt(fn, subset_list = list('latitude' = -50:50)) # will read out everything between lat -50 and lat 50 (not only the latitudes matching -50:50)
-#' }
 #'
 #' @author Claudio
 #'
@@ -21,6 +16,7 @@
 
 ncdf_to_dt = function(nc,subset_list = NULL,printunits = TRUE)
 {
+  warning('This function is deprecated. Please use netcdf_to_dt instead.')
 
   if(is.character(nc)) nc = nc_open(nc)
 
@@ -112,9 +108,6 @@ ncdf_to_dt = function(nc,subset_list = NULL,printunits = TRUE)
   return(return_dt)
 }
 
-
-
-
 #' function for converting netcdfs to long data tables.
 #'
 #' @description The function converts netcdfs into data.tables.
@@ -126,7 +119,7 @@ ncdf_to_dt = function(nc,subset_list = NULL,printunits = TRUE)
 #' @param vars Which variables should be read from the netcdf? Either a character vector of variable names, or a
 #' integer vector of variable indices, or NULL in which case all variables are read.
 #' @param verbose Either 0, 1 or 2. How much information should be printed?
-#' The default (2) is to print the entire netcdf information, 1 just prints the units of all variables, 0 (or any other input)
+#' The default (2) is to print the entire netcdf information (as output by \code{ncdf4::nc_open}), 1 just prints the units of all variables, 0 (or any other input)
 #' prints nothing.
 #' @param trymerge logical. If TRUE a single data table containing all variables is returned, else a list of data
 #' tables, one for each variable. The latter is more memory efficient if you have multiple variables that depend
@@ -139,16 +132,15 @@ ncdf_to_dt = function(nc,subset_list = NULL,printunits = TRUE)
 #'
 #' @import ncdf4
 #'
-#' @examples {
-#' fn = '/nr/project/stat/CONFER/Data/validation/example_data/202102/CorrelationSkillRain_Feb-Apr_Feb2021.nc'
+#' @examples {\dontrun{
+#' fn = 'CorrelationSkillRain_Feb-Apr_Feb2021.nc'
 #' test = netcdf_to_dt(nc)
+#' }
 #' }
 #'
 #' @author Claudio
 #'
 #' @export
-
-
 
 netcdf_to_dt = function(nc, vars = NULL,
                         verbose = 2,
@@ -314,7 +306,6 @@ netcdf_to_dt = function(nc, vars = NULL,
 #'
 #' @export
 
-
 dt_to_netcdf = function(dt,vars,units = NULL,
                         dim_vars = intersect(c('lon','lat','time'),names(dt)), dim_var_units = NULL,
                         nc_out, check = NULL)
@@ -402,5 +393,3 @@ dt_to_netcdf = function(dt,vars,units = NULL,
 
   nc_close(nc)
 }
-
-

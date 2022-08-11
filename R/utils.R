@@ -1,5 +1,7 @@
 #' adds a column with the countryname to a data table
 #' Only the following 10 countries are added: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tansania, Uganda, Rwanda, Burundi
+#' Requires the data table to be on 0.5 degree lon/lat grid (or a coarser sub-grid). The problem is that spatial packages often use gdal.
+#'
 #' @param dt the data table.
 #'
 #' @export
@@ -7,7 +9,7 @@
 
 add_country_names = function(dt)
 {
-  data(countries)
+  data(countries, envir = environment())
   cs = as.data.table(countries)
   return(merge(dt,cs,by = c('lon','lat')))
 }
@@ -18,11 +20,12 @@ add_country_names = function(dt)
 #' @param by names of columns to group by
 #'
 #' @export
-#' @importFrom data.table as.data.table
+#' @importFrom stats quantile
 
 add_tercile_cat = function(dt,datacol = 'prec',by = intersect(c('month','lon','lat'),names(dt)))
 {
-  dt[!(is.na(get(datacol))),tercile_cat := -1*(get(datacol) <= quantile(get(datacol),0.33)) + 1 *(get(datacol) >= quantile(get(datacol),0.67)),by = by]
+  tercile_cat = NULL
+  dt[!(is.na(get(datacol))),tercile_cat := -1*(get(datacol) <= stats::quantile(get(datacol),0.33)) + 1 *(get(datacol) >= stats::quantile(get(datacol),0.67)),by = by]
   return(dt)
 }
 
@@ -65,9 +68,12 @@ climatology_ens_forecast = function(obs_dt,
 
 climatology_threshold_exceedence = function(obs_dt,
                                             o = 'prec',
-                                            by = setdiff(coords(obs_dt),'year'),
+                                            by = setdiff(dimvars(obs_dt),'year'),
                                             thresholds = c(200,300,350,400))
 {
+  # for devtools::check():
+  threshold = NULL
+
   clim_dt = climatology_ens_forecast(obs_dt,by = by)
   ret_dt = data.table()
   for(thr in thresholds)
@@ -124,12 +130,16 @@ MSD_to_YM = function(dt,timecol = 'time',origin = '1981-01-01')
 #' @param tol Only used when \code{rectangle == TRUE}. A tolerance value for widening the plotting window, making things look a bit nicer.
 #'
 #' @export
-#' @importFrom data.table as.data.table
+#'
+#' @importFrom utils data
 
 
 restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 0.5)
 {
-  data(countries)
+  # for devtools::check():
+  country = lon = lat = NULL
+
+  utils::data(countries, envir = environment())
   cs = as.data.table(countries)[country %in% ct]
   if(!rectangle)
   {
@@ -159,7 +169,10 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 0.5)
 
 restrict_to_confer_region = function(dt,rectangle = FALSE,tol = 0.5)
 {
-  data(countries)
+  # for devtools::check():
+  country = lon = lat = NULL
+
+  data(countries, envir = environment())
   cs = as.data.table(countries)
   if(!rectangle)
   {

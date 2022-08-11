@@ -13,7 +13,7 @@ netcdf_to_dt(nc, vars = NULL, verbose = 2, trymerge = TRUE, subset_list = NULL)
 integer vector of variable indices, or NULL in which case all variables are read.}
 
 \item{verbose}{Either 0, 1 or 2. How much information should be printed?
-The default (2) is to print the entire netcdf information, 1 just prints the units of all variables, 0 (or any other input)
+The default (2) is to print the entire netcdf information (as output by \code{ncdf4::nc_open}), 1 just prints the units of all variables, 0 (or any other input)
 prints nothing.}
 
 \item{trymerge}{logical. If TRUE a single data table containing all variables is returned, else a list of data
@@ -34,9 +34,10 @@ This function is more robust than the older version \code{ncdf_to_dt}. In partic
 if 'empty' dimension variables are present (some files from ICPAC and CORDEX).
 }
 \examples{
-{
-fn = '/nr/project/stat/CONFER/Data/validation/example_data/202102/CorrelationSkillRain_Feb-Apr_Feb2021.nc'
+{\dontrun{
+fn = 'CorrelationSkillRain_Feb-Apr_Feb2021.nc'
 test = netcdf_to_dt(nc)
+}
 }
 
 }

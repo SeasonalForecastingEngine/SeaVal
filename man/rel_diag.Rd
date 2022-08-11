@@ -29,6 +29,8 @@ rel_diag(
 
 \item{pool}{column names of pooling variables (used for the dimension check). Default is all dimvars.}
 
+\item{binwidth}{bin width for discretizing probabilities.}
+
 \item{dim.check}{Logical. If TRUE, the function checks whether the columns in by and pool span the entire data table.}
 }
 \value{

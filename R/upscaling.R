@@ -40,6 +40,13 @@ upscale_regular_lon_lat = function(dt,
                                    save_weights = NULL,
                                    tol = 1e-5)
 {
+  # for devtools::check():
+  lon = lat = fg_lon = fg_lat = fg_lon_min = fg_lon_max = NULL
+  fg_lat_min = fg_lat_max = fg_index = NULL
+  index = overlap_type = cg_lon_min = cg_lon_max = cg_lat_min = NULL
+  cg_lat_max = mt = area = area_contr = NULL
+
+
   save_key_dt = key(dt)
 
   setkeyv(dt,c(bycols,'lon','lat'))
