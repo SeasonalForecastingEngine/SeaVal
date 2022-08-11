@@ -2,7 +2,6 @@ rm(list = ls())
 
 library(SeaVal)
 
-
 #prepare example data:
 
 obs = chirps_monthly
@@ -41,7 +40,7 @@ ggplot_dt(ign,'IGSS',rr = c(-0.5,0.5))
 
 ### remember the multicategory Brier (skill) score: ###
 mbs = MBS(dt)
-ggplot_dt(mbs,'MBS',rr = c(-0.5,0.5))
+ggplot_dt(mbs,'MBS',rr = c(-0.3,0.3),discrete_cs = TRUE,binwidth = 0.1,high = 'purple',low = 'forestgreen')
 
 hits = HS(dt)
 ggplot_dt(hits,'HS_above',midpoint = 0)
@@ -67,3 +66,10 @@ roc_scores
 
 ggplot_dt(roc_scores,'ROC_above',midpoint = 0.5, low = 'yellow', high = 'forestgreen', mid = 'black')
 ggplot_dt(roc_scores,'ROC_normal',midpoint = 0.5)
+
+roc_scores = add_country_names(roc_scores)
+
+roc_scores[,c('lon','lat','month') := NULL]
+roc_scores = roc_scores[,.(ROC_above = mean(ROC_above),ROC_normal= mean(ROC_above),ROC_below= mean(ROC_above)), by = country]
+roc_scores = roc_scores[country != '']
+setorder(roc_scores,country)

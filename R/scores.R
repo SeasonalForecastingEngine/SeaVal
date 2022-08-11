@@ -47,6 +47,9 @@ BSS_ex_dt = function(dt,
                      obs = 'obs',
                      by = intersect(c('month','season','lon','lat','system','lead_time'),names(dt)))
 {
+  # for devtools::check:
+  BSS_ex = clim_BS_ex = BS_ex = NULL
+
 
   BS_dt = BS_ex_dt(dt = dt,
                    fc = fc,
@@ -102,11 +105,13 @@ BSS_ex_dt = function(dt,
 #' @param o column name of the observations.
 #' @param by column names of grouping variables, all of which need to be columns in dt. A separate CPA is computed for each value of the grouping variables.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
+#' @param mem Number of column containing the number of the ensemble member.
 #' @param pool column name(s) for the variable(s) along which is averaged. Needs to contain 'year' per warning above.
 #' @param dim.check Logical. If True, a simple test whether the dimensions match up is conducted:
 #' The data table should only have one row for each level of c(by,pool,mem)
 #'
 #' @export
+#' @importFrom stats cov na.omit
 
 CPA = function(dt, f, o = 'obs',
                by = by_cols_ens_fc_score(dt),
@@ -114,6 +119,9 @@ CPA = function(dt, f, o = 'obs',
                mem = 'member',
                dim.check = TRUE)
 {
+  # for devtools::check:
+  fc_mean = fc_midrank = obs_class = obs_midrank = NULL
+
   by = intersect(by,names(dt))
   pool = intersect(pool,names(dt))
   mem = intersect(mem,names(dt))
@@ -124,21 +132,17 @@ CPA = function(dt, f, o = 'obs',
   dt[, fc_mean:=mean(get(f), na.rm=T), by=c(by,pool)]
 
   # combine data into a single DT and remove rows with missing data
-  dt = na.omit(dt[, .SD, .SDcols=c("fc_mean",o,by,pool)])
+  dt = stats::na.omit(dt[, .SD, .SDcols=c("fc_mean",o,by,pool)])
 
   # calculate the CPA
   dt[, fc_midrank:=frank(fc_mean,ties.method="average"), by=by]
   dt[, obs_class:=frank(get(o),ties.method="dense"), by=by]
   dt[, obs_midrank:=frank(get(o),ties.method="average"), by=by]
-  CPA_dt = dt[, .(cpa=0.5*(1.+cov(obs_class,fc_midrank)/cov(obs_class,obs_midrank))), by=by]
+  CPA_dt = dt[, .(cpa=0.5*(1.+stats::cov(obs_class,fc_midrank)/stats::cov(obs_class,obs_midrank))), by=by]
 
   return(CPA_dt)
 }
 
-#' Function changed name, see CPA
-#' @export
-
-CPA_dt = CPA
 
 #' Taking CRPSs of ensemble forecasts stored in long data tables:
 #'
@@ -164,8 +168,8 @@ CRPS = function(dt, f, o = "obs",
                 ens_size_correction = FALSE)
 {
   by = intersect(by, names(dt))
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
-  SeaVal:::checks_ens_fc_score()
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
+  checks_ens_fc_score()
 
   if(!ens_size_correction)  ret_dt = dt[,.(CRPS = crps_aux(get(o),get(f))),by = c(by,pool)]
   if(ens_size_correction)  ret_dt = dt[,.(CRPS = crps_aux_esc(get(o),get(f))),by = c(by,pool)]
@@ -177,6 +181,8 @@ CRPS = function(dt, f, o = "obs",
 #' Auxiliary function for calculating crps.
 #' Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
 #' but is just repeated (which is why only y[1]) is used.
+#' @param y vector of length m with m identical entries, the observation
+#' @param dat vector of length m containing the m ensemble forecasts
 
 crps_aux = function(y,dat)
 {
@@ -191,6 +197,8 @@ crps_aux = function(y,dat)
 #' Auxiliary function for calculating crps with ensemble size correction by Ferro et al. 2008.
 #' Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
 #' but is just repeated (which is why only y[1]) is used.
+#' @param y vector of length m with m identical entries, the observation
+#' @param dat vector of length m containing the m ensemble forecasts
 
 crps_aux_esc = function(y,dat)
 {
@@ -206,11 +214,6 @@ crps_aux_esc = function(y,dat)
   return(ret)
 }
 
-
-
-#' Function got renamed, please check CRPS
-#' @export
-CRPS_ens_fc = CRPS
 
 #' Function for taking CRPS skill scores of ensemble forecasts stored in long data tables:
 #'
@@ -230,13 +233,16 @@ CRPSS = function(dt,f,
                  by = by_cols_ens_fc_score(),
                  pool = c('year'),...)
 {
+  # for devtools::check:
+  clim_CRPS = NULL
+
   by = intersect(by,names(dt))
 
   if(!('year' %in% pool)) stop('skill scores are with respect to leave-one-year-out climatology, so the pool-argument must contain "year".')
 
   # get climatological loyo-prediction
-  obs_dt = unique(dt[,.SD,.SDcols = c(o,obs_coords(dt))])
-  obs_by = intersect(by,obs_coords(dt))
+  obs_dt = unique(dt[,.SD,.SDcols = c(o,obs_dimvars(dt))])
+  obs_by = intersect(by,obs_dimvars(dt))
   climatology_prediction = climatology_ens_forecast(obs_dt = obs_dt,
                                                     by = obs_by)
 
@@ -257,19 +263,12 @@ CRPSS = function(dt,f,
                         by = by,
                         pool = pool,...)
 
-  CRPS_dt = merge(CRPS_dt,climatology_CRPS)
+  CRPS_dt = merge(CRPS_dt,climatology_CRPS,by = by)
   CRPS_dt[,CRPSS := (clim_CRPS - CRPS)/clim_CRPS]
 
   return(CRPS_dt)
 
 }
-
-#' Function got renamed, please see CRPSS
-#' @export
-
-CRPSS_ens_fc = CRPSS
-
-
 
 
 #' Taking MSEs of ensemble forecasts stored in long data tables. Can also handle point forecast
@@ -293,11 +292,14 @@ MSE = function(dt,
                mem = 'member',
                dim.check = T)
 {
+  # for devtools::check:
+  fc_mean = NULL
+
   by = intersect(by,names(dt))
   pool = intersect(pool,names(dt))
   mem = intersect(mem,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   #checks:
   checks_ens_fc_score()
@@ -314,12 +316,6 @@ MSE = function(dt,
   MSE_dt = dt_new[,.(MSE = mean((fc_mean - unlist(.SD))^2,na.rm = T)),.SDcols = o,by = by]
   return(MSE_dt)
 }
-
-
-#' Function changed name, see MSE
-#' @export
-
-MSE_dt = MSE
 
 
 #' Function for taking MSE skill scores of ensemble forecasts stored in long data tables:
@@ -341,14 +337,17 @@ MSES = function(dt,f,
                 by = by_cols_ens_fc_score(),
                 pool = c('year'),...)
 {
+  # for devtools::check:
+  clim_MSE = NULL
+
   by = intersect(by,names(dt))
   if(!('year' %in% pool)) stop('skill scores are with respect to leave-one-year-out climatology, so your pool must contain "year".')
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   # get climatological loyo-prediction
-  obs_dt = unique(dt[,.SD,.SDcols = c(o,obs_coords(dt))])
-  obs_by = intersect(by,obs_coords(dt))
+  obs_dt = unique(dt[,.SD,.SDcols = c(o,obs_dimvars(dt))])
+  obs_by = intersect(by,obs_dimvars(dt))
   climatology_prediction = climatology_ens_forecast(obs_dt = obs_dt,
                                                     by = obs_by)
   setnames(climatology_prediction,o,'clim')
@@ -374,10 +373,6 @@ MSES = function(dt,f,
   return(MSE_dt)
 }
 
-#' Function changed name, see MSES
-#' @export
-
-MSESS_dt = MSES
 
 
 #' Function for calculating Pearson correlation coefficients (PCCs) of ensemble mean forecasts stored in long data tables:
@@ -395,6 +390,7 @@ MSESS_dt = MSES
 #' The data table should only have one row for each level of c(by,pool,mem)
 #'
 #' @export
+#' @importFrom stats cor
 
 PCC = function(dt, f,
                o = 'obs',
@@ -403,11 +399,14 @@ PCC = function(dt, f,
                mem = 'member',
                dim.check = TRUE)
 {
+  # for devtools::check:
+  fc_mean = NULL
+
   by = intersect(by,names(dt))
   pool = intersect(pool,names(dt))
   mem = intersect(mem,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   # checks:
   checks_ens_fc_score()
@@ -418,15 +417,10 @@ PCC = function(dt, f,
 
   # calculate correlation coefficient
   dt = dt[, .SD, .SDcols=c("fc_mean",o,by,pool)]
-  PCC_dt = dt[, .(rho=cor(fc_mean,get(o),use="na.or.complete")), by=by]
+  PCC_dt = dt[, .(rho=stats::cor(fc_mean,get(o),use="na.or.complete")), by=by]
 
   return(PCC_dt)
 }
-
-#' Function changed name, see PCC
-#' @export
-
-PCC_dt = PCC
 
 
 
@@ -460,9 +454,12 @@ HS = function(dt,f = c('below','normal','above'),
               pool = 'year',
               dim.check = TRUE)
 {
+  # for devtools::check:
+  HS_min = HS_mid = HS_max = max_cat = min_cat = hit = hit3 = NULL
+
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -503,9 +500,12 @@ HSS = function(dt,f = c('below','normal','above'),
                pool = 'year',
                dim.check = TRUE)
 {
+  # for devtools::check:
+  HS_max = HS_min = NULL
+
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -541,7 +541,7 @@ EIR = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -555,7 +555,10 @@ EIR = function(dt,f = c('below','normal','above'),
 }
 
 
-#' Auxiliary function for ignorance score: 0log(0) should be 0:
+#' Auxiliary function for multiplying two numbers such that 0 x infty is 0. Needed for the ignorance score: 0log(0) should be 0.
+#' @param indicator logical input vector
+#' @param value numeric input vector
+#' @return indicator x value with 0*infty = 0
 
 indicator_times_value_aux = function(indicator,value)
 {
@@ -586,7 +589,7 @@ IGS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -626,7 +629,7 @@ IGSS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -664,7 +667,7 @@ MBS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -674,11 +677,6 @@ MBS = function(dt,f = c('below','normal','above'),
   return(MBSS_dt)
 }
 
-
-#' Function got renamed, please see MBSS
-#' @export
-
-MBSS_dt = MBS
 
 
 #' Calculate the area under curve (AUC) or ROC-score from a vector of probabilities and corresponding observations
@@ -692,16 +690,18 @@ MBSS_dt = MBS
 
 roc_score_vec = function(probs,obs)
 {
+  # for devtools::check():
+  prob = countzeros = countzeros2 = NULL
   #use data tables fast order:
   temp = data.table(prob = probs,obs = obs)
-  setorder(temp,prob,obs)
+  setorder(temp,prob,obs) # sort by probability. For multiple entries with equal probabilities, sort the ones with obs == TRUE last.
 
   n1 = temp[(obs),.N]
   n0 = temp[!(obs),.N]
-  temp[,countzeros := cumsum(!obs)/n0]
-  temp[,countzeros2 := 0.5*cumsum(!obs)/n0,by = prob]
+  temp[,countzeros := cumsum(!obs)] # counts for each entry how many zero-observations have happened previously, including the ones with the same probability as the entry.
+  temp[,countzeros2 := 0.5*cumsum(!obs),by = prob] # counts for each entry how many zero-observations have happened with the same probability as the entry.
 
-  ROCscore = temp[(obs),sum(countzeros + countzeros2)/n1]
+  ROCscore = temp[(obs),sum(countzeros - countzeros2)/(n1 * n0)]
   return(ROCscore)
 }
 
@@ -710,12 +710,14 @@ roc_score_vec = function(probs,obs)
 #'
 #' This score is not proper, but can be used to assess the resolution of a tercile forecast.
 #'
+#' The ROC score requires more datapoints to be robust than e.g. the ignorance or Brier score. Therefore the default is to pool the data in space and only calculate one score per season.
+#'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
 #' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
 #' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
-#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
+#' Default is to group by all instances of month, season, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #' @export
@@ -723,13 +725,14 @@ roc_score_vec = function(probs,obs)
 
 ROCS = function(dt,f = c('below','normal','above'),
                 o = 'tercile_cat',
-                by = by_cols_terc_fc_score(),
-                pool = 'year',
+                by = by_cols_terc_fc_score_sp(dt),
+                pool = c('year',space_dimvars(dt)),
                 dim.check = TRUE)
 {
-  by = intersect(by,names(dt))
+  # for devtools::check:
+  ROC_normal = ROC_below = NULL
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -850,7 +853,7 @@ RPS = function(dt,f = c('below','normal','above'),
 {
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -882,9 +885,12 @@ RPSS = function(dt,f = c('below','normal','above'),
                pool = 'year',
                dim.check = TRUE)
 {
+  # for devtools::check:
+  RPS_clim = NULL
+
   by = intersect(by,names(dt))
 
-  dt = dt[!is.na(get(o)) & !is.na(get(f))]
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
 
@@ -912,14 +918,6 @@ RPSS = function(dt,f = c('below','normal','above'),
 #'
 #' @param dt Data table containing the predictions.
 #' @param bins probability bins, defaults to c("<30", "30-35",">35")
-#' @param f column names of the prediction.
-#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
-#' @param by column names of grouping variables, all of which need to be columns in dt.
-#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
-#' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
-#' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
-#' @export
 #'
 
 
@@ -1077,3 +1075,48 @@ REL = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
 
 
 
+#' Compute the slope of the reliability curve
+#'
+#' Values below 1 indicate a lack of resolution or overconfidence, 1 is perfect, above means underconfident.
+#' This score requires more datapoints to be robust than e.g. the ignorance or Brier score. Therefore the default is to pool the data in space and only calculate one score per season.
+#'
+#' @param dt Data table containing the predictions.
+#' @param f column names of the prediction.
+#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param by column names of grouping variables, all of which need to be columns in dt.
+#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
+#' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
+#' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+#' @export
+
+SRC = function(dt,f = c('below','normal','above'),
+                o = 'tercile_cat',
+                by = by_cols_terc_fc_score_sp(dt),
+                pool = c('year',space_dimvars(dt)),
+                dim.check = TRUE)
+{
+  # for devtools::check:
+  SRC_normal = SRC_below = NULL
+
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
+
+  checks_terc_fc_score()
+
+  rdv_wrapper = function(discrete_probs, obs)
+  {
+    ret_val = suppressWarnings(rel_diag_vec(discrete_probs, obs, slope_only = TRUE))
+    return(ret_val)
+  }
+
+
+  # score:
+  res_above = dt[,.(SRC_above = rdv_wrapper(get(f[3]),get(o) == 1)),by = by]
+  res_normal = dt[,.(SRC_normal = rdv_wrapper(get(f[2]),get(o) == 0)),by = by]
+  res_below = dt[,.(SRC_below = rdv_wrapper(get(f[1]),get(o) == -1)),by = by]
+
+  res = res_above[,SRC_normal := res_normal[,SRC_normal]]
+  res[,SRC_below := res_below[,SRC_below]]
+  return(res)
+}

@@ -13,6 +13,7 @@
 bootstrap_scores_dt = function(dt,r = 100,score_col,bycols = NULL,mc_cores = 1)
 {
 
+  bootstrap_samples = NULL
   statistic = function(x,inds){mean(x[inds],na.rm = T)}
 
   bootstrap_dt = data.table(R = 1:r)
@@ -72,6 +73,8 @@ bootstrap_scores_dt = function(dt,r = 100,score_col,bycols = NULL,mc_cores = 1)
 #'@return A data table containing the composites x_plus and x_minus for each value of by_cols
 #'@author Claudio
 #'@export
+#'
+#'@importFrom stats quantile
 
 
 composite_analysis = function(var_dt,TC_dt,
@@ -80,9 +83,10 @@ composite_analysis = function(var_dt,TC_dt,
                               average_along_cols = 'year',
                               var_name = setdiff(names(var_dt),c(average_along_cols,by_cols))[1])
 {
+
   # get three categories: -1 is low TC, 0 is normal TC, 1 is high TC
   TC_by = intersect(by_cols,names(TC_dt))
-  TC_dt[,cat := -1*(get(TC_name) <= quantile(get(TC_name),0.33)) + 1*(get(TC_name) >= quantile(get(TC_name),0.67)),by = TC_by]
+  TC_dt[,cat := -1*(get(TC_name) <= stats::quantile(get(TC_name),0.33)) + 1*(get(TC_name) >= stats::quantile(get(TC_name),0.67)),by = TC_by]
 
   TCcols = intersect(c('cat',by_cols,average_along_cols),names(TC_dt))
   var_dt = merge(var_dt,TC_dt[,.SD,.SDcols = TCcols],by = c(average_along_cols,TC_by))

@@ -9,7 +9,9 @@ upscale_chirps(
   years = NULL,
   months = NULL,
   upscale_grid = data.table(expand.grid(lon = seq(GHA_extent()[1], GHA_extent()[2],
-    0.5), lat = seq(GHA_extent()[3], GHA_extent()[4], 0.5)))
+    0.5), lat = seq(GHA_extent()[3], GHA_extent()[4], 0.5))),
+  root_dir,
+  us_dir = file.path(root_dir, "upscaled")
 )
 }
 \arguments{
@@ -18,6 +20,10 @@ upscale_chirps(
 \item{years, months}{Which years and months do you want to upscale? NULL upscales everything there is (except if update is TRUE).}
 
 \item{upscale_grid}{A regular lon/lat grid for upscaling. Defaults to half degrees.}
+
+\item{root_dir}{directory where the high-resolution file is stored.}
+
+\item{us_dir}{Directory where the low-resolution file will be stored.}
 }
 \description{
 this is mostly auxiliary and called from download_chirps_monthly.

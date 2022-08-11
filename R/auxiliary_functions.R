@@ -10,7 +10,7 @@ by_cols_ens_fc_score = function(dt = NULL)
   return(setdiff(dimvars(dt),c('year','member')))
 }
 
-#' Auxiliary function returning the default column names to group by when calculating scores of ensemble forecasts.
+#' Auxiliary function returning the default column names to group by when calculating scores for tercile forecasts.
 #'
 #' @param dt optional. You can provide a data table, then the function returns the names of grouping variables in this data table.
 #' @export
@@ -18,6 +18,17 @@ by_cols_terc_fc_score = function(dt = NULL)
 {
   return(setdiff(dimvars(dt),c('year','member')))
 }
+
+#' Some tercile forecasts, such as ROC score or SRC (slope of reliability curve) require many data points and should therefore be pooled in space
+#' This auxiliary function returns the default column names to group by for these scores. The suffix _sp stands for spatial pooling.
+#'
+#' @param dt optional. You can provide a data table, then the function returns the names of grouping variables in this data table.
+#' @export
+by_cols_terc_fc_score_sp = function(dt = NULL)
+{
+  return(setdiff(by_cols_terc_fc_score(dt),c('lon','lat')))
+}
+
 
 
 #' Auxiliary function for scores of ensemble forecasts. Checks whether the data table contains columns with names that are not allowed,
@@ -39,7 +50,7 @@ checks_ens_fc_score = function()
   {
     stop('For technical reasons your data table should not contain any column named "f", "o", "by", "pool", or "mem".')
   }
-  for(cn in c(f,o,'year'))
+  for(cn in c(f,o))
   {
     if(!(cn %in% names(dt)))
     {
@@ -209,13 +220,26 @@ run_dimension_check_ens_fc_score = function()
   mem = parent.frame(1)$mem
 
   cc = setdiff(dimvars(dt),c(by,pool,mem))
-  check = unique(dt[,.SD,.SDcols = c(by,pool,mem)])[,.N] == dt[,.N]
 
-  if(!check & length(cc) == 0) stop('Dimension check failed.\nProbably you have multiple layers per ensemble member and year after grouping.
+  colnames_check = intersect(names(dt),c(by,pool,mem))
+  if(length(colnames_check) > 0)
+  {
+    check = unique(dt[,.SD,.SDcols = colnames_check])[,.N] == dt[,.N]
+  } else
+  {
+    if(dt[,.N] == 1)
+    {
+      check = TRUE
+    }else{stop(call. = FALSE,'Dimension check failed.\nNone of the columns provided in by or pool or member seems to be contained in the data table?')}
+  }
+
+  if(!check & length(cc) == 0) stop(call. = FALSE,'Dimension check failed.\nProbably you have multiple layers per ensemble member and year after grouping.
 \nMaybe you forgot to include a grouping variable in by or a column to average over in pool?')
-  if(!check & length(cc) > 0) stop(paste(c('Dimension check failed.\nProbably you have multiple layers per coordinate\n.
+  if(!check & length(cc) > 0) stop(call. = FALSE,paste(c('Dimension check failed.\nProbably you have multiple layers per coordinate\n.
 The following columns are classified as coordinate but were not included in by, pool, or mem:\n',cc)))
-  if(length(cc)>0 & check) warning(paste(c('The following columns are classified as dimension variable but were not included in by, pool, or mem:\n',cc)))
+  if(length(cc)>0 & check) warning(call. = FALSE,paste(c('The following columns are classified as dimension variable but were not included in by, pool, or mem:\n',cc)))
+  bypool = intersect(by,pool)
+  if(length(bypool)>0 ) warning(call. = FALSE,paste(c('The following columns are contained in both by and pool:\n\n',bypool,'\n\nThey are interpreted as grouping variables, i.e., as part of "by".')))
 }
 
 #' Auxiliary Function called inside functions that calculate scores
@@ -234,7 +258,8 @@ run_dimension_check_terc_forecast = function()
   {
     m1 = menu(choices = c('abort','by','pool'),
               title = "Your data contains a column named 'member' which is unusual for tercile forecasts.
-\nIf your data table contains multiple members, but the same tercile-probabilities for each member, please reduce your data (e.g. by dt = dt[member == 1]) and delete the member column.
+\nIf your data table contains multiple members, but the same tercile-probabilities for each member, please reduce your data and delete the member column
+(e.g. dt = dt[member == 1][,member := NULL]).
 \nOtherwise, you need to select whether to include member in either 'by' or 'pool', see function documentation.")
     if(m1 == 1)
       {
@@ -255,13 +280,26 @@ run_dimension_check_terc_forecast = function()
     }
   }
 
-  check = unique(dt[,.SD,.SDcols = c(by,pool)])[,.N] == dt[,.N]
+  colnames_check = intersect(names(dt),c(by,pool))
+  if(length(colnames_check) > 0)
+  {
+  check = unique(dt[,.SD,.SDcols = colnames_check])[,.N] == dt[,.N]
+  } else
+    {
+      if(dt[,.N] == 1)
+      {
+        check = TRUE
+      }else{stop(call. = FALSE,'Dimension check failed.\nNone of the columns provided in by or pool seems to be contained in the data table?')}
+    }
 
-  if(!check & length(cc) == 0) stop('Dimension check failed.\nProbably you have multiple layers per ensemble member and year
+  if(!check & length(cc) == 0) stop(call. = FALSE,'Dimension check failed.\nProbably you have multiple layers per ensemble member and year
                   after grouping.\nMaybe you forgot to include a grouping variable in by or a column to average over in pool?')
-  if(!check & length(cc) > 0) stop(paste(c('Dimension check failed.\nProbably you have multiple layers per coordinate\n.
+  if(!check & length(cc) > 0) stop(call. = FALSE, paste(c('Dimension check failed.\nProbably you have multiple layers per coordinate\n.
                                    The following columns are classified as coordinate but were not included in by, pool, or mem:\n',cc)))
-  if(length(cc)>0 & check) warning(paste(c('The following columns are classified as dimension variable but were not included in by, pool, or mem:\n',cc)))
+  if(length(cc)>0 & check) warning(call. = FALSE, paste(c('The following columns are classified as dimension variable but were not included in by, pool, or mem:\n',cc)))
+
+  bypool = intersect(by,pool)
+  if(length(bypool)>0 ) warning(call. = FALSE, paste(c('The following columns are contained in both by and pool:\n\n',bypool,'\n\nThey are interpreted as grouping variables, i.e., as part of "by"')))
 }
 
 
@@ -270,7 +308,7 @@ run_dimension_check_terc_forecast = function()
 #' @export
 space_dimvars = function(dt = NULL)
 {
-  options = c('country','lon','lat','X','Y')
+  options = c('country','lon','lat','X','Y','Lon','Lat')
   if(is.null(dt))
   {
     return(options)
@@ -280,3 +318,9 @@ space_dimvars = function(dt = NULL)
 }
 
 
+#' @importFrom utils globalVariables
+# For including all possible dimension variables in the devtools::check() run:
+utils::globalVariables(dimvars())
+# while we're at it, let's include the following data.table syntax quirks:
+utils::globalVariables(c('.'))
+utils::globalVariables(c('countries'))

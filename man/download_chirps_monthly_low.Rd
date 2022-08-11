@@ -6,12 +6,21 @@
 \usage{
 download_chirps_monthly_low(
   update,
+  version,
   years,
   months,
   extent,
   timeout_limit,
-  upscale_grid
+  upscale_grid,
+  root_dir = file.path(chirps_dir(), version)
 )
+}
+\arguments{
+\item{update, version, years, months, extent, timeout_limit}{see \code{download_chirps_monthly}.}
+
+\item{upscale_grid}{To which grid shall we upscale? Needs a data table with lon/lat columns}
+
+\item{root_dir}{directory where the high-dimensional chirps data would be stored. The upscaled data is then stored in root_dir/upscaled/.}
 }
 \description{
 Auxiliary function called by download_chirps_monthly

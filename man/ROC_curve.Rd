@@ -12,7 +12,7 @@ ROC_curve(
   f = c("below", "normal", "above"),
   o = "tercile_cat",
   by = NULL,
-  pool = dimvars(dt),
+  pool = setdiff(dimvars(dt), by),
   interpolate = TRUE,
   dim.check = TRUE
 )
@@ -27,6 +27,8 @@ ROC_curve(
 \item{by}{column names of grouping variables. Default is to not group.}
 
 \item{pool}{column names of pooling variables (used for the dimension check). Default is all dimvars.}
+
+\item{interpolate}{Logical. If TRUE, the curve connects the dots making up the ROC curve (which looks nicer), if not a step function is drawn (which is closer to the mathematical definition of the ROC curve).}
 
 \item{dim.check}{Logical. If TRUE, the function checks whether the columns in by and pool span the entire data table.}
 }

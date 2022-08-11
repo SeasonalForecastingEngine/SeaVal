@@ -2,19 +2,16 @@ Package: SeaVal
 Title: Validation of Seasonal Forecasts issued by ICPAC
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Claudio",
+           family = "Heinrich-Mertsching",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+           email = "claudio@nr.no",
+           comment = c(ORCID = "0000-0003-3581-6416"))
+Description: This package provides tools for processing and evaluating seasonal weather forecasts.
 License: MIT
 Encoding: UTF-8
-Remotes:
-  github::SeasonalForecastingEngine/ForecastTools
 Depends: 
   data.table,
-  ForecastTools,
   ggplot2
 Imports:
     boot,
@@ -33,5 +30,8 @@ Collate:
     'data_documentation.R'
     'data_wrangling.R'
     'diagrams.R'
+    'ncdf_to_dt.R'
+    'plotting.R'
     'scores.R'
+    'upscaling.R'
     'utils.R'

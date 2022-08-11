@@ -8,6 +8,11 @@ but is just repeated (which is why only y[1]) is used.}
 \usage{
 crps_aux(y, dat)
 }
+\arguments{
+\item{y}{vector of length m with m identical entries, the observation}
+
+\item{dat}{vector of length m containing the m ensemble forecasts}
+}
 \description{
 Auxiliary function for calculating crps.
 Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
