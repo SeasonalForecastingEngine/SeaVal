@@ -12,11 +12,13 @@
 #'
 #' @importFrom  ncdf4 nc_open
 #' @import data.table
-#' @import ForecastTools
+
 
 
 cv_to_dt = function(data_dir)
 {
+  # for devtools::check():
+  prec = obs = NULL
 
   # find cross-validation file
   fns = list.files(data_dir)

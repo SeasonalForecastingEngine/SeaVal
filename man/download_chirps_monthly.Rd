@@ -7,6 +7,7 @@
 download_chirps_monthly(
   resolution = "both",
   update = TRUE,
+  version = "UCSB",
   years = NULL,
   months = NULL,
   extent = GHA_extent(),
@@ -24,17 +25,19 @@ download_chirps_monthly(
 
 \item{update}{Logical, if TRUE, previously created files are skipped.}
 
+\item{version}{Should be 'UCSB' (for University of California Santa Barbara, the original source of CHIRPS) or 'ICPAC' (for downloading the ICPAC version CHIRPS blended)}
+
 \item{years, months}{Which years and months do you want to load? NULL loads everything there is.}
 
 \item{extent}{vector of length four (xmin,xmax,ymin,ymax), restricting the spatial area.}
 
-\item{timeout_limit}{how many seconds (per file, i.e. per year) before the download is aborted?}
+\item{timeout_limit}{how many seconds (per file, i.e. per yearmonth) before the download is aborted?}
 
-\item{upscale_grid}{The coarse grid to which the data is upscaled (only used when resolution is either 'both' or 'high'). Only change this if you really have to.}
+\item{upscale_grid}{The coarse grid to which the data is upscaled (only used when resolution is either 'both' or 'high'). Only change this if you know what you are doing.}
 }
 \description{
 downloads CHIRPS monthly data for the GHA-region and saves it as netcdfs.
-The data is downloaded from the IRI data library (see function code for link), because this data library allows to subset before downloading,
+The data is downloaded either from the IRI data library or from ICPAC (depending on \code{version}), because these data library allows to subset before downloading,
 unlike the original source at UCSB.
 As of Feb 2022, the entire CHIRPS-monthly data for the GHA-region is roughly 800MB on disk.
 The original spatial resolution of CHIRPS is 0.05 degree lon/lat. However, for many applications a coarser resolution is perfectly fine.

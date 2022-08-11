@@ -2,6 +2,135 @@
 # This file contains functions to create diagrams for evaluation, such as ROC curves and reliability diagrams,
 # plus auxiliary functions directly used for these functions.
 
+
+#' Auxiliary function to allow intuitive grouping for diagrams
+#'
+#' Only works for functions that return a single plot if by == NULL.
+#' Not the case for some functions plotting results for all three categories, e.g. reliability diagrams or ROC curves.
+#'
+#' @param FUN The name of the function creating the diagram
+#' @param by Column names in dt to group by
+#' @param dt data table (cannot be part of ..., because a sub-data-table is passed to FUN)
+#' @param ... arguments passed to FUN
+#'
+#' @importFrom ggpubr ggarrange
+#' @importFrom utils menu
+
+create_diagram_by_level = function(FUN,by,dt,...)
+{
+  # for devtools::check():
+  ..ii = NULL
+
+  by_dt = unique(dt[,.SD,.SDcols = by])
+  nby = by_dt[,.N]
+  if(nby >= 12 & interactive())
+  {
+    mm = utils::menu(choices = c('yes','no'),
+                     title = paste0("Your choice of 'by' would result in ",4*nby," plots.\nDo you want to proceed?"))
+    if(mm == 2)
+    {
+      #stop without error:
+      opt <- options(show.error.messages = FALSE)
+      on.exit(options(opt))
+      stop()
+    }
+  }
+  plot_list = list()
+  for(row_ind in 1:by_dt[,.N])
+  {
+    dt_sub = merge(dt,by_dt[row_ind],by = colnames(by_dt))
+
+    # get plot title that describes the subsetting
+    title_temp = c()
+    for(ii in 1:ncol(by_dt))
+    {
+      title_temp = c(title_temp,paste0(names(by_dt)[ii],' = ',by_dt[row_ind,..ii]))
+    }
+    title_temp = paste(title_temp,collapse = ', ')
+
+    pp = FUN(dt = dt_sub,by = NULL,...)
+
+    pp = pp + ggtitle(title_temp)
+
+    plot_list = c(plot_list,list(pp))
+  }
+
+  newplot = ggpubr::ggarrange(plotlist = plot_list)
+  plot(newplot)
+  return(plot_list)
+}
+
+
+
+#' (Accumulative) profit graphs
+#'
+#' These graphs really only make sense if you have 50 or less observations. Typical application would be when you compare seasonal mean forecasts to station data for a single location.
+#'
+#' @param dt Data table containing tercile forecasts
+#' @param accumulative Logic. Should the accumulative profit be plotted or the profit per forecast?
+#' @param f column names of the prediction columns
+#' @param o column name of the observation column
+#' @param by column names of grouping variables. Default is NULL.
+#' @param pool column names of pooling variables (used for the dimension check). Default is all dimvars.
+#' @param dim.check Logical. If TRUE, the function checks whether the columns in by and pool span the entire data table.
+#'
+#' @return A list of gg objects which can be plotted by ggpubr::ggarrange (for example)
+#'
+#' @importFrom ggpubr ggarrange
+#' @export
+
+profit_graph = function(dt, accumulative = TRUE,
+                        f = c('below','normal','above'),
+                        o = 'tercile_cat',
+                        by = NULL,
+                        pool = setdiff(dimvars(dt),by),
+                        dim.check = TRUE)
+{
+  # for devtools::check():
+  below = tercile_cat = normal = above = profit = acc_profit = index = NULL
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
+  # check for correct naming of columns etc.
+  checks_terc_fc_score()
+
+  if(is.null(by))
+  {
+
+    if(dt[,.N] > 50) warning(call. = FALSE,'You have more than 50 observations. Profit graphs are frequently hard to read when many observations are used.
+\nIn particular, once a zero-probability-event materializes, the profit is -1 and cannot recover.')
+
+    prob_vec = dt[,below * (tercile_cat == -1) + normal * (tercile_cat == 0) + above * (tercile_cat == 1)]
+    acc_profits = cumprod(prob_vec / 0.33) - 1
+
+    dt_plot = data.table(acc_profit = acc_profits)
+    dt_plot[,profit := acc_profit - shift(acc_profit,1,fill = 0)]
+    dt_plot[,index := 1:.N]
+
+    if(accumulative)
+    {
+      pp = ggplot(dt_plot,mapping = aes(x = index, y = acc_profit )) + scale_y_continuous(name = 'Accumulative profit') +
+        geom_line() + geom_hline(yintercept = 0,linetype = 'dashed') + theme_bw()
+      pp
+    } else {
+      pp = ggplot(dt_plot,mapping = aes(x = index, y = profit )) + scale_y_continuous(name = 'Profit') +
+        geom_line() + geom_hline(yintercept = 0,linetype = 'dashed') + theme_bw()
+      pp
+    }
+
+    return(pp)
+  }
+
+  if(!is.null(by)){
+    plot_list = create_diagram_by_level(FUN = profit_graph, by = by, dt = dt,
+                                        # pipe through the remaining arguments: There are probably better ways, using match.call or so? As for now, this feels safer:
+                                        accumulative = accumulative,f = f, o = o, pool = pool, dim.check = FALSE) # dimension check already run for full data table
+    return(plot_list)
+  }
+}
+
+
+
+
 #' auxiliary function for rounding probabilities
 #'
 #' takes a vector of probabilities (between 0 and 1) and rounds them to the scale specified by binwidth. This is used for reliability diagrams,
@@ -28,9 +157,15 @@ round_probs = function(probs,binwidth = 0.05)
 #'
 #' @param discrete_probs Vector of (rounded) probabilites.
 #' @param obs Vector of logical observations.
+#' @param slope_only logical. If set to TRUE, only the slope of the reliability curve is returned
+#'
+#' @importFrom stats lm coef
 
-rel_diag_vec = function(discrete_probs,obs)
+rel_diag_vec = function(discrete_probs, obs, slope_only = FALSE)
 {
+  # for devtools::check():
+  prob = count = frequency = obs_freq = NULL
+
   temp = data.table(prob = 100*discrete_probs,obs = obs)
   rel_diag_dt = temp[,.(obs_freq = mean(obs) * 100,
                         count = .N,
@@ -43,8 +178,7 @@ rel_diag_vec = function(discrete_probs,obs)
   if(rel_diag_dt[,mean(count)] <= 5)
   {
     percentage = 100/(rel_diag_dt[,.N] - 1)
-    warning(paste0('You are trying to derive a diagram with probabilities discretized to a ',percentage,'%-level.\n
-                   On average you have only ',rel_diag_dt[,mean(count)],' observations per category. Consider coarser discretization.'))
+    warning(paste0('On average you have only ',rel_diag_dt[,mean(count)],' observations per category. Consider coarser discretization.'))
   }
 
   rel_diag_dt[,frequency := count/sum(count) * 100]
@@ -53,8 +187,9 @@ rel_diag_vec = function(discrete_probs,obs)
 
   # add linear regression line:
 
-  model = lm(obs_freq ~ prob,data = rel_diag_dt,weights = frequency)
+  model = stats::lm(obs_freq ~ prob,data = rel_diag_dt,weights = frequency)
 
+  if(slope_only) return(stats::coef(model)[[2]])
 
   pp = ggplot(rel_diag_dt) +
     geom_vline(xintercept = total_freq,color = 'gray') +
@@ -87,20 +222,24 @@ rel_diag_vec = function(discrete_probs,obs)
 #' @param by column names of grouping variables. Default is to not group.
 #' @param pool column names of pooling variables (used for the dimension check). Default is all dimvars.
 #' @param dim.check Logical. If TRUE, the function checks whether the columns in by and pool span the entire data table.
+#' @param binwidth bin width for discretizing probabilities.
 #'
 #' @return A list of gg objects which can be plotted by ggpubr::ggarrange (for example)
 #'
 #' @importFrom ggpubr ggarrange
+#' @importFrom utils menu
 #' @export
 
 rel_diag = function(dt,
                     f = c('below','normal','above'),
                     o = 'tercile_cat',
                     by = NULL,
-                    pool = dimvars(dt),
+                    pool = setdiff(dimvars(dt),by),
                     binwidth = 0.05,
                     dim.check = TRUE)
 {
+  # for devtools::check():
+  ..ii =  NULL
 
   dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
   # check for correct naming of columns etc.
@@ -137,21 +276,21 @@ rel_diag = function(dt,
     pp3 = rel_diag_vec(rps3,obs3)  + ggtitle('Below')
     pp4 = rel_diag_vec(rps4,obs4) + ggtitle('All')
     ppl = list(pp1,pp2,pp3,pp4)
-  }
 
-  return_plot = ggpubr::ggarrange(plotlist = ppl,ncol = 2,nrow = 2)
-  plot(return_plot)
-  return(return_plot) # do not return return_plot, which is a single gg object, with facets generated by ggpubr::ggarrange.
-              # It is way easier to work with ppl, and this make the behavior consistent with the case !is.null(by)
+    return_plot = ggpubr::ggarrange(plotlist = ppl,ncol = 2,nrow = 2)
+    plot(return_plot)
+    return(ppl) # do not return return_plot, which is a single gg object, with facets generated by ggpubr::ggarrange.
+    # It is way easier to work with ppl, and this make the behavior more consistent with the case !is.null(by)
+  }
 
   if(!is.null(by))
   {
     by_dt = unique(dt[,.SD,.SDcols = by])
     nby = by_dt[,.N]
-    if(nby >= 12)
+    if(nby >= 12 & interactive())
     {
-      mm = menu(choices = c('yes','no'),
-                title = paste0("Your choice of 'by' would result in ",4*nby," plots.\nDo you want to proceed?"))
+      mm = utils::menu(choices = c('yes','no'),
+                       title = paste0("Your choice of 'by' would result in ",4*nby," plots.\nDo you want to proceed?"))
       if(mm == 2)
       {
         #stop without error:
@@ -180,9 +319,9 @@ rel_diag = function(dt,
         rps2 = dt_sub[,get(f[2])]
         rps3 = dt_sub[,get(f[1])]
       } else {
-        rps1 = round_probs(dt_sub[,get(f[3])],binwidth = bindwidth)
-        rps2 = round_probs(dt_sub[,get(f[2])],binwidth = bindwidth)
-        rps3 = round_probs(dt_sub[,get(f[1])],binwidth = bindwidth)
+        rps1 = round_probs(dt_sub[,get(f[3])],binwidth = binwidth)
+        rps2 = round_probs(dt_sub[,get(f[2])],binwidth = binwidth)
+        rps3 = round_probs(dt_sub[,get(f[1])],binwidth = binwidth)
       }
 
 
@@ -220,6 +359,9 @@ rel_diag = function(dt,
 
 roc_curve_vec = function(probs,obs,interpolate = TRUE)
 {
+  # for devtools::check():
+  prob = level = hit_rate = false_alarm_rate = NULL
+  x = y = label = NULL
 
   temp = data.table(prob = probs,obs = obs)
   setorder(temp,-prob,obs)
@@ -274,6 +416,7 @@ roc_curve_vec = function(probs,obs,interpolate = TRUE)
 #' @param by column names of grouping variables. Default is to not group.
 #' @param pool column names of pooling variables (used for the dimension check). Default is all dimvars.
 #' @param dim.check Logical. If TRUE, the function checks whether the columns in by and pool span the entire data table.
+#' @param interpolate Logical. If TRUE, the curve connects the dots making up the ROC curve (which looks nicer), if not a step function is drawn (which is closer to the mathematical definition of the ROC curve).
 #'
 #' @return A list of gg objects which can be plotted by ggpubr::ggarrange (for example)
 #'
@@ -284,10 +427,13 @@ ROC_curve = function(dt,
                      f = c('below','normal','above'),
                      o = 'tercile_cat',
                      by = NULL,
-                     pool = dimvars(dt),
+                     pool = setdiff(dimvars(dt),by),
                      interpolate = TRUE,
                      dim.check = TRUE)
 {
+  # for devtools::check():
+  ..ii = NULL
+
   dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
   # check for correct naming of columns etc.
   checks_terc_fc_score()
@@ -322,10 +468,10 @@ ROC_curve = function(dt,
   {
     by_dt = unique(dt[,.SD,.SDcols = by])
     nby = by_dt[,.N]
-    if(nby >= 12)
+    if(nby >= 12 & interactive())
     {
-      mm = menu(choices = c('yes','no'),
-                title = paste0("Your choice of 'by' would result in ",4*nby," plots.\nDo you want to proceed?"))
+      mm = utils::menu(choices = c('yes','no'),
+                       title = paste0("Your choice of 'by' would result in ",4*nby," plots.\nDo you want to proceed?"))
       if(mm == 2)
       {
         #stop without error:
@@ -369,6 +515,72 @@ ROC_curve = function(dt,
   }
 }
 
+#' Tendency diagram from a data table containing tercile forecasts.
+#'
+#' @param dt Data table containing tercile forecasts
+#' @param f column names of the prediction columns
+#' @param o column name of the observation column
+#' @param by column names of grouping variables. Default is to not group.
+#' @param pool column names of pooling variables (used for the dimension check). Default is all dimvars.
+#' @param dim.check Logical. If TRUE, the function checks whether the columns in by and pool span the entire data table.
+#'
+#' @return If by == NULL a gg object, otherwise a list of gg objects that can be plotted by ggpubr::ggarrange (for example)
+#'
+#' @export
+
+tendency_diag = function(dt,
+                         f = c('below','normal','above'),
+                         o = 'tercile_cat',
+                         by = NULL,
+                         pool = setdiff(dimvars(dt),by),
+                         dim.check = TRUE)
+{
+  # for devtools::check():
+  x = y = type = NULL
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
+  # check for correct naming of columns etc.
+  checks_terc_fc_score()
+
+  if(is.null(by))
+  {
+    y_values = c(dt[,mean(get(f[1]))],
+                 dt[,mean(get(o) == -1)],
+                 dt[,mean(get(f[2]))],
+                 dt[,mean(get(o) == 0)],
+                 dt[,mean(get(f[3]))],
+                 dt[,mean(get(o) == 1)])
+    # multiply to percentages:
+    y_values = 100 * y_values
+
+
+    plot_dt = data.table(x = factor(x = rep(c('below','normal','above'),each = 2),levels = c('below','normal','above')),
+                         y = y_values,
+                         type = rep(c('pred.','obs.'),3))
+
+    pp = ggplot(plot_dt) +
+      geom_col(mapping = aes(x=x,y=y,fill = type),position = position_dodge()) +
+      scale_y_continuous(name = 'Frequency / average probability (%)', expand = expansion(mult = c(0, 0.1))) +
+      scale_x_discrete(name = '') + scale_fill_discrete(name = '') +
+      theme_bw()
+
+    plot(pp)
+    return(pp)
+  }
+
+  if(!is.null(by))
+  {
+    plot_list = create_diagram_by_level(FUN = tendency_diag, by = by, dt = dt,
+                                        # pipe through the remaining arguments: There are probably better ways, using match.call or so? As for now, this feels safer:
+                                        f = f, o = o, pool = pool, dim.check = dim.check)
+    return(plot_list)
+  }
+
+}
+
+###################################################################
+###################################################################
+###################################################################
 
 #' Plot a verification map of percentiles
 #'
@@ -392,6 +604,9 @@ ver_map = function(dt,o = 'obs',yy = dt[,max(year)],
                    out_file = NULL)
 
 {
+  # for devtools::check()
+  lon = lat = is_yy = sample_quantile = how_many_ties = NULL
+
   # get data in shape
   dt_temp = copy(dt[year %in% climatology_period])
   if(!(yy %in% climatology_period))

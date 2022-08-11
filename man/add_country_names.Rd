@@ -3,7 +3,8 @@
 \name{add_country_names}
 \alias{add_country_names}
 \title{adds a column with the countryname to a data table
-Only the following 10 countries are added: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tansania, Uganda, Rwanda, Burundi}
+Only the following 10 countries are added: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tansania, Uganda, Rwanda, Burundi
+Requires the data table to be on 0.5 degree lon/lat grid (or a coarser sub-grid). The problem is that spatial packages often use gdal.}
 \usage{
 add_country_names(dt)
 }
@@ -13,4 +14,5 @@ add_country_names(dt)
 \description{
 adds a column with the countryname to a data table
 Only the following 10 countries are added: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tansania, Uganda, Rwanda, Burundi
+Requires the data table to be on 0.5 degree lon/lat grid (or a coarser sub-grid). The problem is that spatial packages often use gdal.
 }

@@ -13,7 +13,7 @@ rel_diag(
   f = c("below", "normal", "above"),
   o = "tercile_cat",
   by = NULL,
-  pool = dimvars(dt),
+  pool = setdiff(dimvars(dt), by),
   binwidth = 0.05,
   dim.check = TRUE
 )
@@ -28,6 +28,8 @@ rel_diag(
 \item{by}{column names of grouping variables. Default is to not group.}
 
 \item{pool}{column names of pooling variables (used for the dimension check). Default is all dimvars.}
+
+\item{binwidth}{bin width for discretizing probabilities.}
 
 \item{dim.check}{Logical. If TRUE, the function checks whether the columns in by and pool span the entire data table.}
 }

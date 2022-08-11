@@ -11,8 +11,7 @@ imon   = 2
 fyear  = 2021
 #paste0(year,sea)
 
-data_dir = paste0('M:\\nr\\project\\stat\\CONFER\\Data\\validation\\example_data\\',fyear,ifelse(imon>9,yes = imon,no = paste0(0,imon)),'\\')
-#data_dir = paste0('/nr/project/stat/CONFER/Data/validation/example_data/',fyear,ifelse(imon>9,yes = imon,no = paste0(0,imon)),'/')
+data_dir = paste0('/nr/project/stat/CONFER/Data/validation/example_data/',fyear,ifelse(imon>9,yes = imon,no = paste0(0,imon)),'/')
   #"C:\\Users\\user\\Desktop\\CONFER\\Data\\CHIRPS\\monthly\\"
 plot_dir = data_dir # (in case you want to save your plots in a different directory)
 
@@ -73,8 +72,8 @@ head(dt)
 #print(dt)
 
 # fix for 2021:
-# dt = netcdf_to_dt(paste0(data_dir,'PredictedProbabilityRain_',season,'_',init,fyear,'.nc'),vars = c('below','above'))
-# dt[,normal := 100 - above-below]
+dt = netcdf_to_dt(paste0(data_dir,'PredictedProbabilityRain_',season,'_',init,fyear,'.nc'),vars = c('below','above'))
+dt[,normal := 100 - above-below]
 
 ### Alternative 2: Use the load_chirps function ####
 # This makes things much easier, but you need to have run
@@ -153,7 +152,9 @@ rel_diag(dt)
 dt_obs_hr = load_chirps(us = F, month = mons)# paste0(mons)) # us = F means the data is loaded on high spatial resolution, for all Aprils available. This takes a bit of time, so you can set us = T for faster but coarser pictures.
 # take seasonal mean
 dt_obs_hr = dt_obs_hr[,.(prec = mean(prec)), by = .(lon,lat,year)]
-vm  = ver_map(dt_obs_hr, 'prec', climatology_period = 1991:2020, yy = fyear) # generate the plot
+#debugonce(ver_map)
+vm  = ver_map(dt_obs_hr, 'prec', climatology_period = 1991:2020, yy = fyear) # generate the plot)
+
 plot(vm)
 ##
 
