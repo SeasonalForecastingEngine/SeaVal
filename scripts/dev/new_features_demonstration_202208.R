@@ -1,4 +1,11 @@
 
+rm(list = ls())
+
+library(SeaVal)
+
+download_chirps_monthly()
+download_chirps_monthly(version = 'ICPAC')
+
 ucsb = load_chirps()
 icpac = load_chirps(version = 'ICPAC')
 
