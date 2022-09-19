@@ -129,8 +129,6 @@ download_chirps_monthly_high = function(update,
     return(c('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec')[x])
   }
 
-  extent = GHA_extent()
-
   ### get corner coordinates in the right format:
   left = extent[1]
   if(left < 0)
@@ -618,7 +616,7 @@ upscale_chirps = function(update = TRUE,
                      check = 'y')
       }
     }
-    file.remove(file.path(prelim_us_dir,'temp.csv'),showWarnings = FALSE)
+     file.remove(file.path(prelim_us_dir,'temp.csv'),showWarnings = FALSE)
   }
 
 
@@ -840,7 +838,7 @@ download_chirps_prelim_aux = function(years,
       }
       if(length(ref_files) == 0)
       {
-        file.remove(file.path(save_dir,'temp.nc'))
+        file.remove(file.path(save_dir,'temp.nc'),showWarnings = FALSE)
 
         stop(paste0("Preliminary data was successfully downloaded, but I didn't find any non-preliminary files in the corresponding directory ",save_dir,".
 At least one non-preliminary file is required, such that the preliminary data can be mapped to the non-preliminary grid.
@@ -875,14 +873,14 @@ The preliminary data has been removed again."),call. = FALSE)
 delete_redundant_files = function(dir)
 {
   temp_files = list.files(dir,pattern = 'temp',recursive = 'TRUE')
-  file.remove(file.path(dir,temp_files))
+  if(length(temp_files) >0) file.remove(file.path(dir,temp_files))
 
   # check whether a preliminary file has been replaced and can be removed.
 
   if('prelim' %in% list.files(dir))
   {
     check = intersect(list.files(dir),list.files(file.path(dir,'prelim')))
-    if(length(check) > 0) file.remove(file.path(dir,check))
+    if(length(check) > 0) file.remove(file.path(dir,'prelim',check))
   }
 
   usdir = file.path(dir,'upscaled')

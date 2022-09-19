@@ -11,7 +11,7 @@ roc_score_vec(probs, obs)
 \arguments{
 \item{probs}{vector with probabilities (between 0 and 1)}
 
-\item{obs}{vector with categorical observations}
+\item{obs}{vector with categorical observations (as TRUE/FALSE)}
 }
 \description{
 Calculate the area under curve (AUC) or ROC-score from a vector of probabilities and corresponding observations
