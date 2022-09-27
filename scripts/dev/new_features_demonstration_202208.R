@@ -1,7 +1,16 @@
 
-ucsb = load_chirps()
+rm(list = ls())
+
+library(SeaVal)
+
+download_chirps_monthly()
+download_chirps_monthly(version = 'ICPAC')
+
+ucsb = load_chirps(version = 'UCSB')
 icpac = load_chirps(version = 'ICPAC')
 
+
+#compare:
 setnames(ucsb,'prec','chirps')
 setnames(icpac,'prec','chirps_blended')
 
@@ -20,3 +29,7 @@ for(mm in 1:12)
 }
 
 ggpubr::ggarrange(plotlist = plist,ncol = 4,nrow = 3)
+
+#########################################
+
+

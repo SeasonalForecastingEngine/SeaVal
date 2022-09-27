@@ -490,7 +490,7 @@ upscale_chirps = function(update = TRUE,
 
     for(i in seq_along(files_for_us))
     {
-      message(paste0(i,'/',length(files_for_us)))
+      #message(paste0(i,'/',length(files_for_us)))
 
       fn = file.path(root_dir,files_for_us[i])
       # this is the part that crashes if the netcdf is corrupted:
@@ -887,7 +887,7 @@ delete_redundant_files = function(dir)
   if(dir.exists(usdir))
   {
     check = intersect(list.files(usdir),list.files(file.path(usdir,'prelim')))
-    if(length(check) > 0) file.remove(file.path(usdir,check))
+    if(length(check) > 0) file.remove(file.path(usdir,'prelim',check))
   }
 }
 
