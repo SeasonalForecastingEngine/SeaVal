@@ -2,20 +2,19 @@ Package: SeaVal
 Title: Validation of Seasonal Forecasts issued by ICPAC
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "Claudio",
+    c(person(given = "Claudio",
            family = "Heinrich-Mertsching",
            role = c("aut", "cre"),
            email = "claudio@nr.no",
-           comment = c(ORCID = "0000-0003-3581-6416"))
+           comment = c(ORCID = "0000-0003-3581-6416")),
     person(given = "Celine",
            family = "Cunen",
            role = c("aut"),
-           email = "celine@nr.no")
+           email = "celine@nr.no"),
     person(given = "Michael",
            family = "Scheuerer",
            role = c("aut"),
-           email = "scheuerer@nr.no")
-           
+           email = "scheuerer@nr.no"))
 Description: This package provides tools for processing and evaluating seasonal weather forecasts.
 License: MIT
 Encoding: UTF-8
