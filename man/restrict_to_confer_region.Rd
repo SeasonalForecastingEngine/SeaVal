@@ -2,21 +2,16 @@
 % Please edit documentation in R/utils.R
 \name{restrict_to_confer_region}
 \alias{restrict_to_confer_region}
-\title{restricts data to CONFER region
-Only the following 10 countries can be used in this function: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tanzania, Uganda, Rwanda, Burundi}
+\title{restricts data to CONFER region}
 \usage{
-restrict_to_confer_region(dt, rectangle = FALSE, tol = 0.5)
+restrict_to_confer_region(dt, ...)
 }
 \arguments{
 \item{dt}{the data table.}
 
-\item{rectangle}{logical. If FALSE (default), the data is restricted to the gridcells for which the centerpoint lies within the selected country (e.g. for computing mean scores for a country).
-If TRUE, the data is kept for a rectangle containing the entire country, therefore also containing gridpoints outside the country. This is the preferred option for plotting data
-for a specific country.}
-
-\item{tol}{Only used when \code{rectangle == TRUE}. A tolerance value for widening the plotting window, making things look a bit nicer.}
+\item{...}{passed on to restrict_to_country}
 }
 \description{
-restricts data to CONFER region
-Only the following 10 countries can be used in this function: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tanzania, Uganda, Rwanda, Burundi
+Wraps restrict_to_country, and restricts to the GHA-region usually considered in the Horizon2020 project CONFER, consisting
+of the following countries: 'Burundi','Djibouti', 'Eritrea','Ethiopia','Kenya','Rwanda','Somalia','Somaliland','South Sudan','Sudan','Tanzania','Uganda'
 }

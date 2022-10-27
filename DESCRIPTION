@@ -1,5 +1,5 @@
 Package: SeaVal
-Title: Validation of Seasonal Forecasts issued by ICPAC
+Title: Validation of Seasonal Forecasts
 Version: 0.0.0.9000
 Authors@R: 
     c(person(given = "Claudio",
@@ -16,6 +16,8 @@ Authors@R:
            role = c("aut"),
            email = "scheuerer@nr.no"))
 Description: This package provides tools for processing and evaluating seasonal weather forecasts.
+    It is developed and maintained at the Norwegian Computing Center Oslo in collaboration with ICPAC.
+    The development was supported by the European Union’s Horizon 2020 research and innovation programme under grant agreement no. 869730 (CONFER).
 License: MIT
 Encoding: UTF-8
 Depends: 
@@ -35,7 +37,7 @@ Collate:
     'auxiliary_functions.R'
     'chirps.R'
     'confer_validation.R'
-    'data_documentation.R'
+    'data.R'
     'data_wrangling.R'
     'diagrams.R'
     'ncdf_to_dt.R'

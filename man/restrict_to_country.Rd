@@ -2,9 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{restrict_to_country}
 \alias{restrict_to_country}
-\title{restricts data to a specified country
-Only the following 10 countries can be used in this function: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tansania, Uganda, Rwanda, Burundi.
-This function assumes the lon/lat grid to be a regular half degree or full degree grid.}
+\title{restricts data to a specified country}
 \usage{
 restrict_to_country(dt, ct, rectangle = FALSE, tol = 0.5)
 }
@@ -20,7 +18,5 @@ for a specific country.}
 \item{tol}{Only used when \code{rectangle == TRUE}. A tolerance value for widening the plotting window, making things look a bit nicer.}
 }
 \description{
-restricts data to a specified country
-Only the following 10 countries can be used in this function: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tansania, Uganda, Rwanda, Burundi.
-This function assumes the lon/lat grid to be a regular half degree or full degree grid.
+Restricts a dataset to one or more countries, specified by their names. If you have lon/lat data and don't know which countries these coordinates belong to, see \code{add_country_names}.
 }

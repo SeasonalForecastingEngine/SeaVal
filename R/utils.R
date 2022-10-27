@@ -1,17 +1,30 @@
-#' adds a column with the countryname to a data table
-#' Only the following 10 countries are added: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tansania, Uganda, Rwanda, Burundi
-#' Requires the data table to be on 0.5 degree lon/lat grid (or a coarser sub-grid). The problem is that spatial packages often use gdal.
+#' Takes a data table with lon/lat coordinates and returns the same data table with a new column 'country' containing the countryname
+#' of each coordinate. Usually you'd do this using sf, but that introduces dependency to gdal which we want to avoid.
 #'
 #' @param dt the data table.
+#' @param load_continent which continent to load. Loading only one continent makes the function faster.
+#' Put NULL if you have data across several continents
 #'
 #' @export
-#' @importFrom data.table as.data.table
+#' @importFrom rnaturalearth ne_countries
+#' @importFrom sp coordinates proj4string over
 
-add_country_names = function(dt)
+add_country_names = function(dt,load_continent = 'Africa')
 {
-  data(countries, envir = environment())
-  cs = as.data.table(countries)
-  return(merge(dt,cs,by = c('lon','lat')))
+  world <- rnaturalearth::ne_countries(scale = "large", continent = 'Africa')
+
+  coords = unique(dt[,.(lon,lat)])
+  # get coords as spatial points:
+  sp_lonlat = data.table(x = coords[,lon], y = coords[,lat])
+  sp::coordinates(sp_lonlat) = c('x','y')
+  sp::proj4string(sp_lonlat) = sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
+
+  #in which country does each point fall?
+  cs = sp::over(sp_lonlat,world)
+
+  coords[,country := cs$geounit]
+
+  return(merge(dt,coords,by = c('lon','lat')))
 }
 
 #' adds a column with the tercile category to a data table
@@ -120,8 +133,9 @@ MSD_to_YM = function(dt,timecol = 'time',origin = '1981-01-01')
 
 
 #' restricts data to a specified country
-#' Only the following 10 countries can be used in this function: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tansania, Uganda, Rwanda, Burundi.
-#' This function assumes the lon/lat grid to be a regular half degree or full degree grid.
+#'
+#' Restricts a dataset to one or more countries, specified by their names. If you have lon/lat data and don't know which countries these coordinates belong to, see \code{add_country_names}.
+#'
 #' @param dt the data table.
 #' @param ct name of the country, or vector containing multiple country names
 #' @param rectangle logical. If FALSE (default), the data is restricted to the gridcells for which the centerpoint lies within the selected country (e.g. for computing mean scores for a country).
@@ -139,8 +153,7 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 0.5)
   # for devtools::check():
   country = lon = lat = NULL
 
-  utils::data(countries, envir = environment())
-  cs = as.data.table(countries)[country %in% ct]
+  cs = unique(add_country_names(dt)[country %in% ct,.(lon,lat,country)])
   if(!rectangle)
   {
     return(merge(dt,cs,by = c('lon','lat'))[,country := NULL])
@@ -156,33 +169,19 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 0.5)
 
 
 #' restricts data to CONFER region
-#' Only the following 10 countries can be used in this function: Sudan, South Sudan, Somalia, Eritrea, Ethiopia, Somalia, Kenya, Tanzania, Uganda, Rwanda, Burundi
+#'
+#' Wraps restrict_to_country, and restricts to the GHA-region usually considered in the Horizon2020 project CONFER, consisting
+#' of the following countries: 'Burundi','Djibouti', 'Eritrea','Ethiopia','Kenya','Rwanda','Somalia','Somaliland','South Sudan','Sudan','Tanzania','Uganda'
 #' @param dt the data table.
-#' @param rectangle logical. If FALSE (default), the data is restricted to the gridcells for which the centerpoint lies within the selected country (e.g. for computing mean scores for a country).
-#' If TRUE, the data is kept for a rectangle containing the entire country, therefore also containing gridpoints outside the country. This is the preferred option for plotting data
-#' for a specific country.
-#' @param tol Only used when \code{rectangle == TRUE}. A tolerance value for widening the plotting window, making things look a bit nicer.
+#' @param ... passed on to restrict_to_country
 #'
 #' @export
 #' @importFrom data.table as.data.table
 
-
-restrict_to_confer_region = function(dt,rectangle = FALSE,tol = 0.5)
+restrict_to_confer_region = function(dt,...)
 {
-  # for devtools::check():
-  country = lon = lat = NULL
+  confer_countries = c('Burundi','Djibouti', 'Eritrea','Ethiopia','Kenya','Rwanda','Somalia','Somaliland','South Sudan','Sudan','Tanzania','Uganda')
 
-  data(countries, envir = environment())
-  cs = as.data.table(countries)
-  if(!rectangle)
-  {
-    return(merge(dt,cs,by = c('lon','lat'))[,country := NULL])
-  }
-  if(rectangle)
-  {
-    lon_range = range(cs[,lon]) + c(-tol,tol)
-    lat_range = range(cs[,lat]) + c(-tol,tol)
-
-    return(dt[lon %between% lon_range & lat %between% lat_range])
-  }
+  dt = restrict_to_country(dt,ct = confer_countries,...)
+  return(dt)
 }

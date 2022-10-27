@@ -918,7 +918,13 @@ RPSS = function(dt,f = c('below','normal','above'),
 #'
 #' @param dt Data table containing the predictions.
 #' @param bins probability bins, defaults to c("<30", "30-35",">35")
-#'
+#' @param f column names of the prediction.
+#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param by column names of grouping variables, all of which need to be columns in dt.
+#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
+#' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
+#' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 
 
 RES = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
