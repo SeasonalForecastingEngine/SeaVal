@@ -16,11 +16,12 @@ integer vector of variable indices, or NULL in which case all variables are read
 The default (2) is to print the entire netcdf information (as output by \code{ncdf4::nc_open}), 1 just prints the units of all variables, 0 (or any other input)
 prints nothing.}
 
-\item{trymerge}{logical. If TRUE a single data table containing all variables is returned, else a list of data
-tables, one for each variable. The latter is more memory efficient if you have multiple variables that depend
+\item{trymerge}{logical. If TRUE, a single data table containing all variables is returned, else a list of data
+tables, one for each variable. The latter is much more memory efficient if you have multiple variables depending
 on different dimensions.}
 
-\item{subset_list}{A named list. The names of the pages must correspond to the names of dimension variables in the netcdf, and each page contains a (two-element-)range vector.
+\item{subset_list}{A named list for reading only subsets of the data. Currently only 'rectangle subsetting' is provided, i.e. you can provide two limit values for each dimension and everything between
+will be read. The names of the pages of subset_list must correspond to the names of dimension variables in the netcdf, and each page should contain a (two-element-)range vector.
 For example, subsetting a global dataset to just East Africa could look like this: subset_list = list(latitude = c(-15,25),longitude = c(20,55)).
 Non-rectangular subsetting during reading a netcdf seems to be difficult, see ncvar_get. Every dimension variable not named in subset_list is read entirely.}
 }

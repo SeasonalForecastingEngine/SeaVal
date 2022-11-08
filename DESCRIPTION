@@ -15,22 +15,26 @@ Authors@R:
            family = "Scheuerer",
            role = c("aut"),
            email = "scheuerer@nr.no"))
-Description: This package provides tools for processing and evaluating seasonal weather forecasts.
+Description: This package provides tools for processing and evaluating seasonal weather forecasts, with an emphasis on seasonal rainfall predictions for the Greater Horn of Africa.
+    We follow the \href{https://library.wmo.int/doc_num.php?explnum_id=4886}{WMO recommendation of evaluating seasonal forecasts.} An online tutorial can be found \href{http://files.nr.no/samba/CONFER/SeaVal/}{here}.
     It is developed and maintained at the Norwegian Computing Center Oslo in collaboration with ICPAC.
     The development was supported by the European Union’s Horizon 2020 research and innovation programme under grant agreement no. 869730 (CONFER).
-License: MIT
+License: GPL (>= 3)
 Encoding: UTF-8
 Depends: 
+    R (>= 2.10)
+Imports: 
+  boot,
   data.table,
-  ggplot2
-Imports:
-    boot,
-    ncdf4,
-    scoringRules,
-    Matrix,
-    RColorBrewer,
-    ggplotify,
-    ggpubr
+  ggplot2,
+  ggplotify,
+  ggpubr,
+  Matrix,
+  ncdf4,
+  RColorBrewer,
+  rnaturalearth,
+  scoringRules,
+  sp
 LazyData: true
 RoxygenNote: 7.1.2
 Collate: 
@@ -45,3 +49,4 @@ Collate:
     'scores.R'
     'upscaling.R'
     'utils.R'
+

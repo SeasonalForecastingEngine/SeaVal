@@ -121,12 +121,17 @@ ncdf_to_dt = function(nc,subset_list = NULL,printunits = TRUE)
 #' @param verbose Either 0, 1 or 2. How much information should be printed?
 #' The default (2) is to print the entire netcdf information (as output by \code{ncdf4::nc_open}), 1 just prints the units of all variables, 0 (or any other input)
 #' prints nothing.
-#' @param trymerge logical. If TRUE a single data table containing all variables is returned, else a list of data
-#' tables, one for each variable. The latter is more memory efficient if you have multiple variables that depend
+#' @param trymerge logical. If TRUE, a single data table containing all variables is returned, else a list of data
+#' tables, one for each variable. The latter is much more memory efficient if you have multiple variables depending
 #' on different dimensions.
-#' @param subset_list A named list. The names of the pages must correspond to the names of dimension variables in the netcdf, and each page contains a (two-element-)range vector.
+#' @param subset_list A named list for reading only subsets of the data. Currently only 'rectangle subsetting' is provided, i.e. you can provide two limit values for each dimension and everything between
+#' will be read. The names of the pages of subset_list must correspond to the names of dimension variables in the netcdf, and each page should contain a (two-element-)range vector.
 #' For example, subsetting a global dataset to just East Africa could look like this: subset_list = list(latitude = c(-15,25),longitude = c(20,55)).
 #' Non-rectangular subsetting during reading a netcdf seems to be difficult, see ncvar_get. Every dimension variable not named in subset_list is read entirely.
+#' @param keep_nas Should missing values be kept? If FALSE (the default), missing values are not included in the returned data table.
+#' If this is set to TRUE, the data table is constructed from the full data-cube (meaning its number of rows is the product of the length of the dimension variables, even if many coordinates
+#' have missing data). This makes the returned data table potentially much larger and is almost never an advantage. It is only allowed because it can make complex bookkeeping tasks easier
+#' (specifically upscaling many CHIRPS-netcdfs with the same coordinates while saving the upscaling weights in a matrix).
 #'
 #' @return A data table if \code{trymerge == TRUE} or else a list of data tables.
 #'
@@ -145,7 +150,8 @@ ncdf_to_dt = function(nc,subset_list = NULL,printunits = TRUE)
 netcdf_to_dt = function(nc, vars = NULL,
                         verbose = 2,
                         trymerge = TRUE,
-                        subset_list = NULL)
+                        subset_list = NULL,
+                        keep_nas = FALSE)
 {
   if(is.character(nc)) nc = nc_open(nc)
 
@@ -209,12 +215,12 @@ netcdf_to_dt = function(nc, vars = NULL,
 
     dt_temp = NULL
 
-    # generate data.table with dimensions: Do NOT use nvar_get here because that fails when dimvarid is missing :-P
+    # generate data.table with dimension variables: Do NOT use nvar_get here because that fails when dimvarid is missing :-P
 
     for(i in 1:v$ndims)
     {
-      # vectorize dimension entries:
 
+      ### vectorize dimension entries: ###
       if(count[i] == -1)
       {
         # we need to first repeat using times = {the product of lengths of 'later' dimension vectors}...
@@ -241,7 +247,8 @@ netcdf_to_dt = function(nc, vars = NULL,
     dt_ttemp = data.table(as.vector(ncvar_get(nc,varid = v$name,start = start,count = count)))
     setnames(dt_ttemp,v$name)
 
-    dt_list = c(dt_list,list(data.table(dt_temp,dt_ttemp)))
+    if(keep_nas) dt_list = c(dt_list,list(data.table(dt_temp,dt_ttemp)))
+    if(!keep_nas) dt_list = c(dt_list,list(data.table(dt_temp,dt_ttemp)[!is.na(get(v$name))]))
 
   }
 
@@ -290,9 +297,9 @@ netcdf_to_dt = function(nc, vars = NULL,
 #'
 #'
 #' @param dt a data.table
-#' @param vars names of columns in dt containing variables.
+#' @param vars names of columns in dt containing variables. If this is NULL, the function guesses and asks for confirmation.
 #' @param units character vector containing the units for vars (in the same order). If this is NULL (default), the user is prompted for input.
-#' @param dim_vars names of columns in dt containing dimension variables.
+#' @param dim_vars names of columns in dt containing dimension variables. If this is NULL, the function guesses and asks for confirmation.
 #' @param dim_var_units character vector containing the units for dim_vars (in the same order). If this is NULL (default), the user is prompted for input (except for lon/lat).
 #' @param nc_out (path and) file name of the netcdf to write.
 #' @param check Only used when a file with the given name already exists. Default is to prompt user for input. This can be avoided (e.g. if you automatically want to overwrite a lot of files) by setting check = 'y'.
@@ -306,10 +313,33 @@ netcdf_to_dt = function(nc, vars = NULL,
 #'
 #' @export
 
-dt_to_netcdf = function(dt,vars,units = NULL,
-                        dim_vars = intersect(c('lon','lat','time'),names(dt)), dim_var_units = NULL,
-                        nc_out, check = NULL)
+dt_to_netcdf = function(dt,
+                        vars = NULL,
+                        units = NULL,
+                        dim_vars = intersect(dimvars(),names(dt)), dim_var_units = NULL,
+                        nc_out, check = TRUE)
 {
+  if(check & file.exists(nc_out))
+  {
+    test = readline(prompt = paste0('The netcdf file already exists. Do you want to overwrite? [y/n]'))
+  }
+  if(test == 'y') {
+    file.remove(nc_out)
+  }else(stop('aborted.'))
+
+  if(is.null(vars))
+  {
+    vars = setdiff(names(dt),dim_vars)
+    if(check)
+    {
+    test = readline(prompt = paste0("You didn't provide information which columns of dt are dimvars and which are variables.
+My guess would be\nvariables: ",paste(vars,collapse = ', '),
+"\ndimvars: ",paste(dim_vars,collapse = ', '),
+"\nIs that ok?  [y/n]"))
+    if(test != 'y') stop('please provide vars and dimvars manually.')
+    }
+  }
+
   # get data into correct order:
   setkeyv(dt,rev(dim_vars))
 
@@ -351,6 +381,8 @@ dt_to_netcdf = function(dt,vars,units = NULL,
   for(ii in seq_along(vars))
   {
     v = vars[ii]
+    if(!v %in% names(dt)) stop(paste0(v,' is not a column name in dt.'))
+
     vals = dt[,get(v)]
 
     if(is.null(units))
@@ -369,19 +401,7 @@ dt_to_netcdf = function(dt,vars,units = NULL,
   }
 
   # write the netcdf file:
-  if(!file.exists(nc_out))
-  {
     nc = nc_create(filename = nc_out,vars = c(vars_ncdf))
-  } else {
-    if(is.null(check))
-    {
-    check = readline(prompt = paste0('The netcdf file already exists. Do you want to overwrite? [y/n]'))
-    }
-    if(check == 'y') {
-      file.remove(nc_out)
-      nc = nc_create(filename = nc_out,vars = c(vars_ncdf))
-    }else(stop('writing netcdf aborted.'))
-  }
 
   for(ii in seq_along(vars))
   {

@@ -455,7 +455,7 @@ HS = function(dt,f = c('below','normal','above'),
               dim.check = TRUE)
 {
   # for devtools::check:
-  HS_min = HS_mid = HS_max = max_cat = min_cat = hit = hit3 = NULL
+  HS_min = HS_mid = HS_max = max_cat = min_cat = hit = hit3 = tercile_cat = NULL
 
   by = intersect(by,names(dt))
 
@@ -933,6 +933,9 @@ RES = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
                pool = 'year',
                dim.check = TRUE)
 {
+  # for devtools::check:
+  obs_freqB_gen = obs_freqN_gen = obs_freqA_gen = bs = bsB=pB=pN=pA=obsA=obsN=obsB=count=obs_freqB=prob=obs_freqN=obs_freqA=bsN=bsA=igs=igsN=igsA=igsB=NULL
+
   by = intersect(by,names(dt))
 
   dt = dt[!is.na(get(o)) & !is.na(get(f))]
@@ -1018,6 +1021,10 @@ REL = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
                pool = 'year',
                dim.check = TRUE)
 {
+  # for devtools::check:
+  bs = bsB=pB=pN=pA=obsA=obsN=obsB=count=obs_freqB=prob=obs_freqN=obs_freqA=bsN=bsA=igs=igsN=igsA=igsB=NULL
+
+
   by = intersect(by,names(dt))
 
   dt = dt[!is.na(get(o)) & !is.na(get(f))]

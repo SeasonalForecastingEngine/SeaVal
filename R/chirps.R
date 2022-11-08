@@ -462,8 +462,11 @@ upscale_chirps = function(update = TRUE,
   yys = rep(years,each = length(months))
   mms = rep(months,length(years))
 
-  files_for_us = list.files(root_dir,pattern = '.nc')
-  prelim_files_for_us = list.files(prelim_dir,pattern = '.nc')
+  files_for_us = paste0(paste(yys,mms,sep = '_'),'.nc')
+
+  prelim_files_for_us = intersect(files_for_us,list.files(prelim_dir,pattern = '.nc'))
+  files_for_us = intersect(files_for_us,list.files(root_dir,pattern = '.nc'))
+
 
   if(update)
   {
@@ -494,7 +497,7 @@ upscale_chirps = function(update = TRUE,
 
       fn = file.path(root_dir,files_for_us[i])
       # this is the part that crashes if the netcdf is corrupted:
-      dt_temp = tryCatch(netcdf_to_dt(fn,verbose = 0) ,
+      dt_temp = tryCatch(netcdf_to_dt(fn,verbose = 0,keep_nas = TRUE) ,
                          error = function(cond){cond})
                          # {error_files = c(error_files, files_for_us[i]) # keep track which ones don't work
                          # next
@@ -514,7 +517,7 @@ upscale_chirps = function(update = TRUE,
       {
         dt_temp = upscale_regular_lon_lat(dt_temp,upscale_grid,'precipitation',
                                                    bycols = 'T',save_weights = file.path(us_dir,'temp.csv'))
-        nc_out = file.path(us_dir,files_for_us[1])
+        nc_out = file.path(us_dir,files_for_us[i])
 
         dt_to_netcdf(dt_temp,'precipitation',
                      units = 'mm/month',
@@ -560,7 +563,7 @@ upscale_chirps = function(update = TRUE,
     {
       fn = file.path(prelim_dir,prelim_files_for_us[i])
       # this is the part that crashes if the netcdf is corrupted:
-      dt_temp = tryCatch(netcdf_to_dt(fn,verbose = 0) ,
+      dt_temp = tryCatch(netcdf_to_dt(fn,verbose = 0,keep_nas = TRUE) ,
                          error = function(cond){cond})
       # {error_files = c(error_files, files_for_us[i]) # keep track which ones don't work
       # next
@@ -580,7 +583,7 @@ upscale_chirps = function(update = TRUE,
       {
         dt_temp = upscale_regular_lon_lat(dt_temp,upscale_grid,'precip',
                                           bycols = 'T',save_weights = file.path(prelim_us_dir,'temp.csv'))
-        nc_out = file.path(prelim_us_dir,prelim_files_for_us[1])
+        nc_out = file.path(prelim_us_dir,prelim_files_for_us[i])
 
         dt_to_netcdf(dt_temp,'precip',
                      units = 'mm/month',
@@ -616,7 +619,6 @@ upscale_chirps = function(update = TRUE,
                      check = 'y')
       }
     }
-     file.remove(file.path(prelim_us_dir,'temp.csv'),showWarnings = FALSE)
   }
 
 

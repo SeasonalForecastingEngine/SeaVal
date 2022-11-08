@@ -1,2 +1,4 @@
 ^SeaVal\.Rproj$
 ^\.Rproj\.user$
+^LICENSE\.md$
+^cran-comments\.Rmd
