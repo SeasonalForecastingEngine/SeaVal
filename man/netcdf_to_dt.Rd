@@ -4,7 +4,14 @@
 \alias{netcdf_to_dt}
 \title{function for converting netcdfs to long data tables.}
 \usage{
-netcdf_to_dt(nc, vars = NULL, verbose = 2, trymerge = TRUE, subset_list = NULL)
+netcdf_to_dt(
+  nc,
+  vars = NULL,
+  verbose = 2,
+  trymerge = TRUE,
+  subset_list = NULL,
+  keep_nas = FALSE
+)
 }
 \arguments{
 \item{nc}{either character string with the name of the .nc file (including path), or an object of type ncdf4.}
@@ -24,6 +31,11 @@ on different dimensions.}
 will be read. The names of the pages of subset_list must correspond to the names of dimension variables in the netcdf, and each page should contain a (two-element-)range vector.
 For example, subsetting a global dataset to just East Africa could look like this: subset_list = list(latitude = c(-15,25),longitude = c(20,55)).
 Non-rectangular subsetting during reading a netcdf seems to be difficult, see ncvar_get. Every dimension variable not named in subset_list is read entirely.}
+
+\item{keep_nas}{Should missing values be kept? If FALSE (the default), missing values are not included in the returned data table.
+If this is set to TRUE, the data table is constructed from the full data-cube (meaning its number of rows is the product of the length of the dimension variables, even if many coordinates
+have missing data). This makes the returned data table potentially much larger and is almost never an advantage. It is only allowed because it can make complex bookkeeping tasks easier
+(specifically upscaling many CHIRPS-netcdfs with the same coordinates while saving the upscaling weights in a matrix).}
 }
 \value{
 A data table if \code{trymerge == TRUE} or else a list of data tables.

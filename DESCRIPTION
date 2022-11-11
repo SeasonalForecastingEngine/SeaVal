@@ -46,6 +46,7 @@ Collate:
     'diagrams.R'
     'ncdf_to_dt.R'
     'plotting.R'
+    'quantiles.R'
     'scores.R'
     'upscaling.R'
     'utils.R'

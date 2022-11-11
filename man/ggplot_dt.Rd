@@ -14,7 +14,7 @@ ggplot_dt(
   mid = "white",
   high = "blue",
   name = data_col,
-  midpoint = NULL,
+  midpoint = 0,
   na.value = "gray50",
   oob = scales::squish,
   guide = guide_colorbar(barwidth = 0.5, barheight = 10),
@@ -34,13 +34,16 @@ ggplot_dt(
 
 \item{rr, low, mid, high, name, midpoint, na.value, oob, guide, ...}{Arguments for the color scale, passed to scale_fill_gradient2 or scale_fill_steps2 (depending on whether discrete_cs == TRUE).
 rr replaces limits (specifying the range of the color scale) for consistency with the older plotting functions from the PostProcessing package.
-The default midpoint is the center of the data range (or the center of rr, if provided), not 0 (as is the default for scale_fill_gradient2).
-Specifying the midpoint can often be a convenient way to force a color scale with only two colors (for example, by setting it
-to the minimum or maximum of your data). \code{na.value} specifies the color of missing values. \code{oob} specifies the treatment of out-of-boundary values, i.e. values beyond the
+\code{na.value} specifies the color of missing values. \code{oob} specifies the treatment of out-of-boundary values, i.e. values beyond the
 limits.
 The ... argument can in particular be used to customize the legend/colorbar using the function \code{guide_colorbar},
 see https://ggplot2.tidyverse.org/reference/guide_colourbar.html. Moreover, when \code{discrete_cs == TRUE} you can pass the arguments \code{n.breaks,breaks} to customize the scale.
 If you use n.breaks you might also want to set nice.breaks = FALSE, see ?scale_fill_steps2.}
+
+\item{midpoint}{midpoint of the color scale, passed to scale_fill_gradient2 or scale_fill_steps2 (depending on whether discrete_cs == TRUE).
+This is 0 by default. If you set it to NULL, the midpoint is set to the center of the data range (or the center of rr, if provided), such that the entire color scale is utilized.
+Specifying the midpoint can often be a convenient way to force a color scale with only two colors (for example, by setting it
+to the minimum or maximum of your data).}
 
 \item{binwidth, bin_midpoint}{only used when \code{discrete_cs == TRUE}. Normally, the breaks for the discrete colorscale are specified by n.breaks (which is not reliable,
 since they're adjusted to be 'nice'), or by specifying the breaks explicitly (which is often tedious). This gives you a third option, namely specifying how far the breaks

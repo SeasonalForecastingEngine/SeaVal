@@ -96,9 +96,9 @@ dimvars = function(dt = NULL)
   options = c(obs_dimvars(),'lead_time','member','nwp','system')
   if(is.null(dt))
   {
-    return(options)
+    return(sort(options))
   } else {
-    return(intersect(options,names(dt)))
+    return(sort(intersect(options,names(dt))))
   }
 }
 
@@ -198,7 +198,7 @@ Use / on Linux (e.g. /nr/project/stat/CONFER/Data/) and \\ on Windows (e.g. C:\\
 #' @export
 obs_dimvars = function(dt = NULL)
 {
-  options = c(space_dimvars(),'month','season','year')
+  options = sort(c(space_dimvars(),'month','season','T','year'))
   if(is.null(dt))
   {
     return(options)
@@ -308,7 +308,7 @@ run_dimension_check_terc_forecast = function()
 #' @export
 space_dimvars = function(dt = NULL)
 {
-  options = c('country','lon','lat','X','Y','Lon','Lat')
+  options = c('country','lat','Lat','lon','Lon','X','Y')
   if(is.null(dt))
   {
     return(options)

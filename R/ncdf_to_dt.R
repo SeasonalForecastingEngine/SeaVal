@@ -153,8 +153,11 @@ netcdf_to_dt = function(nc, vars = NULL,
                         subset_list = NULL,
                         keep_nas = FALSE)
 {
-  if(is.character(nc)) nc = nc_open(nc)
-
+  if(is.character(nc))
+  {
+    if(!file.exists(nc)) stop(paste0('The file ',nc,' does not exist.\nRemember that you need to include the path to the directory the file is located in.'))
+    nc = nc_open(nc)
+  }
   if(verbose == 2) print(nc)
 
 
@@ -303,6 +306,7 @@ netcdf_to_dt = function(nc, vars = NULL,
 #' @param dim_var_units character vector containing the units for dim_vars (in the same order). If this is NULL (default), the user is prompted for input (except for lon/lat).
 #' @param nc_out (path and) file name of the netcdf to write.
 #' @param check Only used when a file with the given name already exists. Default is to prompt user for input. This can be avoided (e.g. if you automatically want to overwrite a lot of files) by setting check = 'y'.
+#' @param description For adding a global attribute 'Description' as a string.
 #'
 #' @return none.
 #'
@@ -313,19 +317,21 @@ netcdf_to_dt = function(nc, vars = NULL,
 #'
 #' @export
 
-dt_to_netcdf = function(dt,
+dt_to_netcdf = function(dt,nc_out,
                         vars = NULL,
                         units = NULL,
                         dim_vars = intersect(dimvars(),names(dt)), dim_var_units = NULL,
-                        nc_out, check = TRUE)
+                        check = TRUE,
+                        description = NULL)
 {
   if(check & file.exists(nc_out))
   {
     test = readline(prompt = paste0('The netcdf file already exists. Do you want to overwrite? [y/n]'))
+    if(test == 'y') {
+      invisible(file.remove(nc_out))
+    }else(stop('aborted.'))
   }
-  if(test == 'y') {
-    file.remove(nc_out)
-  }else(stop('aborted.'))
+
 
   if(is.null(vars))
   {
@@ -411,5 +417,9 @@ My guess would be\nvariables: ",paste(vars,collapse = ', '),
     ncvar_put(nc, varid = vars[ii],vals = values)
   }
 
+  if(!is.null(description))
+  {
+    ncatt_put(nc,varid = 0,attname = 'Description',attval = description)
+  }
   nc_close(nc)
 }

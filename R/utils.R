@@ -42,6 +42,33 @@ add_tercile_cat = function(dt,datacol = 'prec',by = intersect(c('month','lon','l
   return(dt)
 }
 
+
+#' Adds columns 'below', 'normal' and 'above', containing predicted tercile probabilities, to a data table with ensemble forecasts.
+#' The data table should either already have a column 'tercile_cat' (as would be added by \code{add_tercile_cat}),
+#' or \code{add_tercile_cat} will be run first.
+#'
+#' @param dt the data table.
+#' @param by names of columns to group by
+#' @param ... passed on to \code{add_tercile_cat}.
+#'
+#' @export
+
+add_tercile_probs = function(dt,by = setdiff(dimvars(dt),'member'),...)
+{
+  if(! ('member' %in% names(dt))) stop('This only works for ensemble forecasts, so I need a column named "member"')
+  if(!'tercile_cat' %in% names(dt))
+  {
+    dt = add_tercile_cat(dt,...)
+  }
+
+  dt[,c('below','normal','above') :=
+       .(mean(tercile_cat == -1),
+         mean(tercile_cat == 0),
+         mean(tercile_cat == 1)),by = by]
+  return(dt)
+}
+
+
 #' Returns a leave-one-year-out climatology-based ensemble forecast
 #'
 #' for a given year, the ensemble forecast simply consists of the observations in all other years.
@@ -96,6 +123,37 @@ climatology_threshold_exceedence = function(obs_dt,
     ret_dt = rbindlist(list(ret_dt,thr_dt))
   }
   return(ret_dt)
+}
+
+
+#' Combine two data tables
+#'
+#' Convenience wrapper for data.tables merge. Merges by dimvars and returns user-friendly warnings.
+#'
+#' @param dt1 first data table
+#' @param dt2 second data table
+#' @param ... passed on to data.table::merge
+#'
+#' @export
+
+combine = function(dt1,dt2,...)
+{
+  dv1 = dimvars(dt1)
+  dv2 = dimvars(dt2)
+  common_dimvars = intersect(dv1,dv2)
+  if(length(common_dimvars)==0)
+  {
+    stop('The data tables do not seem to have any common dimension variables, so I cannot combine them.')
+  }
+
+  common_cols = intersect(setdiff(names(dt1),dv1),setdiff(names(dt2),dv2))
+
+  if(length(common_cols) >0)
+  {
+    warning(paste0('The columns ',paste(common_cols,collapse = ', '),' were contained in both data tables but are not recognized as dimension variables.\n
+Their names have changed. If that is not what you wanted use data.table::merge instead.'))
+  }
+  return(merge(dt1,dt2,by = common_dimvars,...))
 }
 
 
@@ -183,5 +241,27 @@ restrict_to_confer_region = function(dt,...)
   confer_countries = c('Burundi','Djibouti', 'Eritrea','Ethiopia','Kenya','Rwanda','Somalia','Somaliland','South Sudan','Sudan','Tanzania','Uganda')
 
   dt = restrict_to_country(dt,ct = confer_countries,...)
+  return(dt)
+}
+
+#' Get tercile probability forecast from ensemble forecasts
+#'
+#' The function takes a data table containing ensemble predictions and reduces it to predicted tercile probabilities.
+#' The data table should either have a column 'tercile_cat' or it will be generated in the process (by \code{add_tercile_cat}).
+#' In particular, if you don't know the tercile category of the ensemble predictions, your data table should contain hindcasts as well,
+#' such that the tercile categories are calculated correctly.
+#' The probability for 'below', for example, is the fraction of ensemble members predicting below normal (for this coordinate).
+#'
+#' @param dt the data table.
+#' @param by names of columns to group by
+#' @param keep_cols A vector of column names that you want to keep. Column names in by are kept automatically.
+#' @param ... passed on to \code{add_tercile_probs}.
+#'
+#' @export
+tfc_from_efc = function(dt, by = setdiff(dimvars(dt),'member'), keep_cols = NULL,...)
+{
+  keep_cols = unique(c(by, keep_cols, 'below','normal','above'))
+  dt = add_tercile_probs(dt,by,...)
+  dt = unique(dt[,.SD,.SDcols = keep_cols])
   return(dt)
 }

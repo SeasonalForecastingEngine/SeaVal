@@ -6,28 +6,31 @@
 \usage{
 dt_to_netcdf(
   dt,
-  vars,
-  units = NULL,
-  dim_vars = intersect(c("lon", "lat", "time"), names(dt)),
-  dim_var_units = NULL,
   nc_out,
-  check = NULL
+  vars = NULL,
+  units = NULL,
+  dim_vars = intersect(dimvars(), names(dt)),
+  dim_var_units = NULL,
+  check = TRUE,
+  description = NULL
 )
 }
 \arguments{
 \item{dt}{a data.table}
 
-\item{vars}{names of columns in dt containing variables.}
+\item{nc_out}{(path and) file name of the netcdf to write.}
+
+\item{vars}{names of columns in dt containing variables. If this is NULL, the function guesses and asks for confirmation.}
 
 \item{units}{character vector containing the units for vars (in the same order). If this is NULL (default), the user is prompted for input.}
 
-\item{dim_vars}{names of columns in dt containing dimension variables.}
+\item{dim_vars}{names of columns in dt containing dimension variables. If this is NULL, the function guesses and asks for confirmation.}
 
 \item{dim_var_units}{character vector containing the units for dim_vars (in the same order). If this is NULL (default), the user is prompted for input (except for lon/lat).}
 
-\item{nc_out}{(path and) file name of the netcdf to write.}
-
 \item{check}{Only used when a file with the given name already exists. Default is to prompt user for input. This can be avoided (e.g. if you automatically want to overwrite a lot of files) by setting check = 'y'.}
+
+\item{description}{For adding a global attribute 'Description' as a string.}
 }
 \value{
 none.
