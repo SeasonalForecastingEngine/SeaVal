@@ -753,7 +753,7 @@ ver_map_chirps = function(mm = month(Sys.Date()-60),
 {
   dt = load_chirps(years = yy,
                    months = mm,
-                   version = ver,
+                   version = version,
                    resolution = resolution)
 
   # get directory where quantiles are stored:
