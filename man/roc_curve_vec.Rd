@@ -2,7 +2,7 @@
 % Please edit documentation in R/diagrams.R
 \name{roc_curve_vec}
 \alias{roc_curve_vec}
-\title{Plot the ROC-curve for a vector of probabilities and corresponding observations}
+\title{ROC curves}
 \usage{
 roc_curve_vec(probs, obs, interpolate = TRUE)
 }
@@ -14,5 +14,5 @@ roc_curve_vec(probs, obs, interpolate = TRUE)
 \item{interpolate}{logical. If TRUE the ROC-curve is interpolated and drawn as a continuous function. Otherwise it is drawn as a step function.}
 }
 \description{
-Plot the ROC-curve for a vector of probabilities and corresponding observations
+Plot the ROC-curve for a vector of probabilities and corresponding observations.
 }

@@ -2,9 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{crps_aux}
 \alias{crps_aux}
-\title{Auxiliary function for calculating crps.
-Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
-but is just repeated (which is why only y[1]) is used.}
+\title{Auxiliary function for calculating crps.}
 \usage{
 crps_aux(y, dat)
 }
@@ -14,7 +12,6 @@ crps_aux(y, dat)
 \item{dat}{vector of length m containing the m ensemble forecasts}
 }
 \description{
-Auxiliary function for calculating crps.
 Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
 but is just repeated (which is why only y[1]) is used.
 }

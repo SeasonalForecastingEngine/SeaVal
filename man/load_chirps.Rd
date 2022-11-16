@@ -2,7 +2,7 @@
 % Please edit documentation in R/chirps.R
 \name{load_chirps}
 \alias{load_chirps}
-\title{Function for reading in (previously downloaded) CHIRPS (monthly) data.}
+\title{Function for loading CHIRPS (monthly) data.}
 \usage{
 load_chirps(
   years = NULL,
@@ -26,5 +26,5 @@ You can update your local CHIRPS download by calling download_chirps_monthly}
 the derived data table
 }
 \description{
-The resulting data table contains precip in unit mm/day.
+The data has to be previously downloaded, see \code{download_chirps_monthly}. The resulting data table contains precip in unit mm/day.
 }

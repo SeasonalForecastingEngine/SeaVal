@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{HSS}
 \alias{HSS}
-\title{Compute the Hit skill score}
+\title{Hit Skill Score}
 \usage{
 HSS(
   dt,

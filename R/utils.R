@@ -1,9 +1,11 @@
-#' Takes a data table with lon/lat coordinates and returns the same data table with a new column 'country' containing the countryname
-#' of each coordinate. Usually you'd do this using sf, but that introduces dependency to gdal which we want to avoid.
+#' Add country names to a data table
+#'
+#' @description Takes a data table with lon/lat coordinates and returns the same data table with a new column 'country' containing the country name
+#' of each coordinate.
 #'
 #' @param dt the data table.
-#' @param load_continent which continent to load. Loading only one continent makes the function faster.
-#' Put NULL if you have data across several continents
+#' @param load_continent which continent to load. Loading only one continent makes the function faster. Default is Africa.
+#' Put NULL if you have data across several continents.
 #'
 #' @export
 #' @importFrom rnaturalearth ne_countries
@@ -27,24 +29,42 @@ add_country_names = function(dt,load_continent = 'Africa')
   return(merge(dt,coords,by = c('lon','lat')))
 }
 
-#' adds a column with the tercile category to a data table
+#' Add tercile category
+#'
+#' @description Adds a column 'tercile_cat' with the tercile category to a data table with observations or predictions.
+#' The tercile_cat is -1 for values falling in the lowest tercile (below normal), 0 for normal, and 1 for above normal.
+#' terciles are calculated
+#'
 #' @param dt the data table.
-#' @param datacol Name of the column where the data is stored
-#' @param by names of columns to group by
+#' @param datacol Name of the column where the data is stored. If multiple are provided, the first name matching a column in dt is used.
+#' @param by names of columns to group by. Default is to group by everything except year and member, meaning that
+#' the tercile categories are calculated seperately for each spatial coordinate and each month/season.
 #'
 #' @export
 #' @importFrom stats quantile
 
-add_tercile_cat = function(dt,datacol = 'prec',by = intersect(c('month','lon','lat'),names(dt)))
+add_tercile_cat = function(dt,
+                           datacol = c('obs','prec','precipitation','pred'),
+                           by = setdiff(dimvars(dt),c('year','member')))
 {
+  #for devtools::check:
   tercile_cat = NULL
+
+  # reduce datacol to the first match with names(dt):
+  if(length(intersect(datacol,names(dt)))==0) stop('dt does not have a column with the provided column name.')
+  datacol = datacol[min(which(datacol %in% names(dt)))]
+
   dt[!(is.na(get(datacol))),tercile_cat := -1*(get(datacol) <= stats::quantile(get(datacol),0.33)) + 1 *(get(datacol) >= stats::quantile(get(datacol),0.67)),by = by]
+
   return(dt)
 }
 
 
-#' Adds columns 'below', 'normal' and 'above', containing predicted tercile probabilities, to a data table with ensemble forecasts.
-#' The data table should either already have a column 'tercile_cat' (as would be added by \code{add_tercile_cat}),
+#' Add tercile probabilities to ensemble forecasts
+#'
+#' @description Adds columns 'below', 'normal' and 'above', containing predicted tercile probabilities, to a data table with ensemble forecasts.
+#' The predicted probability is always the fraction of members ending up in the respective tercile.
+#' The data table should either already have a column 'tercile_cat' (added by \code{add_tercile_cat}),
 #' or \code{add_tercile_cat} will be run first.
 #'
 #' @param dt the data table.
@@ -71,8 +91,9 @@ add_tercile_probs = function(dt,by = setdiff(dimvars(dt),'member'),...)
 
 #' Returns a leave-one-year-out climatology-based ensemble forecast
 #'
-#' for a given year, the ensemble forecast simply consists of the observations in all other years.
-#' This is essentially an auxiliary function for computing skill scores relative to climatology.
+#' @description For a given year, the ensemble forecast simply consists of the observations in all other years.
+#' In particular, the ensemble size is (number of years in the data table) - 1.
+#' This is essentially an auxiliary function for computing skill scores.
 #'
 #' @param obs_dt Data table containing observations, must contain a column 'year'.
 #' @param by character vector containing the column names of the grouping variables, e.g. \code{c('month','lon','lat')}.
@@ -96,7 +117,7 @@ climatology_ens_forecast = function(obs_dt,
 
 #' Get climatological prediction for exceedence probabilities.
 #'
-#' The climatological prediction for exceedence probabilities is the fraction of observed years where the observation exceeded the threshold.
+#' @description The climatological prediction for exceedence probabilities is the fraction of observed years where the observation exceeded the threshold.
 #' It's calculated from leave-one-year-out climatology.
 #'
 #' @param obs_dt Data table containing observations.
@@ -128,7 +149,9 @@ climatology_threshold_exceedence = function(obs_dt,
 
 #' Combine two data tables
 #'
-#' Convenience wrapper for data.tables merge. Merges by dimvars and returns user-friendly warnings.
+#' @description Function for combining two data tables, e.g. with predictions and observations.
+#' This is essentially a user-friendly wrapper for data.tables merge that guesses the columns to merge by (the dimension variables
+#' contained in both data tables.
 #'
 #' @param dt1 first data table
 #' @param dt2 second data table
@@ -151,7 +174,7 @@ combine = function(dt1,dt2,...)
   if(length(common_cols) >0)
   {
     warning(paste0('The columns ',paste(common_cols,collapse = ', '),' were contained in both data tables but are not recognized as dimension variables.\n
-Their names have changed. If that is not what you wanted use data.table::merge instead.'))
+Their names have changed. If you do not want this, use data.table::merge instead.'))
   }
   ret_dt = merge(dt1,dt2,by = common_dimvars,...)
   if(ret_dt[,.N] == 0) error('The resulting data table is empty. Did the two data tables use different spatial grids?')
@@ -160,7 +183,10 @@ Their names have changed. If that is not what you wanted use data.table::merge i
 }
 
 
-#' Converts time given as 'months since date' (MSD) into years and months (YM)
+#' Convert months-since-date to year-month
+#'
+#' @description Converts time given as 'months since date' (MSD) into years and months (YM)
+#'
 #' @param dt a data table.
 #' @param timecol name of the column containing the time.
 #' @param origin The time column contains time in the format month since which date?
@@ -193,9 +219,9 @@ MSD_to_YM = function(dt,timecol = 'time',origin = '1981-01-01')
 }
 
 
-#' restricts data to a specified country
+#' Restrict data to a specified country
 #'
-#' Restricts a dataset to one or more countries, specified by their names. If you have lon/lat data and don't know which countries these coordinates belong to, see \code{add_country_names}.
+#' @description Restricts a dataset to one or more countries, specified by their names. If you have lon/lat data and don't know which countries these coordinates belong to, see \code{add_country_names}.
 #'
 #' @param dt the data table.
 #' @param ct name of the country, or vector containing multiple country names
@@ -213,8 +239,8 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 0.5)
 {
   # for devtools::check():
   country = lon = lat = NULL
-
-  cs = unique(add_country_names(dt)[country %in% ct,.(lon,lat,country)])
+  dt = add_country_names(dt)
+  cs = unique(dt[country %in% ct,.(lon,lat,country)])
   if(!rectangle)
   {
     return(merge(dt,cs,by = c('lon','lat'))[,country := NULL])
@@ -229,9 +255,9 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 0.5)
 }
 
 
-#' restricts data to CONFER region
+#' Restrict data to the region typically considered in CONFER
 #'
-#' Wraps restrict_to_country, and restricts to the GHA-region usually considered in the Horizon2020 project CONFER, consisting
+#' @description Wraps \code{restrict_to_country}, and restricts to the GHA-region usually considered in the Horizon2020 project CONFER, consisting
 #' of the following countries: 'Burundi','Djibouti', 'Eritrea','Ethiopia','Kenya','Rwanda','Somalia','Somaliland','South Sudan','Sudan','Tanzania','Uganda'
 #' @param dt the data table.
 #' @param ... passed on to restrict_to_country
@@ -249,14 +275,14 @@ restrict_to_confer_region = function(dt,...)
 
 #' Get tercile probability forecast from ensemble forecasts
 #'
-#' The function takes a data table containing ensemble predictions and reduces it to predicted tercile probabilities.
+#' @description The function takes a data table containing ensemble predictions and reduces it to predicted tercile probabilities.
 #' The data table should either have a column 'tercile_cat' or it will be generated in the process (by \code{add_tercile_cat}).
 #' In particular, if you don't know the tercile category of the ensemble predictions, your data table should contain hindcasts as well,
 #' such that the tercile categories are calculated correctly.
 #' The probability for 'below', for example, is the fraction of ensemble members predicting below normal (for this coordinate).
 #'
-#' @param dt the data table.
-#' @param by names of columns to group by
+#' @param dt The data table.
+#' @param by Names of columns to group by.
 #' @param keep_cols A vector of column names that you want to keep. Column names in by are kept automatically.
 #' @param ... passed on to \code{add_tercile_probs}.
 #'

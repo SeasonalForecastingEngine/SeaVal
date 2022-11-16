@@ -2,8 +2,7 @@
 % Please edit documentation in R/auxiliary_functions.R
 \name{by_cols_terc_fc_score_sp}
 \alias{by_cols_terc_fc_score_sp}
-\title{Some tercile forecasts, such as ROC score or SRC (slope of reliability curve) require many data points and should therefore be pooled in space
-This auxiliary function returns the default column names to group by for these scores. The suffix _sp stands for spatial pooling.}
+\title{Auxiliary function to get column names to group by when calculating scores for tercile forecasts.}
 \usage{
 by_cols_terc_fc_score_sp(dt = NULL)
 }

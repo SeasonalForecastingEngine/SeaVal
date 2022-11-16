@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{RES}
 \alias{RES}
-\title{Compute Resolution scores}
+\title{Resolution score}
 \usage{
 RES(
   dt,
@@ -38,7 +38,5 @@ than for the full ignorance score itself, I think we should drop it for that rea
 scores are unstable for single locations and that one should pool over many locations.
 Requires the specification of probability bins. One score for each category (below, normal, above) and
 also the sum of the scores.
-}
-\details{
 Values close to 0 means low resolution. Higher values mean higher resolution.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{MSES}
 \alias{MSES}
-\title{Function for taking MSE skill scores of ensemble forecasts stored in long data tables:}
+\title{Mean Square Error Skill score}
 \usage{
 MSES(dt, f, o = "obs", by = by_cols_ens_fc_score(), pool = c("year"), ...)
 }
@@ -21,6 +21,7 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 \item{...}{passed on to MSE}
 }
 \description{
+Function for taking MSE skill scores of ensemble forecasts stored in long data tables.
 Can also handle point forecasts.
-Warning: The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology.
+The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology.
 }

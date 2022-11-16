@@ -2,9 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{roc_score_vec}
 \alias{roc_score_vec}
-\title{Calculate the area under curve (AUC) or ROC-score from a vector of probabilities and corresponding observations
-Formula (1a) from Mason&2018 is used in the calculation, corresponding to trapezoidal interpolation.
-Mostly auxiliary function for the ROCS function, but also used in the ROC-diagram function, where the AUC is added to the diagrams.}
+\title{ROC score (AUC)}
 \usage{
 roc_score_vec(probs, obs)
 }
@@ -14,7 +12,7 @@ roc_score_vec(probs, obs)
 \item{obs}{vector with categorical observations (as TRUE/FALSE)}
 }
 \description{
-Calculate the area under curve (AUC) or ROC-score from a vector of probabilities and corresponding observations
+Calculates the area under curve (AUC) or ROC-score from a vector of probabilities and corresponding observations.
 Formula (1a) from Mason&2018 is used in the calculation, corresponding to trapezoidal interpolation.
-Mostly auxiliary function for the ROCS function, but also used in the ROC-diagram function, where the AUC is added to the diagrams.
+This is mostly an auxiliary function for the ROCS function, but also used in the ROC-diagram function, where the AUC is added to the diagrams.
 }

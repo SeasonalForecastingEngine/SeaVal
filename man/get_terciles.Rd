@@ -9,9 +9,6 @@ get_terciles(...)
 \arguments{
 \item{...}{passed on to get_quantiles.}
 }
-\value{
-Nothing if save_file is provided. Otherwise the list described above
-}
 \description{
 This function wraps \code{get_quantiles} with the fixed quantiles 0.33 and 0.67.
 }

@@ -2,14 +2,14 @@
 % Please edit documentation in R/ncdf_to_dt.R
 \name{dt_to_netcdf}
 \alias{dt_to_netcdf}
-\title{function for writing netcdfs from long data tables.}
+\title{Write a netcdf from a long data tables.}
 \usage{
 dt_to_netcdf(
   dt,
   nc_out,
   vars = NULL,
   units = NULL,
-  dim_vars = intersect(dimvars(), names(dt)),
+  dim_vars = dim_vars(dt),
   dim_var_units = NULL,
   check = TRUE,
   description = NULL
@@ -18,7 +18,7 @@ dt_to_netcdf(
 \arguments{
 \item{dt}{a data.table}
 
-\item{nc_out}{(path and) file name of the netcdf to write.}
+\item{nc_out}{File name (including path) of the netcdf to write.}
 
 \item{vars}{names of columns in dt containing variables. If this is NULL, the function guesses and asks for confirmation.}
 
@@ -36,7 +36,8 @@ dt_to_netcdf(
 none.
 }
 \description{
-currently does not support writing netcdfs with multiple variables that have different sets of dimension variables!
+This function writes a netcdf from a long data table, the usual data format in SeaVal.
+The function currently does not support writing netcdfs with multiple variables that have different sets of dimension variables!
 }
 \author{
 Claudio

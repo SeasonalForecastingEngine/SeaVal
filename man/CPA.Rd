@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{CPA}
 \alias{CPA}
-\title{Function for calculating coefficients of predictive ability (CPAs) of ensemble mean forecasts stored in long data tables:}
+\title{Coefficients of Predictive Ability}
 \usage{
 CPA(
   dt,
@@ -32,6 +32,7 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 The data table should only have one row for each level of c(by,pool,mem)}
 }
 \description{
+Function for calculating coefficients of predictive ability (CPAs) of ensemble mean forecasts stored in long data tables:#'
 Can also handle point forecasts.
 Warning: This metric always needs several years of data since the ranks on which it is based are calculated across multi-year samples.
 }

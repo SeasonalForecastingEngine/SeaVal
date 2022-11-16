@@ -2,7 +2,7 @@
 % Please edit documentation in R/chirps.R
 \name{delete_redundant_files}
 \alias{delete_redundant_files}
-\title{Auxiliary function cleaning out the directories, called at the end of the download}
+\title{Auxiliary function cleaning out the directories, called at the end of the CHIRPS download.}
 \usage{
 delete_redundant_files(dir)
 }
@@ -10,5 +10,5 @@ delete_redundant_files(dir)
 \item{dir}{the directory of the high dimensional CHIRPS data.}
 }
 \description{
-Auxiliary function cleaning out the directories, called at the end of the download
+Auxiliary function cleaning out the directories, called at the end of the CHIRPS download.
 }

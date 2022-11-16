@@ -2,7 +2,7 @@
 % Please edit documentation in R/chirps.R
 \name{download_chirps_monthly}
 \alias{download_chirps_monthly}
-\title{Downloads monthly CHIRPS-data}
+\title{Download monthly CHIRPS-data}
 \usage{
 download_chirps_monthly(
   resolution = "both",
@@ -36,7 +36,7 @@ download_chirps_monthly(
 \item{upscale_grid}{The coarse grid to which the data is upscaled (only used when resolution is either 'both' or 'high'). Only change this if you know what you are doing.}
 }
 \description{
-downloads CHIRPS monthly data for the GHA-region and saves it as netcdfs.
+Download CHIRPS monthly data for the GHA-region and save it as netcdfs.
 The data is downloaded either from the IRI data library or from ICPAC (depending on \code{version}), because these data library allows to subset before downloading,
 unlike the original source at UCSB.
 As of Feb 2022, the entire CHIRPS-monthly data for the GHA-region is roughly 800MB on disk.

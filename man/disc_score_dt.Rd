@@ -2,9 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{disc_score_dt}
 \alias{disc_score_dt}
-\title{Calculate the Generalized discrimination score from a data.table with data belonging to a single group (as defined by the
-by variable in the DISS function), for example a single location and month.
-Formula (5a) from Mason&2018 is used in the calculation. Mostly auxiliary function for the DISS function.}
+\title{Generalized Discrimination score}
 \usage{
 disc_score_dt(year, obs, pB, pN, pA)
 }

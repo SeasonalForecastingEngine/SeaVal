@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{EIR}
 \alias{EIR}
-\title{Compute the effective interest rate}
+\title{Effective Interest Rate}
 \usage{
 EIR(
   dt,

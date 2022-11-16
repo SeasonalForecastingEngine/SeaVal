@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{HS}
 \alias{HS}
-\title{Compute the Hit score}
+\title{Hit score}
 \usage{
 HS(
   dt,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxiliary_functions.R
 \name{dimvars}
 \alias{dimvars}
-\title{Return the default column names that are considered to be coordinates rather than values:}
+\title{Get dimension variables}
 \usage{
 dimvars(dt = NULL)
 }
@@ -10,5 +10,8 @@ dimvars(dt = NULL)
 \item{dt}{Optional data table. If a data table is provided only the dimvars of the data table are returned.}
 }
 \description{
-Return the default column names that are considered to be coordinates rather than values:
+The function returns all names currently considered dimension variables.
+Following the logic of netcdfs, data tables usually have columns specifying coordinates
+(or dimvars) and other columns containing data for these dimvars. Dimension variables can be spatial
+or temporal coordinates, or the lead time of a forecast or the member in an ensemble forecast, etc...
 }

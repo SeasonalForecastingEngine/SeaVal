@@ -14,13 +14,13 @@ netcdf_to_dt(
 )
 }
 \arguments{
-\item{nc}{either character string with the name of the .nc file (including path), or an object of type ncdf4.}
+\item{nc}{Either a character string with the name of the .nc file (including path), or an object of type ncdf4.}
 
-\item{vars}{Which variables should be read from the netcdf? Either a character vector of variable names, or a
-integer vector of variable indices, or NULL in which case all variables are read.}
+\item{vars}{Which variables should be read from the netcdf? Either a character vector of variable names, or an
+integer vector of variable indices. If this is NULL, all variables are read.}
 
 \item{verbose}{Either 0, 1 or 2. How much information should be printed?
-The default (2) is to print the entire netcdf information (as output by \code{ncdf4::nc_open}), 1 just prints the units of all variables, 0 (or any other input)
+The default (2) is to print the entire netcdf information (as output by \code{ncdf4::nc_open}), 1 just prints the units for all variables, 0 (or any other input)
 prints nothing.}
 
 \item{trymerge}{logical. If TRUE, a single data table containing all variables is returned, else a list of data
@@ -34,17 +34,15 @@ Non-rectangular subsetting during reading a netcdf seems to be difficult, see nc
 
 \item{keep_nas}{Should missing values be kept? If FALSE (the default), missing values are not included in the returned data table.
 If this is set to TRUE, the data table is constructed from the full data-cube (meaning its number of rows is the product of the length of the dimension variables, even if many coordinates
-have missing data). This makes the returned data table potentially much larger and is almost never an advantage. It is only allowed because it can make complex bookkeeping tasks easier
+have missing data). This makes the returned data table potentially much larger and is almost never an advantage. It is only allowed, because it can make complex bookkeeping tasks easier
 (specifically upscaling many CHIRPS-netcdfs with the same coordinates while saving the upscaling weights in a matrix).}
 }
 \value{
 A data table if \code{trymerge == TRUE} or else a list of data tables.
 }
 \description{
-The function converts netcdfs into data.tables.
+The function converts netcdfs into long data.tables.
 Be aware that the data table can be much larger in memory, especially if you have many dimension variables.
-This function is more robust than the older version \code{ncdf_to_dt}. In particular it does not get confused
-if 'empty' dimension variables are present (some files from ICPAC and CORDEX).
 }
 \examples{
 {\dontrun{

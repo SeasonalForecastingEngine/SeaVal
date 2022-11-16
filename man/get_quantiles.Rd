@@ -2,7 +2,7 @@
 % Please edit documentation in R/quantiles.R
 \name{get_quantiles}
 \alias{get_quantiles}
-\title{get quantiles from a data table}
+\title{Calculate quantiles from a data table}
 \usage{
 get_quantiles(
   dt,
@@ -31,8 +31,8 @@ Nothing if save_file is provided. Otherwise the list described above
 }
 \description{
 The quantiles are saved in/returned as a list with the following elements:
-* dt - the data table with quantiles for each level of by.
-* quantiles - a vector of quantiles that were used.
+* dt - A data table with quantiles for each level of by (not the same as the input-dt).
+* quantiles - the vector of quantiles that were used.
 * group - a data table containing the levels the quantiles are grouped over, e.g. all years the quantiles are calculated over.
 * data_col_name - the name of data_col, see below, so that you know what the quantiles actually were computed from.
 * description - the description string, if provided.

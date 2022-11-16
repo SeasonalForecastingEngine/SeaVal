@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{MSE}
 \alias{MSE}
-\title{Taking MSEs of ensemble forecasts stored in long data tables. Can also handle point forecast}
+\title{Mean Square Error of ensemble forecasts.}
 \usage{
 MSE(
   dt,
@@ -32,5 +32,5 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 The data table should only have one row for each level of c(by,pool,mem)}
 }
 \description{
-Taking MSEs of ensemble forecasts stored in long data tables. Can also handle point forecast
+Derives the MSE of ensemble forecasts stored in long data tables. Can also handle point forecast.
 }

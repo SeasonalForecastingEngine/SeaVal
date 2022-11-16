@@ -3,10 +3,10 @@
 # plus auxiliary functions directly used for these functions.
 
 
-#' Auxiliary function to allow intuitive grouping for diagrams
+#' Auxiliary function to simplify grouping for diagrams
 #'
-#' Only works for functions that return a single plot if by == NULL.
-#' Not the case for some functions plotting results for all three categories, e.g. reliability diagrams or ROC curves.
+#' @description Only works for functions that return a single plot if by == NULL.
+#' This is not the case for some functions plotting results for all three categories, e.g. reliability diagrams or ROC curves.
 #'
 #' @param FUN The name of the function creating the diagram
 #' @param by Column names in dt to group by
@@ -64,7 +64,7 @@ create_diagram_by_level = function(FUN,by,dt,...)
 
 #' (Accumulative) profit graphs
 #'
-#' These graphs really only make sense if you have 50 or less observations. Typical application would be when you compare seasonal mean forecasts to station data for a single location.
+#' @description These graphs really only make sense if you have 50 or less observations. Typical application would be when you compare seasonal mean forecasts to station data for a single location.
 #'
 #' @param dt Data table containing tercile forecasts
 #' @param accumulative Logic. Should the accumulative profit be plotted or the profit per forecast?
@@ -133,7 +133,7 @@ profit_graph = function(dt, accumulative = TRUE,
 
 #' auxiliary function for rounding probabilities
 #'
-#' takes a vector of probabilities (between 0 and 1) and rounds them to the scale specified by binwidth. This is used for reliability diagrams,
+#' @description takes a vector of probabilities (between 0 and 1) and rounds them to the scale specified by binwidth. This is used for reliability diagrams,
 #' where one point is drawn for each bin. 0 is always at the center of the first interval for rounding:
 #' E.g. if binwidth = 0.05 (the default), then probabilities up to 0.025 are rounded to 0, probs between 0.025 and 0.075 are rounded to 0.05, etc.
 #'
@@ -149,9 +149,9 @@ round_probs = function(probs,binwidth = 0.05)
 }
 
 
-#' Create a reliability diagram from a vector of probabilities and observations
+#' Reliability diagram from vectors of probabilities and observations
 #'
-#' The probabilities have to be rounded beforehand (see \code{round_probs}), because the diagram draws a point for each level of the probabilities. The diagram includes a histogram indicating
+#' @description The probabilities have to be rounded beforehand (see \code{round_probs}), because the diagram draws a point for each level of the probabilities. The diagram includes a histogram indicating
 #' the forecast relative frequency for each probability bin. The diagram shows the reliability curve and the diagonal for reference.
 #' Moreover, it shows a regression line fitted by weighted linear regression where the forecast relative frequencies are used as weights.
 #' A horizontal and vertical line indicate the frequency of observation = TRUE over the entire dataset.
@@ -212,10 +212,10 @@ rel_diag_vec = function(discrete_probs, obs, slope_only = FALSE)
 
 
 
-#' Reliability Diagrams
+#' Reliability Diagrams for tercile forecasts
 #'
-#' Creates reliability diagrams from a data table containing tercile forecasts
-#' #' It wraps \code{rel_diag_vec}, see \code{?rel_diag_vec} for more details.
+#' @description Creates reliability diagrams from a data table containing tercile forecasts
+#'  It wraps \code{rel_diag_vec}, see \code{?rel_diag_vec} for more details.
 #' about the output diagrams. The output format is very much inspired by Figure 5 of Mason&2018. By default, 4 diagrams are drawn,
 #' one for each the prediction of above-, normal- and below-values, plus one for  all forecasts together.
 #' You can provide a 'by' argument to obtain separate reliability diagrams for different values of the by-columns. E.g., when you data table contains
@@ -352,8 +352,9 @@ rel_diag = function(dt,
 ### ROC curves ###
 ##################
 
-
-#' Plot the ROC-curve for a vector of probabilities and corresponding observations
+#' ROC curves
+#'
+#' @description Plot the ROC-curve for a vector of probabilities and corresponding observations.
 #'
 #' @param probs vector with probabilities (between 0 and 1)
 #' @param obs vector with categorical observations
@@ -410,7 +411,9 @@ roc_curve_vec = function(probs,obs,interpolate = TRUE)
 }
 
 
-#' Creates ROC curves from a data table containing tercile forecasts. It wraps \code{roc_curve_vec}.
+#' ROC curve for tercile forecasts
+#'
+#' @description Creates ROC curves from a data table containing tercile forecasts. It wraps \code{roc_curve_vec}.
 #' By default, 4 ROC-curves are drawn, one for each the prediction of above-, normal- and below-values, plus one for all forecasts together.
 #' You can provide a 'by' argument to obtain separate ROC-curves for different values of the by-columns. E.g., when your data table contains
 #' a column named 'season', you can set by = 'season'. Then, the function will output a list of 16 ROC-curvess, 4 for each season.

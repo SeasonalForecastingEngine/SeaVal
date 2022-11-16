@@ -20,9 +20,9 @@ GHA_extent = function()
 }
 
 
-#' Downloads monthly CHIRPS-data
+#' Download monthly CHIRPS-data
 #'
-#' downloads CHIRPS monthly data for the GHA-region and saves it as netcdfs.
+#' @description Download CHIRPS monthly data for the GHA-region and save it as netcdfs.
 #' The data is downloaded either from the IRI data library or from ICPAC (depending on \code{version}), because these data library allows to subset before downloading,
 #' unlike the original source at UCSB.
 #' As of Feb 2022, the entire CHIRPS-monthly data for the GHA-region is roughly 800MB on disk.
@@ -421,10 +421,10 @@ download_chirps_monthly_low = function(update,
 
 
 
-#' Upscales the monthly CHIRPS data to a coarser grid and saves the resulting files as netcdf
+#' Upscales monthly CHIRPS data to a coarser grid
 #'
-#' this is mostly auxiliary and called from download_chirps_monthly.
-#' Uses the function ForecastTools::upscale_regular_lon_lat, but derives the weights for upscaling only once for efficiency and avoids simultaneous loading of all CHIRPS data.
+#' @description this is mostly auxiliary and called from download_chirps_monthly.
+#' Uses the function upscale_regular_lon_lat, but derives the weights for upscaling only once for efficiency and avoids simultaneous loading of all CHIRPS data.
 #'
 #' @param update Logical, if TRUE, files that have already been upscaled are skipped
 #' @param years,months Which years and months do you want to upscale? NULL upscales everything there is (except if update is TRUE).
@@ -636,14 +636,11 @@ upscale_chirps = function(update = TRUE,
 
 
 
-
-
-
 ######################################
 
-#' Function for reading in (previously downloaded) CHIRPS (monthly) data.
+#' Function for loading CHIRPS (monthly) data.
 #'
-#' The resulting data table contains precip in unit mm/day.
+#' @description The data has to be previously downloaded, see \code{download_chirps_monthly}. The resulting data table contains precip in unit mm/day.
 #'
 #' @param years,months Optional subset of years and months you want to load. The default is to load everything that has been downloaded locally.
 #' You can update your local CHIRPS download by calling download_chirps_monthly
@@ -762,7 +759,7 @@ load_chirps = function(years =  NULL, months = NULL, version = 'UCSB',resolution
 
 #' Auxiliary function for downloading the preliminary CHIRPS monthly data
 #'
-#' This data becomes available earlier, but it has to be downloaded from UCSB.
+#' @description This data becomes available earlier, but it has to be downloaded from UCSB.
 #' The function checks whether the non-preliminary version exists and only downloads otherwise.
 #' Annoyingly, the grid of UCBS and IRIDL are shifted against each other. Therefore this function also interpolates the UCSB data to the IRIDL grid, which makes it a bit slower.
 #' In particular, everything will crash if you have never downloaded a non-preliminary file and try to download a preliminary one.
@@ -869,7 +866,7 @@ The preliminary data has been removed again."),call. = FALSE)
 }
 
 
-#' Auxiliary function cleaning out the directories, called at the end of the download
+#' Auxiliary function cleaning out the directories, called at the end of the CHIRPS download.
 #' @param dir the directory of the high dimensional CHIRPS data.
 
 delete_redundant_files = function(dir)

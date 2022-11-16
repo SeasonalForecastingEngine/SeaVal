@@ -2,7 +2,7 @@
 % Please edit documentation in R/diagrams.R
 \name{rel_diag_vec}
 \alias{rel_diag_vec}
-\title{Create a reliability diagram from a vector of probabilities and observations}
+\title{Reliability diagram from vectors of probabilities and observations}
 \usage{
 rel_diag_vec(discrete_probs, obs, slope_only = FALSE)
 }

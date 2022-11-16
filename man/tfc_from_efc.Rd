@@ -7,9 +7,9 @@
 tfc_from_efc(dt, by = setdiff(dimvars(dt), "member"), keep_cols = NULL, ...)
 }
 \arguments{
-\item{dt}{the data table.}
+\item{dt}{The data table.}
 
-\item{by}{names of columns to group by}
+\item{by}{Names of columns to group by.}
 
 \item{keep_cols}{A vector of column names that you want to keep. Column names in by are kept automatically.}
 

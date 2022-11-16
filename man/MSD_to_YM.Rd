@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{MSD_to_YM}
 \alias{MSD_to_YM}
-\title{Converts time given as 'months since date' (MSD) into years and months (YM)}
+\title{Convert months-since-date to year-month}
 \usage{
 MSD_to_YM(dt, timecol = "time", origin = "1981-01-01")
 }

@@ -15,6 +15,7 @@ climatology_ens_forecast(obs_dt, by)
 Long data table with the typical ensemble-forecast looks, i.e. containing a column 'member'.
 }
 \description{
-for a given year, the ensemble forecast simply consists of the observations in all other years.
-This is essentially an auxiliary function for computing skill scores relative to climatology.
+For a given year, the ensemble forecast simply consists of the observations in all other years.
+In particular, the ensemble size is (number of years in the data table) - 1.
+This is essentially an auxiliary function for computing skill scores.
 }

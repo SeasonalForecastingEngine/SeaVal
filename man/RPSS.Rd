@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{RPSS}
 \alias{RPSS}
-\title{Compute the Ranked Probability skill score}
+\title{Ranked Probability skill score}
 \usage{
 RPSS(
   dt,

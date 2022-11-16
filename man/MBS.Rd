@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{MBS}
 \alias{MBS}
-\title{Compute the Multicategory Brier Skill score}
+\title{Multicategory Brier Skill score}
 \usage{
 MBS(
   dt,

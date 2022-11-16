@@ -96,10 +96,12 @@ BSS_ex_dt = function(dt,
 # Otherwise, your data contains multiple forecasts/observations for the same coordinate, making it impossible to calculate a score.
 
 
-#' Function for calculating coefficients of predictive ability (CPAs) of ensemble mean forecasts stored in long data tables:
+#' Coefficients of Predictive Ability
 #'
+#' @description Function for calculating coefficients of predictive ability (CPAs) of ensemble mean forecasts stored in long data tables:#'
 #' Can also handle point forecasts.
 #' Warning: This metric always needs several years of data since the ranks on which it is based are calculated across multi-year samples.
+#'
 #' @param dt Data table containing the predictions.
 #' @param f column name of the prediction.
 #' @param o column name of the observations.
@@ -144,7 +146,9 @@ CPA = function(dt, f, o = 'obs',
 }
 
 
-#' Taking CRPSs of ensemble forecasts stored in long data tables:
+#' Continuous Ranked Probability Score
+#'
+#' @description Taking CRPSs of ensemble forecasts stored in long data tables:
 #'
 #' @param dt Data table containing predictions and observations.
 #' @param f column name of the forecasts. May not be called 'f'
@@ -179,7 +183,8 @@ CRPS = function(dt, f, o = "obs",
 }
 
 #' Auxiliary function for calculating crps.
-#' Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
+#'
+#' @description Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
 #' but is just repeated (which is why only y[1]) is used.
 #' @param y vector of length m with m identical entries, the observation
 #' @param dat vector of length m containing the m ensemble forecasts
@@ -195,7 +200,8 @@ crps_aux = function(y,dat)
 }
 
 #' Auxiliary function for calculating crps with ensemble size correction by Ferro et al. 2008.
-#' Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
+#'
+#' @description Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
 #' but is just repeated (which is why only y[1]) is used.
 #' @param y vector of length m with m identical entries, the observation
 #' @param dat vector of length m containing the m ensemble forecasts
@@ -215,9 +221,11 @@ crps_aux_esc = function(y,dat)
 }
 
 
-#' Function for taking CRPS skill scores of ensemble forecasts stored in long data tables:
+#' Continuous Ranked Probability Skill Score
 #'
-#' Warning: The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology.
+#' @description Function for taking CRPS skill scores of ensemble forecasts stored in long data tables.
+#' The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology.
+#'
 #' @param dt Data table containing predictions and observations.
 #' @param f column name of the prediction.
 #' @param o column name of the observations.
@@ -271,7 +279,9 @@ CRPSS = function(dt,f,
 }
 
 
-#' Taking MSEs of ensemble forecasts stored in long data tables. Can also handle point forecast
+#' Mean Square Error of ensemble forecasts.
+#'
+#' Derives the MSE of ensemble forecasts stored in long data tables. Can also handle point forecast.
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column name of the prediction.
@@ -283,7 +293,6 @@ CRPSS = function(dt,f,
 #' @param dim.check Logical. If True, a simple test whether the dimensions match up is conducted:
 #' The data table should only have one row for each level of c(by,pool,mem)
 #' @export
-
 
 MSE = function(dt,
                f, o = 'obs',
@@ -318,10 +327,12 @@ MSE = function(dt,
 }
 
 
-#' Function for taking MSE skill scores of ensemble forecasts stored in long data tables:
+#' Mean Square Error Skill score
 #'
+#' @description Function for taking MSE skill scores of ensemble forecasts stored in long data tables.
 #' Can also handle point forecasts.
-#' Warning: The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology.
+#' The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology.
+#'
 #' @param dt Data table containing the predictions.
 #' @param f column name of the prediction.
 #' @param o column name of the observations.
@@ -375,10 +386,12 @@ MSES = function(dt,f,
 
 
 
-#' Function for calculating Pearson correlation coefficients (PCCs) of ensemble mean forecasts stored in long data tables:
+#' Pearson Correlation Coefficient
 #'
+#' @description Function for calculating Pearson correlation coefficients (PCCs) of ensemble mean forecasts stored in long data tables.
 #' Can also handle point forecasts.
-#' Warning: This metric always needs several years of data since the means and standard deviations are calculated across time.
+#' This metric always needs several years of data since the means and standard deviations are calculated across time.
+#'
 #' @param dt Data table containing the predictions.
 #' @param f column name of the prediction.
 #' @param o column name of the observations.
@@ -432,9 +445,9 @@ PCC = function(dt, f,
 
 #######################
 
-#' Compute the Hit score
+#' Hit score
 #'
-#' This score is suitable for tercile category forecasts. This score is the frequency at which the highest probability category actually
+#' @description This score is suitable for tercile category forecasts. This score is the frequency at which the highest probability category actually
 #' happens. The function also provides the frequency at which the second-highest probability category, and lowest probability category,
 #' actually happens.
 #'
@@ -479,9 +492,9 @@ HS = function(dt,f = c('below','normal','above'),
   return(HS_dt)
 }
 
-#' Compute the Hit skill score
+#' Hit Skill Score
 #'
-#' This score is suitable for tercile category forecasts. The skill score is the difference between the hit scores
+#' @description This score is suitable for tercile category forecasts. The skill score is the difference between the hit scores
 #' for the categories with the highest and lowest probabilities.
 #'
 #' @param dt Data table containing the predictions.
@@ -517,9 +530,9 @@ HSS = function(dt,f = c('below','normal','above'),
 }
 
 
-#' Compute the effective interest rate
+#' Effective Interest Rate
 #'
-#' This score is suitable for tercile category forecasts. Using log2 for now (?). According to Mason, the averaging here
+#' @description This score is suitable for tercile category forecasts. Using log2 for now (?). According to Mason, the averaging here
 #' should be over many years at a single locations and for discrete time-periods (so Mason prefers to take the average after
 #' is one wants to average over different locations, but I keep it like this for now).
 #'
@@ -567,9 +580,9 @@ indicator_times_value_aux = function(indicator,value)
   return(ret_vec)
 }
 
-#' Compute the Ignorance score
+#' Ignorance Score
 #'
-#' This score is suitable for tercile category forecasts. Using log2 for now (?).
+#' @description This score is suitable for tercile category forecasts. Using log2 for now (?).
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
@@ -604,11 +617,9 @@ IGS = function(dt,f = c('below','normal','above'),
 }
 
 
-
-
-#' Compute the Ignorance Skill score
+#' Ignorance Skill score
 #'
-#' This score is suitable for tercile category forecasts. Using log2 for now (?). This is the "usual" skill score
+#' @description This score is suitable for tercile category forecasts. Using log2 for now (?). This is the "usual" skill score
 #' (not the effective interest rate).
 #'
 #' @param dt Data table containing the predictions.
@@ -645,9 +656,9 @@ IGSS = function(dt,f = c('below','normal','above'),
 
 
 
-#' Compute the Multicategory Brier Skill score
+#' Multicategory Brier Skill score
 #'
-#' This score is suitable for tercile category forecasts.
+#' @description This score is suitable for tercile category forecasts.
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
@@ -678,10 +689,11 @@ MBS = function(dt,f = c('below','normal','above'),
 }
 
 
-
-#' Calculate the area under curve (AUC) or ROC-score from a vector of probabilities and corresponding observations
+#' ROC score (AUC)
+#'
+#' @description Calculates the area under curve (AUC) or ROC-score from a vector of probabilities and corresponding observations.
 #' Formula (1a) from Mason&2018 is used in the calculation, corresponding to trapezoidal interpolation.
-#' Mostly auxiliary function for the ROCS function, but also used in the ROC-diagram function, where the AUC is added to the diagrams.
+#' This is mostly an auxiliary function for the ROCS function, but also used in the ROC-diagram function, where the AUC is added to the diagrams.
 #'
 #' @param probs vector with probabilities (between 0 and 1)
 #' @param obs vector with categorical observations (as TRUE/FALSE)
@@ -706,10 +718,9 @@ roc_score_vec = function(probs,obs)
 }
 
 
-#' Compute the ROC-score/Area Under Curve(AUC)
+#' ROC-score/Area Under Curve(AUC)
 #'
-#' This score is not proper, but can be used to assess the resolution of a tercile forecast.
-#'
+#' @description This score is not proper, but can be used to assess the resolution of a tercile forecast.
 #' The ROC score requires more datapoints to be robust than e.g. the ignorance or Brier score. Therefore the default is to pool the data in space and only calculate one score per season.
 #'
 #' @param dt Data table containing the predictions.
@@ -747,7 +758,9 @@ ROCS = function(dt,f = c('below','normal','above'),
 }
 
 
-#' Calculate the Generalized discrimination score from a data.table with data belonging to a single group (as defined by the
+#' Generalized Discrimination score
+#'
+#' @description Calculate the Generalized discrimination score from a data.table with data belonging to a single group (as defined by the
 #' by variable in the DISS function), for example a single location and month.
 #' Formula (5a) from Mason&2018 is used in the calculation. Mostly auxiliary function for the DISS function.
 #'
@@ -797,10 +810,10 @@ disc_score_dt = function(year,obs,pB,pN,pA)
 }
 
 
-#' Compute the Generalized discrimination score
+#' Generalized discrimination score
 #'
-#' A generalisation of the ROC score for more than two categories.
-#' This score is not proper (??), but can be used to assess the discrimination of a tercile forecast.
+#' @description A generalisation of the ROC score for more than two categories.
+#' This score is not proper, but can be used to assess the discrimination of a tercile forecast.
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
@@ -831,9 +844,9 @@ DISS = function(dt,f = c('below','normal','above'),
 }
 
 
-#' Compute the Ranked Probability score
+#' Ranked Probability score
 #'
-#' This score is suitable for tercile category forecasts.
+#' @description This score is suitable for tercile category forecasts.
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
@@ -864,9 +877,9 @@ RPS = function(dt,f = c('below','normal','above'),
 }
 
 
-#' Compute the Ranked Probability skill score
+#' Ranked Probability skill score
 #'
-#' This score is suitable for tercile category forecasts.
+#' @description This score is suitable for tercile category forecasts.
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
@@ -905,15 +918,14 @@ RPSS = function(dt,f = c('below','normal','above'),
 }
 
 
-#' Compute Resolution scores
+#' Resolution score
 #'
-#' Computes both the resolution component of the Brier score or resolution component of the Ignorance score.
+#' @description Computes both the resolution component of the Brier score or resolution component of the Ignorance score.
 #' Mason claims to prefer the ignorance score version, but this has a very high chance of being NA (much higher
 #' than for the full ignorance score itself, I think we should drop it for that reason). Mason writes that the
 #' scores are unstable for single locations and that one should pool over many locations.
 #' Requires the specification of probability bins. One score for each category (below, normal, above) and
 #' also the sum of the scores.
-#'
 #' Values close to 0 means low resolution. Higher values mean higher resolution.
 #'
 #' @param dt Data table containing the predictions.
@@ -992,9 +1004,9 @@ RES = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
   return(RS_dt)
 }
 
-#' Compute Reliability scores
+#' Reliability score
 #'
-#' Computes both the reliability component of the Brier score or reliability component of the Ignorance score.
+#' @description Computes both the reliability component of the Brier score or reliability component of the Ignorance score.
 #' Mason claims to prefer the ignorance score version, but this has a very high chance of being NA. Mason writes that the
 #' scores are unstable for single locations and that one should pool over many locations.
 #' Requires the specification of probability bins. One score for each category (below, normal, above) and
@@ -1090,7 +1102,7 @@ REL = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
 
 #' Compute the slope of the reliability curve
 #'
-#' Values below 1 indicate a lack of resolution or overconfidence, 1 is perfect, above means underconfident.
+#' @description Values below 1 indicate a lack of resolution or overconfidence, 1 is perfect, above means underconfident.
 #' This score requires more datapoints to be robust than e.g. the ignorance or Brier score. Therefore the default is to pool the data in space and only calculate one score per season.
 #'
 #' @param dt Data table containing the predictions.

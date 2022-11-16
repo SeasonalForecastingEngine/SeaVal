@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{CRPSS}
 \alias{CRPSS}
-\title{Function for taking CRPS skill scores of ensemble forecasts stored in long data tables:}
+\title{Continuous Ranked Probability Skill Score}
 \usage{
 CRPSS(dt, f, o = "obs", by = by_cols_ens_fc_score(), pool = c("year"), ...)
 }
@@ -21,5 +21,6 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 \item{...}{passed on to CRPS_ens_fc, in particular mem and dim.check}
 }
 \description{
-Warning: The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology.
+Function for taking CRPS skill scores of ensemble forecasts stored in long data tables.
+The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology.
 }

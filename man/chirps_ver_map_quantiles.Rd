@@ -2,7 +2,7 @@
 % Please edit documentation in R/quantiles.R
 \name{chirps_ver_map_quantiles}
 \alias{chirps_ver_map_quantiles}
-\title{Calculates and saves the quantiles of CHIRPS data required for verification maps}
+\title{Calculates and saves the quantiles of CHIRPS data required for verification maps.}
 \usage{
 chirps_ver_map_quantiles(
   clim_period = 1991:2020,
@@ -22,5 +22,5 @@ chirps_ver_map_quantiles(
 \item{chirps_dir}{Top-level CHIRPS directory}
 }
 \description{
-Calculates and saves the quantiles of CHIRPS data required for verification maps
+Calculates and saves the quantiles of CHIRPS data required for verification maps.
 }

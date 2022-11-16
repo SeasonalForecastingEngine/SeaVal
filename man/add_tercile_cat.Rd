@@ -2,21 +2,24 @@
 % Please edit documentation in R/utils.R
 \name{add_tercile_cat}
 \alias{add_tercile_cat}
-\title{adds a column with the tercile category to a data table}
+\title{Add tercile category}
 \usage{
 add_tercile_cat(
   dt,
-  datacol = "prec",
-  by = intersect(c("month", "lon", "lat"), names(dt))
+  datacol = c("obs", "prec", "precipitation", "pred"),
+  by = setdiff(dimvars(dt), c("year", "member"))
 )
 }
 \arguments{
 \item{dt}{the data table.}
 
-\item{datacol}{Name of the column where the data is stored}
+\item{datacol}{Name of the column where the data is stored. If multiple are provided, the first name matching a column in dt is used.}
 
-\item{by}{names of columns to group by}
+\item{by}{names of columns to group by. Default is to group by everything except year and member, meaning that
+the tercile categories are calculated seperately for each spatial coordinate and each month/season.}
 }
 \description{
-adds a column with the tercile category to a data table
+Adds a column 'tercile_cat' with the tercile category to a data table with observations or predictions.
+The tercile_cat is -1 for values falling in the lowest tercile (below normal), 0 for normal, and 1 for above normal.
+terciles are calculated
 }

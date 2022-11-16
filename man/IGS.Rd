@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{IGS}
 \alias{IGS}
-\title{Compute the Ignorance score}
+\title{Ignorance Score}
 \usage{
 IGS(
   dt,

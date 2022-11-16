@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{CRPS}
 \alias{CRPS}
-\title{Taking CRPSs of ensemble forecasts stored in long data tables:}
+\title{Continuous Ranked Probability Score}
 \usage{
 CRPS(
   dt,

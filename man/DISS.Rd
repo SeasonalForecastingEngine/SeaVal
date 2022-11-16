@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{DISS}
 \alias{DISS}
-\title{Compute the Generalized discrimination score}
+\title{Generalized discrimination score}
 \usage{
 DISS(
   dt,
@@ -30,5 +30,5 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 }
 \description{
 A generalisation of the ROC score for more than two categories.
-This score is not proper (??), but can be used to assess the discrimination of a tercile forecast.
+This score is not proper, but can be used to assess the discrimination of a tercile forecast.
 }

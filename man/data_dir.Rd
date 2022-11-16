@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxiliary_functions.R
 \name{data_dir}
 \alias{data_dir}
-\title{Auxiliary function to access the directory used to load and save data. The first time this is called it asks the user to configure it.}
+\title{Auxiliary function to access and change the directory used to load and save data.}
 \usage{
 data_dir(set_dir = F)
 }
@@ -10,5 +10,5 @@ data_dir(set_dir = F)
 \item{set_dir}{logical. Set this to TRUE if you have to redefine your data directory.}
 }
 \description{
-Auxiliary function to access the directory used to load and save data. The first time this is called it asks the user to configure it.
+The first time this function is called, it asks the user to configure the directory.
 }

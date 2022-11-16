@@ -14,5 +14,7 @@ combine(dt1, dt2, ...)
 \item{...}{passed on to data.table::merge}
 }
 \description{
-Convenience wrapper for data.tables merge. Merges by dimvars and returns user-friendly warnings.
+Function for combining two data tables, e.g. with predictions and observations.
+This is essentially a user-friendly wrapper for data.tables merge that guesses the columns to merge by (the dimension variables
+contained in both data tables.
 }

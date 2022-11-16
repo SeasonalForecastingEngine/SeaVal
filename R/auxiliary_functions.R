@@ -19,7 +19,9 @@ by_cols_terc_fc_score = function(dt = NULL)
   return(setdiff(dimvars(dt),c('year','member')))
 }
 
-#' Some tercile forecasts, such as ROC score or SRC (slope of reliability curve) require many data points and should therefore be pooled in space
+#' Auxiliary function to get column names to group by when calculating scores for tercile forecasts.
+#'
+#' @description Some tercile forecasts, such as ROC score or SRC (slope of reliability curve) require many data points and should therefore be pooled in space
 #' This auxiliary function returns the default column names to group by for these scores. The suffix _sp stands for spatial pooling.
 #'
 #' @param dt optional. You can provide a data table, then the function returns the names of grouping variables in this data table.
@@ -33,6 +35,7 @@ by_cols_terc_fc_score_sp = function(dt = NULL)
 
 #' Auxiliary function for scores of ensemble forecasts. Checks whether the data table contains columns with names that are not allowed,
 #' or whether it is missing columns that are required.
+
 checks_ens_fc_score = function()
 {
   # inherit arguments passed to parent:
@@ -86,7 +89,14 @@ checks_terc_fc_score = function()
   }
 }
 
-#'Return the default column names that are considered to be coordinates rather than values:
+
+#' Get dimension variables
+#'
+#' @description The function returns all names currently considered dimension variables.
+#' Following the logic of netcdfs, data tables usually have columns specifying coordinates
+#' (or dimvars) and other columns containing data for these dimvars. Dimension variables can be spatial
+#' or temporal coordinates, or the lead time of a forecast or the member in an ensemble forecast, etc...
+#'
 #'@param dt Optional data table. If a data table is provided only the dimvars of the data table are returned.
 #'
 #'@export
@@ -103,7 +113,10 @@ dimvars = function(dt = NULL)
 }
 
 
-#' Auxiliary function to access the directory used to load and save data. The first time this is called it asks the user to configure it.
+#' Auxiliary function to access and change the directory used to load and save data.
+#'
+#' @description The first time this function is called, it asks the user to configure the directory.
+#'
 #' @param set_dir logical. Set this to TRUE if you have to redefine your data directory.
 #' @export
 
@@ -192,13 +205,15 @@ Use / on Linux (e.g. /nr/project/stat/CONFER/Data/) and \\ on Windows (e.g. C:\\
   return(dir)
 }
 
-#' Auxiliary function returning all column names indicating an observation-coordinate, i.e. a coordinate for which only one observation may exist.
+#' Auxiliary function returning observation dimvars.
 #'
-#' @param dt optional. You can provide a data table, then the function returns the names of spatial coordinate columns in this data table.
+#' Observation dimvars are column names in a data table that resemble coordinates for which only one observation may exist.
+#'
+#' @param dt optional. You can provide a data table, then the function returns the names of coordinate columns in this data table.
 #' @export
 obs_dimvars = function(dt = NULL)
 {
-  options = sort(c(space_dimvars(),'month','season','T','time','year'))
+  options = sort(c(space_dimvars(),time_dimvars()))
   if(is.null(dt))
   {
     return(options)
@@ -317,6 +332,19 @@ space_dimvars = function(dt = NULL)
   }
 }
 
+#' Auxiliary function returning all column names indicating a temporal coordinate.
+#' @param dt optional. You can provide a data table, then the function returns the names of temporal coordinate columns in this data table.
+#' @export
+time_dimvars = function(dt = NULL)
+{
+  options = c('month','season','T','time','year')
+  if(is.null(dt))
+  {
+    return(options)
+  } else {
+    return(intersect(options,names(dt)))
+  }
+}
 
 #' @importFrom utils globalVariables
 # For including all possible dimension variables in the devtools::check() run:

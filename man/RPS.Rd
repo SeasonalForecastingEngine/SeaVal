@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{RPS}
 \alias{RPS}
-\title{Compute the Ranked Probability score}
+\title{Ranked Probability score}
 \usage{
 RPS(
   dt,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/chirps.R
 \name{upscale_chirps}
 \alias{upscale_chirps}
-\title{Upscales the monthly CHIRPS data to a coarser grid and saves the resulting files as netcdf}
+\title{Upscales monthly CHIRPS data to a coarser grid}
 \usage{
 upscale_chirps(
   update = TRUE,
@@ -27,5 +27,5 @@ upscale_chirps(
 }
 \description{
 this is mostly auxiliary and called from download_chirps_monthly.
-Uses the function ForecastTools::upscale_regular_lon_lat, but derives the weights for upscaling only once for efficiency and avoids simultaneous loading of all CHIRPS data.
+Uses the function upscale_regular_lon_lat, but derives the weights for upscaling only once for efficiency and avoids simultaneous loading of all CHIRPS data.
 }

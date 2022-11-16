@@ -2,7 +2,7 @@
 % Please edit documentation in R/upscaling.R
 \name{upscale_regular_lon_lat}
 \alias{upscale_regular_lon_lat}
-\title{Function for upscaling data from a regular lon-lat grid to a coarser lon-lat grid}
+\title{Function for matching data between different grids}
 \usage{
 upscale_regular_lon_lat(
   dt,
@@ -27,24 +27,38 @@ upscale_regular_lon_lat(
 \item{tol}{tolerance parameter used for grid matching, in order to deal with rounding errors present in the coordinates. The gridpoint areas are calculated with this precision, so the output has errors of this order of magnitude.}
 }
 \description{
+This function upscales data from one regular lon-lat grid to another lon-lat grid that is coarser or of the same resolution.
+It uses conservative interpolation rather than bilinear interpolation.
+Bilinear interpolation is generally not appropriate for mapping data to coarser grids (because the value of a coarse grid cell
+would only depend on the four fine grid cells surrounding its center coordinate, even though many fine grid cells may overlap the coarse grid cell).
+
+When working with grids of the same resolution, bilinear interpolation and conservative interpolation are almost identical.
+However, even in this situation conservative interpolation is preferable, because it can account for the fact that the
+Earth is round, which bilinear interpolation on lon/lat-grids generally ignores.
+
 For validating predictions against gridded data and comparing different forecast systems, it is often necessary to map data to the same grid (usually the coarsest of the involved grids).
 Gridded predictions and observations constitute grid point averages, see \href{https://rmets.onlinelibrary.wiley.com/doi/pdfdirect/10.1002/met.78}{this paper}.
 This means that the upscaled value assigned to a coarse grid cell should be a weighted average of the values of the fine grid cells overlapping the coarse cell, with the weighting accounting for the
-area of overlap. This function does this for you, as long as both the fine grid and the coarse grid are regular grids in lon/lat (consisting of lon/lat rectangles). It addresses the following challenges:
+area of overlap. This function does this for you, as long as both the fine grid and the coarse grid are regular grids in lon/lat (consisting of lon/lat rectangles).
+
+The function addresses the following major challenges:
 \itemize{
-\item The fine grid does not need to be nested in the coarse grid, creating different partial overlap scenarios. Therefore the value of each fine grid cell may contribute to multiple (up to four) coarse grid cells.
-\item Grid cell area depends on latitude, grid cells at the equator are much larger than at the poles. This affects the contribution of each fine grid cell (grid cells closer to the pole contribute less to the coarse grid cell average).
+\item The fine grid does not need to be nested in the coarse grid, creating different partial overlap scenarios. Therefore, the value of each fine grid cell may contribute to multiple (up to four) coarse grid cells.
+\item Grid cell area varies with latitude, grid cells at the equator are much larger than at the poles. This affects the contribution of grid cells (grid cells closer to the pole contribute less to the coarse grid cell average).
 \item Naive merging of data tables or distance-based matching of grid cells frequently results in unnecessary large lookup tables that may not fit into memory when both your fine and your coarse grid are high-resolution.
-\item Frequently, you need to upscale \emph{repeated} data between the same grids, for example when you want to upscale observations for many different dates. In this case, the matching between the grids should only be derived once,
-and not be repeated every time.
+\item Frequently, it is required to upscale \emph{repeated} data between the same grids, for example when you want to upscale observations for many different dates.
+In this case, the calculation of grid cell overlaps should only be done once, and not repeated every time.
 }
+
 The function will still work when the coarse grid is of the same resolution as the fine grid (when the grids are just spatially shifted), but it won't work when the coarse grid is in fact finer than the fine grid
 (in this case there might be coarse grid cells that are fully contained in a fine grid, which is not accounted for).
 
 In the current implementation, a coarse grid cell gets assigned a value if it overlaps with at least one fine grid cell containing a value. When your large grid spans a wider geographic area,
-this can mean that the large grid cells at the border of your data get assigned a value even when they only have a fraction of overlap with a small grid cell. This can be problematic, in particular when your coarse grid is much coarser
-than the fine grid.
+this can mean that the large grid cells at the border of your data get assigned a value even when they only have a fraction of overlap with a small grid cell.
+This can be problematic, as bordering grid cells exhibit different variance, for example. I am not aware of a better way to solve this problem when resolution is very different.
+However, it would be at least nice to have an option to assign missing values to coarse grid cells overlapping with NA-regions in the fine grid, but this is not so easy to implement.
+Again, using bilinear interpolation runs into the same issue.
 
-Even though the grids are assumed to be regular, the function allows for missing data in the form of missing grid points in dt (so you don't have to 'squarify' it, adding NAs before upscaling). In fact, the function is
-faster when missing-data-grid-points are not contained in dt (since fewer grid points need to be matched).
+Even though the grids are assumed to be regular, the function allows for missing data in the form of missing grid points in dt (so you don't have to 'squarify' it, adding NAs before upscaling).
+In fact, the function is faster when missing-data-grid-points are not contained in dt (since fewer grid points need to be matched).
 }

@@ -2,13 +2,13 @@
 % Please edit documentation in R/auxiliary_functions.R
 \name{obs_dimvars}
 \alias{obs_dimvars}
-\title{Auxiliary function returning all column names indicating an observation-coordinate, i.e. a coordinate for which only one observation may exist.}
+\title{Auxiliary function returning observation dimvars.}
 \usage{
 obs_dimvars(dt = NULL)
 }
 \arguments{
-\item{dt}{optional. You can provide a data table, then the function returns the names of spatial coordinate columns in this data table.}
+\item{dt}{optional. You can provide a data table, then the function returns the names of coordinate columns in this data table.}
 }
 \description{
-Auxiliary function returning all column names indicating an observation-coordinate, i.e. a coordinate for which only one observation may exist.
+Observation dimvars are column names in a data table that resemble coordinates for which only one observation may exist.
 }

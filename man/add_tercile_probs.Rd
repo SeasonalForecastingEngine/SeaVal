@@ -2,9 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{add_tercile_probs}
 \alias{add_tercile_probs}
-\title{Adds columns 'below', 'normal' and 'above', containing predicted tercile probabilities, to a data table with ensemble forecasts.
-The data table should either already have a column 'tercile_cat' (as would be added by \code{add_tercile_cat}),
-or \code{add_tercile_cat} will be run first.}
+\title{Add tercile probabilities to ensemble forecasts}
 \usage{
 add_tercile_probs(dt, by = setdiff(dimvars(dt), "member"), ...)
 }
@@ -17,6 +15,7 @@ add_tercile_probs(dt, by = setdiff(dimvars(dt), "member"), ...)
 }
 \description{
 Adds columns 'below', 'normal' and 'above', containing predicted tercile probabilities, to a data table with ensemble forecasts.
-The data table should either already have a column 'tercile_cat' (as would be added by \code{add_tercile_cat}),
+The predicted probability is always the fraction of members ending up in the respective tercile.
+The data table should either already have a column 'tercile_cat' (added by \code{add_tercile_cat}),
 or \code{add_tercile_cat} will be run first.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/diagrams.R
 \name{create_diagram_by_level}
 \alias{create_diagram_by_level}
-\title{Auxiliary function to allow intuitive grouping for diagrams}
+\title{Auxiliary function to simplify grouping for diagrams}
 \usage{
 create_diagram_by_level(FUN, by, dt, ...)
 }
@@ -17,5 +17,5 @@ create_diagram_by_level(FUN, by, dt, ...)
 }
 \description{
 Only works for functions that return a single plot if by == NULL.
-Not the case for some functions plotting results for all three categories, e.g. reliability diagrams or ROC curves.
+This is not the case for some functions plotting results for all three categories, e.g. reliability diagrams or ROC curves.
 }

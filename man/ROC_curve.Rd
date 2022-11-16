@@ -2,10 +2,7 @@
 % Please edit documentation in R/diagrams.R
 \name{ROC_curve}
 \alias{ROC_curve}
-\title{Creates ROC curves from a data table containing tercile forecasts. It wraps \code{roc_curve_vec}.
-By default, 4 ROC-curves are drawn, one for each the prediction of above-, normal- and below-values, plus one for all forecasts together.
-You can provide a 'by' argument to obtain separate ROC-curves for different values of the by-columns. E.g., when your data table contains
-a column named 'season', you can set by = 'season'. Then, the function will output a list of 16 ROC-curvess, 4 for each season.}
+\title{ROC curve for tercile forecasts}
 \usage{
 ROC_curve(
   dt,

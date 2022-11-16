@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{REL}
 \alias{REL}
-\title{Compute Reliability scores}
+\title{Reliability score}
 \usage{
 REL(
   dt,
@@ -37,7 +37,6 @@ Mason claims to prefer the ignorance score version, but this has a very high cha
 scores are unstable for single locations and that one should pool over many locations.
 Requires the specification of probability bins. One score for each category (below, normal, above) and
 also the sum of the scores.
-}
-\details{
+
 Values close to 0 indicate reliable forecasts. Higher values mean less reliable forecasts.
 }

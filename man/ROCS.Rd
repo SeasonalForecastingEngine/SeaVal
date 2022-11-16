@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{ROCS}
 \alias{ROCS}
-\title{Compute the ROC-score/Area Under Curve(AUC)}
+\title{ROC-score/Area Under Curve(AUC)}
 \usage{
 ROCS(
   dt,
@@ -30,7 +30,5 @@ Default is to group by all instances of month, season, system and lead_time that
 }
 \description{
 This score is not proper, but can be used to assess the resolution of a tercile forecast.
-}
-\details{
 The ROC score requires more datapoints to be robust than e.g. the ignorance or Brier score. Therefore the default is to pool the data in space and only calculate one score per season.
 }

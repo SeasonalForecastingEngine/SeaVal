@@ -2,18 +2,17 @@
 % Please edit documentation in R/utils.R
 \name{add_country_names}
 \alias{add_country_names}
-\title{Takes a data table with lon/lat coordinates and returns the same data table with a new column 'country' containing the countryname
-of each coordinate. Usually you'd do this using sf, but that introduces dependency to gdal which we want to avoid.}
+\title{Add country names to a data table}
 \usage{
 add_country_names(dt, load_continent = "Africa")
 }
 \arguments{
 \item{dt}{the data table.}
 
-\item{load_continent}{which continent to load. Loading only one continent makes the function faster.
-Put NULL if you have data across several continents}
+\item{load_continent}{which continent to load. Loading only one continent makes the function faster. Default is Africa.
+Put NULL if you have data across several continents.}
 }
 \description{
-Takes a data table with lon/lat coordinates and returns the same data table with a new column 'country' containing the countryname
-of each coordinate. Usually you'd do this using sf, but that introduces dependency to gdal which we want to avoid.
+Takes a data table with lon/lat coordinates and returns the same data table with a new column 'country' containing the country name
+of each coordinate.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/scores.R
 \name{PCC}
 \alias{PCC}
-\title{Function for calculating Pearson correlation coefficients (PCCs) of ensemble mean forecasts stored in long data tables:}
+\title{Pearson Correlation Coefficient}
 \usage{
 PCC(
   dt,
@@ -32,6 +32,7 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 The data table should only have one row for each level of c(by,pool,mem)}
 }
 \description{
+Function for calculating Pearson correlation coefficients (PCCs) of ensemble mean forecasts stored in long data tables.
 Can also handle point forecasts.
-Warning: This metric always needs several years of data since the means and standard deviations are calculated across time.
+This metric always needs several years of data since the means and standard deviations are calculated across time.
 }
