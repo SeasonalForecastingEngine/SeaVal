@@ -153,7 +153,10 @@ combine = function(dt1,dt2,...)
     warning(paste0('The columns ',paste(common_cols,collapse = ', '),' were contained in both data tables but are not recognized as dimension variables.\n
 Their names have changed. If that is not what you wanted use data.table::merge instead.'))
   }
-  return(merge(dt1,dt2,by = common_dimvars,...))
+  ret_dt = merge(dt1,dt2,by = common_dimvars,...)
+  if(ret_dt[,.N] == 0) error('The resulting data table is empty. Did the two data tables use different spatial grids?')
+
+  return(ret_dt)
 }
 
 

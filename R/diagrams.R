@@ -149,8 +149,9 @@ round_probs = function(probs,binwidth = 0.05)
 }
 
 
-#' Create a reliability diagram from a vector of probabilities and observations. The probabilities have to be rounded beforehand
-#' (see \code{round_probs}), because the diagram draws a point for each level of the probabilities. The diagram includes a histogram indicating
+#' Create a reliability diagram from a vector of probabilities and observations
+#'
+#' The probabilities have to be rounded beforehand (see \code{round_probs}), because the diagram draws a point for each level of the probabilities. The diagram includes a histogram indicating
 #' the forecast relative frequency for each probability bin. The diagram shows the reliability curve and the diagonal for reference.
 #' Moreover, it shows a regression line fitted by weighted linear regression where the forecast relative frequencies are used as weights.
 #' A horizontal and vertical line indicate the frequency of observation = TRUE over the entire dataset.
@@ -179,7 +180,7 @@ rel_diag_vec = function(discrete_probs, obs, slope_only = FALSE)
   if(rel_diag_dt[,mean(count)] <= 5)
   {
     percentage = 100/(rel_diag_dt[,.N] - 1)
-    warning(paste0('On average you have only ',rel_diag_dt[,mean(count)],' observations per category. Consider coarser discretization.'))
+    warning(paste0('On average you have only ',round(rel_diag_dt[,mean(count)],2),' observations per category. Consider coarser discretization.'))
   }
 
   rel_diag_dt[,frequency := count/sum(count) * 100]
@@ -211,7 +212,10 @@ rel_diag_vec = function(discrete_probs, obs, slope_only = FALSE)
 
 
 
-#' Creates reliability diagrams from a data table containing tercile forecasts. It wraps \code{rel_diag_vec}, see \code{?rel_diag_vec} for details
+#' Reliability Diagrams
+#'
+#' Creates reliability diagrams from a data table containing tercile forecasts
+#' #' It wraps \code{rel_diag_vec}, see \code{?rel_diag_vec} for more details.
 #' about the output diagrams. The output format is very much inspired by Figure 5 of Mason&2018. By default, 4 diagrams are drawn,
 #' one for each the prediction of above-, normal- and below-values, plus one for  all forecasts together.
 #' You can provide a 'by' argument to obtain separate reliability diagrams for different values of the by-columns. E.g., when you data table contains

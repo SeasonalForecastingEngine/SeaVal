@@ -8,7 +8,8 @@ chirps_ver_map_quantiles(
   clim_period = 1991:2020,
   version = "UCSB",
   resolution = "low",
-  chirps_dir = chirps_dir()
+  CHIRPS_dir = chirps_dir(),
+  seasons = TRUE
 )
 }
 \arguments{

@@ -198,7 +198,7 @@ Use / on Linux (e.g. /nr/project/stat/CONFER/Data/) and \\ on Windows (e.g. C:\\
 #' @export
 obs_dimvars = function(dt = NULL)
 {
-  options = sort(c(space_dimvars(),'month','season','T','year'))
+  options = sort(c(space_dimvars(),'month','season','T','time','year'))
   if(is.null(dt))
   {
     return(options)

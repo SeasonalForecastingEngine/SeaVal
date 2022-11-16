@@ -2,11 +2,7 @@
 % Please edit documentation in R/diagrams.R
 \name{rel_diag_vec}
 \alias{rel_diag_vec}
-\title{Create a reliability diagram from a vector of probabilities and observations. The probabilities have to be rounded beforehand
-(see \code{round_probs}), because the diagram draws a point for each level of the probabilities. The diagram includes a histogram indicating
-the forecast relative frequency for each probability bin. The diagram shows the reliability curve and the diagonal for reference.
-Moreover, it shows a regression line fitted by weighted linear regression where the forecast relative frequencies are used as weights.
-A horizontal and vertical line indicate the frequency of observation = TRUE over the entire dataset.}
+\title{Create a reliability diagram from a vector of probabilities and observations}
 \usage{
 rel_diag_vec(discrete_probs, obs, slope_only = FALSE)
 }
@@ -18,8 +14,7 @@ rel_diag_vec(discrete_probs, obs, slope_only = FALSE)
 \item{slope_only}{logical. If set to TRUE, only the slope of the reliability curve is returned}
 }
 \description{
-Create a reliability diagram from a vector of probabilities and observations. The probabilities have to be rounded beforehand
-(see \code{round_probs}), because the diagram draws a point for each level of the probabilities. The diagram includes a histogram indicating
+The probabilities have to be rounded beforehand (see \code{round_probs}), because the diagram draws a point for each level of the probabilities. The diagram includes a histogram indicating
 the forecast relative frequency for each probability bin. The diagram shows the reliability curve and the diagonal for reference.
 Moreover, it shows a regression line fitted by weighted linear regression where the forecast relative frequencies are used as weights.
 A horizontal and vertical line indicate the frequency of observation = TRUE over the entire dataset.
