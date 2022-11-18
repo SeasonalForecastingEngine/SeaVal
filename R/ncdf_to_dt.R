@@ -154,7 +154,7 @@ netcdf_to_dt = function(nc, vars = NULL,
   if(is.character(nc))
   {
     if(!file.exists(nc)) stop(paste0('The file ',nc,' does not exist.\nRemember that you need to include the path to the directory the file is located in.'))
-    nc = nc_open(nc)
+    nc = ncdf4::nc_open(nc)
   }
   if(verbose == 2) print(nc)
 
@@ -287,7 +287,7 @@ netcdf_to_dt = function(nc, vars = NULL,
     cat(catout)
   }
 
-  nc_close(nc)
+  ncdf4::nc_close(nc)
 
   return(dt_list)
 }
@@ -319,7 +319,7 @@ netcdf_to_dt = function(nc, vars = NULL,
 dt_to_netcdf = function(dt,nc_out,
                         vars = NULL,
                         units = NULL,
-                        dim_vars = dim_vars(dt), dim_var_units = NULL,
+                        dim_vars = dimvars(dt), dim_var_units = NULL,
                         check = TRUE,
                         description = NULL)
 {
@@ -337,11 +337,11 @@ dt_to_netcdf = function(dt,nc_out,
     vars = setdiff(names(dt),dim_vars)
     if(check)
     {
-    test = readline(prompt = paste0("You didn't provide information which columns of dt are dimvars and which are variables.
+    test = readline(prompt = paste0("You didn't provide information which columns of dt are dim_vars and which are variables.
 My guess would be\nvariables: ",paste(vars,collapse = ', '),
-"\ndimvars: ",paste(dim_vars,collapse = ', '),
+"\ndim_vars: ",paste(dim_vars,collapse = ', '),
 "\nIs that ok?  [y/n]"))
-    if(test != 'y') stop('please provide vars and dimvars manually.')
+    if(test != 'y') stop('please provide vars and dim_vars manually.')
     }
   }
 
@@ -371,7 +371,7 @@ My guess would be\nvariables: ",paste(vars,collapse = ', '),
       }
     }
 
-    dim_var = ncdim_def(name = dv,units = unit,vals = vals)
+    dim_var = ncdf4::ncdim_def(name = dv,units = unit,vals = vals)
     dim_vars_ncdf = c(dim_vars_ncdf,list(dim_var))
     dim_list = c(dim_list,temp)
   }
@@ -397,28 +397,28 @@ My guess would be\nvariables: ",paste(vars,collapse = ', '),
       unit = units[ii]
     }
 
-    ncvar = ncvar_def(name = v,
-                      units = unit,
-                      dim = dim_vars_ncdf,
-                      missval = NA)
+    ncvar = ncdf4::ncvar_def(name = v,
+                             units = unit,
+                             dim = dim_vars_ncdf,
+                             missval = NA)
 
     vars_ncdf = c(vars_ncdf,list(ncvar))
   }
 
   # write the netcdf file:
-    nc = nc_create(filename = nc_out,vars = c(vars_ncdf))
+    nc = ncdf4::nc_create(filename = nc_out,vars = c(vars_ncdf))
 
   for(ii in seq_along(vars))
   {
     v = vars[ii]
     values = dt[,get(v)]
 
-    ncvar_put(nc, varid = vars[ii],vals = values)
+    ncdf4::ncvar_put(nc, varid = vars[ii],vals = values)
   }
 
   if(!is.null(description))
   {
-    ncatt_put(nc,varid = 0,attname = 'Description',attval = description)
+    ncdf4::ncatt_put(nc,varid = 0,attname = 'Description',attval = description)
   }
-  nc_close(nc)
+    ncdf4::nc_close(nc)
 }
