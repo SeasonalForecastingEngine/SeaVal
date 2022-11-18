@@ -14,6 +14,11 @@
 
 add_country_names = function(dt,load_continent = 'Africa')
 {
+  if('country' %in% names(dt))
+  {
+    return(dt)
+  }
+
   world <- rnaturalearth::ne_countries(scale = "large", continent = 'Africa')
 
   coords = unique(dt[,.(lon,lat)])
@@ -244,7 +249,7 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 0.5)
   cs = unique(dt[country %in% ct,.(lon,lat,country)])
   if(!rectangle)
   {
-    return(merge(dt,cs,by = c('lon','lat'))[,country := NULL])
+    return(merge(dt,cs,by = c('lon','lat','country'))[,country := NULL])
   }
   if(rectangle)
   {
