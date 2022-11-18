@@ -10,6 +10,7 @@
 #' @export
 #' @importFrom rnaturalearth ne_countries
 #' @importFrom sp coordinates proj4string over
+#' @importFrom raster crs
 
 add_country_names = function(dt,load_continent = 'Africa')
 {
@@ -19,7 +20,7 @@ add_country_names = function(dt,load_continent = 'Africa')
   # get coords as spatial points:
   sp_lonlat = data.table(x = coords[,lon], y = coords[,lat])
   sp::coordinates(sp_lonlat) = c('x','y')
-  sp::proj4string(sp_lonlat) = sp::CRS("+proj=longlat +datum=WGS84 +no_defs")
+  sp::proj4string(sp_lonlat) = raster::crs(world)
 
   #in which country does each point fall?
   cs = sp::over(sp_lonlat,world)

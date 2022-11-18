@@ -616,7 +616,7 @@ upscale_chirps = function(update = TRUE,
                      dim_vars = c('lon','lat','T'),
                      dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
                      nc_out = nc_out,
-                     check = 'y')
+                     check = TRUE)
       }
     }
   }

@@ -9,7 +9,7 @@ dt_to_netcdf(
   nc_out,
   vars = NULL,
   units = NULL,
-  dim_vars = dim_vars(dt),
+  dim_vars = dimvars(dt),
   dim_var_units = NULL,
   check = TRUE,
   description = NULL
