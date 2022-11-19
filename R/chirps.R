@@ -366,7 +366,7 @@ download_chirps_monthly_low = function(update,
                      dim_vars = c('lon','lat','T'),
                      dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
                      nc_out = nc_out,
-                     check = 'y')
+                     check = TRUE)
 
         invisible(file.remove(fn))
       }
@@ -408,7 +408,7 @@ download_chirps_monthly_low = function(update,
                      dim_vars = c('lon','lat','T'),
                      dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
                      nc_out = nc_out,
-                     check = 'y')
+                     check = TRUE)
         # get rid of the big one:
         invisible(file.remove(fn))
       }
@@ -524,7 +524,7 @@ upscale_chirps = function(update = TRUE,
                      dim_vars = c('lon','lat','T'),
                      dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
                      nc_out = nc_out,
-                     check = 'y')
+                     check = TRUE)
       } else { # now it follows the upscale part for situations where the weights have been saved already.
         upscale_weights = fread(file.path(us_dir,'temp.csv'))
 
@@ -550,7 +550,7 @@ upscale_chirps = function(update = TRUE,
                      dim_vars = c('lon','lat','T'),
                      dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
                      nc_out = nc_out,
-                     check = 'y')
+                     check = TRUE)
         }
     }
     file.remove(file.path(us_dir,'temp.csv'),showWarnings = FALSE)
@@ -590,7 +590,7 @@ upscale_chirps = function(update = TRUE,
                      dim_vars = c('lon','lat','T'),
                      dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
                      nc_out = nc_out,
-                     check = 'y')
+                     check = TRUE)
       } else { # now it follows the upscale part for situations where the weights have been saved already.
         upscale_weights = fread(file.path(prelim_us_dir,'temp.csv'))
 
