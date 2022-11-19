@@ -708,8 +708,8 @@ roc_score_vec = function(probs,obs)
   temp = data.table(prob = probs,obs = obs)
   setorder(temp,prob,obs) # sort by probability. For multiple entries with equal probabilities, sort the ones with obs == TRUE last.
 
-  n1 = temp[(obs),.N]
-  n0 = temp[!(obs),.N]
+  n1 = as.numeric(temp[(obs),.N])# as.numeric to prevent integer overflow in n1*n0 when working with large datasets.
+  n0 = as.numeric(temp[!(obs),.N])
   temp[,countzeros := cumsum(!obs)] # counts for each entry how many zero-observations have happened previously, including the ones with the same probability as the entry.
   temp[,countzeros2 := 0.5*cumsum(!obs),by = prob] # counts for each entry how many zero-observations have happened with the same probability as the entry.
 
