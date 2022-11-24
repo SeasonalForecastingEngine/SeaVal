@@ -79,7 +79,7 @@ It is calculated separately for each ',paste(by,collapse = ', ')))
 
 add_country_names = function(dt,load_continent = 'Africa')
 {
-  world <- rnaturalearth::ne_countries(scale = "large", continent = 'Africa')
+  #world <- rnaturalearth::ne_countries(scale = "large", continent = 'Africa')
 
   coords = unique(dt[,.(lon,lat)])
   # get coords as spatial points:

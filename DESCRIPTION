@@ -24,7 +24,6 @@ Encoding: UTF-8
 Depends: 
     R (>= 2.10)
 Imports: 
-  boot,
   data.table,
   ggplot2,
   ggplotify,
@@ -32,7 +31,6 @@ Imports:
   Matrix,
   ncdf4,
   RColorBrewer,
-  rnaturalearth,
   scoringRules,
   sp
 LazyData: true
@@ -40,7 +38,6 @@ RoxygenNote: 7.1.2
 Collate: 
     'auxiliary_functions.R'
     'chirps.R'
-    'confer_validation.R'
     'data.R'
     'data_wrangling.R'
     'diagrams.R'
