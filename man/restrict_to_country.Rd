@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{restrict_to_country}
 \alias{restrict_to_country}
-\title{Restrict data to a specified country}
+\title{restricts data to a specified country}
 \usage{
 restrict_to_country(dt, ct, rectangle = FALSE, tol = 0.5)
 }
