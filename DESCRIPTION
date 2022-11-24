@@ -31,7 +31,6 @@ Imports:
   ggpubr,
   Matrix,
   ncdf4,
-  raster,
   RColorBrewer,
   rnaturalearth,
   scoringRules,
