@@ -15,8 +15,7 @@
 #' @param data_cols For which columns do you want to derive the climatology?
 #' The default i
 #' @export
-#' @importFrom rnaturalearth ne_countries
-#' @importFrom sp coordinates proj4string over
+#'
 
 add_climatology = function(dt,years = NULL,data_cols = NULL,by = dimvars(dt))
 {
@@ -70,25 +69,36 @@ It is calculated separately for each ',paste(by,collapse = ', ')))
 #' of each coordinate. Usually you'd do this using sf, but that introduces dependency to gdal which we want to avoid.
 #'
 #' @param dt the data table.
-#' @param load_continent which continent to load. Loading only one continent makes the function faster.
-#' Put NULL if you have data across several continents
+#' @param regions Character vector of country names for which shapefiles are loaded.
+#' By default, countries in East Africa are loaded, see EA_country_names.
+#' If you set regions = '.', the entire world is loaded, but this makes the function slower.
 #'
 #' @export
-#' @importFrom rnaturalearth ne_countries
+#' @importFrom maps map
 #' @importFrom sp coordinates proj4string over
 
-add_country_names = function(dt,load_continent = 'Africa')
+add_country_names = function(dt,regions = EA_country_names())
 {
+  world_map = maps::map('world',
+                        regions = regions,
+                        fill = TRUE, col = 'transparent',
+                        plot = FALSE, resolution = 0)
+
+  IDs <- sapply(strsplit(world_map$names, ":"), function(x) x[1])
+
+  map_sp <- maptools::map2SpatialPolygons(world_map, IDs=IDs,
+                                          proj4string=CRS("+proj=longlat +datum=WGS84"))
+
   #world <- rnaturalearth::ne_countries(scale = "large", continent = 'Africa')
 
   coords = unique(dt[,.(lon,lat)])
   # get coords as spatial points:
   sp_lonlat = data.table(x = coords[,lon], y = coords[,lat])
   sp::coordinates(sp_lonlat) = c('x','y')
-  sp::proj4string(sp_lonlat) = sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+  sp::proj4string(sp_lonlat) = sp::CRS("+proj=longlat +datum=WGS84")
 
   #in which country does each point fall?
-  cs = sp::over(sp_lonlat,world)
+  cs = sp::over(sp_lonlat,map_sp)
 
   coords[,country := cs$geounit]
 

@@ -5,13 +5,14 @@
 \title{Takes a data table with lon/lat coordinates and returns the same data table with a new column 'country' containing the countryname
 of each coordinate. Usually you'd do this using sf, but that introduces dependency to gdal which we want to avoid.}
 \usage{
-add_country_names(dt, load_continent = "Africa")
+add_country_names(dt, regions = EA_country_names())
 }
 \arguments{
 \item{dt}{the data table.}
 
-\item{load_continent}{which continent to load. Loading only one continent makes the function faster.
-Put NULL if you have data across several continents}
+\item{regions}{Character vector of country names for which shapefiles are loaded.
+By default, countries in East Africa are loaded, see EA_country_names.
+If you set regions = '.', the entire world is loaded, but this makes the function slower.}
 }
 \description{
 Takes a data table with lon/lat coordinates and returns the same data table with a new column 'country' containing the countryname

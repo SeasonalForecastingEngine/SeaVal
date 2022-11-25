@@ -4,7 +4,7 @@
 \alias{add_country}
 \title{Same as add_country_names}
 \usage{
-add_country(dt, load_continent = "Africa")
+add_country(dt, regions = EA_country_names())
 }
 \description{
 This is a synonyme for add_country_names.
