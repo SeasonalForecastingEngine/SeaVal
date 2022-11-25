@@ -27,8 +27,11 @@ Imports:
   data.table,
   ggplot2,
   ggplotify,
+  maps,
+  maptools,
   Matrix,
   ncdf4,
+  patchwork,
   RColorBrewer,
   scoringRules,
   sp
@@ -39,6 +42,7 @@ Collate:
     'chirps.R'
     'data.R'
     'data_wrangling.R'
+    'diagrams.R'
     'ncdf_to_dt.R'
     'plotting.R'
     'quantiles.R'

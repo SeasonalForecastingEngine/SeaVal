@@ -205,6 +205,20 @@ Use / on Linux (e.g. /nr/project/stat/CONFER/Data/) and \\ on Windows (e.g. C:\\
   return(dir)
 }
 
+#' Get names of countries in east Africa
+#'
+#' This is an auxiliary function used in \link{add_country_names}, so only these names are recognized
+#' by default.
+#'
+#' @export
+
+EA_country_names = function()
+{ return(
+  c('Burundi','Djibouti', 'Eritrea','Ethiopia',
+    'Kenya','Rwanda','Somalia','Somaliland',
+    'South Sudan','Sudan','Tanzania','Uganda'))
+}
+
 #' Auxiliary function returning observation dimvars.
 #'
 #' Observation dimvars are column names in a data table that resemble coordinates for which only one observation may exist.

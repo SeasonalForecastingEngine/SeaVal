@@ -64,17 +64,26 @@ It is calculated separately for each ',paste(by,collapse = ', ')))
 }
 
 
-
-#' Takes a data table with lon/lat coordinates and returns the same data table with a new column 'country' containing the countryname
-#' of each coordinate. Usually you'd do this using sf, but that introduces dependency to gdal which we want to avoid.
+#' Add country names to a data table with lon/lat coordinates
+#'
+#' @description Takes a data table with lon/lat coordinates and adds a column
+#' 'country' to it, containing the name of the country, the coordinate belongs to.
+#'
+#' NOTE: We avoid dependencies on \pkg{sf} and \pkg{rnaturalearth}, which require gdal.
+#' In particular, gdal is currently not available on ICPACs hpc, one of the key
+#' environments where \pkg{SeaVal} is run in. We follow the 'older approach' relying
+#' on the packages \pkg{maps}, \pkg{maptools}, and \pkg{sp} for getting shapefiles of
+#' all countries.
+#'
 #'
 #' @param dt the data table.
 #' @param regions Character vector of country names for which shapefiles are loaded.
-#' By default, countries in East Africa are loaded, see EA_country_names.
+#' By default, countries in East Africa are loaded, see \code{\link{EA_country_names}}.
 #' If you set regions = '.', the entire world is loaded, but this makes the function slower.
 #'
 #' @export
 #' @importFrom maps map
+#' @importFrom maptools map2SpatialPolygons
 #' @importFrom sp coordinates proj4string over
 
 add_country_names = function(dt,regions = EA_country_names())
@@ -87,7 +96,7 @@ add_country_names = function(dt,regions = EA_country_names())
   IDs <- sapply(strsplit(world_map$names, ":"), function(x) x[1])
 
   map_sp <- maptools::map2SpatialPolygons(world_map, IDs=IDs,
-                                          proj4string=CRS("+proj=longlat +datum=WGS84"))
+                                          proj4string=sp::CRS("+proj=longlat +datum=WGS84"))
 
   #world <- rnaturalearth::ne_countries(scale = "large", continent = 'Africa')
 
@@ -98,11 +107,14 @@ add_country_names = function(dt,regions = EA_country_names())
   sp::proj4string(sp_lonlat) = sp::CRS("+proj=longlat +datum=WGS84")
 
   #in which country does each point fall?
-  cs = sp::over(sp_lonlat,map_sp)
+  cs = names(map_sp)[sp::over(sp_lonlat,map_sp)]
 
-  coords[,country := cs$geounit]
+  coords[,country := cs]
+  dt_new = merge(dt,coords,by = c('lon','lat'),sort = FALSE) # sort = FALSE for next line
+  # add column to provided data table:
+  dt[,country:=dt_new[,country]]
 
-  return(merge(dt,coords,by = c('lon','lat')))
+  return(dt)
 }
 
 #' Same as add_country_names
@@ -129,7 +141,7 @@ add_tercile_cat = function(dt,
                            by = setdiff(dimvars(dt),c('year','member')))
 {
   tercile_cat = NULL
-  dt = dt[!is.na(get(data_col))]
+  # dt = dt[!is.na(get(datacol))] If you have this one in here, it does not add a column to existing object
   if(!is.null(years))
   {
     terciles = dt[year %in% years,.(lower_tercile = stats::quantile(get(datacol),0.33),
@@ -198,6 +210,41 @@ climatology_threshold_exceedence = function(obs_dt,
     thr_dt[,threshold := thr]
     ret_dt = rbindlist(list(ret_dt,thr_dt))
   }
+  return(ret_dt)
+}
+
+#' Combine two data tables
+#'
+#' @description Function for combining two data tables, e.g. with predictions and observations.
+#' This is essentially a user-friendly wrapper for data.tables merge that guesses the columns to merge by (the dimension variables
+#' contained in both data tables.
+#'
+#' @param dt1 first data table
+#' @param dt2 second data table
+#' @param ... passed on to data.table::merge
+#'
+#' @export
+
+combine = function(dt1,dt2,...)
+{
+  dv1 = dimvars(dt1)
+  dv2 = dimvars(dt2)
+  common_dimvars = intersect(dv1,dv2)
+  if(length(common_dimvars)==0)
+  {
+    stop('The data tables do not seem to have any common dimension variables, so I cannot combine them.')
+  }
+
+  common_cols = intersect(setdiff(names(dt1),dv1),setdiff(names(dt2),dv2))
+
+  if(length(common_cols) >0)
+  {
+    warning(paste0('The columns ',paste(common_cols,collapse = ', '),' were contained in both data tables but are not recognized as dimension variables.\n
+Their names have changed. If you do not want this, use data.table::merge instead.'))
+  }
+  ret_dt = merge(dt1,dt2,by = common_dimvars,...)
+  if(ret_dt[,.N] == 0) error('The resulting data table is empty. Did the two data tables use different spatial grids?')
+
   return(ret_dt)
 }
 

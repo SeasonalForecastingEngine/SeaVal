@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{add_country_names}
 \alias{add_country_names}
-\title{Takes a data table with lon/lat coordinates and returns the same data table with a new column 'country' containing the countryname
-of each coordinate. Usually you'd do this using sf, but that introduces dependency to gdal which we want to avoid.}
+\title{Add country names to a data table with lon/lat coordinates}
 \usage{
 add_country_names(dt, regions = EA_country_names())
 }
@@ -11,10 +10,16 @@ add_country_names(dt, regions = EA_country_names())
 \item{dt}{the data table.}
 
 \item{regions}{Character vector of country names for which shapefiles are loaded.
-By default, countries in East Africa are loaded, see EA_country_names.
+By default, countries in East Africa are loaded, see \code{\link{EA_country_names}}.
 If you set regions = '.', the entire world is loaded, but this makes the function slower.}
 }
 \description{
-Takes a data table with lon/lat coordinates and returns the same data table with a new column 'country' containing the countryname
-of each coordinate. Usually you'd do this using sf, but that introduces dependency to gdal which we want to avoid.
+Takes a data table with lon/lat coordinates and adds a column
+'country' to it, containing the name of the country, the coordinate belongs to.
+
+NOTE: We avoid dependencies on \pkg{sf} and \pkg{rnaturalearth}, which require gdal.
+In particular, gdal is currently not available on ICPACs hpc, one of the key
+environments where \pkg{SeaVal} is run in. We follow the 'older approach' relying
+on the packages \pkg{maps}, \pkg{maptools}, and \pkg{sp} for getting shapefiles of
+all countries.
 }
