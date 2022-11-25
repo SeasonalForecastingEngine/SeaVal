@@ -27,7 +27,6 @@ Imports:
   data.table,
   ggplot2,
   ggplotify,
-  ggpubr,
   Matrix,
   ncdf4,
   RColorBrewer,
@@ -40,7 +39,6 @@ Collate:
     'chirps.R'
     'data.R'
     'data_wrangling.R'
-    'diagrams.R'
     'ncdf_to_dt.R'
     'plotting.R'
     'quantiles.R'
