@@ -88,6 +88,9 @@ It is calculated separately for each ',paste(by,collapse = ', ')))
 
 add_country_names = function(dt,regions = EA_country_names())
 {
+  if('country' %in% names(dt))
+  {return(dt)}
+
   world_map = maps::map('world',
                         regions = regions,
                         fill = TRUE, col = 'transparent',
@@ -126,6 +129,37 @@ add_country_names = function(dt,regions = EA_country_names())
 #' @export
 
 add_country = add_country_names
+
+#' adds a column with the season to a data table
+#' @param dt the data table.
+#' @param datacol Name of the column where the data is stored
+#' @param by names of columns to group by
+#'
+#' @export
+#' @importFrom stats quantile
+
+add_tercile_cat = function(dt,
+                           datacol = 'prec',
+                           years = NULL,
+                           by = setdiff(dimvars(dt),c('year','member')))
+{
+  tercile_cat = NULL
+  # dt = dt[!is.na(get(datacol))] If you have this one in here, it does not add a column to existing object
+  if(!is.null(years))
+  {
+    terciles = dt[year %in% years,.(lower_tercile = stats::quantile(get(datacol),0.33),
+                                    upper_tercile = stats::quantile(get(datacol),0.67)), by = by]
+    dt = merge(dt,terciles,by = by)
+    dt[,tercile_cat := -1*(get(datacol) <= lower_tercile) + 1 *(get(datacol) >= upper_tercile)]
+    dt[,c('lower_tercile','upper_tercile') := NULL]
+  } else {
+    dt[,tercile_cat := -1*(get(datacol) <= stats::quantile(get(datacol),0.33)) +
+         1 *(get(datacol) >= stats::quantile(get(datacol),0.67)),by = by]
+  }
+
+  return(dt)
+}
+
 
 #' adds a column with the tercile category to a data table
 #' @param dt the data table.
@@ -298,7 +332,7 @@ MSD_to_YM = function(dt,timecol = 'time',origin = '1981-01-01')
 #' @importFrom utils data
 
 
-restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 0.5)
+restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 1)
 {
   # for devtools::check():
   country = lon = lat = NULL
@@ -306,7 +340,7 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 0.5)
   cs = unique(add_country_names(dt)[country %in% ct,.(lon,lat,country)])
   if(!rectangle)
   {
-    return(merge(dt,cs,by = c('lon','lat'))[,country := NULL])
+    return(merge(dt[,country := NULL],cs,by = c('lon','lat')))
   }
   if(rectangle)
   {

@@ -43,7 +43,7 @@ ggplot_dt = function(dt,
                      high = "blue",
                      name = data_col,
                      midpoint = 0,
-                     na.value = 'gray50',
+                     na.value = 'gray75',
                      oob = scales::squish,
                      guide = guide_colorbar(barwidth = 0.5, barheight = 10),
                      ...,
@@ -153,11 +153,11 @@ ggplot_dt = function(dt,
     geom_tile(aes(x = lon,y = lat, fill = get(data_col))) +
     geom_polygon(data = world_map,
                  mapping = aes(x = long,y = lat,group = group),
-                 color = 'black',fill = NA,size=0.25)  +               # add map
+                 color = 'black',fill = NA,linewidth=0.25)  +               # add map
     colorscale +  # colorscale is specified above
-    coord_cartesian(xlim = range(dt[,lon],na.rm = T),
-                    ylim = range(dt[,lat],na.rm = T),
-                    expand = FALSE) + # restricts the plot to exactly the considered area to avoid weird borders
+    coord_fixed(xlim = range(dt[,lon],na.rm = T),
+                ylim = range(dt[,lat],na.rm = T),
+                expand = FALSE) + # restricts the plot to exactly the considered area to avoid weird borders
     #coord_sf(xlim = lon_range,ylim = lat_range,expand = FALSE) +       # restricts the plot to exactly the considered area to avoid weird borders
     xlab('') + ylab('') +                                              # remove default labels and background grid...
     theme(panel.background = element_rect(fill =na.value), # this is required in case a data table is passed that has 'truely' missing locations, i.e. that is not rectangular

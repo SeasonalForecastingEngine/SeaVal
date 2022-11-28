@@ -15,7 +15,7 @@ ggplot_dt(
   high = "blue",
   name = data_col,
   midpoint = 0,
-  na.value = "gray50",
+  na.value = "gray75",
   oob = scales::squish,
   guide = guide_colorbar(barwidth = 0.5, barheight = 10),
   ...,

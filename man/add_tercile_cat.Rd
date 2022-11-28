@@ -2,8 +2,15 @@
 % Please edit documentation in R/utils.R
 \name{add_tercile_cat}
 \alias{add_tercile_cat}
-\title{adds a column with the tercile category to a data table}
+\title{adds a column with the season to a data table}
 \usage{
+add_tercile_cat(
+  dt,
+  datacol = "prec",
+  years = NULL,
+  by = setdiff(dimvars(dt), c("year", "member"))
+)
+
 add_tercile_cat(
   dt,
   datacol = "prec",
@@ -19,5 +26,7 @@ add_tercile_cat(
 \item{by}{names of columns to group by}
 }
 \description{
+adds a column with the season to a data table
+
 adds a column with the tercile category to a data table
 }
