@@ -10,13 +10,6 @@ add_tercile_cat(
   years = NULL,
   by = setdiff(dimvars(dt), c("year", "member"))
 )
-
-add_tercile_cat(
-  dt,
-  datacol = "prec",
-  years = NULL,
-  by = setdiff(dimvars(dt), c("year", "member"))
-)
 }
 \arguments{
 \item{dt}{the data table.}
@@ -27,6 +20,4 @@ add_tercile_cat(
 }
 \description{
 adds a column with the season to a data table
-
-adds a column with the tercile category to a data table
 }

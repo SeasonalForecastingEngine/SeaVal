@@ -160,34 +160,31 @@ add_tercile_cat = function(dt,
   return(dt)
 }
 
-
-#' adds a column with the tercile category to a data table
+#' Add tercile probabilities to ensemble forecasts
+#'
+#' @description Adds columns 'below', 'normal' and 'above', containing predicted tercile probabilities, to a data table with ensemble forecasts.
+#' The predicted probability is always the fraction of members ending up in the respective tercile.
+#' The data table should either already have a column 'tercile_cat' (added by \code{add_tercile_cat}),
+#' or \code{add_tercile_cat} will be run first.
+#'
 #' @param dt the data table.
-#' @param datacol Name of the column where the data is stored
 #' @param by names of columns to group by
+#' @param ... passed on to \code{add_tercile_cat}.
 #'
 #' @export
-#' @importFrom stats quantile
 
-add_tercile_cat = function(dt,
-                           datacol = 'prec',
-                           years = NULL,
-                           by = setdiff(dimvars(dt),c('year','member')))
+add_tercile_probs = function(dt,by = setdiff(dimvars(dt),'member'),...)
 {
-  tercile_cat = NULL
-  # dt = dt[!is.na(get(datacol))] If you have this one in here, it does not add a column to existing object
-  if(!is.null(years))
+  if(! ('member' %in% names(dt))) stop('This only works for ensemble forecasts, so I need a column named "member"')
+  if(!'tercile_cat' %in% names(dt))
   {
-    terciles = dt[year %in% years,.(lower_tercile = stats::quantile(get(datacol),0.33),
-                                    upper_tercile = stats::quantile(get(datacol),0.67)), by = by]
-    dt = merge(dt,terciles,by = by)
-    dt[,tercile_cat := -1*(get(datacol) <= lower_tercile) + 1 *(get(datacol) >= upper_tercile)]
-    dt[,c('lower_tercile','upper_tercile') := NULL]
-  } else {
-    dt[,tercile_cat := -1*(get(datacol) <= stats::quantile(get(datacol),0.33)) +
-         1 *(get(datacol) >= stats::quantile(get(datacol),0.67)),by = by]
+    dt = add_tercile_cat(dt,...)
   }
 
+  dt[,c('below','normal','above') :=
+       .(mean(tercile_cat == -1),
+         mean(tercile_cat == 0),
+         mean(tercile_cat == 1)),by = by]
   return(dt)
 }
 
@@ -367,5 +364,28 @@ restrict_to_confer_region = function(dt,...)
   confer_countries = c('Burundi','Djibouti', 'Eritrea','Ethiopia','Kenya','Rwanda','Somalia','Somaliland','South Sudan','Sudan','Tanzania','Uganda')
 
   dt = restrict_to_country(dt,ct = confer_countries,...)
+  return(dt)
+}
+
+
+#' Get tercile probability forecast from ensemble forecasts
+#'
+#' @description The function takes a data table containing ensemble predictions and reduces it to predicted tercile probabilities.
+#' The data table should either have a column 'tercile_cat' or it will be generated in the process (by \code{add_tercile_cat}).
+#' In particular, if you don't know the tercile category of the ensemble predictions, your data table should contain hindcasts as well,
+#' such that the tercile categories are calculated correctly.
+#' The probability for 'below', for example, is the fraction of ensemble members predicting below normal (for this coordinate).
+#'
+#' @param dt The data table.
+#' @param by Names of columns to group by.
+#' @param keep_cols A vector of column names that you want to keep. Column names in by are kept automatically.
+#' @param ... passed on to \code{add_tercile_probs}.
+#'
+#' @export
+tfc_from_efc = function(dt, by = setdiff(dimvars(dt),'member'), keep_cols = NULL,...)
+{
+  keep_cols = unique(c(by, keep_cols, 'below','normal','above'))
+  dt = add_tercile_probs(dt,by,...)
+  dt = unique(dt[,.SD,.SDcols = keep_cols])
   return(dt)
 }

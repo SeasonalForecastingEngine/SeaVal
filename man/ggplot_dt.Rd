@@ -10,11 +10,12 @@ ggplot_dt(
   mn = NULL,
   discrete_cs = FALSE,
   rr = NULL,
-  low = "red",
-  mid = "white",
-  high = "blue",
+  low = NULL,
+  mid = NULL,
+  high = NULL,
   name = data_col,
-  midpoint = 0,
+  midpoint = NULL,
+  breaks = NULL,
   na.value = "gray75",
   oob = scales::squish,
   guide = guide_colorbar(barwidth = 0.5, barheight = 10),
@@ -32,7 +33,7 @@ ggplot_dt(
 
 \item{discrete_cs}{Logical. Should the color scale be discretized?}
 
-\item{rr, low, mid, high, name, midpoint, na.value, oob, guide, ...}{Arguments for the color scale, passed to scale_fill_gradient2 or scale_fill_steps2 (depending on whether discrete_cs == TRUE).
+\item{rr, low, mid, high, name, midpoint, breaks, na.value, oob, guide, ...}{Arguments for the color scale, passed to scale_fill_gradient2 or scale_fill_steps2 (depending on whether discrete_cs == TRUE).
 rr replaces limits (specifying the range of the color scale) for consistency with the older plotting functions from the PostProcessing package.
 \code{na.value} specifies the color of missing values. \code{oob} specifies the treatment of out-of-boundary values, i.e. values beyond the
 limits.
@@ -56,6 +57,8 @@ a ggplot object.
 \description{
 Plots spatial data from a data.table. The data table needs to contain columns named 'lon' and 'lat'. The grid needs to be regular.
 If spatial data is contained for several levels (e.g. mutliple times or multiple ensemble members), only the first is plotted.
+By default, the first column that is not recognized as a dimension variable is plotted, see \code{data_col}. If the function recognizes the name
+of the column containing the plotting data, it sets a fitting default color scale.
 }
 \author{
 Claudio Heinrich

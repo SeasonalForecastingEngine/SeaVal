@@ -2,6 +2,8 @@
 #'
 #' @description Plots spatial data from a data.table. The data table needs to contain columns named 'lon' and 'lat'. The grid needs to be regular.
 #' If spatial data is contained for several levels (e.g. mutliple times or multiple ensemble members), only the first is plotted.
+#' By default, the first column that is not recognized as a dimension variable is plotted, see \code{data_col}. If the function recognizes the name
+#' of the column containing the plotting data, it sets a fitting default color scale.
 #'
 #' @param dt Data table containing the data for plotting.
 #' @param data_col The name of the column in dt containing the data for plotting. If nothing is provided (the default), the first column that is not a dimension variable or 'member' is selected.
@@ -11,7 +13,7 @@
 #' This is 0 by default. If you set it to NULL, the midpoint is set to the center of the data range (or the center of rr, if provided), such that the entire color scale is utilized.
 #' Specifying the midpoint can often be a convenient way to force a color scale with only two colors (for example, by setting it
 #' to the minimum or maximum of your data).
-#' @param rr,low,mid,high,name,midpoint,na.value,oob,guide,... Arguments for the color scale, passed to scale_fill_gradient2 or scale_fill_steps2 (depending on whether discrete_cs == TRUE).
+#' @param rr,low,mid,high,name,midpoint,breaks,na.value,oob,guide,... Arguments for the color scale, passed to scale_fill_gradient2 or scale_fill_steps2 (depending on whether discrete_cs == TRUE).
 #' rr replaces limits (specifying the range of the color scale) for consistency with the older plotting functions from the PostProcessing package.
 #' \code{na.value} specifies the color of missing values. \code{oob} specifies the treatment of out-of-boundary values, i.e. values beyond the
 #' limits.
@@ -38,11 +40,12 @@ ggplot_dt = function(dt,
                      mn = NULL,
                      discrete_cs = FALSE,
                      rr = NULL,
-                     low = "red",
-                     mid = "white",
-                     high = "blue",
+                     low = NULL,
+                     mid = NULL,
+                     high = NULL,
                      name = data_col,
-                     midpoint = 0,
+                     midpoint = NULL,
+                     breaks = NULL,
                      na.value = 'gray75',
                      oob = scales::squish,
                      guide = guide_colorbar(barwidth = 0.5, barheight = 10),
@@ -83,6 +86,93 @@ ggplot_dt = function(dt,
       }
       warning(output_string)
       dt = merge(dt,level_dt[1],by = names(level_dt))
+    }
+  }
+
+  # if color scale details are not provided, guess based on column name:
+
+  High = Mid = Low = Midpoint = NULL
+
+  if(data_col %in% c('prec','precipitation','anomaly','climatology','clim','obs','pred','fc','forecast'))
+  {
+    High = 'blue'
+    Mid = 'white'
+    Low = 'red'
+    Midpoint = 0
+  }
+
+  if(data_col %in% c('tercile_cat','tercile_category'))
+  {
+    # select similar colors as for the verification map:
+    High = 'forestgreen'
+    Mid = "#B2EBF2" # This is cyan200 for normal
+    Low = 'brown'
+    Midpoint = 0
+  }
+
+  if(data_col == 'above')
+  {
+    High = 'forestgreen'
+    Mid = 'white' # This is cyan200 for normal
+    Low = 'brown'
+    Midpoint = 0.333
+  }
+
+  if(data_col == 'below')
+  {
+    High = 'brown'
+    Mid = 'white' # This is cyan200 for normal
+    Low = 'forestgreen'
+    Midpoint = 0.333
+  }
+
+  if(data_col == 'normal')
+  {
+    High = "cyan3"
+    Mid = 'white' # This is cyan200 for normal
+    Low = 'gold2'
+    Midpoint = 0.333
+  }
+
+  # set defaults if not provided in the function:
+
+  if(is.null(high))
+  {
+    if(is.null(High))
+    {
+      high = 'blue'
+    } else {
+      high = High
+    }
+  }
+
+  if(is.null(mid))
+  {
+    if(is.null(Mid))
+    {
+      mid = 'white'
+    } else {
+      mid = Mid
+    }
+  }
+
+  if(is.null(low))
+  {
+    if(is.null(Low))
+    {
+      low = 'red'
+    } else {
+      low = Low
+    }
+  }
+
+  if(is.null(midpoint))
+  {
+    if(is.null(Midpoint))
+    {
+      midpoint = 0
+    } else {
+      midpoint = Midpoint
     }
   }
 

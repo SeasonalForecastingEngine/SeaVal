@@ -4,7 +4,7 @@
 \alias{restrict_to_country}
 \title{restricts data to a specified country}
 \usage{
-restrict_to_country(dt, ct, rectangle = FALSE, tol = 0.5)
+restrict_to_country(dt, ct, rectangle = FALSE, tol = 1)
 }
 \arguments{
 \item{dt}{the data table.}
