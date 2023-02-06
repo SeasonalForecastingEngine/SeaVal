@@ -266,23 +266,3 @@ ggplot_dt = function(dt,
 }
 
 
-#' Plotting function with different GHA-borders
-#'
-#' @description This loads a (pre-processed) shapefile from ICPAC containing the GHA-countries.
-#'
-#' @param ... passed to \link{\code ggplot_dt}
-#'
-#'@export
-
-ggplot_dt_shf = function(...)
-{
-  fn = file.path(data_dir(),'GHA_map.csv')
-  if(!file.exists(fn)) stop(paste0('For using this function, you need a file GHA_map.csv located in ',data_dir()))
-
-  pp = ggplot_dt(...,add_map = FALSE)
-  map = fread(fn)
-  pp = pp + geom_polygon(data = map,
-                         mapping = aes(x = long,y = lat,group = group),
-                         color = 'black',fill = NA,linewidth=0.25)
-  return(pp)
-}
