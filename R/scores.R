@@ -462,7 +462,7 @@ PCC = function(dt, f,
 #' @export
 
 HS = function(dt,f = c('below','normal','above'),
-              o = 'tercile_cat',
+              o = intersect(c('tercile_cat','terc_cat','tercile_category'),names(dt)),
               by = by_cols_terc_fc_score(),
               pool = 'year',
               dim.check = TRUE)
@@ -508,7 +508,7 @@ HS = function(dt,f = c('below','normal','above'),
 #' @export
 
 HSS = function(dt,f = c('below','normal','above'),
-               o = 'tercile_cat',
+               o = intersect(c('tercile_cat','terc_cat','tercile_category'),names(dt)),
                by = by_cols_terc_fc_score(),
                pool = 'year',
                dim.check = TRUE)
@@ -534,7 +534,7 @@ HSS = function(dt,f = c('below','normal','above'),
 #'
 #' @description This score is suitable for tercile category forecasts. Using log2 for now (?). According to Mason, the averaging here
 #' should be over many years at a single locations and for discrete time-periods (so Mason prefers to take the average after
-#' is one wants to average over different locations, but I keep it like this for now).
+#' averaging over different locations, but I keep it like this for now).
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
@@ -547,7 +547,7 @@ HSS = function(dt,f = c('below','normal','above'),
 #' @export
 
 EIR = function(dt,f = c('below','normal','above'),
-               o = 'tercile_cat',
+               o = intersect(c('tercile_cat','terc_cat','tercile_category'),names(dt)),
                by = by_cols_terc_fc_score(),
                pool = 'year',
                dim.check = TRUE)
@@ -557,8 +557,6 @@ EIR = function(dt,f = c('below','normal','above'),
   dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
 
   checks_terc_fc_score()
-
-  # Ignorance skill score:
 
   EIR_dt = dt[,.(EIR =2^(-log2(1/3) + mean(indicator_times_value_aux((get(o) == -1),log2(get(f[1]))) +
                                              indicator_times_value_aux((get(o) == 0),log2(get(f[2]))) +
@@ -595,7 +593,7 @@ indicator_times_value_aux = function(indicator,value)
 #' @export
 
 IGS = function(dt,f = c('below','normal','above'),
-                o = 'tercile_cat',
+                o = intersect(c('tercile_cat','terc_cat','tercile_category'),names(dt)),
                 by = by_cols_terc_fc_score(),
                 pool = 'year',
                 dim.check = TRUE)
@@ -633,7 +631,7 @@ IGS = function(dt,f = c('below','normal','above'),
 #' @export
 
 IGSS = function(dt,f = c('below','normal','above'),
-                 o = 'tercile_cat',
+                 o = intersect(c('tercile_cat','terc_cat','tercile_category'),names(dt)),
                  by = by_cols_terc_fc_score(),
                  pool = 'year',
                  dim.check = TRUE)
@@ -655,6 +653,39 @@ IGSS = function(dt,f = c('below','normal','above'),
 }
 
 
+#' Multicategory Brier score
+#'
+#' @description This score is suitable for tercile category forecasts.
+#'
+#' @param dt Data table containing the predictions.
+#' @param f column names of the prediction.
+#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param by column names of grouping variables, all of which need to be columns in dt.
+#' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
+#' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
+#' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+#' @export
+
+MB = function(dt,f = c('below','normal','above'),
+              o = intersect(c('tercile_cat','terc_cat','tercile_category'),names(dt)),
+              by = by_cols_terc_fc_score(),
+              pool = 'year',
+              dim.check = TRUE)
+{
+  by = intersect(by,names(dt))
+
+  dt = dt[!is.na(get(o)) & !is.na(get(f[1]))]
+
+  checks_terc_fc_score()
+
+  # Multicategory Brier skill score:
+
+  MB_dt = dt[,.(MB = mean((get(f[1]) - (get(o) == -1))^2 + (get(f[2]) - (get(o) == 0))^2 + (get(f[3]) - (get(o) == 1))^2)),by = by]
+  return(MB_dt)
+}
+
+
 
 #' Multicategory Brier Skill score
 #'
@@ -671,7 +702,7 @@ IGSS = function(dt,f = c('below','normal','above'),
 #' @export
 
 MBS = function(dt,f = c('below','normal','above'),
-               o = 'tercile_cat',
+               o = intersect(c('tercile_cat','terc_cat','tercile_category'),names(dt)),
                by = by_cols_terc_fc_score(),
                pool = 'year',
                dim.check = TRUE)
@@ -735,7 +766,7 @@ roc_score_vec = function(probs,obs)
 
 
 ROCS = function(dt,f = c('below','normal','above'),
-                o = 'tercile_cat',
+                o = intersect(c('tercile_cat','terc_cat','tercile_category'),names(dt)),
                 by = by_cols_terc_fc_score_sp(dt),
                 pool = c('year',space_dimvars(dt)),
                 dim.check = TRUE)
@@ -827,8 +858,8 @@ disc_score_dt = function(year,obs,pB,pN,pA)
 
 
 DISS = function(dt,f = c('below','normal','above'),
-                o = 'tercile_cat',
-                by = by_cols_terc_fc_score(),
+                o = intersect(c('tercile_cat','terc_cat','tercile_category'),names(dt)),
+                by = by_cols_terc_fc_score_sp(),
                 pool = 'year',
                 dim.check = TRUE)
 {
@@ -859,7 +890,7 @@ DISS = function(dt,f = c('below','normal','above'),
 #' @export
 
 RPS = function(dt,f = c('below','normal','above'),
-                o = 'tercile_cat',
+                o = intersect(c('tercile_cat','terc_cat','tercile_category'),names(dt)),
                 by = by_cols_terc_fc_score(),
                 pool = 'year',
                 dim.check = TRUE)
@@ -893,7 +924,7 @@ RPS = function(dt,f = c('below','normal','above'),
 
 
 RPSS = function(dt,f = c('below','normal','above'),
-               o = 'tercile_cat',
+               o = intersect(c('tercile_cat','terc_cat','tercile_category'),names(dt)),
                by = by_cols_terc_fc_score(),
                pool = 'year',
                dim.check = TRUE)
@@ -940,7 +971,7 @@ RPSS = function(dt,f = c('below','normal','above'),
 
 
 RES = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
-               o = 'tercile_cat',
+               o = intersect(c('tercile_cat','terc_cat','tercile_category'),names(dt)),
                by = by_cols_terc_fc_score(),
                pool = 'year',
                dim.check = TRUE)
@@ -1028,7 +1059,7 @@ RES = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
 
 
 REL = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
-               o = 'tercile_cat',
+               o = intersect(c('tercile_cat','terc_cat','tercile_category'),names(dt)),
                by = by_cols_terc_fc_score(),
                pool = 'year',
                dim.check = TRUE)
@@ -1116,7 +1147,7 @@ REL = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
 #' @export
 
 SRC = function(dt,f = c('below','normal','above'),
-                o = 'tercile_cat',
+                o = intersect(c('tercile_cat','terc_cat','tercile_category'),names(dt)),
                 by = by_cols_terc_fc_score_sp(dt),
                 pool = c('year',space_dimvars(dt)),
                 dim.check = TRUE)

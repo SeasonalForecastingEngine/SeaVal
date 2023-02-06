@@ -4,16 +4,18 @@
 \alias{add_climatology}
 \title{Add climatology to a data table}
 \usage{
-add_climatology(dt, years = NULL, data_cols = NULL, by = dimvars(dt))
+add_climatology(dt, data_cols = NULL, years = NULL, by = dimvars(dt))
 }
 \arguments{
 \item{dt}{the data table.}
 
+\item{data_cols}{For which columns do you want to derive the climatology?
+The default i}
+
 \item{years}{The average over which years should be considered as climatology.
 The default is all years in dt.}
 
-\item{data_cols}{For which columns do you want to derive the climatology?
-The default i}
+\item{by}{column names to group by.}
 }
 \description{
 The climatology is the average over years (and members for ensemble forecases),

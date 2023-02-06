@@ -89,7 +89,6 @@ checks_terc_fc_score = function()
   }
 }
 
-
 #' Get dimension variables
 #'
 #' @description The function returns all names currently considered dimension variables.
@@ -218,6 +217,61 @@ EA_country_names = function()
     'Kenya','Rwanda','Somalia','Somaliland',
     'South Sudan','Sudan','Tanzania','Uganda'))
 }
+
+#' which column names are interpreted as (ensemble-) forecast values
+#'
+#' @param dt optional data table. If provided, the function guesses which column contains the forecast values. Else it returns all recognized forecast column names.
+#'
+#' @export
+
+fc_cols = function(dt = NULL)
+{
+  cols = c('fc','forecast','pred','prediciton','prec')
+  if(!is.null(dt))
+  {
+    cols = intersect(cols,names(dt))[1]
+  }
+  if(length(cols) == 0) stop("I don't recognize which column contains the forecast.")
+  return(cols)
+}
+
+#' which column names are interpreted as observations
+#'
+#' @description Note that this function guesses column names for observed precip, not observed tercile category.
+#'
+#' @param dt optional data table. If provided, the function guesses which column contains the observations. Else it returns all recognized observation column names.
+#'
+#' @export
+
+obs_cols = function(dt = NULL)
+{
+  cols = c('obs','observation','prec','precipitation')
+  if(!is.null(dt))
+  {
+    cols = intersect(cols,names(dt))[1]
+  }
+  if(length(cols) == 0) stop("I don't recognize which column contains the observations.")
+  return(cols)
+}
+
+#' which column names are interpreted as obeserved tercile categories
+#'
+#' @param dt optional data table. If provided, the function guesses which column contains the observations. Else it returns all recognized column names.
+#'
+#' @export
+
+tc_cols = function(dt = NULL)
+{
+  cols = c('tercile_cat','tercile_category','terc_cat','tc_cat','tc_category')
+  if(!is.null(dt))
+  {
+    cols = intersect(cols,names(dt))[1]
+  }
+  if(length(cols) == 0) stop("I don't recognize which column contains the observed tercile category.")
+  return(cols)
+}
+
+
 
 #' Auxiliary function returning observation dimvars.
 #'

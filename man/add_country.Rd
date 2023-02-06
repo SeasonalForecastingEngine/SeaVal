@@ -7,7 +7,7 @@
 add_country(dt, regions = EA_country_names())
 }
 \description{
-This is a synonyme for add_country_names.
+This is a synonyme for \code{\link{add_country_names}}.
 Following a more intuitive naming convention, that is more in-line
-with add_climatology and add_tercile_cat
+with \code{add_climatology} and \code{add_tercile_cat}.
 }

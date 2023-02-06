@@ -6,7 +6,7 @@
 \usage{
 ver_map(
   dt,
-  o = c("obs", "prec", "precipitation"),
+  o = obs_cols(dt),
   yy = dt[, max(year)],
   climatology_period = unique(dt[, year]),
   out_file = NULL

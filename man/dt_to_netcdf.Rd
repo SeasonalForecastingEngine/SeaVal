@@ -2,7 +2,7 @@
 % Please edit documentation in R/ncdf_to_dt.R
 \name{dt_to_netcdf}
 \alias{dt_to_netcdf}
-\title{Write a netcdf from a long data tables.}
+\title{Write a netcdf from a long data table}
 \usage{
 dt_to_netcdf(
   dt,

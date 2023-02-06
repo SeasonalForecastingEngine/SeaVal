@@ -7,7 +7,7 @@
 tendency_diag(
   dt,
   f = c("below", "normal", "above"),
-  o = "tercile_cat",
+  o = tc_cols(dt),
   by = NULL,
   pool = setdiff(dimvars(dt), by),
   dim.check = TRUE

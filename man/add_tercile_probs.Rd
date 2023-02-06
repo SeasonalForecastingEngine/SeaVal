@@ -4,7 +4,7 @@
 \alias{add_tercile_probs}
 \title{Add tercile probabilities to ensemble forecasts}
 \usage{
-add_tercile_probs(dt, by = setdiff(dimvars(dt), "member"), ...)
+add_tercile_probs(dt, f = NULL, by = setdiff(dimvars(dt), "member"), ...)
 }
 \arguments{
 \item{dt}{the data table.}

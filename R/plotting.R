@@ -24,6 +24,7 @@
 #' since they're adjusted to be 'nice'), or by specifying the breaks explicitly (which is often tedious). This gives you a third option, namely specifying how far the breaks
 #' should be apart, and specifying the centerpoint for one of the bins (default is midpoint, or the center of rr if midpoint is not provided). For example, if your color scale shows
 #' percentages and you'd like 4 categories, ranging from white to red, this is easiest achieved by \code{binwidth = 25, midpoint = 12.5}.
+#' @param add_map logical. Set to FALSE to remove borders (e.g. if you want to add them yourself from a shapefile).
 #'
 #' @return a ggplot object.
 #'
@@ -50,7 +51,8 @@ ggplot_dt = function(dt,
                      oob = scales::squish,
                      guide = guide_colorbar(barwidth = 0.5, barheight = 10),
                      ...,
-                     binwidth = NULL,bin_midpoint = midpoint)
+                     binwidth = NULL,bin_midpoint = midpoint,
+                     add_map = TRUE)
 {
   # for devtools::check():
   long = group = NULL
@@ -101,7 +103,7 @@ ggplot_dt = function(dt,
     Midpoint = 0
   }
 
-  if(data_col %in% c('tercile_cat','tercile_category'))
+  if(data_col %in% c('terc_cat','tercile_cat','tercile_category'))
   {
     # select similar colors as for the verification map:
     High = 'forestgreen'
@@ -179,7 +181,7 @@ ggplot_dt = function(dt,
 
   #### get map: ####
 
-  world_map <- ggplot2::map_data(map = 'world',resolution = 0)
+  if(add_map) world_map <- ggplot2::map_data(map = 'world',resolution = 0)
   # better maps are available with the rnaturalearth package and can be plotted using geom_sf.
   # However, this approach requires gdal, so it's not exactly easily accessible.
 
@@ -241,9 +243,6 @@ ggplot_dt = function(dt,
 
   pp = ggplot(data = dt) +
     geom_tile(aes(x = lon,y = lat, fill = get(data_col))) +
-    geom_polygon(data = world_map,
-                 mapping = aes(x = long,y = lat,group = group),
-                 color = 'black',fill = NA,linewidth=0.25)  +               # add map
     colorscale +  # colorscale is specified above
     coord_fixed(xlim = range(dt[,lon],na.rm = T),
                 ylim = range(dt[,lat],na.rm = T),
@@ -257,5 +256,33 @@ ggplot_dt = function(dt,
 
   if(!is.null(mn)) pp = pp + ggtitle(mn)                               # add title, if given
 
+  if(add_map)
+  {
+  pp = pp + geom_polygon(data = world_map,
+                         mapping = aes(x = long,y = lat,group = group),
+                         color = 'black',fill = NA,linewidth=0.25)                # add map
+  }
+  return(pp)
+}
+
+
+#' Plotting function with different GHA-borders
+#'
+#' @description This loads a (pre-processed) shapefile from ICPAC containing the GHA-countries.
+#'
+#' @param ... passed to \link{\code ggplot_dt}
+#'
+#'@export
+
+ggplot_dt_shf = function(...)
+{
+  fn = file.path(data_dir(),'GHA_map.csv')
+  if(!file.exists(fn)) stop(paste0('For using this function, you need a file GHA_map.csv located in ',data_dir()))
+
+  pp = ggplot_dt(...,add_map = FALSE)
+  map = fread(fn)
+  pp = pp + geom_polygon(data = map,
+                         mapping = aes(x = long,y = lat,group = group),
+                         color = 'black',fill = NA,linewidth=0.25)
   return(pp)
 }

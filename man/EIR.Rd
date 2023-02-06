@@ -7,7 +7,7 @@
 EIR(
   dt,
   f = c("below", "normal", "above"),
-  o = "tercile_cat",
+  o = intersect(c("tercile_cat", "terc_cat", "tercile_category"), names(dt)),
   by = by_cols_terc_fc_score(),
   pool = "year",
   dim.check = TRUE
@@ -31,5 +31,5 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 \description{
 This score is suitable for tercile category forecasts. Using log2 for now (?). According to Mason, the averaging here
 should be over many years at a single locations and for discrete time-periods (so Mason prefers to take the average after
-is one wants to average over different locations, but I keep it like this for now).
+averaging over different locations, but I keep it like this for now).
 }

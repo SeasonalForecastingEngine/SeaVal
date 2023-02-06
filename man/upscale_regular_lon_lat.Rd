@@ -8,7 +8,7 @@ upscale_regular_lon_lat(
   dt,
   coarse_grid,
   uscols,
-  bycols = NULL,
+  bycols = setdiff(dimvars(dt), c("lon", "lat")),
   save_weights = NULL,
   tol = 1e-05
 )

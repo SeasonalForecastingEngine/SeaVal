@@ -15,7 +15,7 @@ Authors@R:
            family = "Scheuerer",
            role = c("aut"),
            email = "scheuerer@nr.no"))
-Description: This package provides tools for processing and evaluating seasonal weather forecasts, with an emphasis on seasonal rainfall predictions for the Greater Horn of Africa.
+Description: Provides tools for processing and evaluating seasonal weather forecasts, with an emphasis on seasonal rainfall predictions for the Greater Horn of Africa.
     We follow the \href{https://library.wmo.int/doc_num.php?explnum_id=4886}{WMO recommendation of evaluating seasonal forecasts.} An online tutorial can be found \href{http://files.nr.no/samba/CONFER/SeaVal/}{here}.
     It is developed and maintained at the Norwegian Computing Center Oslo in collaboration with ICPAC.
     The development was supported by the European Union’s Horizon 2020 research and innovation programme under grant agreement no. 869730 (CONFER).
@@ -47,6 +47,7 @@ Collate:
     'plotting.R'
     'quantiles.R'
     'scores.R'
+    'seasonal.R'
     'upscaling.R'
     'utils.R'
 

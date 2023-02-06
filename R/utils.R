@@ -14,10 +14,12 @@
 #' The default is all years in dt.
 #' @param data_cols For which columns do you want to derive the climatology?
 #' The default i
+#' @param by column names to group by.
+#'
 #' @export
 #'
 
-add_climatology = function(dt,years = NULL,data_cols = NULL,by = dimvars(dt))
+add_climatology = function(dt,data_cols = NULL,years = NULL,by = dimvars(dt))
 {
   if(!('year' %in% names(dt)))
   {
@@ -30,25 +32,13 @@ so you need to have several years of data.')
 
   if(is.null(data_cols))
   {
-    data_cols = setdiff(names(dt),c(by,'year','member'))
+    data_cols = intersect(c(obs_cols(),fc_cols()),names(dt))
 
-    # do not consider data_cols containing characters:
-    which_chars = c()
-    for(i in seq_along(data_cols))
+    if(length(data_cols) > 1)
     {
-      isChar = is.character(dt[,get(data_cols[i])])
-      if(isChar) which_chars = c(which_chars,i)
-    }
-    if(length(which_chars)>0)
-    {
-      data_cols = data_cols[-which_chars]
-    }
+      message(paste0('Climatology is calculated for the columns ',paste(data_cols,collapse = ', '),'.\n',
+                     'Use data_cols if that is not what you want.'))
 
-    if(length(data_cols) > 1 & interactive())
-    {
-      check = readline(prompt = paste0('Climatology is calculated for the columns ',paste(data_cols,collapse = ', '),'.\n
-  Is this what you want? [y/n]'))
-      if(!check == 'y') stop('Please enter the names of the columns for which you want to compute climatology as data_cols.')
     }
   }
 
@@ -122,29 +112,34 @@ add_country_names = function(dt,regions = EA_country_names())
 
 #' Same as add_country_names
 #'
-#' @description This is a synonyme for add_country_names.
+#' @description This is a synonyme for \code{\link{add_country_names}}.
 #' Following a more intuitive naming convention, that is more in-line
-#' with add_climatology and add_tercile_cat
+#' with \code{add_climatology} and \code{add_tercile_cat}.
 #'
 #' @export
 
 add_country = add_country_names
 
-#' adds a column with the season to a data table
+#' adds a column with the observed tercile category to a data table
 #' @param dt the data table.
-#' @param datacol Name of the column where the data is stored
-#' @param by names of columns to group by
+#' @param datacol Name of the column where the data is stored. If NULL, the function guesses.
+#' @param years Optional, if provided only these years are used for establishing climatology terciles.
+#' @param by names of columns to group by.
 #'
 #' @export
 #' @importFrom stats quantile
 
 add_tercile_cat = function(dt,
-                           datacol = 'prec',
+                           datacol = NULL,
                            years = NULL,
                            by = setdiff(dimvars(dt),c('year','member')))
 {
   tercile_cat = NULL
   # dt = dt[!is.na(get(datacol))] If you have this one in here, it does not add a column to existing object
+
+  if(is.null(datacol)) datacol = intersect(c(obs_cols(),fc_cols()),names(dt))[1]
+  if(length(datacol) == 0) stop("I don't understand which column contains the values to base terciles on.")
+
   if(!is.null(years))
   {
     terciles = dt[year %in% years,.(lower_tercile = stats::quantile(get(datacol),0.33),
@@ -168,23 +163,26 @@ add_tercile_cat = function(dt,
 #' or \code{add_tercile_cat} will be run first.
 #'
 #' @param dt the data table.
+#' @param f
 #' @param by names of columns to group by
 #' @param ... passed on to \code{add_tercile_cat}.
 #'
 #' @export
 
-add_tercile_probs = function(dt,by = setdiff(dimvars(dt),'member'),...)
+add_tercile_probs = function(dt,f = NULL,by = setdiff(dimvars(dt),'member'),...)
 {
-  if(! ('member' %in% names(dt))) stop('This only works for ensemble forecasts, so I need a column named "member"')
-  if(!'tercile_cat' %in% names(dt))
+  if(!('member' %in% names(dt))) stop('This only works for ensemble forecasts, so I need a column named "member"')
+  if(length(intersect(tc_cols(),names(dt)))==0)
   {
-    dt = add_tercile_cat(dt,...)
+    if(is.null(f)) f = fc_cols(dt)
+    dt = add_tercile_cat(dt,datacol = f,...)
   }
 
+  tc_col = tc_cols(dt)
   dt[,c('below','normal','above') :=
-       .(mean(tercile_cat == -1),
-         mean(tercile_cat == 0),
-         mean(tercile_cat == 1)),by = by]
+       .(mean(get(tc_col) == -1),
+         mean(get(tc_col) == 0),
+         mean(get(tc_col) == 1)),by = by]
   return(dt)
 }
 
@@ -271,7 +269,7 @@ combine = function(dt1,dt2,...)
   if(length(common_cols) >0)
   {
     warning(paste0('The columns ',paste(common_cols,collapse = ', '),' were contained in both data tables but are not recognized as dimension variables.\n
-Their names have changed. If you do not want this, use data.table::merge instead.'))
+If this is meant to be a dimension variable, use data.table::merge instead. Else it is probably better to change column names using data.table::setnames.'))
   }
   ret_dt = merge(dt1,dt2,by = common_dimvars,...)
   if(ret_dt[,.N] == 0) error('The resulting data table is empty. Did the two data tables use different spatial grids?')
@@ -333,16 +331,19 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 1)
 {
   # for devtools::check():
   country = lon = lat = NULL
+  country_included = ('country' %in% names(dt))
 
-  cs = unique(add_country_names(dt)[country %in% ct,.(lon,lat,country)])
+  cs = unique(add_country_names(dt,regions = ct)[country %in% ct,.(lon,lat,country)])
   if(!rectangle)
   {
-    return(merge(dt[,country := NULL],cs,by = c('lon','lat')))
+    ret = merge(dt,cs,by = c('lon','lat'))
+    return(ret)
   }
   if(rectangle)
   {
     lon_range = range(cs[,lon]) + c(-tol,tol)
     lat_range = range(cs[,lat]) + c(-tol,tol)
+
 
     return(dt[lon %between% lon_range & lat %between% lat_range])
   }
@@ -351,27 +352,34 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 1)
 
 #' restricts data to CONFER region
 #'
-#' Wraps restrict_to_country, and restricts to the GHA-region usually considered in the Horizon2020 project CONFER, consisting
-#' of the following countries: 'Burundi','Djibouti', 'Eritrea','Ethiopia','Kenya','Rwanda','Somalia','Somaliland','South Sudan','Sudan','Tanzania','Uganda'
+#' Wraps \code{\link{restrict_to_country}}, and restricts to the GHA-region usually considered in CONFER, see \code{\link{EA_country_names}}.
 #' @param dt the data table.
-#' @param ... passed on to restrict_to_country
+#' @param ... passed on to \code{\link{restrict_to_country}}
 #'
 #' @export
 #' @importFrom data.table as.data.table
 
 restrict_to_confer_region = function(dt,...)
 {
-  confer_countries = c('Burundi','Djibouti', 'Eritrea','Ethiopia','Kenya','Rwanda','Somalia','Somaliland','South Sudan','Sudan','Tanzania','Uganda')
-
-  dt = restrict_to_country(dt,ct = confer_countries,...)
+  dt = restrict_to_country(dt,ct = EA_country_names(),...)
   return(dt)
 }
 
+#' restricts data to the Greater Horn of Africa
+#'
+#' Wraps \code{\link{restrict_to_country}}, and restricts to the GHA-region usually considered in CONFER, see \code{\link{EA_country_names}}.
+#' @param dt the data table.
+#' @param ... passed on to \code{\link{restrict_to_country}}
+#'
+#' @export
+#' @importFrom data.table as.data.table
+
+restrict_to_confer_region = restrict_to_confer_region
 
 #' Get tercile probability forecast from ensemble forecasts
 #'
 #' @description The function takes a data table containing ensemble predictions and reduces it to predicted tercile probabilities.
-#' The data table should either have a column 'tercile_cat' or it will be generated in the process (by \code{add_tercile_cat}).
+#' The data table should either have a column 'tercile_cat' or it will be generated in the process (by \code{\link{add_tercile_cat}}).
 #' In particular, if you don't know the tercile category of the ensemble predictions, your data table should contain hindcasts as well,
 #' such that the tercile categories are calculated correctly.
 #' The probability for 'below', for example, is the fraction of ensemble members predicting below normal (for this coordinate).
@@ -379,13 +387,13 @@ restrict_to_confer_region = function(dt,...)
 #' @param dt The data table.
 #' @param by Names of columns to group by.
 #' @param keep_cols A vector of column names that you want to keep. Column names in by are kept automatically.
-#' @param ... passed on to \code{add_tercile_probs}.
+#' @param ... passed on to \code{\link{add_tercile_probs}}.
 #'
 #' @export
 tfc_from_efc = function(dt, by = setdiff(dimvars(dt),'member'), keep_cols = NULL,...)
 {
   keep_cols = unique(c(by, keep_cols, 'below','normal','above'))
-  dt = add_tercile_probs(dt,by,...)
+  dt = add_tercile_probs(dt,by = by,...)
   dt = unique(dt[,.SD,.SDcols = keep_cols])
   return(dt)
 }

@@ -81,7 +81,7 @@ create_diagram_by_level = function(FUN,by,dt,...)
 
 profit_graph = function(dt, accumulative = TRUE,
                         f = c('below','normal','above'),
-                        o = 'tercile_cat',
+                        o = tc_cols(dt),
                         by = NULL,
                         pool = setdiff(dimvars(dt),by),
                         dim.check = TRUE)
@@ -99,7 +99,7 @@ profit_graph = function(dt, accumulative = TRUE,
     if(dt[,.N] > 50) warning(call. = FALSE,'You have more than 50 observations. Profit graphs are frequently hard to read when many observations are used.
 \nIn particular, once a zero-probability-event materializes, the profit is -1 and cannot recover.')
 
-    prob_vec = dt[,below * (tercile_cat == -1) + normal * (tercile_cat == 0) + above * (tercile_cat == 1)]
+    prob_vec = dt[,get(f)[1] * (get(o) == -1) + get(f)[2] * (get(o) == 0) + get(f)[3] * (get(o) == 1)]
     acc_profits = cumprod(prob_vec / 0.33) - 1
 
     dt_plot = data.table(acc_profit = acc_profits)
@@ -237,7 +237,7 @@ rel_diag_vec = function(discrete_probs, obs, slope_only = FALSE)
 
 rel_diag = function(dt,
                     f = c('below','normal','above'),
-                    o = 'tercile_cat',
+                    o = tc_cols(dt),
                     by = NULL,
                     pool = setdiff(dimvars(dt),by),
                     binwidth = 0.05,
@@ -433,7 +433,7 @@ roc_curve_vec = function(probs,obs,interpolate = TRUE)
 
 ROC_curve = function(dt,
                      f = c('below','normal','above'),
-                     o = 'tercile_cat',
+                     o = tc_cols(dt),
                      by = NULL,
                      pool = setdiff(dimvars(dt),by),
                      interpolate = TRUE,
@@ -538,7 +538,7 @@ ROC_curve = function(dt,
 
 tendency_diag = function(dt,
                          f = c('below','normal','above'),
-                         o = 'tercile_cat',
+                         o = tc_cols(dt),
                          by = NULL,
                          pool = setdiff(dimvars(dt),by),
                          dim.check = TRUE)
@@ -572,7 +572,7 @@ tendency_diag = function(dt,
       scale_x_discrete(name = '') + scale_fill_discrete(name = '') +
       theme_bw()
 
-    plot(pp)
+   pp
     return(pp)
   }
 
@@ -607,7 +607,7 @@ tendency_diag = function(dt,
 #'
 #' @export
 
-ver_map = function(dt,o = c('obs','prec','precipitation'),yy = dt[,max(year)],
+ver_map = function(dt,o = obs_cols(dt),yy = dt[,max(year)],
                    climatology_period = unique(dt[,year]),
                    out_file = NULL)
 

@@ -49,7 +49,7 @@
 upscale_regular_lon_lat = function(dt,
                                    coarse_grid,
                                    uscols,
-                                   bycols = NULL,
+                                   bycols = setdiff(dimvars(dt),c('lon','lat')),
                                    save_weights = NULL,
                                    tol = 1e-5)
 {
@@ -65,7 +65,7 @@ upscale_regular_lon_lat = function(dt,
   setkeyv(dt,c(bycols,'lon','lat'))
 
   # check whether for each coordinate and each instance of bycols only one value is provided, otherwise the user likely forgot to specify bycols correctly:
-  if(is.null (bycols))
+  if(length(bycols) == 0)
   {
     if(dt[,.N] != unique(dt[,.(lon,lat)])[,.N]) stop('The data table contains multiple values per coordinate. Did you forget to specify bycols?')
   } else {

@@ -647,12 +647,16 @@ upscale_chirps = function(update = TRUE,
 #' @param version Either 'UCSB' to load the original version from UCSB or 'ICPAC' to load CHIRPS blended (both need to be downloaded first).
 #' @param resolution Either 'low' for loading the coarser upscaled version, or 'high' for loading the data on full resolution
 #' @param us logical. If TRUE, the upscaled version is loaded. Takes precedence over resolution.
+#' @param load_prelim logical. Should preliminary data be loaded? Note that the preliminary data is always from UCSB, not from ICPAC.
 #'
 #' @return the derived data table
 #'
 #' @export
 
-load_chirps = function(years =  NULL, months = NULL, version = 'UCSB',resolution = 'low', us = (resolution == 'low'))
+load_chirps = function(years =  NULL, months = NULL,
+                       version = 'UCSB',
+                       resolution = 'low', us = (resolution == 'low'),
+                       load_prelim = TRUE)
 {
   # for devtools::check():
   prec = NULL
@@ -709,7 +713,7 @@ load_chirps = function(years =  NULL, months = NULL, version = 'UCSB',resolution
 
   dt = rbindlist(dt)
 
-  if(length(fns_prelim) >0 )
+  if(load_prelim & (length(fns_prelim) >0))
   {
     # subset by years
     if(!is.null(years))
@@ -733,8 +737,10 @@ load_chirps = function(years =  NULL, months = NULL, version = 'UCSB',resolution
       message(paste0('The file ',ff,' contains preliminary data.'))
 
       dt_temp = netcdf_to_dt(file.path(prelim_dir,ff),verbose = 0)
-      if(!us) setnames(dt_temp,c('X','Y','precipitation'),c('lon','lat','prec'))
-      if(us) setnames(dt_temp,c('precip'),c('prec'))
+
+      # UCSB does not seem to be super-consistent about their naming of the precipitation-column:
+      prec_col_name = intersect(c('precipitation','precip','prec'),names(dt_temp))
+      setnames(dt_temp,c('X','Y',prec_col_name),c('lon','lat','prec'))
 
       dt_prelim[[i]] = dt_temp
     }

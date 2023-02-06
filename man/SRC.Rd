@@ -7,7 +7,7 @@
 SRC(
   dt,
   f = c("below", "normal", "above"),
-  o = "tercile_cat",
+  o = intersect(c("tercile_cat", "terc_cat", "tercile_category"), names(dt)),
   by = by_cols_terc_fc_score_sp(dt),
   pool = c("year", space_dimvars(dt)),
   dim.check = TRUE

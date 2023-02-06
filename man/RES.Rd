@@ -8,7 +8,7 @@ RES(
   dt,
   bins = c(0.3, 0.35001),
   f = c("below", "normal", "above"),
-  o = "tercile_cat",
+  o = intersect(c("tercile_cat", "terc_cat", "tercile_category"), names(dt)),
   by = by_cols_terc_fc_score(),
   pool = "year",
   dim.check = TRUE

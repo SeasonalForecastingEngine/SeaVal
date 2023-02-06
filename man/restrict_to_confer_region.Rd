@@ -5,13 +5,16 @@
 \title{restricts data to CONFER region}
 \usage{
 restrict_to_confer_region(dt, ...)
+
+restrict_to_confer_region(dt, ...)
 }
 \arguments{
 \item{dt}{the data table.}
 
-\item{...}{passed on to restrict_to_country}
+\item{...}{passed on to \code{\link{restrict_to_country}}}
 }
 \description{
-Wraps restrict_to_country, and restricts to the GHA-region usually considered in the Horizon2020 project CONFER, consisting
-of the following countries: 'Burundi','Djibouti', 'Eritrea','Ethiopia','Kenya','Rwanda','Somalia','Somaliland','South Sudan','Sudan','Tanzania','Uganda'
+Wraps \code{\link{restrict_to_country}}, and restricts to the GHA-region usually considered in CONFER, see \code{\link{EA_country_names}}.
+
+Wraps \code{\link{restrict_to_country}}, and restricts to the GHA-region usually considered in CONFER, see \code{\link{EA_country_names}}.
 }

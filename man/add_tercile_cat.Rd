@@ -2,11 +2,11 @@
 % Please edit documentation in R/utils.R
 \name{add_tercile_cat}
 \alias{add_tercile_cat}
-\title{adds a column with the season to a data table}
+\title{adds a column with the observed tercile category to a data table}
 \usage{
 add_tercile_cat(
   dt,
-  datacol = "prec",
+  datacol = NULL,
   years = NULL,
   by = setdiff(dimvars(dt), c("year", "member"))
 )
@@ -14,10 +14,12 @@ add_tercile_cat(
 \arguments{
 \item{dt}{the data table.}
 
-\item{datacol}{Name of the column where the data is stored}
+\item{datacol}{Name of the column where the data is stored. If NULL, the function guesses.}
 
-\item{by}{names of columns to group by}
+\item{years}{Optional, if provided only these years are used for establishing climatology terciles.}
+
+\item{by}{names of columns to group by.}
 }
 \description{
-adds a column with the season to a data table
+adds a column with the observed tercile category to a data table
 }

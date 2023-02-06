@@ -172,6 +172,7 @@ netcdf_to_dt = function(nc, vars = NULL,
 
   if(!is.null(subset_list))
   {
+    subset_list = lapply(subset_list,range) # such that each page has 2 elements, important to allow subsetting like month = 10 or lon = 1:50
     which_dims_subsetted = match(names(subset_list),names(nc$dim))
     for(ii in which_dims_subsetted)
     {
@@ -292,7 +293,7 @@ netcdf_to_dt = function(nc, vars = NULL,
   return(dt_list)
 }
 
-#' Write a netcdf from a long data tables.
+#' Write a netcdf from a long data table
 #'
 #'
 #' @description This function writes a netcdf from a long data table, the usual data format in SeaVal.
