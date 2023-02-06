@@ -23,6 +23,7 @@ tercile_plot = function(dt,
   # for devtools::check():
   long = group = NULL
 
+
   if(!('lon' %in% names(dt) & 'lat' %in% names(dt))) stop('The data table has to contain columns called "lon" and "lat".')
 
   # detect the columns that indicate that there might be multiple levels to plot:
@@ -57,7 +58,6 @@ tercile_plot = function(dt,
     }
   }
 
-
   #### get map: ####
 
   fn = file.path(data_dir(),'GHA_map.csv')
@@ -88,8 +88,8 @@ tercile_plot = function(dt,
     geom_polygon(data = map,
                  mapping = aes(x = long,y = lat,group = group),
                  color = 'black',fill = NA,linewidth=0.25) +
-    coord_fixed(xlim = range(dt[,lon] + c(-0.5,0.5),na.rm = T),
-                ylim = range(dt[,lat] + c(-0.5,2),na.rm = T),
+    coord_fixed(xlim = range(dt[,lon] ,na.rm = T)+ c(-0.5,0.5),
+                ylim = range(dt[,lat],na.rm = T) + c(-0.5,2),
                 expand = FALSE) + # restricts the plot to exactly the considered area to avoid weird borders
     #coord_sf(xlim = lon_range,ylim = lat_range,expand = FALSE) +       # restricts the plot to exactly the considered area to avoid weird borders
     xlab('') + ylab('') +                                              # remove default labels and background grid...
