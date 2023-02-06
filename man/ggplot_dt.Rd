@@ -21,7 +21,8 @@ ggplot_dt(
   guide = guide_colorbar(barwidth = 0.5, barheight = 10),
   ...,
   binwidth = NULL,
-  bin_midpoint = midpoint
+  bin_midpoint = midpoint,
+  add_map = TRUE
 )
 }
 \arguments{
@@ -50,6 +51,8 @@ to the minimum or maximum of your data).}
 since they're adjusted to be 'nice'), or by specifying the breaks explicitly (which is often tedious). This gives you a third option, namely specifying how far the breaks
 should be apart, and specifying the centerpoint for one of the bins (default is midpoint, or the center of rr if midpoint is not provided). For example, if your color scale shows
 percentages and you'd like 4 categories, ranging from white to red, this is easiest achieved by \code{binwidth = 25, midpoint = 12.5}.}
+
+\item{add_map}{logical. Set to FALSE to remove borders (e.g. if you want to add them yourself from a shapefile).}
 }
 \value{
 a ggplot object.

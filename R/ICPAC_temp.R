@@ -49,11 +49,11 @@ tercile_plot = function(dt,
         temp = unique(level_dt[,get(nn)])
         if(length(temp) > 1)
         {
-          output_string = paste0(output_string,nn,' = ',temp[1],'\n')
+          output_string = paste0(output_string,nn,' = ',level_dt[.N,get(nn)],'\n')
         }
       }
       warning(output_string)
-      dt = merge(dt,level_dt[1],by = names(level_dt))
+      dt = merge(dt,level_dt[.N],by = names(level_dt))
     }
   }
 
@@ -95,8 +95,12 @@ tercile_plot = function(dt,
     xlab('') + ylab('') +                                              # remove default labels and background grid...
     theme(panel.background = element_rect(fill =na.value), # this is required in case a data table is passed that has 'truely' missing locations, i.e. that is not rectangular
           panel.grid = element_blank(),
-          axis.text = element_blank(),
-          axis.ticks = element_blank())
+          axis.ticks = element_line(), # add ticks...
+          axis.text = element_text(),
+          panel.border = element_rect(colour = "black", fill=NA, linewidth=0.5))
+
+  if(!is.null(mn)) pp = pp + ggtitle(mn)
+
 
   return(pp)
 }

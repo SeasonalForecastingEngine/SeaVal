@@ -332,11 +332,11 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 1)
   # for devtools::check():
   country = lon = lat = NULL
   country_included = ('country' %in% names(dt))
-  if(country_included) dt = add_country_names(dt,regions = ct)
+  if(!country_included) dt = add_country_names(dt,regions = ct)
   cs = unique(dt[country %in% ct,.(lon,lat,country)])
   if(!rectangle)
   {
-    ret = merge(dt,cs,by = c('lon','lat'))
+    ret = merge(dt,cs,by = intersect(names(dt),names(cs)))
     return(ret)
   }
   if(rectangle)
@@ -374,7 +374,7 @@ restrict_to_confer_region = function(dt,...)
 #' @export
 #' @importFrom data.table as.data.table
 
-restrict_to_confer_region = restrict_to_confer_region
+restrict_to_GHA = restrict_to_confer_region
 
 #' Get tercile probability forecast from ensemble forecasts
 #'

@@ -9,7 +9,8 @@ load_chirps(
   months = NULL,
   version = "UCSB",
   resolution = "low",
-  us = (resolution == "low")
+  us = (resolution == "low"),
+  load_prelim = TRUE
 )
 }
 \arguments{
@@ -21,6 +22,8 @@ You can update your local CHIRPS download by calling download_chirps_monthly}
 \item{resolution}{Either 'low' for loading the coarser upscaled version, or 'high' for loading the data on full resolution}
 
 \item{us}{logical. If TRUE, the upscaled version is loaded. Takes precedence over resolution.}
+
+\item{load_prelim}{logical. Should preliminary data be loaded? Note that the preliminary data is always from UCSB, not from ICPAC.}
 }
 \value{
 the derived data table

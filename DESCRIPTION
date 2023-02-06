@@ -43,6 +43,7 @@ Collate:
     'data.R'
     'data_wrangling.R'
     'diagrams.R'
+    'ICPAC_temp.R'
     'ncdf_to_dt.R'
     'plotting.R'
     'quantiles.R'

@@ -740,7 +740,8 @@ load_chirps = function(years =  NULL, months = NULL,
 
       # UCSB does not seem to be super-consistent about their naming of the precipitation-column:
       prec_col_name = intersect(c('precipitation','precip','prec'),names(dt_temp))
-      setnames(dt_temp,c('X','Y',prec_col_name),c('lon','lat','prec'))
+      setnames(dt_temp,prec_col_name,'prec')
+      if('X' %in% names(dt_temp)) setnames(dt_temp,c('X','Y'),c('lon','lat'))
 
       dt_prelim[[i]] = dt_temp
     }
