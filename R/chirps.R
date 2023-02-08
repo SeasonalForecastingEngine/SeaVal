@@ -418,9 +418,6 @@ download_chirps_monthly_low = function(update,
 }
 
 
-
-
-
 #' Upscales monthly CHIRPS data to a coarser grid
 #'
 #' @description this is mostly auxiliary and called from download_chirps_monthly.
@@ -692,7 +689,9 @@ load_chirps = function(years =  NULL, months = NULL,
 
   if(length(fns) + length(fns_prelim) == 0)
   {
-    stop('You need to download this data first. Use download_chirps_monthly' )
+    stop(paste0("I don't find any data. I have been looking in\n",ch_dir,"\nPossible reasons are that the data needs to be downloaded or upscaled first.
+If your CHIRPS data is located elsewhere, you need to adjust your data directory by running data_dir(set_dir = T).\n
+I expect the CHIRPS data to be located in a subfolder CHIRPS in that directory."))
   }
 
   dt = list()

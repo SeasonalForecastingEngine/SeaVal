@@ -248,11 +248,12 @@ ggplot_dt = function(dt,
                 ylim = range(dt[,lat],na.rm = T),
                 expand = FALSE) + # restricts the plot to exactly the considered area to avoid weird borders
     #coord_sf(xlim = lon_range,ylim = lat_range,expand = FALSE) +       # restricts the plot to exactly the considered area to avoid weird borders
-    xlab('') + ylab('') +                                              # remove default labels and background grid...
+       xlab('lon') + ylab('lat') +
     theme(panel.background = element_rect(fill =na.value), # this is required in case a data table is passed that has 'truely' missing locations, i.e. that is not rectangular
           panel.grid = element_blank(),
-          axis.text = element_blank(),
-          axis.ticks = element_blank())
+          axis.ticks = element_line(), # add ticks...
+          axis.text = element_text(),
+          panel.border = element_rect(colour = "black", fill=NA, linewidth=0.5))
 
   if(!is.null(mn)) pp = pp + ggtitle(mn)                               # add title, if given
 
