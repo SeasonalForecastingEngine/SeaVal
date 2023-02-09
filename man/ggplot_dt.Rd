@@ -22,7 +22,9 @@ ggplot_dt(
   ...,
   binwidth = NULL,
   bin_midpoint = midpoint,
-  add_map = TRUE
+  add_map = TRUE,
+  expand.x = c(0, 0),
+  expand.y = c(0, 0)
 )
 }
 \arguments{
@@ -53,6 +55,9 @@ should be apart, and specifying the centerpoint for one of the bins (default is 
 percentages and you'd like 4 categories, ranging from white to red, this is easiest achieved by \code{binwidth = 25, midpoint = 12.5}.}
 
 \item{add_map}{logical. Set to FALSE to remove borders (e.g. if you want to add them yourself from a shapefile).}
+
+\item{expand.x, expand.y}{vectors with two entries to be added to xlims/ylims of the plot. E.g. expand.x = c(-0.5,0.5)
+expands the plot by half a longitude both on the right and left hand side}
 }
 \value{
 a ggplot object.

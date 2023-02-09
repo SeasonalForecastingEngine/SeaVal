@@ -13,7 +13,9 @@ tercile_plot(
   high = "green1",
   name = "",
   labels = c("Wetter", "Average", "Drier"),
-  na.value = "white"
+  na.value = "white",
+  expand.x = c(-0.5, 0.5),
+  expand.y = c(-0.5, 2)
 )
 }
 \arguments{

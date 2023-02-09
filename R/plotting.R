@@ -25,6 +25,8 @@
 #' should be apart, and specifying the centerpoint for one of the bins (default is midpoint, or the center of rr if midpoint is not provided). For example, if your color scale shows
 #' percentages and you'd like 4 categories, ranging from white to red, this is easiest achieved by \code{binwidth = 25, midpoint = 12.5}.
 #' @param add_map logical. Set to FALSE to remove borders (e.g. if you want to add them yourself from a shapefile).
+#' @param expand.x,expand.y vectors with two entries to be added to xlims/ylims of the plot. E.g. expand.x = c(-0.5,0.5)
+#' expands the plot by half a longitude both on the right and left hand side
 #'
 #' @return a ggplot object.
 #'
@@ -52,7 +54,9 @@ ggplot_dt = function(dt,
                      guide = guide_colorbar(barwidth = 0.5, barheight = 10),
                      ...,
                      binwidth = NULL,bin_midpoint = midpoint,
-                     add_map = TRUE)
+                     add_map = TRUE,
+                     expand.x = c(0,0),
+                     expand.y = c(0,0))
 {
   # for devtools::check():
   long = group = NULL
@@ -90,6 +94,9 @@ ggplot_dt = function(dt,
       dt = merge(dt,level_dt[1],by = names(level_dt))
     }
   }
+
+  # Plotting should still work for logicals (e.g. masks):
+  if (is.logical(dt[,get(data_col)])) dt[,(data_col) := as.numeric(get(data_col))]
 
   # if color scale details are not provided, guess based on column name:
 
@@ -244,8 +251,8 @@ ggplot_dt = function(dt,
   pp = ggplot(data = dt) +
     geom_tile(aes(x = lon,y = lat, fill = get(data_col))) +
     colorscale +  # colorscale is specified above
-    coord_fixed(xlim = range(dt[,lon],na.rm = T),
-                ylim = range(dt[,lat],na.rm = T),
+    coord_fixed(xlim = range(dt[,lon],na.rm = T) + expand.x,
+                ylim = range(dt[,lat],na.rm = T) + expand.y,
                 expand = FALSE) + # restricts the plot to exactly the considered area to avoid weird borders
     #coord_sf(xlim = lon_range,ylim = lat_range,expand = FALSE) +       # restricts the plot to exactly the considered area to avoid weird borders
        xlab('lon') + ylab('lat') +

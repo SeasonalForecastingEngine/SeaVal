@@ -3,6 +3,7 @@
 
 
 # convert to seasonal:
+# takes a vector of months and returns a vector of corresponding seasons
 
 season = function(mm)
 {
@@ -14,6 +15,29 @@ season = function(mm)
   ret = factor(ret,levels = c('MAM','JJAS','OND')) # for correct ordering
   return(ret)
 }
+
+
+#' Getting months from season
+#'
+#' @description takes a vector of up to three seasons and returns the months in them
+#'
+#' @param ss vector containing one or multiple season names ('MAM', 'JJAS', 'OND')
+#'
+#' @export
+season_months = function(ss)
+{
+  ss = unique(as.character(ss))
+  ret = NULL
+  for (s in ss)
+  {
+    if(s == 'MAM') ret = c(ret,3:5)
+    if(s == 'JJAS') ret = c(ret,6:9)
+    if(s == 'OND') ret = c(ret,10:12)
+  }
+
+  return(ret)
+}
+
 
 
 convert_to_seasonal = function(dt)

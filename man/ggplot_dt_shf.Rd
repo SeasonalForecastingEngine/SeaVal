@@ -4,7 +4,7 @@
 \alias{ggplot_dt_shf}
 \title{Plotting function with different GHA-borders}
 \usage{
-ggplot_dt_shf(...)
+ggplot_dt_shf(..., expand.x = c(-0.5, 0.5), expand.y = c(-0.5, 2))
 }
 \arguments{
 \item{...}{passed to \link{\code ggplot_dt}}

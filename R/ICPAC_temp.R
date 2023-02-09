@@ -18,7 +18,8 @@ tercile_plot = function(dt,
                         high = 'green1',
                         name = '',
                         labels = c('Wetter','Average','Drier'),
-                        na.value = 'white')
+                        na.value = 'white',
+                        expand.x = c(-0.5,0.5),expand.y = c(-0.5,2))
 {
   # for devtools::check():
   long = group = NULL
@@ -88,8 +89,8 @@ tercile_plot = function(dt,
     geom_polygon(data = map,
                  mapping = aes(x = long,y = lat,group = group),
                  color = 'black',fill = NA,linewidth=0.25) +
-    coord_fixed(xlim = range(dt[,lon] ,na.rm = T)+ c(-0.5,0.5),
-                ylim = range(dt[,lat],na.rm = T) + c(-0.5,2),
+    coord_fixed(xlim = range(dt[,lon] ,na.rm = T)+ expand.x,
+                ylim = range(dt[,lat],na.rm = T) + expand.y,
                 expand = FALSE) + # restricts the plot to exactly the considered area to avoid weird borders
     #coord_sf(xlim = lon_range,ylim = lat_range,expand = FALSE) +       # restricts the plot to exactly the considered area to avoid weird borders
     xlab('lon') + ylab('lat') +                                              # remove default labels and background grid...
@@ -113,16 +114,48 @@ tercile_plot = function(dt,
 #'
 #'@export
 
-ggplot_dt_shf = function(...)
+ggplot_dt_shf = function(...,expand.x = c(-0.5,0.5),expand.y = c(-0.5,2))
 {
   fn = file.path(data_dir(),'GHA_map.csv')
   if(!file.exists(fn)) stop(paste0('For using this function, you need a file GHA_map.csv located in ',data_dir()))
 
-  pp = ggplot_dt(...,add_map = FALSE)
+  pp = ggplot_dt(...,add_map = FALSE,expand.x = expand.x,expand.y = expand.y)
   map = fread(fn)
   pp = pp + geom_polygon(data = map,
                          mapping = aes(x = long,y = lat,group = group),
                          color = 'black',fill = NA,linewidth=0.25)
   return(pp)
 }
+
+
+#' Function to create a mask of dry regions from CHIRPS
+#'
+#' @description A gridpoint is masked for a given season (either 'MAM', 'JJAS' or 'OND'), if, on average, less than 10% of the annual total of rainfall
+#' occur during the season. This function loads CHIRPS data, and derives this mask as a data table of lon, lat coordinates, only containing
+#' the coordinates that shouldn't be masked. You can apply the mask to an existing data table using dt = combine(dt,mask).
+#'
+#' @param season For which season do you want to calculate the mask? Needs to be either 'MAM', 'JJAS' or 'OND'.
+#' @param clim_years Which years should be used to establish the mask?
+#' @param version,resolution,us Passed to \link{\code{load_chirps}}. Which CHIRPS version do you want to use and on what resolution?
+#'
+#' @export
+#'
+
+get_mask = function( season,
+                     clim_years = 1990:2020,
+                     version = 'UCSB',
+                     resolution = 'low',
+                     us = (resolution == 'low'))
+
+{
+  mms = season_months(season)
+  dt = load_chirps(years = clim_years,months = NULL,us = us,version = version)
+  clim = dt[,.(clim = mean(prec)),.(lon,lat)]
+  season_average = dt[month %in% mms,.(season_average = mean(prec)),.(lon,lat)]
+  dt = merge(clim,season_average,c('lon','lat'))
+  dt[,fraction := (season_average*length(mms))/(clim*12)]
+  dt[,mask:= fraction <= 0.1]
+  return(dt[(!mask),.(lon,lat)])
+}
+
 
