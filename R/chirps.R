@@ -55,6 +55,7 @@ download_chirps_monthly = function(resolution = 'both',update = TRUE,
                                    upscale_grid = data.table(expand.grid(lon = seq(extent[1],extent[2],0.5),
                                                                          lat = seq(extent[3],extent[4],0.5))))
 {
+  if(version == 'ICPAC') stop('Downloading CHIRPS-blended is no longer supported, since the data has been removed from IRIDL.')
   dir = file.path(chirps_dir(),version)
   dir.create(dir,recursive = T,showWarnings = FALSE)
 
