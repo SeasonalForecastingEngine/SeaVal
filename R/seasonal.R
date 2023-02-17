@@ -4,7 +4,13 @@
 
 # convert to seasonal:
 # takes a vector of months and returns a vector of corresponding seasons
-
+#' Getting seasons from season
+#'
+#' @description takes a vector of months and returns a same-length vector of seasons
+#'
+#' @param mm vector of months
+#'
+#' @export
 season = function(mm)
 {
   ret = rep(NA_character_,length(mm))

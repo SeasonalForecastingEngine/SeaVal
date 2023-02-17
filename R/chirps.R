@@ -436,11 +436,14 @@ upscale_chirps = function(update = TRUE,
                           months = NULL,
                           upscale_grid = data.table(expand.grid(lon = seq(GHA_extent()[1],GHA_extent()[2],0.5),
                                                                 lat = seq(GHA_extent()[3],GHA_extent()[4],0.5))),
-                          root_dir,
+                          root_dir = NULL,
+                          version = 'UCSB',
                           us_dir = file.path(root_dir,'upscaled'))
 {
   # for devtools::check():
   area_contr = precip = precipitation = fg_index = NULL
+
+  if (is.null(root_dir)) root_dir = file.path(chirps_dir(),version)
 
   prelim_dir = file.path(root_dir,'prelim')
   prelim_us_dir = file.path(us_dir,'prelim')

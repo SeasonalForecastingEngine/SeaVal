@@ -11,7 +11,7 @@ dt_to_netcdf(
   units = NULL,
   dim_vars = dimvars(dt),
   dim_var_units = NULL,
-  check = TRUE,
+  check = interactive(),
   description = NULL
 )
 }
@@ -28,7 +28,7 @@ dt_to_netcdf(
 
 \item{dim_var_units}{character vector containing the units for dim_vars (in the same order). If this is NULL (default), the user is prompted for input (except for lon/lat).}
 
-\item{check}{Only used when a file with the given name already exists. Default is to prompt user for input. This can be avoided (e.g. if you automatically want to overwrite a lot of files) by setting check = 'y'.}
+\item{check}{If check is TRUE, the function asks the user whether an existing file should be overwritten, and whether the correct dimvars have been guessed.}
 
 \item{description}{For adding a global attribute 'Description' as a string.}
 }

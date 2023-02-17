@@ -10,7 +10,8 @@ upscale_chirps(
   months = NULL,
   upscale_grid = data.table(expand.grid(lon = seq(GHA_extent()[1], GHA_extent()[2],
     0.5), lat = seq(GHA_extent()[3], GHA_extent()[4], 0.5))),
-  root_dir,
+  root_dir = NULL,
+  version = "UCSB",
   us_dir = file.path(root_dir, "upscaled")
 )
 }

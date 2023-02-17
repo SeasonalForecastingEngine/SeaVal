@@ -25,6 +25,7 @@
 #' should be apart, and specifying the centerpoint for one of the bins (default is midpoint, or the center of rr if midpoint is not provided). For example, if your color scale shows
 #' percentages and you'd like 4 categories, ranging from white to red, this is easiest achieved by \code{binwidth = 25, midpoint = 12.5}.
 #' @param add_map logical. Set to FALSE to remove borders (e.g. if you want to add them yourself from a shapefile).
+#' @param extent An optional four-element vector in the order xmin,xmax,ymin,ymax for specifying the spatial extent of the plot. Default is to fit the extent to the data.
 #' @param expand.x,expand.y vectors with two entries to be added to xlims/ylims of the plot. E.g. expand.x = c(-0.5,0.5)
 #' expands the plot by half a longitude both on the right and left hand side
 #'
@@ -55,6 +56,7 @@ ggplot_dt = function(dt,
                      ...,
                      binwidth = NULL,bin_midpoint = midpoint,
                      add_map = TRUE,
+                     extent = NULL,
                      expand.x = c(0,0),
                      expand.y = c(0,0))
 {
@@ -248,11 +250,20 @@ ggplot_dt = function(dt,
 
   ### plotting ###
 
+  if(is.null(extent))
+  {
+    xlim = range(dt[,lon],na.rm = T) + expand.x
+    ylim = range(dt[,lat],na.rm = T) + expand.y
+  } else {
+    xlim = extent[1:2] + expand.x
+    ylim = extent[3:4] + expand.y
+  }
+
   pp = ggplot(data = dt) +
     geom_tile(aes(x = lon,y = lat, fill = get(data_col))) +
     colorscale +  # colorscale is specified above
-    coord_fixed(xlim = range(dt[,lon],na.rm = T) + expand.x,
-                ylim = range(dt[,lat],na.rm = T) + expand.y,
+    coord_fixed(xlim = xlim,
+                ylim = ylim,
                 expand = FALSE) + # restricts the plot to exactly the considered area to avoid weird borders
     #coord_sf(xlim = lon_range,ylim = lat_range,expand = FALSE) +       # restricts the plot to exactly the considered area to avoid weird borders
        xlab('lon') + ylab('lat') +

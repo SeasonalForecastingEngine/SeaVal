@@ -19,6 +19,7 @@ tercile_plot = function(dt,
                         name = '',
                         labels = c('Wetter','Average','Drier'),
                         na.value = 'white',
+                        extent = NULL,
                         expand.x = c(-0.5,0.5),expand.y = c(-0.5,2))
 {
   # for devtools::check():
@@ -83,14 +84,23 @@ tercile_plot = function(dt,
 
   ### plotting ###
 
+  if(is.null(extent))
+  {
+    xlim = range(dt[,lon],na.rm = T) + expand.x
+    ylim = range(dt[,lat],na.rm = T) + expand.y
+  } else {
+    xlim = extent[1:2] + expand.x
+    ylim = extent[3:4] + expand.y
+  }
+
   pp = ggplot(data = dt) +
     geom_tile(aes(x = lon,y = lat, fill = get(data_col))) +
     colorscale +
     geom_polygon(data = map,
                  mapping = aes(x = long,y = lat,group = group),
                  color = 'black',fill = NA,linewidth=0.25) +
-    coord_fixed(xlim = range(dt[,lon] ,na.rm = T)+ expand.x,
-                ylim = range(dt[,lat],na.rm = T) + expand.y,
+    coord_fixed(xlim = xlim,
+                ylim = ylim,
                 expand = FALSE) + # restricts the plot to exactly the considered area to avoid weird borders
     #coord_sf(xlim = lon_range,ylim = lat_range,expand = FALSE) +       # restricts the plot to exactly the considered area to avoid weird borders
     xlab('lon') + ylab('lat') +                                              # remove default labels and background grid...
@@ -135,7 +145,7 @@ ggplot_dt_shf = function(...,expand.x = c(-0.5,0.5),expand.y = c(-0.5,2))
 #' the coordinates that shouldn't be masked. You can apply the mask to an existing data table using dt = combine(dt,mask).
 #'
 #' @param season For which season do you want to calculate the mask? Needs to be either 'MAM', 'JJAS' or 'OND'.
-#' @param clim_years Which years should be used to establish the mask?
+#' @param clim_years Numeric vector of years. Which years should be used to establish the mask?
 #' @param version,resolution,us Passed to \link{\code{load_chirps}}. Which CHIRPS version do you want to use and on what resolution?
 #'
 #' @export

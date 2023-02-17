@@ -15,7 +15,7 @@ get_mask(
 \arguments{
 \item{season}{For which season do you want to calculate the mask? Needs to be either 'MAM', 'JJAS' or 'OND'.}
 
-\item{clim_years}{Which years should be used to establish the mask?}
+\item{clim_years}{Numeric vector of years. Which years should be used to establish the mask?}
 
 \item{version, resolution, us}{Passed to \link{\code{load_chirps}}. Which CHIRPS version do you want to use and on what resolution?}
 }

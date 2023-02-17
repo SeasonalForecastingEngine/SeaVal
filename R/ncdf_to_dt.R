@@ -305,7 +305,7 @@ netcdf_to_dt = function(nc, vars = NULL,
 #' @param dim_vars names of columns in dt containing dimension variables. If this is NULL, the function guesses and asks for confirmation.
 #' @param dim_var_units character vector containing the units for dim_vars (in the same order). If this is NULL (default), the user is prompted for input (except for lon/lat).
 #' @param nc_out File name (including path) of the netcdf to write.
-#' @param check Only used when a file with the given name already exists. Default is to prompt user for input. This can be avoided (e.g. if you automatically want to overwrite a lot of files) by setting check = 'y'.
+#' @param check If check is TRUE, the function asks the user whether an existing file should be overwritten, and whether the correct dimvars have been guessed.
 #' @param description For adding a global attribute 'Description' as a string.
 #'
 #' @return none.
@@ -321,7 +321,7 @@ dt_to_netcdf = function(dt,nc_out,
                         vars = NULL,
                         units = NULL,
                         dim_vars = dimvars(dt), dim_var_units = NULL,
-                        check = TRUE,
+                        check = interactive(),
                         description = NULL)
 {
   if(check & file.exists(nc_out))
@@ -364,9 +364,10 @@ My guess would be\nvariables: ",paste(vars,collapse = ', '),
     if(!is.null(dim_var_units)){
       unit = dim_var_units[ii]
     } else {
-      if(dv == 'lon') unit = 'degree longitude'
-      if(dv == 'lat') unit = 'degree latitude'
-      if(!(dv %in% c('lon','lat')))
+      if(dv %in% c('lon','Lon')) {unit = 'degree longitude'
+      }else if(dv %in% c('lat','Lat')) {unit = 'degree latitude'
+      }else if(dv %in% c('country','member','month','season','system','year')) {unit = dv
+      }else
       {
         unit = readline(prompt = paste0('Enter the unit of the dimension variable ',dv,':\n'))
       }
