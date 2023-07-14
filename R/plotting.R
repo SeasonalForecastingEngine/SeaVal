@@ -1,9 +1,9 @@
 #' plotting function for spatial data
 #'
 #' @description Plots spatial data from a data.table. The data table needs to contain columns named 'lon' and 'lat'. The grid needs to be regular.
-#' If spatial data is contained for several levels (e.g. mutliple times or multiple ensemble members), only the first is plotted.
-#' By default, the first column that is not recognized as a dimension variable is plotted, see \code{data_col}. If the function recognizes the name
-#' of the column containing the plotting data, it sets a fitting default color scale.
+#' If spatial data is contained for several levels (e.g. mutliple times or multiple ensemble members), only the data for the first level is plotted.
+#' By default, the first column that is not recognized as a dimension variable is plotted, see \code{data_col}. For the most common data-columns, reasonable
+#' color scales are selected automativally.
 #'
 #' @param dt Data table containing the data for plotting.
 #' @param data_col The name of the column in dt containing the data for plotting. If nothing is provided (the default), the first column that is not a dimension variable or 'member' is selected.
@@ -116,7 +116,7 @@ ggplot_dt = function(dt,
   {
     # select similar colors as for the verification map:
     High = 'forestgreen'
-    Mid = "#B2EBF2" # This is cyan200 for normal
+    Mid = "#B2EBF2" # This is cyan200 for the normal category
     Low = 'brown'
     Midpoint = 0
   }

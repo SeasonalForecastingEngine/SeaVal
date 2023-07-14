@@ -226,7 +226,7 @@ EA_country_names = function()
 
 fc_cols = function(dt = NULL)
 {
-  cols = c('fc','forecast','pred','prediciton','prec')
+  cols = c('fc','forecast','pred','prediciton','prec','precipitation')
   if(!is.null(dt))
   {
     cols = intersect(cols,names(dt))[1]

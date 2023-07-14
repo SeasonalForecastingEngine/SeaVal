@@ -36,7 +36,7 @@ Imports:
   scoringRules,
   sp
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Collate: 
     'auxiliary_functions.R'
     'chirps.R'
@@ -51,4 +51,3 @@ Collate:
     'seasonal.R'
     'upscaling.R'
     'utils.R'
-

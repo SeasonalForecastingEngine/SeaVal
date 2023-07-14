@@ -163,7 +163,7 @@ add_tercile_cat = function(dt,
 #' or \code{add_tercile_cat} will be run first.
 #'
 #' @param dt the data table.
-#' @param f
+#' @param f name of the column containing the forecast.
 #' @param by names of columns to group by
 #' @param ... passed on to \code{add_tercile_cat}.
 #'

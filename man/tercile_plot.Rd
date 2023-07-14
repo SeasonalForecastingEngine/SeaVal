@@ -14,6 +14,7 @@ tercile_plot(
   name = "",
   labels = c("Wetter", "Average", "Drier"),
   na.value = "white",
+  extent = NULL,
   expand.x = c(-0.5, 0.5),
   expand.y = c(-0.5, 2)
 )

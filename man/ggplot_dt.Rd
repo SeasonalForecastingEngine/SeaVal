@@ -23,6 +23,7 @@ ggplot_dt(
   binwidth = NULL,
   bin_midpoint = midpoint,
   add_map = TRUE,
+  extent = NULL,
   expand.x = c(0, 0),
   expand.y = c(0, 0)
 )
@@ -56,6 +57,8 @@ percentages and you'd like 4 categories, ranging from white to red, this is easi
 
 \item{add_map}{logical. Set to FALSE to remove borders (e.g. if you want to add them yourself from a shapefile).}
 
+\item{extent}{An optional four-element vector in the order xmin,xmax,ymin,ymax for specifying the spatial extent of the plot. Default is to fit the extent to the data.}
+
 \item{expand.x, expand.y}{vectors with two entries to be added to xlims/ylims of the plot. E.g. expand.x = c(-0.5,0.5)
 expands the plot by half a longitude both on the right and left hand side}
 }
@@ -64,9 +67,9 @@ a ggplot object.
 }
 \description{
 Plots spatial data from a data.table. The data table needs to contain columns named 'lon' and 'lat'. The grid needs to be regular.
-If spatial data is contained for several levels (e.g. mutliple times or multiple ensemble members), only the first is plotted.
-By default, the first column that is not recognized as a dimension variable is plotted, see \code{data_col}. If the function recognizes the name
-of the column containing the plotting data, it sets a fitting default color scale.
+If spatial data is contained for several levels (e.g. mutliple times or multiple ensemble members), only the data for the first level is plotted.
+By default, the first column that is not recognized as a dimension variable is plotted, see \code{data_col}. For the most common data-columns, reasonable
+color scales are selected automativally.
 }
 \author{
 Claudio Heinrich

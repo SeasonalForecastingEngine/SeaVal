@@ -9,6 +9,8 @@ add_tercile_probs(dt, f = NULL, by = setdiff(dimvars(dt), "member"), ...)
 \arguments{
 \item{dt}{the data table.}
 
+\item{f}{name of the column containing the forecast.}
+
 \item{by}{names of columns to group by}
 
 \item{...}{passed on to \code{add_tercile_cat}.}
