@@ -60,12 +60,6 @@ It is calculated separately for each ',paste(by,collapse = ', ')))
 #' @description Takes a data table with lon/lat coordinates and adds a column
 #' 'country' to it, containing the name of the country, the coordinate belongs to.
 #'
-#' NOTE: We avoid dependencies on \pkg{sf} and \pkg{rnaturalearth}, which require gdal.
-#' In particular, gdal is currently not available on ICPACs hpc, one of the key
-#' environments where \pkg{SeaVal} is run in. We follow the 'older approach' relying
-#' on the packages \pkg{maps}, \pkg{maptools}, and \pkg{sp} for getting shapefiles of
-#' all countries.
-#'
 #'
 #' @param dt the data table.
 #' @param regions Character vector of country names for which shapefiles are loaded.
@@ -73,37 +67,16 @@ It is calculated separately for each ',paste(by,collapse = ', ')))
 #' If you set regions = '.', the entire world is loaded, but this makes the function slower.
 #'
 #' @export
-#' @importFrom maps map
-#' @importFrom maptools map2SpatialPolygons
-#' @importFrom sp coordinates proj4string over
+
 
 add_country_names = function(dt,regions = EA_country_names())
 {
   if('country' %in% names(dt))
   {return(dt)}
 
-  world_map = maps::map('world',
-                        regions = regions,
-                        fill = TRUE, col = 'transparent',
-                        plot = FALSE, resolution = 0)
-
-  IDs <- sapply(strsplit(world_map$names, ":"), function(x) x[1])
-
-  map_sp <- maptools::map2SpatialPolygons(world_map, IDs=IDs,
-                                          proj4string=sp::CRS("+proj=longlat +datum=WGS84"))
-
-  #world <- rnaturalearth::ne_countries(scale = "large", continent = 'Africa')
-
   coords = unique(dt[,.(lon,lat)])
-  # get coords as spatial points:
-  sp_lonlat = data.table(x = coords[,lon], y = coords[,lat])
-  sp::coordinates(sp_lonlat) = c('x','y')
-  sp::proj4string(sp_lonlat) = sp::CRS("+proj=longlat +datum=WGS84")
+  coords[,country:= maps::map.where(x = lon,y = lat)]
 
-  #in which country does each point fall?
-  cs = names(map_sp)[sp::over(sp_lonlat,map_sp)]
-
-  coords[,country := cs]
   dt_new = merge(dt,coords,by = c('lon','lat'),sort = FALSE) # sort = FALSE for next line
   # add column to provided data table:
   dt[,country:=dt_new[,country]]

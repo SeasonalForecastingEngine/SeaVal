@@ -13,6 +13,9 @@ get_terciles(...)
 This function wraps \code{get_quantiles} with the fixed quantiles 0.33 and 0.67.
 }
 \examples{
+\dontrun{
+# takes a few seconds:
 get_terciles(chirps_monthly)
+}
 
 }

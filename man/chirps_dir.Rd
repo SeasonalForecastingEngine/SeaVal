@@ -13,6 +13,6 @@ chirps_dir(dir = file.path(data_dir(), "CHIRPS"))
 Auxiliary function to access/set the directory for loading and saving CHIRPS data.
 }
 \examples{
-chirps_dir()
+\dontrun{chirps_dir()}
 
 }

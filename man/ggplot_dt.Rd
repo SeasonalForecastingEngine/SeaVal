@@ -73,8 +73,10 @@ By default, the first column that is not recognized as a dimension variable is p
 color scales are selected automativally.
 }
 \examples{
+\dontrun{
+# takes a few seconds:
 ggplot_dt(chirps_monthly[month == 12 & year == 2020])
-
+}
 }
 \author{
 Claudio Heinrich

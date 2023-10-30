@@ -29,6 +29,8 @@ For each level of `lon`, `lat`, and `year`, the table should only contain one ro
 For each location, the map shows whether the observed value was normal, below, or above. This makes it possible to visually compare to the usual tercile forecsst
 }
 \examples{
+\dontrun{
+# takes a few seconds:
 ver_map(chirps_monthly[month == 11],yy = 2018)
-
+}
 }

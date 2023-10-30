@@ -15,10 +15,11 @@ Authors@R:
            family = "Scheuerer",
            role = c("ctb"),
            email = "scheuerer@nr.no"))
-Description: Provides tools for processing and evaluating seasonal weather forecasts, with an emphasis on tercile forecasts.
-    We follow the WMO recommendation of evaluating seasonal forecasts (<https://library.wmo.int/idurl/4/56227>).
-    It is developed and maintained at the Norwegian Computing Center Oslo in collaboration with ICPAC.
-    The development was supported by the European Union’s Horizon 2020 research and innovation programme under grant agreement no. 869730 (CONFER).
+Description: Provides tools for processing and evaluating seasonal weather forecasts, 
+    with an emphasis on tercile forecasts. We follow the World Meteorological Organization's 
+    recommendation of evaluating seasonal forecasts.
+    The development was supported by the European Union’s Horizon 2020 research 
+    and innovation programme under grant agreement no. 869730 (CONFER).
 URL: http://files.nr.no/samba/CONFER/SeaVal/, https://github.com/SeasonalForecastingEngine/SeaVal
 License: GPL (>= 3)
 Encoding: UTF-8
@@ -29,12 +30,10 @@ Depends:
 Imports: 
   ggplotify,
   maps,
-  maptools,
   ncdf4,
   patchwork,
   RColorBrewer,
-  scales,
-  sp
+  scales
 LazyData: true
 RoxygenNote: 7.2.3
 Collate: 

@@ -36,8 +36,10 @@
 #' @import ggplot2
 #'
 #' @examples
+#' \dontrun{
+#' # takes a few seconds:
 #' ggplot_dt(chirps_monthly[month == 12 & year == 2020])
-#'
+#'}
 #' @export
 #'
 #' @author Claudio Heinrich

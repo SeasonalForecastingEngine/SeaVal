@@ -138,8 +138,9 @@ dimvars = function(dt = NULL)
 #' @param set_dir logical. Set this to TRUE if you have to redefine your data directory.
 #'
 #' @examples
+#' \dontrun{
 #' data_dir()
-#'
+#'}
 #' @export
 
 data_dir = function(set_dir = F)

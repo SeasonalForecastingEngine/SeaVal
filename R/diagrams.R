@@ -657,8 +657,10 @@ tendency_diag = function(dt,
 #' @importFrom RColorBrewer brewer.pal
 #'
 #' @examples
+#' \dontrun{
+#' # takes a few seconds:
 #' ver_map(chirps_monthly[month == 11],yy = 2018)
-#'
+#'}
 #' @export
 
 ver_map = function(dt,o = obs_cols(dt),yy = dt[,max(year)],

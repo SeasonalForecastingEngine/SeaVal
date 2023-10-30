@@ -171,7 +171,11 @@ get_quantiles = function(dt,
 #'
 #' @param ... passed on to get_quantiles.
 #'
-#' @examples get_terciles(chirps_monthly)
+#' @examples
+#' \dontrun{
+#' # takes a few seconds:
+#' get_terciles(chirps_monthly)
+#' }
 #'
 #' @export
 

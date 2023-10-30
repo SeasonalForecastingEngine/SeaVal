@@ -6,7 +6,8 @@
 #'
 #' @param dir The directory
 #'
-#' @examples chirps_dir()
+#' @examples
+#' \dontrun{chirps_dir()}
 #'
 #' @export
 
