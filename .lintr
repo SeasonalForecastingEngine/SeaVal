@@ -1,0 +1,1 @@
+linters: list(line_length_linter(length = 80L))

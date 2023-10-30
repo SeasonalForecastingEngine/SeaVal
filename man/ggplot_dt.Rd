@@ -17,7 +17,7 @@ ggplot_dt(
   midpoint = NULL,
   breaks = NULL,
   na.value = "gray75",
-  oob = scales::squish,
+  oob = NULL,
   guide = guide_colorbar(barwidth = 0.5, barheight = 10),
   ...,
   binwidth = NULL,
@@ -37,7 +37,7 @@ ggplot_dt(
 
 \item{discrete_cs}{Logical. Should the color scale be discretized?}
 
-\item{rr, low, mid, high, name, midpoint, breaks, na.value, oob, guide, ...}{Arguments for the color scale, passed to scale_fill_gradient2 or scale_fill_steps2 (depending on whether discrete_cs == TRUE).
+\item{rr, low, mid, high, name, breaks, na.value, oob, guide, ...}{Arguments for the color scale, passed to scale_fill_gradient2 or scale_fill_steps2 (depending on whether discrete_cs == TRUE).
 rr replaces limits (specifying the range of the color scale) for consistency with the older plotting functions from the PostProcessing package.
 \code{na.value} specifies the color of missing values. \code{oob} specifies the treatment of out-of-boundary values, i.e. values beyond the
 limits.
@@ -45,8 +45,9 @@ The ... argument can in particular be used to customize the legend/colorbar usin
 see https://ggplot2.tidyverse.org/reference/guide_colourbar.html. Moreover, when \code{discrete_cs == TRUE} you can pass the arguments \code{n.breaks,breaks} to customize the scale.
 If you use n.breaks you might also want to set nice.breaks = FALSE, see ?scale_fill_steps2.}
 
-\item{midpoint}{midpoint of the color scale, passed to scale_fill_gradient2 or scale_fill_steps2 (depending on whether discrete_cs == TRUE).
-This is 0 by default. If you set it to NULL, the midpoint is set to the center of the data range (or the center of rr, if provided), such that the entire color scale is utilized.
+\item{midpoint}{midpoint of the color scale, passed to \code{scale_fill_gradient2} or \code{scale_fill_steps2} (depending on whether \code{discrete_cs == TRUE}).
+If you set it to NULL (the default), the midpoint is set to the center of the data range (or the center of rr, if provided), such that the entire color scale is used.
+Note that this default differs from the default behavior of \code{scale_fill_gradient2} or \code{scale_fill_steps2}.
 Specifying the midpoint can often be a convenient way to force a color scale with only two colors (for example, by setting it
 to the minimum or maximum of your data).}
 
@@ -70,6 +71,10 @@ Plots spatial data from a data.table. The data table needs to contain columns na
 If spatial data is contained for several levels (e.g. mutliple times or multiple ensemble members), only the data for the first level is plotted.
 By default, the first column that is not recognized as a dimension variable is plotted, see \code{data_col}. For the most common data-columns, reasonable
 color scales are selected automativally.
+}
+\examples{
+ggplot_dt(chirps_monthly[month == 12 & year == 2020])
+
 }
 \author{
 Claudio Heinrich

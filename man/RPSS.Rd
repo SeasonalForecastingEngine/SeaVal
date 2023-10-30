@@ -7,7 +7,7 @@
 RPSS(
   dt,
   f = c("below", "normal", "above"),
-  o = intersect(c("tercile_cat", "terc_cat", "tercile_category"), names(dt)),
+  o = tc_cols(dt),
   by = by_cols_terc_fc_score(),
   pool = "year",
   dim.check = TRUE
@@ -26,7 +26,16 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 
 \item{pool}{column name(s) for the variable(s) along which is averaged, typically just 'year'.}
 
-\item{dim.check}{Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.}
+\item{dim.check}{Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+
+ @examples
+dt = data.table(below = c(0.5,0.3,0),
+                normal = c(0.3,0.3,0.7),
+                above = c(0.2,0.4,0.3),
+                tc_cat = c(-1,0,0),
+                year = 1:3)
+print(dt)
+RPSS(dt)}
 }
 \description{
 This score is suitable for tercile category forecasts.

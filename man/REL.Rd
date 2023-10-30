@@ -8,7 +8,7 @@ REL(
   dt,
   bins = c(0.3, 0.35001),
   f = c("below", "normal", "above"),
-  o = intersect(c("tercile_cat", "terc_cat", "tercile_category"), names(dt)),
+  o = tc_cols(dt),
   by = by_cols_terc_fc_score(),
   pool = "year",
   dim.check = TRUE
@@ -39,4 +39,14 @@ Requires the specification of probability bins. One score for each category (bel
 also the sum of the scores.
 
 Values close to 0 indicate reliable forecasts. Higher values mean less reliable forecasts.
+}
+\examples{
+dt = data.table(below = c(0.5,0.3,0),
+                normal = c(0.3,0.3,0.7),
+                above = c(0.2,0.4,0.3),
+                tc_cat = c(-1,0,0),
+                year = 1:3)
+print(dt)
+REL(dt)
+
 }

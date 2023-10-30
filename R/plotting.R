@@ -9,11 +9,12 @@
 #' @param data_col The name of the column in dt containing the data for plotting. If nothing is provided (the default), the first column that is not a dimension variable or 'member' is selected.
 #' @param mn optional plot title
 #' @param discrete_cs Logical. Should the color scale be discretized?
-#' @param midpoint midpoint of the color scale, passed to scale_fill_gradient2 or scale_fill_steps2 (depending on whether discrete_cs == TRUE).
-#' This is 0 by default. If you set it to NULL, the midpoint is set to the center of the data range (or the center of rr, if provided), such that the entire color scale is utilized.
+#' @param midpoint midpoint of the color scale, passed to \code{scale_fill_gradient2} or \code{scale_fill_steps2} (depending on whether \code{discrete_cs == TRUE}).
+#' If you set it to NULL (the default), the midpoint is set to the center of the data range (or the center of rr, if provided), such that the entire color scale is used.
+#' Note that this default differs from the default behavior of \code{scale_fill_gradient2} or \code{scale_fill_steps2}.
 #' Specifying the midpoint can often be a convenient way to force a color scale with only two colors (for example, by setting it
 #' to the minimum or maximum of your data).
-#' @param rr,low,mid,high,name,midpoint,breaks,na.value,oob,guide,... Arguments for the color scale, passed to scale_fill_gradient2 or scale_fill_steps2 (depending on whether discrete_cs == TRUE).
+#' @param rr,low,mid,high,name,breaks,na.value,oob,guide,... Arguments for the color scale, passed to scale_fill_gradient2 or scale_fill_steps2 (depending on whether discrete_cs == TRUE).
 #' rr replaces limits (specifying the range of the color scale) for consistency with the older plotting functions from the PostProcessing package.
 #' \code{na.value} specifies the color of missing values. \code{oob} specifies the treatment of out-of-boundary values, i.e. values beyond the
 #' limits.
@@ -34,6 +35,9 @@
 #' @import data.table
 #' @import ggplot2
 #'
+#' @examples
+#' ggplot_dt(chirps_monthly[month == 12 & year == 2020])
+#'
 #' @export
 #'
 #' @author Claudio Heinrich
@@ -51,7 +55,7 @@ ggplot_dt = function(dt,
                      midpoint = NULL,
                      breaks = NULL,
                      na.value = 'gray75',
-                     oob = scales::squish,
+                     oob = NULL,
                      guide = guide_colorbar(barwidth = 0.5, barheight = 10),
                      ...,
                      binwidth = NULL,bin_midpoint = midpoint,
@@ -62,6 +66,8 @@ ggplot_dt = function(dt,
 {
   # for devtools::check():
   long = group = NULL
+
+  if(is.null(oob)) oob = scales::squish # declaring this in the function-defaults results in a NOTE during check(), because scales is imported but never used
 
   if(!('lon' %in% names(dt) & 'lat' %in% names(dt))) stop('The data table has to contain columns called "lon" and "lat".')
 
@@ -74,7 +80,8 @@ ggplot_dt = function(dt,
                       no = names(dt)[ncol(dt)], # last column if every column is level-column
                       yes = setdiff(names(dt),level_cols)[1])
   }
-  # now remove lon lat from level_cols:
+
+  # now remove lon lat from level_cols and check whether dt contains multiple levels:
   level_cols = setdiff(level_cols,space_dimvars(dt))
 
   if(length(level_cols) > 0)
@@ -179,12 +186,7 @@ ggplot_dt = function(dt,
 
   if(is.null(midpoint))
   {
-    if(is.null(Midpoint))
-    {
-      midpoint = 0
-    } else {
-      midpoint = Midpoint
-    }
+    midpoint = Midpoint
   }
 
 

@@ -11,7 +11,7 @@
 #' @usage data(chirps_monthly)
 #'
 #' @source
-#'   \url{http://digilib.icpac.net/SOURCES/.ICPAC/.CHIRPS-BLENDED/.monthly/.rainfall/.precipitation}
+#'   \url{http://iridl.ldeo.columbia.edu/SOURCES/.UCSB/.CHIRPS/.v2p0/.monthly/.global/.precipitation/}
 "chirps_monthly"
 
 #' Monthly mean precipitation forecast example dataset

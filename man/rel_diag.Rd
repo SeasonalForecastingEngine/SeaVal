@@ -40,3 +40,13 @@ one for each the prediction of above-, normal- and below-values, plus one for  a
 You can provide a 'by' argument to obtain separate reliability diagrams for different values of the by-columns. E.g., when you data table contains
 a column named 'season', you can set by = 'season'. Then, the function will output a list of 16 diagrams, 4 for each season.
 }
+\examples{
+dt = data.table(below = c(0.5,0.3,0),
+                normal = c(0.3,0.3,0.7),
+                above = c(0.2,0.4,0.3),
+                tc_cat = c(-1,0,0),
+                lon = 1:3)
+print(dt)
+rel_diag(dt)
+
+}

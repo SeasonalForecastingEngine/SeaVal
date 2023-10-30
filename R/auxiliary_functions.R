@@ -1,39 +1,51 @@
 
 #### This file contains all kind of auxiliary functions. ####
 
-#' Auxiliary function returning the default column names to group by when calculating scores of ensemble forecasts.
+#' Auxiliary function
 #'
-#' @param dt optional. You can provide a data table, then the function returns the names of grouping variables in this data table.
-#' @export
+#' returns the default column names to group by when calculating scores of
+#' ensemble forecasts.
+#'
+#' @param dt optional. You can provide a data table, then the function
+#' returns the names of grouping variables in this data table.
+
 by_cols_ens_fc_score = function(dt = NULL)
 {
   return(setdiff(dimvars(dt),c('year','member')))
 }
 
-#' Auxiliary function returning the default column names to group by when calculating scores for tercile forecasts.
+#' Auxiliary function
 #'
-#' @param dt optional. You can provide a data table, then the function returns the names of grouping variables in this data table.
-#' @export
+#' returns the default column names to group by when calculating scores for
+#' tercile forecasts.
+#'
+#' @param dt optional. You can provide a data table, then the function returns
+#' the names of grouping variables in this data table.
+
 by_cols_terc_fc_score = function(dt = NULL)
 {
   return(setdiff(dimvars(dt),c('year','member')))
 }
 
-#' Auxiliary function to get column names to group by when calculating scores for tercile forecasts.
+#' Auxiliary function
 #'
-#' @description Some tercile forecasts, such as ROC score or SRC (slope of reliability curve) require many data points and should therefore be pooled in space
-#' This auxiliary function returns the default column names to group by for these scores. The suffix _sp stands for spatial pooling.
+#' Gets column names to group by when calculating scores for tercile forecasts.
+#' Some tercile forecasts, such as ROC score or SRC (slope of reliability curve)
+#' require many data points and should therefore be pooled in space.
+#' This auxiliary function returns the default column names to group by for these scores.
+#' The suffix _sp stands for spatial pooling.
 #'
-#' @param dt optional. You can provide a data table, then the function returns the names of grouping variables in this data table.
-#' @export
+#' @param dt optional. You can provide a data table, then the function returns the names
+#' of grouping variables in this data table.
+
 by_cols_terc_fc_score_sp = function(dt = NULL)
 {
   return(setdiff(by_cols_terc_fc_score(dt),c('lon','lat')))
 }
 
-
-
-#' Auxiliary function for scores of ensemble forecasts. Checks whether the data table contains columns with names that are not allowed,
+#' Auxiliary function for scores of ensemble forecasts.
+#'
+#' Checks whether the data table contains columns with names that are not allowed,
 #' or whether it is missing columns that are required.
 
 checks_ens_fc_score = function()
@@ -62,8 +74,11 @@ checks_ens_fc_score = function()
   }
 }
 
-#' Auxiliary function for scores for tercile forecasts. Checks whether the data table contains columns with names that are not allowed,
+#' Auxiliary function for scores for tercile forecasts.
+#'
+#' Checks whether the data table contains columns with names that are not allowed,
 #' or whether it is missing columns that are required.
+
 checks_terc_fc_score = function()
 {
   # inherit arguments passed to parent:
@@ -98,6 +113,9 @@ checks_terc_fc_score = function()
 #'
 #'@param dt Optional data table. If a data table is provided only the dimvars of the data table are returned.
 #'
+#'@examples
+#'dimvars()
+#'
 #'@export
 
 dimvars = function(dt = NULL)
@@ -114,9 +132,14 @@ dimvars = function(dt = NULL)
 
 #' Auxiliary function to access and change the directory used to load and save data.
 #'
-#' @description The first time this function is called, it asks the user to configure the directory.
+#' @description The package allows to download and organize CHIRPS data. This function specifies the directory where
+#' the data is stored. The first time this function is called, it asks the user to configure the directory.
 #'
 #' @param set_dir logical. Set this to TRUE if you have to redefine your data directory.
+#'
+#' @examples
+#' data_dir()
+#'
 #' @export
 
 data_dir = function(set_dir = F)
@@ -209,6 +232,8 @@ Use / on Linux (e.g. /nr/project/stat/CONFER/Data/) and \\ on Windows (e.g. C:\\
 #' This is an auxiliary function used in \link{add_country_names}, so only these names are recognized
 #' by default.
 #'
+#'  @examples
+#' EA_country_names()
 #' @export
 
 EA_country_names = function()
@@ -218,9 +243,14 @@ EA_country_names = function()
     'South Sudan','Sudan','Tanzania','Uganda'))
 }
 
-#' which column names are interpreted as (ensemble-) forecast values
+#' Forecast column names
+#'
+#' returns the columns names that are recognized as (ensemble-) forecast values
 #'
 #' @param dt optional data table. If provided, the function guesses which column contains the forecast values. Else it returns all recognized forecast column names.
+#'
+#' @examples
+#' fc_cols()
 #'
 #' @export
 
@@ -235,11 +265,14 @@ fc_cols = function(dt = NULL)
   return(cols)
 }
 
-#' which column names are interpreted as observations
+#' Observation column names
 #'
 #' @description Note that this function guesses column names for observed precip, not observed tercile category.
 #'
 #' @param dt optional data table. If provided, the function guesses which column contains the observations. Else it returns all recognized observation column names.
+#'
+#' @examples
+#' obs_cols()
 #'
 #' @export
 
@@ -254,9 +287,14 @@ obs_cols = function(dt = NULL)
   return(cols)
 }
 
-#' which column names are interpreted as obeserved tercile categories
+#' Tercile column names
+#'
+#' which column names are interpreted as observed tercile categories
 #'
 #' @param dt optional data table. If provided, the function guesses which column contains the observations. Else it returns all recognized column names.
+#'
+#' @examples
+#' tc_cols()
 #'
 #' @export
 
@@ -278,6 +316,10 @@ tc_cols = function(dt = NULL)
 #' Observation dimvars are column names in a data table that resemble coordinates for which only one observation may exist.
 #'
 #' @param dt optional. You can provide a data table, then the function returns the names of coordinate columns in this data table.
+#'
+#' @examples
+#' obs_dimvars
+#'
 #' @export
 obs_dimvars = function(dt = NULL)
 {
@@ -291,7 +333,9 @@ obs_dimvars = function(dt = NULL)
 }
 
 
-#' Auxiliary Function called inside functions that calculate scores
+#' Auxiliary Function
+#'
+#' called inside functions that calculate scores
 #' for ensemble forecasts. Checks whether the provided data table has the right format.
 
 run_dimension_check_ens_fc_score = function()
@@ -325,7 +369,9 @@ The following columns are classified as coordinate but were not included in by, 
   if(length(bypool)>0 ) warning(call. = FALSE,paste(c('The following columns are contained in both by and pool:\n\n',bypool,'\n\nThey are interpreted as grouping variables, i.e., as part of "by".')))
 }
 
-#' Auxiliary Function called inside functions that calculate scores
+#' Auxiliary Function
+#'
+#' called inside functions that calculate scores
 #' for ensemble forecasts. Checks whether the provided data table has the right format.
 
 run_dimension_check_terc_forecast = function()
@@ -386,8 +432,13 @@ run_dimension_check_terc_forecast = function()
 }
 
 
-#' Auxiliary function returning all column names indicating a spatial coordinate.
+#' Auxiliary function
+#'
+#' returns all column names indicating a spatial coordinate.
 #' @param dt optional. You can provide a data table, then the function returns the names of spatial coordinate columns in this data table.
+#'
+#' @examples
+#' space_dimvars()
 #' @export
 space_dimvars = function(dt = NULL)
 {
@@ -400,8 +451,14 @@ space_dimvars = function(dt = NULL)
   }
 }
 
-#' Auxiliary function returning all column names indicating a temporal coordinate.
+#' Auxiliary function
+#'
+#' returns all column names indicating a temporal coordinate.
 #' @param dt optional. You can provide a data table, then the function returns the names of temporal coordinate columns in this data table.
+#'
+#' @examples
+#' time_dimvars()
+#'
 #' @export
 time_dimvars = function(dt = NULL)
 {

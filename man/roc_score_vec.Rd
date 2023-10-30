@@ -16,3 +16,7 @@ Calculates the area under curve (AUC) or ROC-score from a vector of probabilitie
 Formula (1a) from Mason&2018 is used in the calculation, corresponding to trapezoidal interpolation.
 This is mostly an auxiliary function for the ROCS function, but also used in the ROC-diagram function, where the AUC is added to the diagrams.
 }
+\examples{
+roc_score_vec(probs = c(0.1,0.6,0.3,0.4),
+             obs = c(FALSE,TRUE,TRUE,FALSE))
+}

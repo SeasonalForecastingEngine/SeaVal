@@ -38,3 +38,9 @@ ranked probability scores'). This is slower, but you should do it if you compare
 \description{
 Taking CRPSs of ensemble forecasts stored in long data tables:
 }
+\examples{
+dt = data.table(fc = 1:4,obs = c(4,4,7,7),member = c(1,2,1,2),year = c(1999,1999,2000,2000))
+CRPS(dt,f = 'fc')
+
+
+}

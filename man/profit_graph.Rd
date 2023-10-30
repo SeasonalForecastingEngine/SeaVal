@@ -33,5 +33,17 @@ profit_graph(
 A list of gg objects which can be plotted by ggpubr::ggarrange (for example)
 }
 \description{
-These graphs really only make sense if you have 50 or less observations. Typical application would be when you compare seasonal mean forecasts to station data for a single location.
+These graphs really only make sense if you have 50 or less observations.
+Typical application would be when you compare seasonal mean forecasts to station data for a single location.
+}
+\examples{
+dt = data.table(below = c(0.5,0.3,0),
+                normal = c(0.3,0.3,0.7),
+                above = c(0.2,0.4,0.3),
+                tc_cat = c(-1,0,0),
+                lon = 1:3)
+print(dt)
+profit_graph(dt)
+profit_graph(dt,accumulative = FALSE)
+
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxiliary_functions.R
 \name{obs_cols}
 \alias{obs_cols}
-\title{which column names are interpreted as observations}
+\title{Observation column names}
 \usage{
 obs_cols(dt = NULL)
 }
@@ -11,4 +11,8 @@ obs_cols(dt = NULL)
 }
 \description{
 Note that this function guesses column names for observed precip, not observed tercile category.
+}
+\examples{
+obs_cols()
+
 }

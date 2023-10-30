@@ -12,3 +12,7 @@ get_terciles(...)
 \description{
 This function wraps \code{get_quantiles} with the fixed quantiles 0.33 and 0.67.
 }
+\examples{
+get_terciles(chirps_monthly)
+
+}

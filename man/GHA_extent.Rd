@@ -2,10 +2,13 @@
 % Please edit documentation in R/chirps.R
 \name{GHA_extent}
 \alias{GHA_extent}
-\title{Returns a lon/lat bounding box for the greater horn of Africa region. Format is c(xmin,xmax,ymin,ymax), as for raster::extent}
+\title{GHA-bounding-box}
 \usage{
 GHA_extent()
 }
 \description{
 Returns a lon/lat bounding box for the greater horn of Africa region. Format is c(xmin,xmax,ymin,ymax), as for raster::extent
+}
+\examples{
+GHA_extent()
 }

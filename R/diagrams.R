@@ -64,7 +64,8 @@ create_diagram_by_level = function(FUN,by,dt,...)
 
 #' (Accumulative) profit graphs
 #'
-#' @description These graphs really only make sense if you have 50 or less observations. Typical application would be when you compare seasonal mean forecasts to station data for a single location.
+#' @description These graphs really only make sense if you have 50 or less observations.
+#' Typical application would be when you compare seasonal mean forecasts to station data for a single location.
 #'
 #' @param dt Data table containing tercile forecasts
 #' @param accumulative Logic. Should the accumulative profit be plotted or the profit per forecast?
@@ -75,6 +76,16 @@ create_diagram_by_level = function(FUN,by,dt,...)
 #' @param dim.check Logical. If TRUE, the function checks whether the columns in by and pool span the entire data table.
 #'
 #' @return A list of gg objects which can be plotted by ggpubr::ggarrange (for example)
+#'
+#' @examples
+#' dt = data.table(below = c(0.5,0.3,0),
+#'                 normal = c(0.3,0.3,0.7),
+#'                 above = c(0.2,0.4,0.3),
+#'                 tc_cat = c(-1,0,0),
+#'                 lon = 1:3)
+#' print(dt)
+#' profit_graph(dt)
+#' profit_graph(dt,accumulative = FALSE)
 #'
 #' @importFrom patchwork wrap_plots
 #' @export
@@ -99,7 +110,7 @@ profit_graph = function(dt, accumulative = TRUE,
     if(dt[,.N] > 50) warning(call. = FALSE,'You have more than 50 observations. Profit graphs are frequently hard to read when many observations are used.
 \nIn particular, once a zero-probability-event materializes, the profit is -1 and cannot recover.')
 
-    prob_vec = dt[,get(f)[1] * (get(o) == -1) + get(f)[2] * (get(o) == 0) + get(f)[3] * (get(o) == 1)]
+    prob_vec = dt[,get(f[1]) * (get(o) == -1) + get(f[2]) * (get(o) == 0) + get(f[3]) * (get(o) == 1)]
     acc_profits = cumprod(prob_vec / 0.33) - 1
 
     dt_plot = data.table(acc_profit = acc_profits)
@@ -139,6 +150,9 @@ profit_graph = function(dt, accumulative = TRUE,
 #'
 #' @param probs vector of probabilities (between 0 and 1, not percent)
 #' @param binwidth width of the bins for rounding.
+#'
+#' @examples
+#' round_probs(c(0.001,0.7423))
 #' @export
 
 round_probs = function(probs,binwidth = 0.05)
@@ -160,6 +174,12 @@ round_probs = function(probs,binwidth = 0.05)
 #' @param obs Vector of logical observations.
 #' @param slope_only logical. If set to TRUE, only the slope of the reliability curve is returned
 #'
+#' @examples
+#' discrete_probs = seq(0,1,length.out = 5)
+#' obs = c(FALSE,FALSE,TRUE,TRUE,TRUE)
+#' rel_diag_vec(discrete_probs,obs)
+#'
+#'
 #' @export
 #' @importFrom stats lm coef
 
@@ -174,7 +194,7 @@ rel_diag_vec = function(discrete_probs, obs, slope_only = FALSE)
                         obs_count = sum(obs)),by = prob]
 
   # reduce to bins with more than 1 data point:
-  rel_diag_dt = rel_diag_dt[count > 1]
+  #rel_diag_dt = rel_diag_dt[count > 1]
 
   # warning if you have to few points for the discretization used:
   if(rel_diag_dt[,mean(count)] <= 5)
@@ -196,7 +216,7 @@ rel_diag_vec = function(discrete_probs, obs, slope_only = FALSE)
   pp = ggplot(rel_diag_dt) +
     geom_vline(xintercept = total_freq,color = 'gray') +
     geom_hline(yintercept = total_freq,color = 'gray') +
-    geom_line(aes(x = prob,y = obs_freq),color = 'blue',size = 1) +
+    geom_line(aes(x = prob,y = obs_freq),color = 'blue',linewidth = 1) +
     geom_abline(intercept = model$coefficients[1], slope  = model$coefficients[2],color = 'blue',linetype = 'dashed') +
     geom_point(aes(x = prob,y = obs_freq),color = 'blue')+
     geom_col(aes(x = prob,y = frequency),width = 2) +
@@ -230,6 +250,16 @@ rel_diag_vec = function(discrete_probs, obs, slope_only = FALSE)
 #' @param binwidth bin width for discretizing probabilities.
 #'
 #' @return A list of gg objects which can be plotted by ggpubr::ggarrange (for example)
+#'
+#'
+#' @examples
+#' dt = data.table(below = c(0.5,0.3,0),
+#'                 normal = c(0.3,0.3,0.7),
+#'                 above = c(0.2,0.4,0.3),
+#'                 tc_cat = c(-1,0,0),
+#'                 lon = 1:3)
+#' print(dt)
+#' rel_diag(dt)
 #'
 #' @importFrom patchwork wrap_plots
 #' @importFrom utils menu
@@ -360,6 +390,10 @@ rel_diag = function(dt,
 #' @param obs vector with categorical observations
 #' @param interpolate logical. If TRUE the ROC-curve is interpolated and drawn as a continuous function. Otherwise it is drawn as a step function.
 #'
+#'@examples
+#' probs = seq(0,1,length.out = 5)
+#' obs = c(FALSE,FALSE,TRUE,FALSE,TRUE)
+#' roc_curve_vec(probs,obs)
 #' @export
 
 
@@ -427,6 +461,15 @@ roc_curve_vec = function(probs,obs,interpolate = TRUE)
 #' @param interpolate Logical. If TRUE, the curve connects the dots making up the ROC curve (which looks nicer), if not a step function is drawn (which is closer to the mathematical definition of the ROC curve).
 #'
 #' @return A list of gg objects which can be plotted by ggpubr::ggarrange (for example)
+#'
+#' @examples
+#' dt = data.table(below = c(0.5,0.3,0),
+#'                 normal = c(0.3,0.3,0.7),
+#'                 above = c(0.2,0.4,0.3),
+#'                 tc_cat = c(-1,0,0),
+#'                 lon = 1:3)
+#' print(dt)
+#' ROC_curve(dt)
 #'
 #' @importFrom patchwork wrap_plots
 #' @export
@@ -534,6 +577,14 @@ ROC_curve = function(dt,
 #'
 #' @return If by == NULL a gg object, otherwise a list of gg objects that can be plotted by ggpubr::ggarrange (for example)
 #'
+#' @examples
+#' dt = data.table(below = c(0.5,0.3,0),
+#'                 normal = c(0.3,0.3,0.7),
+#'                 above = c(0.2,0.4,0.3),
+#'                 tc_cat = c(-1,0,0),
+#'                 lon = 1:3)
+#' print(dt)
+#' tendency_diag(dt)
 #' @export
 
 tendency_diag = function(dt,
@@ -605,6 +656,9 @@ tendency_diag = function(dt,
 #' @importFrom ggplotify as.ggplot
 #' @importFrom RColorBrewer brewer.pal
 #'
+#' @examples
+#' ver_map(chirps_monthly[month == 11],yy = 2018)
+#'
 #' @export
 
 ver_map = function(dt,o = obs_cols(dt),yy = dt[,max(year)],
@@ -612,8 +666,9 @@ ver_map = function(dt,o = obs_cols(dt),yy = dt[,max(year)],
                    out_file = NULL)
 
 {
+
   # for devtools::check()
-  lon = lat = is_yy = sample_quantile = how_many_ties = NULL
+  N = dummy_var = lon = lat = is_yy = sample_quantile = how_many_ties = NULL
 
   if(!('sample_quantile' %in% names(dt))) # this allows us to send in a more prepared data table instead, with precalculated sample quantiles.
   {
@@ -752,12 +807,16 @@ ver_map = function(dt,o = obs_cols(dt),yy = dt[,max(year)],
 #' @importFrom ggplotify as.ggplot
 #' @importFrom RColorBrewer brewer.pal
 #'
+#' @examples
+#' \dontrun{ver_map_chirps(mm = 12,yy = 2022)}
+#'
 #' @export
 
 ver_map_chirps = function(mm = month(Sys.Date()-60),
                           yy = year(Sys.Date()-60),
                           version = 'UCSB',resolution = 'low',...)
 {
+  res = sample_quantile = prec = q0.1 = q0.2 = q0.33 = q0.67 = q0.8 = q0.9 = NULL
   dt = load_chirps(years = yy,
                    months = mm,
                    version = version,

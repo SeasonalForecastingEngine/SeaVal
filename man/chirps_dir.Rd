@@ -2,7 +2,7 @@
 % Please edit documentation in R/chirps.R
 \name{chirps_dir}
 \alias{chirps_dir}
-\title{Auxiliary function to access/set the directory for loading and saving CHIRPS data.}
+\title{CHIRPS directory}
 \usage{
 chirps_dir(dir = file.path(data_dir(), "CHIRPS"))
 }
@@ -11,4 +11,8 @@ chirps_dir(dir = file.path(data_dir(), "CHIRPS"))
 }
 \description{
 Auxiliary function to access/set the directory for loading and saving CHIRPS data.
+}
+\examples{
+chirps_dir()
+
 }

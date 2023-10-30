@@ -16,3 +16,6 @@ takes a vector of probabilities (between 0 and 1) and rounds them to the scale s
 where one point is drawn for each bin. 0 is always at the center of the first interval for rounding:
 E.g. if binwidth = 0.05 (the default), then probabilities up to 0.025 are rounded to 0, probs between 0.025 and 0.075 are rounded to 0.05, etc.
 }
+\examples{
+round_probs(c(0.001,0.7423))
+}

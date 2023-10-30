@@ -12,3 +12,7 @@ obs_dimvars(dt = NULL)
 \description{
 Observation dimvars are column names in a data table that resemble coordinates for which only one observation may exist.
 }
+\examples{
+obs_dimvars
+
+}

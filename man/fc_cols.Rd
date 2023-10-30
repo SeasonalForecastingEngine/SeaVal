@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxiliary_functions.R
 \name{fc_cols}
 \alias{fc_cols}
-\title{which column names are interpreted as (ensemble-) forecast values}
+\title{Forecast column names}
 \usage{
 fc_cols(dt = NULL)
 }
@@ -10,5 +10,9 @@ fc_cols(dt = NULL)
 \item{dt}{optional data table. If provided, the function guesses which column contains the forecast values. Else it returns all recognized forecast column names.}
 }
 \description{
-which column names are interpreted as (ensemble-) forecast values
+returns the columns names that are recognized as (ensemble-) forecast values
+}
+\examples{
+fc_cols()
+
 }

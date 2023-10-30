@@ -15,3 +15,7 @@ Following the logic of netcdfs, data tables usually have columns specifying coor
 (or dimvars) and other columns containing data for these dimvars. Dimension variables can be spatial
 or temporal coordinates, or the lead time of a forecast or the member in an ensemble forecast, etc...
 }
+\examples{
+dimvars()
+
+}

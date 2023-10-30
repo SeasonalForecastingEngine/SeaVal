@@ -1,4 +1,14 @@
 # SeaVal
-Validation of seasonal and weekly forecasts issued by ICPAC
 
-For further information, see http://files.nr.no/samba/CONFER/SeaVal/
+This package suports validation of seasonal weather forecasts. 
+The focus lies on tercile forecasts, i.e. predictions of three probabilities, 
+one for 'below normal' (e.g. temperature or precipitation), 'normal', and 
+'above normal', respectively. The package implements a large variety of evaluation metrics,
+as recommended by the World Meteorological Organization. In particular, it simplifies the 
+task of evaluating gridded forecasts against gridded observations. It also provides
+tools for data import/export and plotting. Finally, it provides functionality for 
+downloading and managing monthly-means gridded precipitation observations provided by
+Climate Hazards Group InfraRed Precipitation with Station data [(CHIRPS)](https://www.chc.ucsb.edu/data/chirps).
+
+The package can be installed by running `install.packages(SeaVal)`. 
+For a comprehensive online tutorial, see http://files.nr.no/samba/CONFER/SeaVal/.

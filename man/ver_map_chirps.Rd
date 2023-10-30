@@ -24,3 +24,7 @@ ver_map_chirps(
 \description{
 The quantiles should be computed and saved by the function \code{chirps_ver_map_quantiles}.
 }
+\examples{
+\dontrun{ver_map_chirps(mm = 12,yy = 2022)}
+
+}

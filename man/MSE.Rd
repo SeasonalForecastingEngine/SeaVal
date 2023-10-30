@@ -34,3 +34,7 @@ The data table should only have one row for each level of c(by,pool,mem)}
 \description{
 Derives the MSE of ensemble forecasts stored in long data tables. Can also handle point forecast.
 }
+\examples{
+dt = data.table(fc = 1:4,obs = c(4,4,7,7),member = c(1,2,1,2),year = c(1999,1999,2000,2000))
+MSE(dt,f = 'fc')
+}

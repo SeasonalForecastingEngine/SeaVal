@@ -10,5 +10,10 @@ data_dir(set_dir = F)
 \item{set_dir}{logical. Set this to TRUE if you have to redefine your data directory.}
 }
 \description{
-The first time this function is called, it asks the user to configure the directory.
+The package allows to download and organize CHIRPS data. This function specifies the directory where
+the data is stored. The first time this function is called, it asks the user to configure the directory.
+}
+\examples{
+data_dir()
+
 }

@@ -16,3 +16,8 @@ roc_curve_vec(probs, obs, interpolate = TRUE)
 \description{
 Plot the ROC-curve for a vector of probabilities and corresponding observations.
 }
+\examples{
+probs = seq(0,1,length.out = 5)
+obs = c(FALSE,FALSE,TRUE,FALSE,TRUE)
+roc_curve_vec(probs,obs)
+}

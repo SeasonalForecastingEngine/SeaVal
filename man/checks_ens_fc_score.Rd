@@ -2,12 +2,11 @@
 % Please edit documentation in R/auxiliary_functions.R
 \name{checks_ens_fc_score}
 \alias{checks_ens_fc_score}
-\title{Auxiliary function for scores of ensemble forecasts. Checks whether the data table contains columns with names that are not allowed,
-or whether it is missing columns that are required.}
+\title{Auxiliary function for scores of ensemble forecasts.}
 \usage{
 checks_ens_fc_score()
 }
 \description{
-Auxiliary function for scores of ensemble forecasts. Checks whether the data table contains columns with names that are not allowed,
+Checks whether the data table contains columns with names that are not allowed,
 or whether it is missing columns that are required.
 }

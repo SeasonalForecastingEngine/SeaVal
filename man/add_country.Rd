@@ -6,6 +6,11 @@
 \usage{
 add_country(dt, regions = EA_country_names())
 }
+\arguments{
+\item{dt}{the data table.}
+
+\item{regions}{Character vector of country names for which shapefiles are loaded.}
+}
 \description{
 This is a synonyme for \code{\link{add_country_names}}.
 Following a more intuitive naming convention, that is more in-line

@@ -1,39 +1,39 @@
 Package: SeaVal
-Title: Validation of Seasonal Forecasts
+Title: Validation of Seasonal Weather Forecasts
 Version: 1.0.0
 Authors@R: 
     c(person(given = "Claudio",
            family = "Heinrich-Mertsching",
-           role = c("aut", "cre"),
+           role = c("aut", "cre","cph"),
            email = "claudio@nr.no",
            comment = c(ORCID = "0000-0003-3581-6416")),
     person(given = "Celine",
            family = "Cunen",
-           role = c("aut"),
+           role = c("ctb"),
            email = "celine@nr.no"),
     person(given = "Michael",
            family = "Scheuerer",
-           role = c("aut"),
+           role = c("ctb"),
            email = "scheuerer@nr.no"))
-Description: Provides tools for processing and evaluating seasonal weather forecasts, with an emphasis on seasonal rainfall predictions for the Greater Horn of Africa.
-    We follow the \href{https://library.wmo.int/doc_num.php?explnum_id=4886}{WMO recommendation of evaluating seasonal forecasts.} An online tutorial can be found \href{http://files.nr.no/samba/CONFER/SeaVal/}{here}.
+Description: Provides tools for processing and evaluating seasonal weather forecasts, with an emphasis on tercile forecasts.
+    We follow the WMO recommendation of evaluating seasonal forecasts (<https://library.wmo.int/idurl/4/56227>).
     It is developed and maintained at the Norwegian Computing Center Oslo in collaboration with ICPAC.
     The development was supported by the European Union’s Horizon 2020 research and innovation programme under grant agreement no. 869730 (CONFER).
+URL: http://files.nr.no/samba/CONFER/SeaVal/, https://github.com/SeasonalForecastingEngine/SeaVal
 License: GPL (>= 3)
 Encoding: UTF-8
 Depends: 
-    R (>= 2.10)
+    R (>= 2.10), 
+    data.table, 
+    ggplot2
 Imports: 
-  data.table,
-  ggplot2,
   ggplotify,
   maps,
   maptools,
-  Matrix,
   ncdf4,
   patchwork,
   RColorBrewer,
-  scoringRules,
+  scales,
   sp
 LazyData: true
 RoxygenNote: 7.2.3

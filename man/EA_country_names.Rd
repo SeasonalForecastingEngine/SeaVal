@@ -10,3 +10,7 @@ EA_country_names()
 This is an auxiliary function used in \link{add_country_names}, so only these names are recognized
 by default.
 }
+\details{
+@examples
+EA_country_names()
+}

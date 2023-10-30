@@ -25,3 +25,8 @@ Function for taking MSE skill scores of ensemble forecasts stored in long data t
 Can also handle point forecasts.
 The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology.
 }
+\examples{
+dt = data.table(fc = 1:4,obs = c(4,4,7,7),member = c(1,2,1,2),year = c(1999,1999,2000,2000))
+MSES(dt,f = 'fc')
+
+}

@@ -8,7 +8,7 @@ RES(
   dt,
   bins = c(0.3, 0.35001),
   f = c("below", "normal", "above"),
-  o = intersect(c("tercile_cat", "terc_cat", "tercile_category"), names(dt)),
+  o = tc_cols(dt),
   by = by_cols_terc_fc_score(),
   pool = "year",
   dim.check = TRUE
@@ -39,4 +39,13 @@ scores are unstable for single locations and that one should pool over many loca
 Requires the specification of probability bins. One score for each category (below, normal, above) and
 also the sum of the scores.
 Values close to 0 means low resolution. Higher values mean higher resolution.
+}
+\examples{
+dt = data.table(below = c(0.5,0.3,0),
+                normal = c(0.3,0.3,0.7),
+                above = c(0.2,0.4,0.3),
+                tc_cat = c(-1,0,0),
+                year = 1:3)
+print(dt)
+RES(dt)
 }

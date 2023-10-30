@@ -2,12 +2,11 @@
 % Please edit documentation in R/auxiliary_functions.R
 \name{run_dimension_check_ens_fc_score}
 \alias{run_dimension_check_ens_fc_score}
-\title{Auxiliary Function called inside functions that calculate scores
-for ensemble forecasts. Checks whether the provided data table has the right format.}
+\title{Auxiliary Function}
 \usage{
 run_dimension_check_ens_fc_score()
 }
 \description{
-Auxiliary Function called inside functions that calculate scores
+called inside functions that calculate scores
 for ensemble forecasts. Checks whether the provided data table has the right format.
 }

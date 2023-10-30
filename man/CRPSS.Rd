@@ -24,3 +24,9 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 Function for taking CRPS skill scores of ensemble forecasts stored in long data tables.
 The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology.
 }
+\examples{
+dt = data.table(fc = 1:4,obs = c(4,4,7,7),member = c(1,2,1,2),year = c(1999,1999,2000,2000))
+CRPSS(dt,f = 'fc')
+
+
+}

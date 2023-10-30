@@ -21,6 +21,7 @@
 
 add_climatology = function(dt,data_cols = NULL,years = NULL,by = dimvars(dt))
 {
+
   if(!('year' %in% names(dt)))
   {
     stop('Your data does not contain a column "year".\nClimatology is usually the average over all years in the data,
@@ -115,6 +116,9 @@ add_country_names = function(dt,regions = EA_country_names())
 #' @description This is a synonyme for \code{\link{add_country_names}}.
 #' Following a more intuitive naming convention, that is more in-line
 #' with \code{add_climatology} and \code{add_tercile_cat}.
+#' @param dt the data table.
+#' @param regions Character vector of country names for which shapefiles are loaded.
+#'
 #'
 #' @export
 
@@ -134,7 +138,7 @@ add_tercile_cat = function(dt,
                            years = NULL,
                            by = setdiff(dimvars(dt),c('year','member')))
 {
-  tercile_cat = NULL
+  lower_tercile = upper_tercile = tercile_cat = NULL
   # dt = dt[!is.na(get(datacol))] If you have this one in here, it does not add a column to existing object
 
   if(is.null(datacol)) datacol = intersect(c(obs_cols(),fc_cols()),names(dt))[1]
@@ -256,6 +260,7 @@ climatology_threshold_exceedence = function(obs_dt,
 
 combine = function(dt1,dt2,...)
 {
+
   dv1 = dimvars(dt1)
   dv2 = dimvars(dt2)
   common_dimvars = intersect(dv1,dv2)
@@ -272,7 +277,7 @@ combine = function(dt1,dt2,...)
 If this is meant to be a dimension variable, use data.table::merge instead. Else it is probably better to change column names using data.table::setnames.'))
   }
   ret_dt = merge(dt1,dt2,by = common_dimvars,...)
-  if(ret_dt[,.N] == 0) error('The resulting data table is empty. Did the two data tables use different spatial grids?')
+  if(ret_dt[,.N] == 0) stop('The resulting data table is empty. Did the two data tables use different spatial grids?')
 
   return(ret_dt)
 }

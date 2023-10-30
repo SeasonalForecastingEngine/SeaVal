@@ -3,7 +3,11 @@
 #' @param clim_period which years should be considered for the quantiles.
 #' @param version which version of CHIRPS, 'UCSB' or 'ICPAC'? Can be a vector with both.
 #' @param resolution If this is set to 'high', the quantiles are also calculated for high-resolution CHIRPS data. This is not nicely implemented right now and will take a lot of memory and time.
-#' @param chirps_dir Top-level CHIRPS directory
+#' @param CHIRPS_dir directory the CHIRPS data is stored in.
+#' @param seasons Are we plotting for seasonal or monthly forecasts?
+#'
+#' @examples
+#' \dontrun{chirps_ver_map_quantiles()}
 #'
 #' @export
 
@@ -14,6 +18,7 @@ chirps_ver_map_quantiles =function(clim_period = 1991:2020,
                                    CHIRPS_dir = chirps_dir(),
                                    seasons = TRUE)
 {
+  prec = NULL
   if(resolution == 'high' & interactive())
   {
     check = readline(prompt = paste0('I am about to calculate quantiles on ',max(clim_period)-min(clim_period) + 1,' years of high-resolution CHIRPS data.\n
@@ -97,6 +102,9 @@ chirps_ver_map_quantiles =function(clim_period = 1991:2020,
 #'
 #' @importFrom stats quantile
 #'
+#' @examples
+#' \dontrun{get_quantiles(chirps_monthly)}
+#'
 #' @export
 
 
@@ -107,6 +115,8 @@ get_quantiles = function(dt,
                          description = NULL,
                          save_file = NULL)
 {
+  N = V1 = NULL
+
   if(max(qqs) > 1) qqs = qqs/100
 
   # remove missing values before checking number of values per coordinate
@@ -160,6 +170,8 @@ get_quantiles = function(dt,
 #' @description This function wraps \code{get_quantiles} with the fixed quantiles 0.33 and 0.67.
 #'
 #' @param ... passed on to get_quantiles.
+#'
+#' @examples get_terciles(chirps_monthly)
 #'
 #' @export
 

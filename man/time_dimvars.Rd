@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxiliary_functions.R
 \name{time_dimvars}
 \alias{time_dimvars}
-\title{Auxiliary function returning all column names indicating a temporal coordinate.}
+\title{Auxiliary function}
 \usage{
 time_dimvars(dt = NULL)
 }
@@ -10,5 +10,9 @@ time_dimvars(dt = NULL)
 \item{dt}{optional. You can provide a data table, then the function returns the names of temporal coordinate columns in this data table.}
 }
 \description{
-Auxiliary function returning all column names indicating a temporal coordinate.
+returns all column names indicating a temporal coordinate.
+}
+\examples{
+time_dimvars()
+
 }

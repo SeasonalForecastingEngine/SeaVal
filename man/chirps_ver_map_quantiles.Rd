@@ -19,8 +19,14 @@ chirps_ver_map_quantiles(
 
 \item{resolution}{If this is set to 'high', the quantiles are also calculated for high-resolution CHIRPS data. This is not nicely implemented right now and will take a lot of memory and time.}
 
-\item{chirps_dir}{Top-level CHIRPS directory}
+\item{CHIRPS_dir}{directory the CHIRPS data is stored in.}
+
+\item{seasons}{Are we plotting for seasonal or monthly forecasts?}
 }
 \description{
 Calculates and saves the quantiles of CHIRPS data required for verification maps.
+}
+\examples{
+\dontrun{chirps_ver_map_quantiles()}
+
 }

@@ -32,3 +32,7 @@ The function checks whether the non-preliminary version exists and only download
 Annoyingly, the grid of UCBS and IRIDL are shifted against each other. Therefore this function also interpolates the UCSB data to the IRIDL grid, which makes it a bit slower.
 In particular, everything will crash if you have never downloaded a non-preliminary file and try to download a preliminary one.
 }
+\examples{
+\dontrun{download_chirps_prelim_aux()}
+
+}

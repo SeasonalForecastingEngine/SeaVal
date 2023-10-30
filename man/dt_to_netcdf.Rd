@@ -39,6 +39,12 @@ none.
 This function writes a netcdf from a long data table, the usual data format in SeaVal.
 The function currently does not support writing netcdfs with multiple variables that have different sets of dimension variables!
 }
+\examples{
+\dontrun{
+dt_to_netcdf(ecmwf_monthly,nc_out = 'ecmwf_monthly.nc')
+}
+
+}
 \author{
 Claudio
 }

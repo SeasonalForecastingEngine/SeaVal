@@ -7,7 +7,7 @@
 DISS(
   dt,
   f = c("below", "normal", "above"),
-  o = intersect(c("tercile_cat", "terc_cat", "tercile_category"), names(dt)),
+  o = tc_cols(dt),
   by = by_cols_terc_fc_score_sp(),
   pool = "year",
   dim.check = TRUE
@@ -31,4 +31,13 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 \description{
 A generalisation of the ROC score for more than two categories.
 This score is not proper, but can be used to assess the discrimination of a tercile forecast.
+}
+\examples{
+dt = data.table(below = c(0.5,0.3,0),
+                normal = c(0.3,0.3,0.7),
+                above = c(0.2,0.4,0.3),
+                tc_cat = c(-1,0,0),
+                year = 1:3)
+print(dt)
+DISS(dt)
 }

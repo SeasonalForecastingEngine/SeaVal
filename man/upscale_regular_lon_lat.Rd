@@ -37,7 +37,7 @@ However, even in this situation conservative interpolation is preferable, becaus
 Earth is round, which bilinear interpolation on lon/lat-grids generally ignores.
 
 For validating predictions against gridded data and comparing different forecast systems, it is often necessary to map data to the same grid (usually the coarsest of the involved grids).
-Gridded predictions and observations constitute grid point averages, see \href{https://rmets.onlinelibrary.wiley.com/doi/pdfdirect/10.1002/met.78}{this paper}.
+Gridded predictions and observations constitute grid point averages, see (Göber et al. 2008).
 This means that the upscaled value assigned to a coarse grid cell should be a weighted average of the values of the fine grid cells overlapping the coarse cell, with the weighting accounting for the
 area of overlap. This function does this for you, as long as both the fine grid and the coarse grid are regular grids in lon/lat (consisting of lon/lat rectangles).
 
@@ -61,4 +61,7 @@ Again, using bilinear interpolation runs into the same issue.
 
 Even though the grids are assumed to be regular, the function allows for missing data in the form of missing grid points in dt (so you don't have to 'squarify' it, adding NAs before upscaling).
 In fact, the function is faster when missing-data-grid-points are not contained in dt (since fewer grid points need to be matched).
+}
+\references{
+Göber, M., Ervin Z., and Richardson, D.S. (2008): *"Could a perfect model ever satisfy a naïve forecaster? On grid box mean versus point verification."* Meteorological Applications: A journal of forecasting, practical applications, training techniques and modelling 15, no. 3 (2008): 359-365.
 }

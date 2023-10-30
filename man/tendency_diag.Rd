@@ -32,3 +32,12 @@ If by == NULL a gg object, otherwise a list of gg objects that can be plotted by
 \description{
 Tendency diagram from a data table containing tercile forecasts.
 }
+\examples{
+dt = data.table(below = c(0.5,0.3,0),
+                normal = c(0.3,0.3,0.7),
+                above = c(0.2,0.4,0.3),
+                tc_cat = c(-1,0,0),
+                lon = 1:3)
+print(dt)
+tendency_diag(dt)
+}

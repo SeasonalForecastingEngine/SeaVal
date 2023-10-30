@@ -24,9 +24,15 @@ upscale_chirps(
 
 \item{root_dir}{directory where the high-resolution file is stored.}
 
+\item{version}{Version specifier, should be 'UCSB' or 'ICPAC'. The latter only works if you have access to CHIRPS blended.}
+
 \item{us_dir}{Directory where the low-resolution file will be stored.}
 }
 \description{
 this is mostly auxiliary and called from download_chirps_monthly.
 Uses the function upscale_regular_lon_lat, but derives the weights for upscaling only once for efficiency and avoids simultaneous loading of all CHIRPS data.
+}
+\examples{
+\dontrun{upscale_chirps()}
+
 }

@@ -23,3 +23,11 @@ Calculate the Generalized discrimination score from a data.table with data belon
 by variable in the DISS function), for example a single location and month.
 Formula (5a) from Mason&2018 is used in the calculation. Mostly auxiliary function for the DISS function.
 }
+\examples{
+disc_score_dt(year = 1999:2001,
+             obs = c(-1,0,0),
+             pB = c(0.5,0.3,0),
+             pN = c(0.3,0.3,0.7),
+             pA = c(0.2,0.4,0.3))
+
+}

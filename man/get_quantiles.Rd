@@ -37,3 +37,7 @@ The quantiles are saved in/returned as a list with the following elements:
 * data_col_name - the name of data_col, see below, so that you know what the quantiles actually were computed from.
 * description - the description string, if provided.
 }
+\examples{
+\dontrun{get_quantiles(chirps_monthly)}
+
+}

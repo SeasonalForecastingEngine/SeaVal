@@ -33,7 +33,18 @@ tercile_plot(
 \item{labels}{How to label the three categories}
 
 \item{na.value}{How to color missing values}
+
+\item{extent}{Optional vector of length 4 specifying the plotting borders in order xmin, xmax, ymin, ymax.}
+
+\item{expand.x, expand.y}{How far should the plotting borders be extended (beyond the data range)?}
 }
 \description{
 Function for plotting terciles
+}
+\examples{
+\dontrun{
+dt = combine(chirps_monthly[month == 12],tfc_from_efc(ecmwf_monthly[month == 12]))
+tercile_plot(dt)
+}
+
 }

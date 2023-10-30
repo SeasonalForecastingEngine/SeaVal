@@ -7,8 +7,12 @@
 ggplot_dt_shf(..., expand.x = c(-0.5, 0.5), expand.y = c(-0.5, 2))
 }
 \arguments{
-\item{...}{passed to \link{\code ggplot_dt}}
+\item{..., expand.x, expand.y}{passed to \code{\link{ggplot_dt}}}
 }
 \description{
 This loads a (pre-processed) shapefile from ICPAC containing the GHA-countries.
+}
+\examples{
+\dontrun{ggplot_dt_shf(chirps_monthly)}
+
 }

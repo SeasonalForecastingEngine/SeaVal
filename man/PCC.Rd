@@ -36,3 +36,8 @@ Function for calculating Pearson correlation coefficients (PCCs) of ensemble mea
 Can also handle point forecasts.
 This metric always needs several years of data since the means and standard deviations are calculated across time.
 }
+\examples{
+dt = data.table(fc = 1:4,obs = c(4,4,7,7),member = c(1,2,1,2),year = c(1999,1999,2000,2000))
+PCC(dt,f = 'fc')
+
+}

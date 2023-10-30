@@ -36,3 +36,7 @@ Function for calculating coefficients of predictive ability (CPAs) of ensemble m
 Can also handle point forecasts.
 Warning: This metric always needs several years of data since the ranks on which it is based are calculated across multi-year samples.
 }
+\examples{
+dt = data.table(fc = 1:4,obs = c(4,4,7,7),member = c(1,2,1,2),year = c(1999,1999,2000,2000))
+CPA(dt,f = 'fc')
+}

@@ -7,6 +7,14 @@
 #' @param name optional title for the colorscale
 #' @param labels How to label the three categories
 #' @param na.value How to color missing values
+#' @param extent Optional vector of length 4 specifying the plotting borders in order xmin, xmax, ymin, ymax.
+#' @param expand.x,expand.y How far should the plotting borders be extended (beyond the data range)?
+#'
+#' @examples
+#' \dontrun{
+#' dt = combine(chirps_monthly[month == 12],tfc_from_efc(ecmwf_monthly[month == 12]))
+#' tercile_plot(dt)
+#' }
 #'
 #' @export
 
@@ -120,7 +128,10 @@ tercile_plot = function(dt,
 #'
 #' @description This loads a (pre-processed) shapefile from ICPAC containing the GHA-countries.
 #'
-#' @param ... passed to \link{\code ggplot_dt}
+#' @param ...,expand.x,expand.y passed to \code{\link{ggplot_dt}}
+#'
+#'@examples
+#'\dontrun{ggplot_dt_shf(chirps_monthly)}
 #'
 #'@export
 
@@ -146,8 +157,10 @@ ggplot_dt_shf = function(...,expand.x = c(-0.5,0.5),expand.y = c(-0.5,2))
 #'
 #' @param season For which season do you want to calculate the mask? Needs to be either 'MAM', 'JJAS' or 'OND'.
 #' @param clim_years Numeric vector of years. Which years should be used to establish the mask?
-#' @param version,resolution,us Passed to \link{\code{load_chirps}}. Which CHIRPS version do you want to use and on what resolution?
+#' @param version,resolution,us Passed to \code{\link{load_chirps}}. Which CHIRPS version do you want to use and on what resolution?
 #'
+#'@examples
+#'\dontrun{get_mask('MAM')}
 #' @export
 #'
 

@@ -38,3 +38,13 @@ By default, 4 ROC-curves are drawn, one for each the prediction of above-, norma
 You can provide a 'by' argument to obtain separate ROC-curves for different values of the by-columns. E.g., when your data table contains
 a column named 'season', you can set by = 'season'. Then, the function will output a list of 16 ROC-curvess, 4 for each season.
 }
+\examples{
+dt = data.table(below = c(0.5,0.3,0),
+                normal = c(0.3,0.3,0.7),
+                above = c(0.2,0.4,0.3),
+                tc_cat = c(-1,0,0),
+                lon = 1:3)
+print(dt)
+ROC_curve(dt)
+
+}

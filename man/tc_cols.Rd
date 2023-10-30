@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxiliary_functions.R
 \name{tc_cols}
 \alias{tc_cols}
-\title{which column names are interpreted as obeserved tercile categories}
+\title{Tercile column names}
 \usage{
 tc_cols(dt = NULL)
 }
@@ -10,5 +10,9 @@ tc_cols(dt = NULL)
 \item{dt}{optional data table. If provided, the function guesses which column contains the observations. Else it returns all recognized column names.}
 }
 \description{
-which column names are interpreted as obeserved tercile categories
+which column names are interpreted as observed tercile categories
+}
+\examples{
+tc_cols()
+
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/auxiliary_functions.R
 \name{space_dimvars}
 \alias{space_dimvars}
-\title{Auxiliary function returning all column names indicating a spatial coordinate.}
+\title{Auxiliary function}
 \usage{
 space_dimvars(dt = NULL)
 }
@@ -10,5 +10,8 @@ space_dimvars(dt = NULL)
 \item{dt}{optional. You can provide a data table, then the function returns the names of spatial coordinate columns in this data table.}
 }
 \description{
-Auxiliary function returning all column names indicating a spatial coordinate.
+returns all column names indicating a spatial coordinate.
+}
+\examples{
+space_dimvars()
 }

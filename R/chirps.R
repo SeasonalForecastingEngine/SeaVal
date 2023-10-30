@@ -1,7 +1,13 @@
 ###### functions for downloading and processing the chirps data #######
 
+#' CHIRPS directory
+#'
 #' Auxiliary function to access/set the directory for loading and saving CHIRPS data.
+#'
 #' @param dir The directory
+#'
+#' @examples chirps_dir()
+#'
 #' @export
 
 chirps_dir = function(dir = file.path(data_dir(),'CHIRPS'))
@@ -11,7 +17,11 @@ chirps_dir = function(dir = file.path(data_dir(),'CHIRPS'))
 
 
 
+#' GHA-bounding-box
+#'
 #' Returns a lon/lat bounding box for the greater horn of Africa region. Format is c(xmin,xmax,ymin,ymax), as for raster::extent
+#'
+#' @examples GHA_extent()
 #' @export
 
 GHA_extent = function()
@@ -44,6 +54,9 @@ GHA_extent = function()
 #'
 #' @importFrom utils download.file
 #'
+#'
+#' @examples
+#' \dontrun{download_chirps_monthly(years = 2020, months = 1)}
 #' @export
 
 download_chirps_monthly = function(resolution = 'both',update = TRUE,
@@ -429,6 +442,10 @@ download_chirps_monthly_low = function(update,
 #' @param upscale_grid A regular lon/lat grid for upscaling. Defaults to half degrees.
 #' @param root_dir directory where the high-resolution file is stored.
 #' @param us_dir Directory where the low-resolution file will be stored.
+#' @param version Version specifier, should be 'UCSB' or 'ICPAC'. The latter only works if you have access to CHIRPS blended.
+#'
+#' @examples
+#' \dontrun{upscale_chirps()}
 #'
 #' @export
 
@@ -652,6 +669,8 @@ upscale_chirps = function(update = TRUE,
 #'
 #' @return the derived data table
 #'
+#' @examples \dontrun{load_chirps()}
+#'
 #' @export
 
 load_chirps = function(years =  NULL, months = NULL,
@@ -782,6 +801,8 @@ I expect the CHIRPS data to be located in a subfolder CHIRPS in that directory."
 #' @param save_dir Directory where the function stores the preliminary data.
 #'
 #' @importFrom utils download.file
+#'
+#' @examples \dontrun{download_chirps_prelim_aux()}
 #'
 #' @export
 

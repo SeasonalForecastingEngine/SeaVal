@@ -44,3 +44,6 @@ The original spatial resolution of CHIRPS is 0.05 degree lon/lat. However, for m
 The function therefore offers the option to also create and save a coarser, upscaled version of the CHIRPS data that allows much faster data processing.
 Alternatively you can also ONLY save the upscaled version to save disk space (roughly 8MB on disk).
 }
+\examples{
+\dontrun{download_chirps_monthly(years = 2020, months = 1)}
+}
