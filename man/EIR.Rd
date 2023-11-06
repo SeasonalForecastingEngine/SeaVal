@@ -28,6 +28,9 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 
 \item{dim.check}{Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.}
 }
+\value{
+A data table with the scores
+}
 \description{
 This score is suitable for tercile category forecasts. Using log2 for now (?). According to Mason, the averaging here
 should be over many years at a single locations and for discrete time-periods (so Mason prefers to take the average after

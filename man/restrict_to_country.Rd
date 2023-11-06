@@ -17,6 +17,15 @@ for a specific country.}
 
 \item{tol}{Only used when \code{rectangle == TRUE}. A tolerance value for widening the plotting window, making things look a bit nicer.}
 }
+\value{
+the data table, restricted to the selected country
+}
 \description{
-Restricts a dataset to one or more countries, specified by their names. If you have lon/lat data and don't know which countries these coordinates belong to, see \code{add_country_names}.
+Restricts a dataset to one or more countries, specified by their names. If you have lon/lat data and don't know
+which countries these coordinates belong to, see \code{\link{add_country_names}}. Can restrict data to a rectangle around a given country
+as well (usually looks nicer for plotting).
+}
+\examples{
+dt = restrict_to_country(chirps_monthly,'Kenya')
+
 }

@@ -4,10 +4,13 @@
 \alias{data_dir}
 \title{Auxiliary function to access and change the directory used to load and save data.}
 \usage{
-data_dir(set_dir = F)
+data_dir(set_dir = FALSE)
 }
 \arguments{
 \item{set_dir}{logical. Set this to TRUE if you have to redefine your data directory.}
+}
+\value{
+The current data directory as string.
 }
 \description{
 The package allows to download and organize CHIRPS data. This function specifies the directory where

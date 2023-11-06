@@ -13,6 +13,9 @@ rel_diag_vec(discrete_probs, obs, slope_only = FALSE)
 
 \item{slope_only}{logical. If set to TRUE, only the slope of the reliability curve is returned}
 }
+\value{
+A gg object.
+}
 \description{
 The probabilities have to be rounded beforehand (see \code{round_probs}), because the diagram draws a point for each level of the probabilities. The diagram includes a histogram indicating
 the forecast relative frequency for each probability bin. The diagram shows the reliability curve and the diagonal for reference.

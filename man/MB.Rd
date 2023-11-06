@@ -28,6 +28,9 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 
 \item{dim.check}{Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.}
 }
+\value{
+A data table with the scores
+}
 \description{
 This score is suitable for tercile category forecasts.
 }

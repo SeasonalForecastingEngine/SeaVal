@@ -26,6 +26,9 @@ upscale_regular_lon_lat(
 
 \item{tol}{tolerance parameter used for grid matching, in order to deal with rounding errors present in the coordinates. The gridpoint areas are calculated with this precision, so the output has errors of this order of magnitude.}
 }
+\value{
+A data table with the upscaled values.
+}
 \description{
 This function upscales data from one regular lon-lat grid to another lon-lat grid that is coarser or of the same resolution.
 It uses conservative interpolation rather than bilinear interpolation.

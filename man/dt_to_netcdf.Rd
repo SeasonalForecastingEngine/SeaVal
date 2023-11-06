@@ -41,7 +41,7 @@ The function currently does not support writing netcdfs with multiple variables 
 }
 \examples{
 \dontrun{
-dt_to_netcdf(ecmwf_monthly,nc_out = 'ecmwf_monthly.nc')
+dt_to_netcdf(ecmwf_monthly,nc_out = './directory/ecmwf_monthly.nc')
 }
 
 }

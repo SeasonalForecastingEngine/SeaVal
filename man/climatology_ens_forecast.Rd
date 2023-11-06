@@ -4,7 +4,7 @@
 \alias{climatology_ens_forecast}
 \title{Returns a leave-one-year-out climatology-based ensemble forecast}
 \usage{
-climatology_ens_forecast(obs_dt, by)
+climatology_ens_forecast(obs_dt, by = setdiff(dimvars(obs_dt), "year"))
 }
 \arguments{
 \item{obs_dt}{Data table containing observations, must contain a column 'year'.}
@@ -17,4 +17,10 @@ Long data table with the typical ensemble-forecast looks, i.e. containing a colu
 \description{
 for a given year, the ensemble forecast simply consists of the observations in all other years.
 This is essentially an auxiliary function for computing skill scores relative to climatology.
+}
+\examples{
+\donttest{
+dt = climatology_ens_forecast(chirps_monthly)
+}
+
 }

@@ -15,9 +15,18 @@ add_tercile_probs(dt, f = NULL, by = setdiff(dimvars(dt), "member"), ...)
 
 \item{...}{passed on to \code{add_tercile_cat}.}
 }
+\value{
+The provided data table, with added columns 'above', 'normal', and 'below'
+}
 \description{
 Adds columns 'below', 'normal' and 'above', containing predicted tercile probabilities, to a data table with ensemble forecasts.
 The predicted probability is always the fraction of members ending up in the respective tercile.
 The data table should either already have a column 'tercile_cat' (added by \code{add_tercile_cat}),
 or \code{add_tercile_cat} will be run first.
+}
+\examples{
+\donttest{
+dt = add_tercile_probs(ecmwf_monthly)
+}
+
 }

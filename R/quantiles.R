@@ -6,6 +6,8 @@
 #' @param CHIRPS_dir directory the CHIRPS data is stored in.
 #' @param seasons Are we plotting for seasonal or monthly forecasts?
 #'
+#' @return data table with quantiles.
+#'
 #' @examples
 #' \dontrun{chirps_ver_map_quantiles()}
 #'
@@ -103,7 +105,7 @@ chirps_ver_map_quantiles =function(clim_period = 1991:2020,
 #' @importFrom stats quantile
 #'
 #' @examples
-#' \dontrun{get_quantiles(chirps_monthly)}
+#' \donttest{get_quantiles(chirps_monthly)}
 #'
 #' @export
 
@@ -167,12 +169,14 @@ get_quantiles = function(dt,
 
 #' get terciles from a data table
 #'
-#' @description This function wraps \code{get_quantiles} with the fixed quantiles 0.33 and 0.67.
+#' @description This function wraps \code{\link{get_quantiles}} with the fixed quantiles 0.33 and 0.67.
 #'
-#' @param ... passed on to get_quantiles.
+#' @param ... passed on to \code{\link{get_quantiles}}.
+#'
+#' @return See \code{\link{get_quantiles}}.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # takes a few seconds:
 #' get_terciles(chirps_monthly)
 #' }

@@ -9,6 +9,9 @@ fc_cols(dt = NULL)
 \arguments{
 \item{dt}{optional data table. If provided, the function guesses which column contains the forecast values. Else it returns all recognized forecast column names.}
 }
+\value{
+Character vector with column names.
+}
 \description{
 returns the columns names that are recognized as (ensemble-) forecast values
 }

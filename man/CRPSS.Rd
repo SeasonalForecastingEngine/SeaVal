@@ -20,6 +20,9 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 
 \item{...}{passed on to CRPS_ens_fc, in particular mem and dim.check}
 }
+\value{
+A data table with the scores
+}
 \description{
 Function for taking CRPS skill scores of ensemble forecasts stored in long data tables.
 The skill score needs a climatological forecast as reference. This is so far always based on the leave-one-year-out climatology.

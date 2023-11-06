@@ -13,6 +13,9 @@ roc_curve_vec(probs, obs, interpolate = TRUE)
 
 \item{interpolate}{logical. If TRUE the ROC-curve is interpolated and drawn as a continuous function. Otherwise it is drawn as a step function.}
 }
+\value{
+a gg object
+}
 \description{
 Plot the ROC-curve for a vector of probabilities and corresponding observations.
 }

@@ -30,7 +30,7 @@ ROC_curve(
 \item{dim.check}{Logical. If TRUE, the function checks whether the columns in by and pool span the entire data table.}
 }
 \value{
-A list of gg objects which can be plotted by ggpubr::ggarrange (for example)
+A list of gg objects which can be plotted by \code{ggpubr::ggarrange} (for example)
 }
 \description{
 Creates ROC curves from a data table containing tercile forecasts. It wraps \code{roc_curve_vec}.
@@ -39,6 +39,7 @@ You can provide a 'by' argument to obtain separate ROC-curves for different valu
 a column named 'season', you can set by = 'season'. Then, the function will output a list of 16 ROC-curvess, 4 for each season.
 }
 \examples{
+\donttest{
 dt = data.table(below = c(0.5,0.3,0),
                 normal = c(0.3,0.3,0.7),
                 above = c(0.2,0.4,0.3),
@@ -46,5 +47,5 @@ dt = data.table(below = c(0.5,0.3,0),
                 lon = 1:3)
 print(dt)
 ROC_curve(dt)
-
+}
 }

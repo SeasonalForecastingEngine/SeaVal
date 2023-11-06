@@ -25,11 +25,14 @@ For each level of `lon`, `lat`, and `year`, the table should only contain one ro
 
 \item{out_file}{optional path and file name (including valid filetype, like .pdf or .png) for saving the file. If not provided, the function just shows the plot in the running R session.}
 }
+\value{
+a gg object
+}
 \description{
 For each location, the map shows whether the observed value was normal, below, or above. This makes it possible to visually compare to the usual tercile forecsst
 }
 \examples{
-\dontrun{
+\donttest{
 # takes a few seconds:
 ver_map(chirps_monthly[month == 11],yy = 2018)
 }

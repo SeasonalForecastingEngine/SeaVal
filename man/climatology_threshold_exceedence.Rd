@@ -20,7 +20,16 @@ climatology_threshold_exceedence(
 
 \item{thresholds}{vector of thresholds for which the exceedence probabilities should be derived.}
 }
+\value{
+Data table with the climatological probabilities of exceedence for the provided thresholds.
+}
 \description{
 The climatological prediction for exceedence probabilities is the fraction of observed years where the observation exceeded the threshold.
 It's calculated from leave-one-year-out climatology.
+}
+\examples{
+\donttest{
+dt = climatology_threshold_exceedence(chirps_monthly)
+}
+
 }

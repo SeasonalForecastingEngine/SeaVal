@@ -11,7 +11,7 @@ MSE(
   by = by_cols_ens_fc_score(),
   pool = "year",
   mem = "member",
-  dim.check = T
+  dim.check = TRUE
 )
 }
 \arguments{
@@ -30,6 +30,9 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 
 \item{dim.check}{Logical. If True, a simple test whether the dimensions match up is conducted:
 The data table should only have one row for each level of c(by,pool,mem)}
+}
+\value{
+A data table with the scores
 }
 \description{
 Derives the MSE of ensemble forecasts stored in long data tables. Can also handle point forecast.

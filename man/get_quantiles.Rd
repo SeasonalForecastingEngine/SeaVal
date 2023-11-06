@@ -38,6 +38,6 @@ The quantiles are saved in/returned as a list with the following elements:
 * description - the description string, if provided.
 }
 \examples{
-\dontrun{get_quantiles(chirps_monthly)}
+\donttest{get_quantiles(chirps_monthly)}
 
 }

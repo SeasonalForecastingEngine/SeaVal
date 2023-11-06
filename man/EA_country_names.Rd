@@ -6,11 +6,13 @@
 \usage{
 EA_country_names()
 }
+\value{
+A character-vector of country names.
+}
 \description{
-This is an auxiliary function used in \link{add_country_names}, so only these names are recognized
+This is an auxiliary function used in \code{\link{add_country_names}}, so only these names are recognized
 by default.
 }
-\details{
-@examples
+\examples{
 EA_country_names()
 }

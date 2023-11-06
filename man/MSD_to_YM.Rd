@@ -19,3 +19,6 @@ data table with two new columns 'month' and 'year', the timecol is deleted.
 \description{
 Converts time given as 'months since date' (MSD) into years and months (YM)
 }
+\examples{
+dt = MSD_to_YM(data.table(time = 0:12))
+}

@@ -21,6 +21,9 @@ ver_map_chirps(
 
 \item{...}{passed on to ver_map.}
 }
+\value{
+A gg object
+}
 \description{
 The quantiles should be computed and saved by the function \code{chirps_ver_map_quantiles}.
 }

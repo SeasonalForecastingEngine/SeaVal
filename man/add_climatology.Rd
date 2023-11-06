@@ -17,6 +17,9 @@ The default is all years in dt.}
 
 \item{by}{column names to group by.}
 }
+\value{
+The provided data table with an extra climatology column
+}
 \description{
 The climatology is the average over years (and members for ensemble forecases),
 taken separately for each month, season, and coordinate.
@@ -24,4 +27,7 @@ By default, the average is taken over all years in the data table,
 but you can change this using the years-argument.
 By default, climatologies (averages) are calculated for each column that is not
 recognized as dimension variable and does not contain characters.
+}
+\examples{
+dt = add_climatology(chirps_monthly)
 }

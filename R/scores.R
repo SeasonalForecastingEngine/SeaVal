@@ -34,6 +34,8 @@
 #' @param dim.check Logical. If True, a simple test whether the dimensions match up is conducted:
 #' The data table should only have one row for each level of c(by,pool,mem)
 #'
+#'@return A data table with the scores
+#'
 #'@examples
 #' dt = data.table(fc = 1:4,obs = c(4,4,7,7),member = c(1,2,1,2),year = c(1999,1999,2000,2000))
 #' CPA(dt,f = 'fc')
@@ -87,6 +89,8 @@ CPA = function(dt, f, o = 'obs',
 #' @param ens_size_correction logical. If TRUE, the CRPS is corrected for sample size (see Ferro et al. 2008: 'On the effect of ensemble size on the discrete and continuous
 #' ranked probability scores'). This is slower, but you should do it if you compare ensembles of different size.
 #'
+#'@return A data table with the scores
+#'
 #'@examples
 #' dt = data.table(fc = 1:4,obs = c(4,4,7,7),member = c(1,2,1,2),year = c(1999,1999,2000,2000))
 #' CRPS(dt,f = 'fc')
@@ -98,7 +102,7 @@ CRPS = function(dt, f, o = "obs",
                 by = by_cols_ens_fc_score(),
                 pool = "year",
                 mem = "member",
-                dim.check = T,
+                dim.check = TRUE,
                 ens_size_correction = FALSE)
 {
   by = intersect(by, names(dt))
@@ -164,6 +168,8 @@ crps_aux_esc = function(y,dat)
 #' @param pool column name(s) for the variable(s) along which is averaged. Needs to contain 'year' since the reference climatology forecast is leave-one-year-out.
 #' @param ... passed on to CRPS_ens_fc, in particular mem and dim.check
 #'
+#'@return A data table with the scores
+#'
 #'@examples
 #' dt = data.table(fc = 1:4,obs = c(4,4,7,7),member = c(1,2,1,2),year = c(1999,1999,2000,2000))
 #' CRPSS(dt,f = 'fc')
@@ -228,6 +234,8 @@ CRPSS = function(dt,f,
 #' @param dim.check Logical. If True, a simple test whether the dimensions match up is conducted:
 #' The data table should only have one row for each level of c(by,pool,mem)
 #'
+#'@return A data table with the scores
+#'
 #' @examples
 #' dt = data.table(fc = 1:4,obs = c(4,4,7,7),member = c(1,2,1,2),year = c(1999,1999,2000,2000))
 #' MSE(dt,f = 'fc')
@@ -238,7 +246,7 @@ MSE = function(dt,
                by = by_cols_ens_fc_score(),
                pool = 'year',
                mem = 'member',
-               dim.check = T)
+               dim.check = TRUE)
 {
   # for devtools::check:
   fc_mean = NULL
@@ -279,6 +287,8 @@ MSE = function(dt,
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged. Needs to contain 'year' since the reference climatology forecast is leave-one-year-out.
 #' @param ... passed on to MSE
+#'
+#'@return A data table with the scores
 #'
 #'@examples
 #' dt = data.table(fc = 1:4,obs = c(4,4,7,7),member = c(1,2,1,2),year = c(1999,1999,2000,2000))
@@ -347,6 +357,8 @@ MSES = function(dt,f,
 #' @param dim.check Logical. If True, a simple test whether the dimensions match up is conducted:
 #' The data table should only have one row for each level of c(by,pool,mem)
 #'
+#'@return A data table with the scores
+#'
 #'@examples
 #' dt = data.table(fc = 1:4,obs = c(4,4,7,7),member = c(1,2,1,2),year = c(1999,1999,2000,2000))
 #' PCC(dt,f = 'fc')
@@ -409,6 +421,8 @@ PCC = function(dt, f,
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #'
+#'@return A data table with the scores
+#'
 #' @examples
 #' dt = data.table(below = c(0.5,0.3,0),
 #'                 normal = c(0.3,0.3,0.7),
@@ -464,6 +478,8 @@ HS = function(dt,f = c('below','normal','above'),
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #'
+#'@return A data table with the scores
+#'
 #' @examples
 #' dt = data.table(below = c(0.5,0.3,0),
 #'                 normal = c(0.3,0.3,0.7),
@@ -511,6 +527,8 @@ HSS = function(dt,f = c('below','normal','above'),
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+#'
+#'@return A data table with the scores
 #'
 #' @examples
 #' dt = data.table(below = c(0.5,0.3,0),
@@ -567,6 +585,8 @@ indicator_times_value_aux = function(indicator,value)
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #'
+#'@return A data table with the scores
+#'
 #' @examples
 #' dt = data.table(below = c(0.5,0.3,0),
 #'                 normal = c(0.3,0.3,0.7),
@@ -614,6 +634,8 @@ IGS = function(dt,f = c('below','normal','above'),
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #'
+#'@return A data table with the scores
+#'
 #' @examples
 #' dt = data.table(below = c(0.5,0.3,0),
 #'                 normal = c(0.3,0.3,0.7),
@@ -660,6 +682,8 @@ IGSS = function(dt,f = c('below','normal','above'),
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #'
+#'@return A data table with the scores
+#'
 #' @examples
 #' dt = data.table(below = c(0.5,0.3,0),
 #'                 normal = c(0.3,0.3,0.7),
@@ -703,6 +727,8 @@ MB = function(dt,f = c('below','normal','above'),
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #'
+#'@return A data table with the scores
+#'
 #' @examples
 #' dt = data.table(below = c(0.5,0.3,0),
 #'                 normal = c(0.3,0.3,0.7),
@@ -741,6 +767,8 @@ MBS = function(dt,f = c('below','normal','above'),
 #' @param probs vector with probabilities (between 0 and 1)
 #' @param obs vector with categorical observations (as TRUE/FALSE)
 #'
+#'@return numeric. The ROC score.
+#'
 #'@examples
 #'roc_score_vec(probs = c(0.1,0.6,0.3,0.4),
 #'              obs = c(FALSE,TRUE,TRUE,FALSE))
@@ -777,6 +805,8 @@ roc_score_vec = function(probs,obs)
 #' Default is to group by all instances of month, season, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+#'
+#'@return A data table with the scores
 #'
 #' @examples
 #' dt = data.table(below = c(0.5,0.3,0),
@@ -826,6 +856,8 @@ ROCS = function(dt,f = c('below','normal','above'),
 #' @param pB    a vector of probabilities for the first category.
 #' @param pN    a vector of probabilities for the second category.
 #' @param pA    a vector of probabilities for the third category.
+#'
+#'@return A data table with the scores
 #'
 #'@examples
 #'disc_score_dt(year = 1999:2001,
@@ -887,6 +919,8 @@ disc_score_dt = function(year,obs,pB,pN,pA)
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
 #'
+#'@return A data table with the scores
+#'
 #' @examples
 #' dt = data.table(below = c(0.5,0.3,0),
 #'                 normal = c(0.3,0.3,0.7),
@@ -928,6 +962,9 @@ DISS = function(dt,f = c('below','normal','above'),
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+#'
+#'@return A data table with the scores
+#'
 #' @examples
 #' dt = data.table(below = c(0.5,0.3,0),
 #'                 normal = c(0.3,0.3,0.7),
@@ -969,6 +1006,8 @@ RPS = function(dt,f = c('below','normal','above'),
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+#'
+#'@return A data table with the scores
 #'
 #'  @examples
 #' dt = data.table(below = c(0.5,0.3,0),
@@ -1026,6 +1065,8 @@ RPSS = function(dt,f = c('below','normal','above'),
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+#'
+#'@return A data table with the scores
 #'
 #' @examples
 #' dt = data.table(below = c(0.5,0.3,0),
@@ -1123,6 +1164,8 @@ RES = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+#'
+#'@return A data table with the scores
 #'
 #' @examples
 #' dt = data.table(below = c(0.5,0.3,0),
@@ -1223,6 +1266,8 @@ REL = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
 #' @param dim.check Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.
+#'
+#'@return A data table with the scores
 #'
 #'  @examples
 #' dt = data.table(below = c(0.5,0.3,0),

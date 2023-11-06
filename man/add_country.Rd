@@ -11,8 +11,15 @@ add_country(dt, regions = EA_country_names())
 
 \item{regions}{Character vector of country names for which shapefiles are loaded.}
 }
+\value{
+The provided data table with an extra column with country names
+}
 \description{
 This is a synonyme for \code{\link{add_country_names}}.
 Following a more intuitive naming convention, that is more in-line
 with \code{add_climatology} and \code{add_tercile_cat}.
+}
+\examples{
+dt = add_country(chirps_monthly)
+
 }

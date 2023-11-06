@@ -11,6 +11,13 @@ restrict_to_confer_region(dt, ...)
 
 \item{...}{passed on to \code{\link{restrict_to_country}}}
 }
+\value{
+the data table, restricted to the selected country
+}
 \description{
 Wraps \code{\link{restrict_to_country}}, and restricts to the GHA-region usually considered in CONFER, see \code{\link{EA_country_names}}.
+}
+\examples{
+dt = restrict_to_confer_region(chirps_monthly)
+
 }

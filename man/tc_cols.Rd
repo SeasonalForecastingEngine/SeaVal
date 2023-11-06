@@ -9,6 +9,9 @@ tc_cols(dt = NULL)
 \arguments{
 \item{dt}{optional data table. If provided, the function guesses which column contains the observations. Else it returns all recognized column names.}
 }
+\value{
+Character vector with column names.
+}
 \description{
 which column names are interpreted as observed tercile categories
 }

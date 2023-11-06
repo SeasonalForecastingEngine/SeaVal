@@ -9,6 +9,9 @@ chirps_dir(dir = file.path(data_dir(), "CHIRPS"))
 \arguments{
 \item{dir}{The directory}
 }
+\value{
+The directory path.
+}
 \description{
 Auxiliary function to access/set the directory for loading and saving CHIRPS data.
 }

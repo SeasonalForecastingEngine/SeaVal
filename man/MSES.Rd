@@ -20,6 +20,9 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 
 \item{...}{passed on to MSE}
 }
+\value{
+A data table with the scores
+}
 \description{
 Function for taking MSE skill scores of ensemble forecasts stored in long data tables.
 Can also handle point forecasts.

@@ -16,6 +16,10 @@
 #' The default i
 #' @param by column names to group by.
 #'
+#' @return The provided data table with an extra climatology column
+#'
+#' @examples
+#' dt = add_climatology(chirps_monthly)
 #' @export
 #'
 
@@ -66,6 +70,11 @@ It is calculated separately for each ',paste(by,collapse = ', ')))
 #' By default, countries in East Africa are loaded, see \code{\link{EA_country_names}}.
 #' If you set regions = '.', the entire world is loaded, but this makes the function slower.
 #'
+#' @return The provided data table with an extra column with country names
+#'
+#' @examples
+#' dt = add_country_names(chirps_monthly)
+#'
 #' @export
 
 
@@ -92,17 +101,34 @@ add_country_names = function(dt,regions = EA_country_names())
 #' @param dt the data table.
 #' @param regions Character vector of country names for which shapefiles are loaded.
 #'
+#' @return The provided data table with an extra column with country names
+#'
+#' @examples
+#' dt = add_country(chirps_monthly)
 #'
 #' @export
 
 add_country = add_country_names
 
-#' adds a column with the observed tercile category to a data table
+#' Add a tercile-category column to a data table
+#'
+#' Given a data table with multiple years of data, this function derives the tercile category per year.
+#' It first derives terciles for the data and then returns, for each row, a -1 if the data falls into
+#' the lowest tercile, 0 if it falls between 1st and second tercile, and +1 if it falls above the third tercile.
+#' Allows grouping by levels (e.g. months and location-coordinates): Tercile categories are derived separately
+#' for each level.
+#'
 #' @param dt the data table.
 #' @param datacol Name of the column where the data is stored. If NULL, the function guesses.
 #' @param years Optional, if provided only these years are used for establishing climatology terciles.
 #' @param by names of columns to group by.
 #'
+#' @return The provided data table with an extra column tercile_cat
+#'
+#' @examples
+#' \donttest{
+#' dt = add_tercile_cat(chirps_monthly)
+#' }
 #' @export
 #' @importFrom stats quantile
 
@@ -144,6 +170,13 @@ add_tercile_cat = function(dt,
 #' @param by names of columns to group by
 #' @param ... passed on to \code{add_tercile_cat}.
 #'
+#' @return The provided data table, with added columns 'above', 'normal', and 'below'
+#'
+#'@examples
+#'\donttest{
+#' dt = add_tercile_probs(ecmwf_monthly)
+#'}
+#'
 #' @export
 
 add_tercile_probs = function(dt,f = NULL,by = setdiff(dimvars(dt),'member'),...)
@@ -172,10 +205,16 @@ add_tercile_probs = function(dt,f = NULL,by = setdiff(dimvars(dt),'member'),...)
 #' @param by character vector containing the column names of the grouping variables, e.g. \code{c('month','lon','lat')}.
 #'
 #' @return Long data table with the typical ensemble-forecast looks, i.e. containing a column 'member'.
+#'
+#' @examples
+#' \donttest{
+#' dt = climatology_ens_forecast(chirps_monthly)
+#' }
+#'
 #' @export
 
 climatology_ens_forecast = function(obs_dt,
-                                    by)
+                                    by = setdiff(dimvars(obs_dt),'year'))
 {
   years = unique(obs_dt[,year])
 
@@ -197,6 +236,13 @@ climatology_ens_forecast = function(obs_dt,
 #' @param o column name of the observation. Mostly observed precipitation in mm.
 #' @param by By which columns should be grouped?
 #' @param thresholds vector of thresholds for which the exceedence probabilities should be derived.
+#'
+#' @return Data table with the climatological probabilities of exceedence for the provided thresholds.
+#'
+#' @examples
+#' \donttest{
+#' dt = climatology_threshold_exceedence(chirps_monthly)
+#' }
 #'
 #' @export
 
@@ -222,12 +268,20 @@ climatology_threshold_exceedence = function(obs_dt,
 #' Combine two data tables
 #'
 #' @description Function for combining two data tables, e.g. with predictions and observations.
-#' This is essentially a user-friendly wrapper for data.tables merge that guesses the columns to merge by (the dimension variables
-#' contained in both data tables.
+#' This is a user-friendly wrapper for \code{\link[data.table]{merge}}. It guesses the columns to merge by (the dimension variables
+#' contained in both data tables) and adds some warnings when merges are attempted that are likely not correctly specified by the user.
 #'
 #' @param dt1 first data table
 #' @param dt2 second data table
 #' @param ... passed on to data.table::merge
+#'
+#'@return The merged data table
+#'
+#'@examples
+#'# merge ECMWF-forecasts and CHIRPS observations:
+#'dt = ecmwf_monthly[month == 11]
+#'setnames(dt,'prec','forecast') # forecasts and observations both have a column 'prec'
+#'dt_new = combine(dt,chirps_monthly)
 #'
 #' @export
 
@@ -263,6 +317,8 @@ If this is meant to be a dimension variable, use data.table::merge instead. Else
 #'
 #' @return data table with two new columns 'month' and 'year', the timecol is deleted.
 #'
+#'@examples
+#'dt = MSD_to_YM(data.table(time = 0:12))
 #' @export
 #' @importFrom data.table as.data.table
 
@@ -291,7 +347,9 @@ MSD_to_YM = function(dt,timecol = 'time',origin = '1981-01-01')
 
 #' restricts data to a specified country
 #'
-#' Restricts a dataset to one or more countries, specified by their names. If you have lon/lat data and don't know which countries these coordinates belong to, see \code{add_country_names}.
+#' Restricts a dataset to one or more countries, specified by their names. If you have lon/lat data and don't know
+#' which countries these coordinates belong to, see \code{\link{add_country_names}}. Can restrict data to a rectangle around a given country
+#' as well (usually looks nicer for plotting).
 #'
 #' @param dt the data table.
 #' @param ct name of the country, or vector containing multiple country names
@@ -299,6 +357,11 @@ MSD_to_YM = function(dt,timecol = 'time',origin = '1981-01-01')
 #' If TRUE, the data is kept for a rectangle containing the entire country, therefore also containing gridpoints outside the country. This is the preferred option for plotting data
 #' for a specific country.
 #' @param tol Only used when \code{rectangle == TRUE}. A tolerance value for widening the plotting window, making things look a bit nicer.
+#'
+#'@return the data table, restricted to the selected country
+#'
+#'@examples
+#'dt = restrict_to_country(chirps_monthly,'Kenya')
 #'
 #' @export
 #'
@@ -315,6 +378,7 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 1)
   if(!rectangle)
   {
     ret = merge(dt,cs,by = intersect(names(dt),names(cs)))
+    if(!country_included) ret[,country := NULL]
     return(ret)
   }
   if(rectangle)
@@ -322,7 +386,7 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 1)
     lon_range = range(cs[,lon]) + c(-tol,tol)
     lat_range = range(cs[,lat]) + c(-tol,tol)
 
-
+    if(!country_included) dt[,country := NULL]
     return(dt[lon %between% lon_range & lat %between% lat_range])
   }
 }
@@ -333,6 +397,11 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 1)
 #' Wraps \code{\link{restrict_to_country}}, and restricts to the GHA-region usually considered in CONFER, see \code{\link{EA_country_names}}.
 #' @param dt the data table.
 #' @param ... passed on to \code{\link{restrict_to_country}}
+#'
+#'@return the data table, restricted to the selected country
+#'
+#'@examples
+#'dt = restrict_to_confer_region(chirps_monthly)
 #'
 #' @export
 #' @importFrom data.table as.data.table
@@ -348,6 +417,11 @@ restrict_to_confer_region = function(dt,...)
 #' Wraps \code{\link{restrict_to_country}}, and restricts to the GHA-region usually considered in CONFER, see \code{\link{EA_country_names}}.
 #' @param dt the data table.
 #' @param ... passed on to \code{\link{restrict_to_country}}
+#'
+#'@return the data table, restricted to the selected country
+#'
+#'@examples
+#'dt = restrict_to_GHA(chirps_monthly)
 #'
 #' @export
 #' @importFrom data.table as.data.table
@@ -366,6 +440,13 @@ restrict_to_GHA = restrict_to_confer_region
 #' @param by Names of columns to group by.
 #' @param keep_cols A vector of column names that you want to keep. Column names in by are kept automatically.
 #' @param ... passed on to \code{\link{add_tercile_probs}}.
+#'
+#'@return A new data table with tercile forecasts
+#'
+#'@examples
+#'\donttest{
+#'tfc_from_efc(ecmwf_monthly)
+#'}
 #'
 #' @export
 tfc_from_efc = function(dt, by = setdiff(dimvars(dt),'member'), keep_cols = NULL,...)

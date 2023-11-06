@@ -23,6 +23,9 @@ chirps_ver_map_quantiles(
 
 \item{seasons}{Are we plotting for seasonal or monthly forecasts?}
 }
+\value{
+data table with quantiles.
+}
 \description{
 Calculates and saves the quantiles of CHIRPS data required for verification maps.
 }

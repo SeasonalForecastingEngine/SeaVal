@@ -45,13 +45,10 @@ The function converts netcdfs into long data.tables.
 Be aware that the data table can be much larger in memory, especially if you have many dimension variables.
 }
 \examples{
-{\dontrun{
-fn = 'CorrelationSkillRain_Feb-Apr_Feb2021.nc'
-test = netcdf_to_dt(nc)
-}
+\dontrun{
+fn = '/directory/filename.nc'
+dt = netcdf_to_dt(nc)
 }
 
-}
-\author{
-Claudio
+
 }

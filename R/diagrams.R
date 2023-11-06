@@ -151,6 +151,8 @@ profit_graph = function(dt, accumulative = TRUE,
 #' @param probs vector of probabilities (between 0 and 1, not percent)
 #' @param binwidth width of the bins for rounding.
 #'
+#' @return vector with rounded probabilities
+#'
 #' @examples
 #' round_probs(c(0.001,0.7423))
 #' @export
@@ -173,6 +175,8 @@ round_probs = function(probs,binwidth = 0.05)
 #' @param discrete_probs Vector of (rounded) probabilites.
 #' @param obs Vector of logical observations.
 #' @param slope_only logical. If set to TRUE, only the slope of the reliability curve is returned
+#'
+#' @return A gg object.
 #'
 #' @examples
 #' discrete_probs = seq(0,1,length.out = 5)
@@ -390,7 +394,9 @@ rel_diag = function(dt,
 #' @param obs vector with categorical observations
 #' @param interpolate logical. If TRUE the ROC-curve is interpolated and drawn as a continuous function. Otherwise it is drawn as a step function.
 #'
-#'@examples
+#' @return a gg object
+#'
+#' @examples
 #' probs = seq(0,1,length.out = 5)
 #' obs = c(FALSE,FALSE,TRUE,FALSE,TRUE)
 #' roc_curve_vec(probs,obs)
@@ -460,9 +466,10 @@ roc_curve_vec = function(probs,obs,interpolate = TRUE)
 #' @param dim.check Logical. If TRUE, the function checks whether the columns in by and pool span the entire data table.
 #' @param interpolate Logical. If TRUE, the curve connects the dots making up the ROC curve (which looks nicer), if not a step function is drawn (which is closer to the mathematical definition of the ROC curve).
 #'
-#' @return A list of gg objects which can be plotted by ggpubr::ggarrange (for example)
+#' @return A list of gg objects which can be plotted by \code{ggpubr::ggarrange} (for example)
 #'
 #' @examples
+#' \donttest{
 #' dt = data.table(below = c(0.5,0.3,0),
 #'                 normal = c(0.3,0.3,0.7),
 #'                 above = c(0.2,0.4,0.3),
@@ -470,7 +477,7 @@ roc_curve_vec = function(probs,obs,interpolate = TRUE)
 #'                 lon = 1:3)
 #' print(dt)
 #' ROC_curve(dt)
-#'
+#'}
 #' @importFrom patchwork wrap_plots
 #' @export
 
@@ -653,11 +660,13 @@ tendency_diag = function(dt,
 #' @param climatology_period which years should the climatology be calculated on? Defaults to all years (except `yy`) in `dt`
 #' @param out_file optional path and file name (including valid filetype, like .pdf or .png) for saving the file. If not provided, the function just shows the plot in the running R session.
 #'
+#' @return a gg object
+#'
 #' @importFrom ggplotify as.ggplot
 #' @importFrom RColorBrewer brewer.pal
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # takes a few seconds:
 #' ver_map(chirps_monthly[month == 11],yy = 2018)
 #'}
@@ -805,6 +814,8 @@ ver_map = function(dt,o = obs_cols(dt),yy = dt[,max(year)],
 #' @param version which CHIRPS version to use.
 #' @param resolution Spatial resolution, 'high' or 'low'
 #' @param ... passed on to ver_map.
+#'
+#' @return A gg object
 #'
 #' @importFrom ggplotify as.ggplot
 #' @importFrom RColorBrewer brewer.pal

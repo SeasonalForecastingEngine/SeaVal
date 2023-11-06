@@ -28,6 +28,9 @@ upscale_chirps(
 
 \item{us_dir}{Directory where the low-resolution file will be stored.}
 }
+\value{
+Nothing.
+}
 \description{
 this is mostly auxiliary and called from download_chirps_monthly.
 Uses the function upscale_regular_lon_lat, but derives the weights for upscaling only once for efficiency and avoids simultaneous loading of all CHIRPS data.

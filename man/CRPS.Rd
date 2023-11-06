@@ -11,7 +11,7 @@ CRPS(
   by = by_cols_ens_fc_score(),
   pool = "year",
   mem = "member",
-  dim.check = T,
+  dim.check = TRUE,
   ens_size_correction = FALSE
 )
 }
@@ -34,6 +34,9 @@ The data table should only have one row for each level of c(by,pool,mem)}
 
 \item{ens_size_correction}{logical. If TRUE, the CRPS is corrected for sample size (see Ferro et al. 2008: 'On the effect of ensemble size on the discrete and continuous
 ranked probability scores'). This is slower, but you should do it if you compare ensembles of different size.}
+}
+\value{
+A data table with the scores
 }
 \description{
 Taking CRPSs of ensemble forecasts stored in long data tables:

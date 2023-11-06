@@ -28,6 +28,9 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 
 \item{dim.check}{Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.}
 }
+\value{
+A data table with the scores
+}
 \description{
 A generalisation of the ROC score for more than two categories.
 This score is not proper, but can be used to assess the discrimination of a tercile forecast.

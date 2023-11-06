@@ -15,10 +15,19 @@ tfc_from_efc(dt, by = setdiff(dimvars(dt), "member"), keep_cols = NULL, ...)
 
 \item{...}{passed on to \code{\link{add_tercile_probs}}.}
 }
+\value{
+A new data table with tercile forecasts
+}
 \description{
 The function takes a data table containing ensemble predictions and reduces it to predicted tercile probabilities.
 The data table should either have a column 'tercile_cat' or it will be generated in the process (by \code{\link{add_tercile_cat}}).
 In particular, if you don't know the tercile category of the ensemble predictions, your data table should contain hindcasts as well,
 such that the tercile categories are calculated correctly.
 The probability for 'below', for example, is the fraction of ensemble members predicting below normal (for this coordinate).
+}
+\examples{
+\donttest{
+tfc_from_efc(ecmwf_monthly)
+}
+
 }

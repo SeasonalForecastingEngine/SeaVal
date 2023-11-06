@@ -11,6 +11,9 @@ round_probs(probs, binwidth = 0.05)
 
 \item{binwidth}{width of the bins for rounding.}
 }
+\value{
+vector with rounded probabilities
+}
 \description{
 takes a vector of probabilities (between 0 and 1) and rounds them to the scale specified by binwidth. This is used for reliability diagrams,
 where one point is drawn for each bin. 0 is always at the center of the first interval for rounding:

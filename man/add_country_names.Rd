@@ -13,7 +13,14 @@ add_country_names(dt, regions = EA_country_names())
 By default, countries in East Africa are loaded, see \code{\link{EA_country_names}}.
 If you set regions = '.', the entire world is loaded, but this makes the function slower.}
 }
+\value{
+The provided data table with an extra column with country names
+}
 \description{
 Takes a data table with lon/lat coordinates and adds a column
 'country' to it, containing the name of the country, the coordinate belongs to.
+}
+\examples{
+dt = add_country_names(chirps_monthly)
+
 }

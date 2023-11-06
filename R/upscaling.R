@@ -44,6 +44,9 @@
 #' @param save_weights optional file name for saving the weights for upscaling.
 #' @param tol tolerance parameter used for grid matching, in order to deal with rounding errors present in the coordinates. The gridpoint areas are calculated with this precision, so the output has errors of this order of magnitude.
 #'
+#' @return A data table with the upscaled values.
+#'
+#'
 #' @references Göber, M., Ervin Z., and Richardson, D.S. (2008): *"Could a perfect model ever satisfy a naïve forecaster? On grid box mean versus point verification."* Meteorological Applications: A journal of forecasting, practical applications, training techniques and modelling 15, no. 3 (2008): 359-365.
 #' @export
 

@@ -7,13 +7,16 @@
 get_terciles(...)
 }
 \arguments{
-\item{...}{passed on to get_quantiles.}
+\item{...}{passed on to \code{\link{get_quantiles}}.}
+}
+\value{
+See \code{\link{get_quantiles}}.
 }
 \description{
-This function wraps \code{get_quantiles} with the fixed quantiles 0.33 and 0.67.
+This function wraps \code{\link{get_quantiles}} with the fixed quantiles 0.33 and 0.67.
 }
 \examples{
-\dontrun{
+\donttest{
 # takes a few seconds:
 get_terciles(chirps_monthly)
 }

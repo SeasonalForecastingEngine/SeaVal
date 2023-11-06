@@ -70,10 +70,10 @@ a ggplot object.
 Plots spatial data from a data.table. The data table needs to contain columns named 'lon' and 'lat'. The grid needs to be regular.
 If spatial data is contained for several levels (e.g. mutliple times or multiple ensemble members), only the data for the first level is plotted.
 By default, the first column that is not recognized as a dimension variable is plotted, see \code{data_col}. For the most common data-columns, reasonable
-color scales are selected automativally.
+color scales are selected automatically.
 }
 \examples{
-\dontrun{
+\donttest{
 # takes a few seconds:
 ggplot_dt(chirps_monthly[month == 12 & year == 2020])
 }

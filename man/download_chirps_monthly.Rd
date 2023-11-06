@@ -17,10 +17,11 @@ download_chirps_monthly(
 )
 }
 \arguments{
-\item{resolution}{Shall the data be upscaled? Takes one of three arguments: \itemize{
- \item{'both'}{(the default) downloads and saves the data on full resolution and additionally derives an upscaled version. Both will be available later.}
- \item{'high'}{downloads and saves on original resolution, but does not upscale.}
- \item{'low'}{(for saving disk space) downloads the original resolution, upscales immediately and only saves the upscaled version.}
+\item{resolution}{Shall the data be upscaled? Takes one of three arguments:
+\itemize{
+\item \strong{'both'} (the default) downloads and saves the data on full resolution and additionally derives an upscaled version. Both will be available later.
+\item \strong{'high'} downloads and saves on original resolution, but does not upscale.
+\item \strong{'low'} (for saving disk space) downloads the original resolution, upscales immediately and only saves the upscaled version.
 }}
 
 \item{update}{Logical, if TRUE, previously created files are skipped.}
@@ -34,6 +35,9 @@ download_chirps_monthly(
 \item{timeout_limit}{how many seconds (per file, i.e. per yearmonth) before the download is aborted?}
 
 \item{upscale_grid}{The coarse grid to which the data is upscaled (only used when resolution is either 'both' or 'high'). Only change this if you know what you are doing.}
+}
+\value{
+Nothing.
 }
 \description{
 Download CHIRPS monthly data for the GHA-region and save it as netcdfs.

@@ -9,6 +9,9 @@ dimvars(dt = NULL)
 \arguments{
 \item{dt}{Optional data table. If a data table is provided only the dimvars of the data table are returned.}
 }
+\value{
+A vector of characters with the column names considered dimvars.
+}
 \description{
 The function returns all names currently considered dimension variables.
 Following the logic of netcdfs, data tables usually have columns specifying coordinates

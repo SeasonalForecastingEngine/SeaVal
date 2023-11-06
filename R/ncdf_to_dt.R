@@ -25,13 +25,12 @@
 #'
 #' @import ncdf4
 #'
-#' @examples {\dontrun{
-#' fn = 'CorrelationSkillRain_Feb-Apr_Feb2021.nc'
-#' test = netcdf_to_dt(nc)
-#' }
+#' @examples
+#' \dontrun{
+#' fn = '/directory/filename.nc'
+#' dt = netcdf_to_dt(nc)
 #' }
 #'
-#' @author Claudio
 #'
 #' @export
 
@@ -204,7 +203,7 @@ netcdf_to_dt = function(nc, vars = NULL,
 #'
 #' @examples
 #' \dontrun{
-#' dt_to_netcdf(ecmwf_monthly,nc_out = 'ecmwf_monthly.nc')
+#' dt_to_netcdf(ecmwf_monthly,nc_out = './directory/ecmwf_monthly.nc')
 #' }
 #'
 #' @author Claudio

@@ -9,6 +9,9 @@ obs_cols(dt = NULL)
 \arguments{
 \item{dt}{optional data table. If provided, the function guesses which column contains the observations. Else it returns all recognized observation column names.}
 }
+\value{
+Character vector with column names.
+}
 \description{
 Note that this function guesses column names for observed precip, not observed tercile category.
 }

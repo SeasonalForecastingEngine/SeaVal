@@ -9,6 +9,9 @@ space_dimvars(dt = NULL)
 \arguments{
 \item{dt}{optional. You can provide a data table, then the function returns the names of spatial coordinate columns in this data table.}
 }
+\value{
+Character vector with column names.
+}
 \description{
 returns all column names indicating a spatial coordinate.
 }

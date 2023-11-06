@@ -18,6 +18,9 @@ disc_score_dt(year, obs, pB, pN, pA)
 
 \item{pA}{a vector of probabilities for the third category.}
 }
+\value{
+A data table with the scores
+}
 \description{
 Calculate the Generalized discrimination score from a data.table with data belonging to a single group (as defined by the
 by variable in the DISS function), for example a single location and month.

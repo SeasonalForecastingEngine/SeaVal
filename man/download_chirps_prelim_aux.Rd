@@ -26,6 +26,9 @@ download_chirps_prelim_aux(
 
 \item{save_dir}{Directory where the function stores the preliminary data.}
 }
+\value{
+nothing
+}
 \description{
 This data becomes available earlier, but it has to be downloaded from UCSB.
 The function checks whether the non-preliminary version exists and only downloads otherwise.

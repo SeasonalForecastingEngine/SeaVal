@@ -10,6 +10,9 @@ by_cols_terc_fc_score(dt = NULL)
 \item{dt}{optional. You can provide a data table, then the function returns
 the names of grouping variables in this data table.}
 }
+\value{
+A vector of characters with the column names.
+}
 \description{
 returns the default column names to group by when calculating scores for
 tercile forecasts.

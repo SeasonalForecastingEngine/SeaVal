@@ -6,6 +6,8 @@
 #'
 #' @param dir The directory
 #'
+#' @return The directory path.
+#'
 #' @examples
 #' \dontrun{chirps_dir()}
 #'
@@ -21,6 +23,8 @@ chirps_dir = function(dir = file.path(data_dir(),'CHIRPS'))
 #' GHA-bounding-box
 #'
 #' Returns a lon/lat bounding box for the greater horn of Africa region. Format is c(xmin,xmax,ymin,ymax), as for raster::extent
+#'
+#'@return A numeric vectorof length 4.
 #'
 #' @examples GHA_extent()
 #' @export
@@ -41,11 +45,10 @@ GHA_extent = function()
 #' The function therefore offers the option to also create and save a coarser, upscaled version of the CHIRPS data that allows much faster data processing.
 #' Alternatively you can also ONLY save the upscaled version to save disk space (roughly 8MB on disk).
 #'
-#' @param resolution Shall the data be upscaled? Takes one of three arguments: \itemize{
-#'  \item{'both'}{(the default) downloads and saves the data on full resolution and additionally derives an upscaled version. Both will be available later.}
-#'  \item{'high'}{downloads and saves on original resolution, but does not upscale.}
-#'  \item{'low'}{(for saving disk space) downloads the original resolution, upscales immediately and only saves the upscaled version.}
-#' }
+#' @param resolution Shall the data be upscaled? Takes one of three arguments:
+#' * __'both'__ (the default) downloads and saves the data on full resolution and additionally derives an upscaled version. Both will be available later.
+#' * __'high'__ downloads and saves on original resolution, but does not upscale.
+#' * __'low'__ (for saving disk space) downloads the original resolution, upscales immediately and only saves the upscaled version.
 #' @param update Logical, if TRUE, previously created files are skipped.
 #' @param version Should be 'UCSB' (for University of California Santa Barbara, the original source of CHIRPS) or 'ICPAC' (for downloading the ICPAC version CHIRPS blended)
 #' @param years,months Which years and months do you want to load? NULL loads everything there is.
@@ -55,10 +58,12 @@ GHA_extent = function()
 #'
 #' @importFrom utils download.file
 #'
+#' @return Nothing.
 #'
 #' @examples
 #' \dontrun{download_chirps_monthly(years = 2020, months = 1)}
 #' @export
+#' @md
 
 download_chirps_monthly = function(resolution = 'both',update = TRUE,
                                    version = 'UCSB',
@@ -445,6 +450,8 @@ download_chirps_monthly_low = function(update,
 #' @param us_dir Directory where the low-resolution file will be stored.
 #' @param version Version specifier, should be 'UCSB' or 'ICPAC'. The latter only works if you have access to CHIRPS blended.
 #'
+#' @return Nothing.
+#'
 #' @examples
 #' \dontrun{upscale_chirps()}
 #'
@@ -802,6 +809,8 @@ I expect the CHIRPS data to be located in a subfolder CHIRPS in that directory."
 #' @param save_dir Directory where the function stores the preliminary data.
 #'
 #' @importFrom utils download.file
+#'
+#' @return nothing
 #'
 #' @examples \dontrun{download_chirps_prelim_aux()}
 #'

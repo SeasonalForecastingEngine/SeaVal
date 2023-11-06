@@ -6,6 +6,9 @@
 \usage{
 GHA_extent()
 }
+\value{
+A numeric vectorof length 4.
+}
 \description{
 Returns a lon/lat bounding box for the greater horn of Africa region. Format is c(xmin,xmax,ymin,ymax), as for raster::extent
 }

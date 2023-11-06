@@ -10,6 +10,9 @@ by_cols_terc_fc_score_sp(dt = NULL)
 \item{dt}{optional. You can provide a data table, then the function returns the names
 of grouping variables in this data table.}
 }
+\value{
+A vector of characters with the column names.
+}
 \description{
 Gets column names to group by when calculating scores for tercile forecasts.
 Some tercile forecasts, such as ROC score or SRC (slope of reliability curve)

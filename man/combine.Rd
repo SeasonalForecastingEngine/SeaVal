@@ -13,8 +13,18 @@ combine(dt1, dt2, ...)
 
 \item{...}{passed on to data.table::merge}
 }
+\value{
+The merged data table
+}
 \description{
 Function for combining two data tables, e.g. with predictions and observations.
-This is essentially a user-friendly wrapper for data.tables merge that guesses the columns to merge by (the dimension variables
-contained in both data tables.
+This is a user-friendly wrapper for \code{\link[data.table]{merge}}. It guesses the columns to merge by (the dimension variables
+contained in both data tables) and adds some warnings when merges are attempted that are likely not correctly specified by the user.
+}
+\examples{
+# merge ECMWF-forecasts and CHIRPS observations:
+dt = ecmwf_monthly[month == 11]
+setnames(dt,'prec','forecast') # forecasts and observations both have a column 'prec'
+dt_new = combine(dt,chirps_monthly)
+
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{add_tercile_cat}
 \alias{add_tercile_cat}
-\title{adds a column with the observed tercile category to a data table}
+\title{Add a tercile-category column to a data table}
 \usage{
 add_tercile_cat(
   dt,
@@ -20,6 +20,18 @@ add_tercile_cat(
 
 \item{by}{names of columns to group by.}
 }
+\value{
+The provided data table with an extra column tercile_cat
+}
 \description{
-adds a column with the observed tercile category to a data table
+Given a data table with multiple years of data, this function derives the tercile category per year.
+It first derives terciles for the data and then returns, for each row, a -1 if the data falls into
+the lowest tercile, 0 if it falls between 1st and second tercile, and +1 if it falls above the third tercile.
+Allows grouping by levels (e.g. months and location-coordinates): Tercile categories are derived separately
+for each level.
+}
+\examples{
+\donttest{
+dt = add_tercile_cat(chirps_monthly)
+}
 }

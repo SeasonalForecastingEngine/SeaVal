@@ -8,6 +8,7 @@
 #'
 #' @param dt optional. You can provide a data table, then the function
 #' returns the names of grouping variables in this data table.
+#' @return A vector of characters with the column names.
 
 by_cols_ens_fc_score = function(dt = NULL)
 {
@@ -21,6 +22,7 @@ by_cols_ens_fc_score = function(dt = NULL)
 #'
 #' @param dt optional. You can provide a data table, then the function returns
 #' the names of grouping variables in this data table.
+#' @return A vector of characters with the column names.
 
 by_cols_terc_fc_score = function(dt = NULL)
 {
@@ -37,6 +39,7 @@ by_cols_terc_fc_score = function(dt = NULL)
 #'
 #' @param dt optional. You can provide a data table, then the function returns the names
 #' of grouping variables in this data table.
+#' @return A vector of characters with the column names.
 
 by_cols_terc_fc_score_sp = function(dt = NULL)
 {
@@ -112,6 +115,7 @@ checks_terc_fc_score = function()
 #' or temporal coordinates, or the lead time of a forecast or the member in an ensemble forecast, etc...
 #'
 #'@param dt Optional data table. If a data table is provided only the dimvars of the data table are returned.
+#'@return A vector of characters with the column names considered dimvars.
 #'
 #'@examples
 #'dimvars()
@@ -136,6 +140,7 @@ dimvars = function(dt = NULL)
 #' the data is stored. The first time this function is called, it asks the user to configure the directory.
 #'
 #' @param set_dir logical. Set this to TRUE if you have to redefine your data directory.
+#' @return The current data directory as string.
 #'
 #' @examples
 #' \dontrun{
@@ -143,7 +148,7 @@ dimvars = function(dt = NULL)
 #'}
 #' @export
 
-data_dir = function(set_dir = F)
+data_dir = function(set_dir = FALSE)
 {
   if(file.exists('~/.config_SeaVal'))
   {
@@ -185,7 +190,7 @@ data_dir = function(set_dir = F)
     }
     if(m1 == 2)
     {
-      cat('Please type your data directory. \n
+      message('Please type your data directory. \n
 Use / on Linux (e.g. /nr/project/stat/CONFER/Data/) and \\ on Windows (e.g. C:\\Users\\Documents\\).')
       rl3 = readline('Input:')
 
@@ -230,10 +235,12 @@ Use / on Linux (e.g. /nr/project/stat/CONFER/Data/) and \\ on Windows (e.g. C:\\
 
 #' Get names of countries in east Africa
 #'
-#' This is an auxiliary function used in \link{add_country_names}, so only these names are recognized
+#' This is an auxiliary function used in \code{\link{add_country_names}}, so only these names are recognized
 #' by default.
 #'
-#'  @examples
+#' @return A character-vector of country names.
+#'
+#' @examples
 #' EA_country_names()
 #' @export
 
@@ -249,6 +256,8 @@ EA_country_names = function()
 #' returns the columns names that are recognized as (ensemble-) forecast values
 #'
 #' @param dt optional data table. If provided, the function guesses which column contains the forecast values. Else it returns all recognized forecast column names.
+#'
+#' @return Character vector with column names.
 #'
 #' @examples
 #' fc_cols()
@@ -272,6 +281,8 @@ fc_cols = function(dt = NULL)
 #'
 #' @param dt optional data table. If provided, the function guesses which column contains the observations. Else it returns all recognized observation column names.
 #'
+#' @return Character vector with column names.
+#'
 #' @examples
 #' obs_cols()
 #'
@@ -293,6 +304,8 @@ obs_cols = function(dt = NULL)
 #' which column names are interpreted as observed tercile categories
 #'
 #' @param dt optional data table. If provided, the function guesses which column contains the observations. Else it returns all recognized column names.
+#'
+#' @return Character vector with column names.
 #'
 #' @examples
 #' tc_cols()
@@ -317,6 +330,8 @@ tc_cols = function(dt = NULL)
 #' Observation dimvars are column names in a data table that resemble coordinates for which only one observation may exist.
 #'
 #' @param dt optional. You can provide a data table, then the function returns the names of coordinate columns in this data table.
+#'
+#' @return Character vector with column names.
 #'
 #' @examples
 #' obs_dimvars
@@ -438,6 +453,8 @@ run_dimension_check_terc_forecast = function()
 #' returns all column names indicating a spatial coordinate.
 #' @param dt optional. You can provide a data table, then the function returns the names of spatial coordinate columns in this data table.
 #'
+#' @return Character vector with column names.
+#'
 #' @examples
 #' space_dimvars()
 #' @export
@@ -456,6 +473,8 @@ space_dimvars = function(dt = NULL)
 #'
 #' returns all column names indicating a temporal coordinate.
 #' @param dt optional. You can provide a data table, then the function returns the names of temporal coordinate columns in this data table.
+#'
+#' @return Character vector with column names.
 #'
 #' @examples
 #' time_dimvars()

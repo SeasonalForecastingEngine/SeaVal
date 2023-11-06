@@ -11,6 +11,9 @@ roc_score_vec(probs, obs)
 
 \item{obs}{vector with categorical observations (as TRUE/FALSE)}
 }
+\value{
+numeric. The ROC score.
+}
 \description{
 Calculates the area under curve (AUC) or ROC-score from a vector of probabilities and corresponding observations.
 Formula (1a) from Mason&2018 is used in the calculation, corresponding to trapezoidal interpolation.

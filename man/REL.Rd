@@ -31,6 +31,9 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 
 \item{dim.check}{Logical. If TRUE, the function tests whether the data table contains only one row per coordinate-level, as should be the case.}
 }
+\value{
+A data table with the scores
+}
 \description{
 Computes both the reliability component of the Brier score or reliability component of the Ignorance score.
 Mason claims to prefer the ignorance score version, but this has a very high chance of being NA. Mason writes that the
