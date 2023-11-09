@@ -49,5 +49,8 @@ The function therefore offers the option to also create and save a coarser, upsc
 Alternatively you can also ONLY save the upscaled version to save disk space (roughly 8MB on disk).
 }
 \examples{
-\dontrun{download_chirps_monthly(years = 2020, months = 1)}
+if(interactive()){
+download_chirps_monthly(years = 2020, months = 1)
+}
+
 }

@@ -39,5 +39,6 @@ dt = data.table(below = c(0.5,0.3,0),
                 tc_cat = c(-1,0,0),
                 lon = 1:3)
 print(dt)
-tendency_diag(dt)
+pp = tendency_diag(dt)
+if(interactive()) plot(pp)
 }

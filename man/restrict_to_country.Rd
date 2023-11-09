@@ -26,6 +26,8 @@ which countries these coordinates belong to, see \code{\link{add_country_names}}
 as well (usually looks nicer for plotting).
 }
 \examples{
-dt = restrict_to_country(chirps_monthly,'Kenya')
+# example data:
+ex_dt = chirps_monthly[lat < 0 & month == 11 & year == 2020]
+dt = restrict_to_country(ex_dt,'Kenya')
 
 }

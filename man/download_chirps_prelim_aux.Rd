@@ -36,6 +36,8 @@ Annoyingly, the grid of UCBS and IRIDL are shifted against each other. Therefore
 In particular, everything will crash if you have never downloaded a non-preliminary file and try to download a preliminary one.
 }
 \examples{
-\dontrun{download_chirps_prelim_aux()}
+if(interactive()){
+download_chirps_prelim_aux(years = 2023, months = 10)
+}
 
 }

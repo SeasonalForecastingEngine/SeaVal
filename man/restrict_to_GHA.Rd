@@ -18,6 +18,7 @@ the data table, restricted to the selected country
 Wraps \code{\link{restrict_to_country}}, and restricts to the GHA-region usually considered in CONFER, see \code{\link{EA_country_names}}.
 }
 \examples{
-dt = restrict_to_GHA(chirps_monthly)
+ex_dt = chirps_monthly[lat < 0 & month == 11 & year == 2020]
+dt = restrict_to_GHA(ex_dt)
 
 }

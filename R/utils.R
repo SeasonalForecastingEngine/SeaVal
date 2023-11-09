@@ -361,7 +361,9 @@ MSD_to_YM = function(dt,timecol = 'time',origin = '1981-01-01')
 #'@return the data table, restricted to the selected country
 #'
 #'@examples
-#'dt = restrict_to_country(chirps_monthly,'Kenya')
+#'# example data:
+#'ex_dt = chirps_monthly[lat < 0 & month == 11 & year == 2020]
+#'dt = restrict_to_country(ex_dt,'Kenya')
 #'
 #' @export
 #'
@@ -401,7 +403,8 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 1)
 #'@return the data table, restricted to the selected country
 #'
 #'@examples
-#'dt = restrict_to_confer_region(chirps_monthly)
+#'ex_dt = chirps_monthly[lat < 0 & month == 11 & year == 2020]
+#'dt = restrict_to_confer_region(ex_dt)
 #'
 #' @export
 #' @importFrom data.table as.data.table
@@ -421,7 +424,8 @@ restrict_to_confer_region = function(dt,...)
 #'@return the data table, restricted to the selected country
 #'
 #'@examples
-#'dt = restrict_to_GHA(chirps_monthly)
+#'ex_dt = chirps_monthly[lat < 0 & month == 11 & year == 2020]
+#'dt = restrict_to_GHA(ex_dt)
 #'
 #' @export
 #' @importFrom data.table as.data.table
@@ -444,9 +448,9 @@ restrict_to_GHA = restrict_to_confer_region
 #'@return A new data table with tercile forecasts
 #'
 #'@examples
-#'\donttest{
-#'tfc_from_efc(ecmwf_monthly)
-#'}
+#'test_dt = ecmwf_monthly[lat < 0 & month == 11]
+#'tfc = tfc_from_efc(test_dt)
+#'
 #'
 #' @export
 tfc_from_efc = function(dt, by = setdiff(dimvars(dt),'member'), keep_cols = NULL,...)

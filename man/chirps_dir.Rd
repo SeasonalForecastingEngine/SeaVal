@@ -16,6 +16,6 @@ The directory path.
 Auxiliary function to access/set the directory for loading and saving CHIRPS data.
 }
 \examples{
-\dontrun{chirps_dir()}
+if(interactive()){chirps_dir()}
 
 }

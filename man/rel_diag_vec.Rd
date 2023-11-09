@@ -25,7 +25,8 @@ A horizontal and vertical line indicate the frequency of observation = TRUE over
 \examples{
 discrete_probs = seq(0,1,length.out = 5)
 obs = c(FALSE,FALSE,TRUE,TRUE,TRUE)
-rel_diag_vec(discrete_probs,obs)
+pp = rel_diag_vec(discrete_probs,obs)
+if(interactive()) plot(pp)
 
 
 }

@@ -9,7 +9,7 @@
 #' @return The directory path.
 #'
 #' @examples
-#' \dontrun{chirps_dir()}
+#' if(interactive()){chirps_dir()}
 #'
 #' @export
 
@@ -61,7 +61,10 @@ GHA_extent = function()
 #' @return Nothing.
 #'
 #' @examples
-#' \dontrun{download_chirps_monthly(years = 2020, months = 1)}
+#' if(interactive()){
+#' download_chirps_monthly(years = 2020, months = 1)
+#' }
+#'
 #' @export
 #' @md
 
@@ -453,7 +456,9 @@ download_chirps_monthly_low = function(update,
 #' @return Nothing.
 #'
 #' @examples
-#' \dontrun{upscale_chirps()}
+#' if(interactive()){
+#' upscale_chirps()
+#' }
 #'
 #' @export
 
@@ -677,8 +682,10 @@ upscale_chirps = function(update = TRUE,
 #'
 #' @return the derived data table
 #'
-#' @examples \dontrun{load_chirps()}
-#'
+#' @examples
+#' if(interactive()){
+#' load_chirps()
+#' }
 #' @export
 
 load_chirps = function(years =  NULL, months = NULL,
@@ -812,7 +819,10 @@ I expect the CHIRPS data to be located in a subfolder CHIRPS in that directory."
 #'
 #' @return nothing
 #'
-#' @examples \dontrun{download_chirps_prelim_aux()}
+#' @examples
+#' if(interactive()){
+#' download_chirps_prelim_aux(years = 2023, months = 10)
+#' }
 #'
 #' @export
 

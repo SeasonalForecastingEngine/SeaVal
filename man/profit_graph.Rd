@@ -43,7 +43,12 @@ dt = data.table(below = c(0.5,0.3,0),
                 tc_cat = c(-1,0,0),
                 lon = 1:3)
 print(dt)
-profit_graph(dt)
-profit_graph(dt,accumulative = FALSE)
+p1 = profit_graph(dt)
+p2 = profit_graph(dt,accumulative = FALSE)
+
+if(interactive()){
+plot(p1)
+plot(p2)
+}
 
 }

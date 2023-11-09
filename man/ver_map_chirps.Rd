@@ -28,6 +28,9 @@ A gg object
 The quantiles should be computed and saved by the function \code{chirps_ver_map_quantiles}.
 }
 \examples{
-\dontrun{ver_map_chirps(mm = 12,yy = 2022)}
+\donttest{ # takes a while:
+if(interactive())
+ver_map_chirps(mm = 12,yy = 2022)
+}
 
 }

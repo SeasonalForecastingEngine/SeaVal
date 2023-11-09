@@ -84,8 +84,13 @@ create_diagram_by_level = function(FUN,by,dt,...)
 #'                 tc_cat = c(-1,0,0),
 #'                 lon = 1:3)
 #' print(dt)
-#' profit_graph(dt)
-#' profit_graph(dt,accumulative = FALSE)
+#' p1 = profit_graph(dt)
+#' p2 = profit_graph(dt,accumulative = FALSE)
+#'
+#' if(interactive()){
+#' plot(p1)
+#' plot(p2)
+#' }
 #'
 #' @importFrom patchwork wrap_plots
 #' @export
@@ -181,7 +186,8 @@ round_probs = function(probs,binwidth = 0.05)
 #' @examples
 #' discrete_probs = seq(0,1,length.out = 5)
 #' obs = c(FALSE,FALSE,TRUE,TRUE,TRUE)
-#' rel_diag_vec(discrete_probs,obs)
+#' pp = rel_diag_vec(discrete_probs,obs)
+#' if(interactive()) plot(pp)
 #'
 #'
 #' @export
@@ -257,13 +263,16 @@ rel_diag_vec = function(discrete_probs, obs, slope_only = FALSE)
 #'
 #'
 #' @examples
+#' \donttest{
 #' dt = data.table(below = c(0.5,0.3,0),
 #'                 normal = c(0.3,0.3,0.7),
 #'                 above = c(0.2,0.4,0.3),
 #'                 tc_cat = c(-1,0,0),
 #'                 lon = 1:3)
 #' print(dt)
-#' rel_diag(dt)
+#' pp = rel_diag(dt)
+#' if(interactive()) plot(pp)
+#' }
 #'
 #' @importFrom patchwork wrap_plots
 #' @importFrom utils menu
@@ -399,7 +408,9 @@ rel_diag = function(dt,
 #' @examples
 #' probs = seq(0,1,length.out = 5)
 #' obs = c(FALSE,FALSE,TRUE,FALSE,TRUE)
-#' roc_curve_vec(probs,obs)
+#' pp = roc_curve_vec(probs,obs)
+#' if(interactive()) plot(pp)
+#'
 #' @export
 
 
@@ -469,15 +480,15 @@ roc_curve_vec = function(probs,obs,interpolate = TRUE)
 #' @return A list of gg objects which can be plotted by \code{ggpubr::ggarrange} (for example)
 #'
 #' @examples
-#' \donttest{
 #' dt = data.table(below = c(0.5,0.3,0),
 #'                 normal = c(0.3,0.3,0.7),
 #'                 above = c(0.2,0.4,0.3),
 #'                 tc_cat = c(-1,0,0),
 #'                 lon = 1:3)
 #' print(dt)
-#' ROC_curve(dt)
-#'}
+#' pp = ROC_curve(dt)
+#' if(interactive()) plot(pp)
+#'
 #' @importFrom patchwork wrap_plots
 #' @export
 
@@ -591,7 +602,8 @@ ROC_curve = function(dt,
 #'                 tc_cat = c(-1,0,0),
 #'                 lon = 1:3)
 #' print(dt)
-#' tendency_diag(dt)
+#' pp = tendency_diag(dt)
+#' if(interactive()) plot(pp)
 #' @export
 
 tendency_diag = function(dt,
@@ -821,7 +833,10 @@ ver_map = function(dt,o = obs_cols(dt),yy = dt[,max(year)],
 #' @importFrom RColorBrewer brewer.pal
 #'
 #' @examples
-#' \dontrun{ver_map_chirps(mm = 12,yy = 2022)}
+#' \donttest{ # takes a while:
+#' if(interactive())
+#' ver_map_chirps(mm = 12,yy = 2022)
+#' }
 #'
 #' @export
 

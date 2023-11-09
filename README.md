@@ -4,7 +4,7 @@ This package suports validation of seasonal weather forecasts.
 The focus lies on tercile forecasts, i.e. predictions of three probabilities, 
 one for 'below normal' (e.g. temperature or precipitation), 'normal', and 
 'above normal', respectively. The package implements a large variety of evaluation metrics,
-as recommended by the [World Meteorological Organization](https://library.wmo.int/idurl/4/56227). 
+as recommended by the [World Meteorological Organization](<https://library.wmo.int/idurl/4/56227>).
 In particular, it simplifies the task of evaluating gridded forecasts against gridded observations. 
 It also provides tools for data import/export and plotting. Finally, it provides functionality for 
 downloading and managing monthly-means gridded precipitation observations provided by

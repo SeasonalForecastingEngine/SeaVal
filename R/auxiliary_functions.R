@@ -143,7 +143,7 @@ dimvars = function(dt = NULL)
 #' @return The current data directory as string.
 #'
 #' @examples
-#' \dontrun{
+#' if(interactive()){
 #' data_dir()
 #'}
 #' @export

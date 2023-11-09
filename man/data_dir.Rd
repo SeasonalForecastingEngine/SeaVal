@@ -17,7 +17,7 @@ The package allows to download and organize CHIRPS data. This function specifies
 the data is stored. The first time this function is called, it asks the user to configure the directory.
 }
 \examples{
-\dontrun{
+if(interactive()){
 data_dir()
 }
 }

@@ -32,6 +32,7 @@ the derived data table
 The data has to be previously downloaded, see \code{download_chirps_monthly}. The resulting data table contains precip in unit mm/day.
 }
 \examples{
-\dontrun{load_chirps()}
-
+if(interactive()){
+load_chirps()
+}
 }

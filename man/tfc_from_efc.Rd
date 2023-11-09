@@ -26,8 +26,8 @@ such that the tercile categories are calculated correctly.
 The probability for 'below', for example, is the fraction of ensemble members predicting below normal (for this coordinate).
 }
 \examples{
-\donttest{
-tfc_from_efc(ecmwf_monthly)
-}
+test_dt = ecmwf_monthly[lat < 0 & month == 11]
+tfc = tfc_from_efc(test_dt)
+
 
 }
