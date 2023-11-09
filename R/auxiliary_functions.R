@@ -460,7 +460,7 @@ run_dimension_check_terc_forecast = function()
 #' @export
 space_dimvars = function(dt = NULL)
 {
-  options = c('country','lat','Lat','lon','Lon','X','Y')
+  options = c('lat','Lat','lon','Lon','X','Y')
   if(is.null(dt))
   {
     return(options)
