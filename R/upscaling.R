@@ -1,51 +1,43 @@
 #' Function for matching data between different grids
 #'
 #' @description
-#' This function upscales data from one regular lon-lat grid to another lon-lat grid that is coarser or of the same resolution.
-#' It uses conservative interpolation rather than bilinear interpolation.
-#' Bilinear interpolation is generally not appropriate for mapping data to coarser grids (because the value of a coarse grid cell
-#' would only depend on the four fine grid cells surrounding its center coordinate, even though many fine grid cells may overlap the coarse grid cell).
-#'
-#' When working with grids of the same resolution, bilinear interpolation and conservative interpolation are almost identical.
-#' However, even in this situation conservative interpolation is preferable, because it can account for the fact that the
-#' Earth is round, which bilinear interpolation on lon/lat-grids generally ignores.
-#'
-#' For validating predictions against gridded data and comparing different forecast systems, it is often necessary to map data to the same grid (usually the coarsest of the involved grids).
-#' Gridded predictions and observations constitute grid point averages, see (Göber et al. 2008).
-#' This means that the upscaled value assigned to a coarse grid cell should be a weighted average of the values of the fine grid cells overlapping the coarse cell, with the weighting accounting for the
-#' area of overlap. This function does this for you, as long as both the fine grid and the coarse grid are regular grids in lon/lat (consisting of lon/lat rectangles).
+#' Upscales data from one regular lon-lat grid to another lon-lat grid that is coarser or of the same resolution.
+#' It uses conservative interpolation (rather than bilinear interpolation) which is the better choice for upscaling, see details below.
+#' If the fine grid and coarse grid are of the same resolution but shifted, results are (almost) identical to bilinear interpolation
+#' (almost because bilinear interpolation does not account for the fact that grid cells get smaller towards the pole, which this function does).
 #'
 #' The function addresses the following major challenges:
 #' \itemize{
-#' \item The fine grid does not need to be nested in the coarse grid, creating different partial overlap scenarios. Therefore, the value of each fine grid cell may contribute to multiple (up to four) coarse grid cells.
-#' \item Grid cell area varies with latitude, grid cells at the equator are much larger than at the poles. This affects the contribution of grid cells (grid cells closer to the pole contribute less to the coarse grid cell average).
-#' \item Naive merging of data tables or distance-based matching of grid cells frequently results in unnecessary large lookup tables that may not fit into memory when both your fine and your coarse grid are high-resolution.
-#' \item Frequently, it is required to upscale \emph{repeated} data between the same grids, for example when you want to upscale observations for many different dates.
-#' In this case, the calculation of grid cell overlaps should only be done once, and not repeated every time.
+#' \item The fine grid does not need to be nested in the coarse grid, creating different partial overlap scenarios.
+#' Therefore, the value of each fine grid cell may contribute to multiple (up to four) coarse grid cells.
+#' \item Grid cell area varies with latitude, grid cells at the equator are much larger than at the poles.
+#' This affects the contribution of grid cells (grid cells closer to the pole contribute less to the coarse grid cell average).
+#' \item Frequently, it is required to upscale \emph{repeated} data between the same grids, for example when you want to upscale observations for many different years.
+#' In this case, the calculation of grid cell overlaps is only done once, and not repeated every time.
+#' \item For coarse grid cells that are only partially covered, a minimal required fraction of coverage can be specified.
+#' \item It is memory efficient: Naive merging of data tables or distance-based matching of grid cells is avoided, since it results in
+#' unnecessary large lookup tables that may not fit into memory when both your fine and your coarse grid are high-resolution.
 #' }
 #'
-#' The function will still work when the coarse grid is of the same resolution as the fine grid (when the grids are just spatially shifted), but it won't work when the coarse grid is in fact finer than the fine grid
-#' (in this case there might be coarse grid cells that are fully contained in a fine grid, which is not accounted for).
+#' @details Bilinear interpolation is generally not appropriate for mapping data from finer to coarser grids.
+#' The reason is that in BI, the value of a coarse grid cell only depends on the four fine grid cells surrounding its center coordinate,
+#' even though many fine grid cells may overlap the coarse grid cell).
+#' Conservative interpolation calculates the coarse grid cell value by averaging all fine grid cells overlapping with it, weighted by
+#' the fraction of overlap. This is the appropriate way of upscaling when predictions and observations constitute grid point averages, which is usually the case (Göber et al. 2008).
 #'
-#' In the current implementation, a coarse grid cell gets assigned a value if it overlaps with at least one fine grid cell containing a value. When your large grid spans a wider geographic area,
-#' this can mean that the large grid cells at the border of your data get assigned a value even when they only have a fraction of overlap with a small grid cell.
-#' This can be problematic, as bordering grid cells exhibit different variance, for example. I am not aware of a better way to solve this problem when resolution is very different.
-#' However, it would be at least nice to have an option to assign missing values to coarse grid cells overlapping with NA-regions in the fine grid, but this is not so easy to implement.
-#' Again, using bilinear interpolation runs into the same issue.
-#'
-#' Even though the grids are assumed to be regular, the function allows for missing data in the form of missing grid points in dt (so you don't have to 'squarify' it, adding NAs before upscaling).
-#' In fact, the function is faster when missing-data-grid-points are not contained in dt (since fewer grid points need to be matched).
+#' The grids are assumed to be *regular*, but are not required to be *complete* (see \code{\link{set_spatial_grid}}).
+#' The function is faster when missing-data grid points are not contained in `dt` (then fewer grid points need to be matched).
 #'
 #'
 #' @param dt data table containing the data you want to upscale.
 #' @param coarse_grid data table containing lons/lats of the grid you want to upscale to.
 #' @param uscols column name(s) of the data you want to upscale (can take multiple columns at once, but assumes that the different columns have missing values at the same position).
 #' @param bycols optional column names for grouping if you have repeated data on the same grid, e.g. use bycols = 'date' if your data table contains observations for many dates on the same grid (and the column specifying the date is in fact called 'date').
-#' @param save_weights optional file name for saving the weights for upscaling.
-#' @param tol tolerance parameter used for grid matching, in order to deal with rounding errors present in the coordinates. The gridpoint areas are calculated with this precision, so the output has errors of this order of magnitude.
+#' @param save_weights optional file name for saving the weights for upscaling. Used for the CHIRPS data.
+#' @param req_frac_of_coverage Numeric value between 0 and 1. All coarse grid cells with less coverage than this value get assigned a missing value. In particular, setting this to 0 (the default) means a value is assigned to each coarse grid cell
+#' that overlaps with at least one fine grid cell. Setting this to 1 means only coarse grid cells are kept for which we have full coverage.
 #'
 #' @return A data table with the upscaled values.
-#'
 #'
 #' @references Göber, M., Ervin Z., and Richardson, D.S. (2008): *"Could a perfect model ever satisfy a naïve forecaster? On grid box mean versus point verification."* Meteorological Applications: A journal of forecasting, practical applications, training techniques and modelling 15, no. 3 (2008): 359-365.
 #' @export
@@ -55,14 +47,52 @@ upscale_regular_lon_lat = function(dt,
                                    uscols,
                                    bycols = setdiff(dimvars(dt),c('lon','lat')),
                                    save_weights = NULL,
-                                   tol = 1e-5)
+                                   req_frac_of_coverage = 0)
 {
   # for devtools::check():
   lon = lat = fg_lon = fg_lat = fg_lon_min = fg_lon_max = NULL
   fg_lat_min = fg_lat_max = fg_index = NULL
   index = overlap_type = cg_lon_min = cg_lon_max = cg_lat_min = NULL
   cg_lat_max = mt = area = area_contr = NULL
+  cg_area = foc = NULL
 
+
+  set_spatial_grid(dt)
+  set_spatial_grid(coarse_grid)
+
+  # checks for regularity and correct column names:
+
+  if(!identical(attr(dt,'grid')$coor_cns,c('lon','lat'))) stop('The data you want to upscale does not seem to be on a lon/lat grid. Potentially you need to change column names to "lon", "lat".')
+  if(!attr(dt,'grid')$regular) stop('The data you provided does not seem to be on a regular grid, see ?set_spatial_grid for details.')
+
+
+  if(!attr(coarse_grid,'grid')$regular) stop('The upscale-grid you provided does not seem to be regular grid, see ?set_spatial_grid for details.')
+  if(!identical(attr(coarse_grid,'grid')$coor_cns,c('lon','lat'))) {
+
+    warning_str = paste0('The grid I am supposed to upscale to has column names ',paste(attr(coarse_grid,'grid')$coord_cns,collapse = ', '),' rather than "lon", "lat".
+  \nUpscaling is only allowed to lon/lat grids.')
+    if(!interactive()){
+      stop(warning_str)
+    } else {
+      menu_title = paste0(warning_str,' Should I change column names of the coarse grid to "lon","lat"?')
+      check = menu(choices = c('yes','no'),title = menu_title)
+      if(check == 1){
+        grid = attr(coarse_grid,'grid')$grid
+        setnames(coarse_grid,
+                 old = grid$coor_cns,
+                 new = c('lon','lat'))
+        #update grid attribute:
+        grid$coor_cns = c('lon','lat')
+        setattr(coarse_grid,'grid',grid)
+      }
+      if(check == 2)stop('aborted. Please run again with vaid coarse grid.')
+    }
+  }
+
+  if((attr(dt,'grid')$dx > attr(coarse_grid,'grid')$dx) |
+     (attr(dt,'grid')$dy > attr(coarse_grid,'grid')$dy)) stop('"Upscaling" from coarser to finer grids not allowed.')
+
+  ### let's get started: ###
 
   save_key_dt = key(dt)
 
@@ -73,21 +103,11 @@ upscale_regular_lon_lat = function(dt,
   {
     if(dt[,.N] != unique(dt[,.(lon,lat)])[,.N]) stop('The data table contains multiple values per coordinate. Did you forget to specify bycols?')
   } else {
-    if(dt[,.N] != unique(dt[,.SD,.SDcols = c('lon','lat',bycols)])[,.N]) stop('The data table contains multiple values per coordinate and level of bycols. Maybe you forgot to include a grouping variables in bycols?')
+    if(dt[,.N] != unique(dt[,.SD,.SDcols = c('lon','lat',bycols)])[,.N]) stop(paste('The data table contains multiple values per coordinate and level of bycols.',
+                                                                                    paste0('Your bycols are ',paste(bycols,collapse = ', '),'.'),
+                                                                                    'Maybe you forgot to include a grouping variables in there?',sep = '\n'))
   }
 
-  # we need to 'squarify' the data table to make sure the grid is regular
-  #
-  # It makes things way less effective to squarify, that's a lot of data, so let's not do it for now...
-  #
-  # squarify = function (dt)
-  # {
-  #   lons = dt[, unique(lon)]
-  #   lats = dt[, unique(lat)]
-  #   DT_c = data.table(lon = rep(lons, each = length(lats)), lat = rep(lats,times = length(lons)))
-  #   dt_squarify = merge(DT_c, dt, by = c("lon", "lat"), all = TRUE)
-  #   return(dt_squarify)
-  # }
 
   fine_grid = unique(dt[,.(lon,lat)])
   coarse_grid = unique(coarse_grid[,.(lon,lat)])
@@ -100,17 +120,9 @@ upscale_regular_lon_lat = function(dt,
   fg_lons = sort(unique(fine_grid[,lon]))
   fg_lats = sort(unique(fine_grid[,lat]))
 
-  # here, we assume regular grids!
-
   # get grid size of fine grid
   d_lons = fg_lons[2:length(fg_lons)] - fg_lons[1:(length(fg_lons)-1)]
   d_lats = fg_lats[2:length(fg_lats)] - fg_lats[1:(length(fg_lats)-1)]
-
-  # # check regularity (doesn't work, because we should not assume that every grid point contains a value. There is the option to 'squarify' by filling in missing values, but this is rather memory-expensive...)
-  # if(max(abs(d_lons - d_lons[1])) + max(abs(d_lats - d_lats[1])) > tol)
-  # {
-  #   stop('your fine grid seems to be irregular, which is not allowed. If you are sure it is regular and this is just rounding errors, set `tol` to something larger.')
-  # }
 
   d_lon = min(d_lons)
   d_lat = min(d_lats)
@@ -125,20 +137,6 @@ upscale_regular_lon_lat = function(dt,
 
   D_lon = min(cg_lons[2:length(cg_lons)] - cg_lons[1:(length(cg_lons) - 1)])
   D_lat = min(cg_lats[2:length(cg_lats)] - cg_lats[1:(length(cg_lats) - 1)])
-
-#   if(max(abs(D_lons - D_lons[1])) + max(abs(D_lats - D_lats[1])) > tol)
-#   {
-#     stop('your coarse grid seems to be irregular, which is not allowed. If you are sure it is in fact regular, this might be caused by rounding errors. In this case increase `tol` to something bigger.')
-#   }
-
-
-
-  # For the corner points of the coarse grids we expand each grid cell by `tol`.
-  # This ensures that the area covered by the coarse grid does not get any 'holes' because of rounding errors.
-  # Note however, that the area covered by the coarse grid might be smaller than the area covered by the fine grid,
-  # so it is not required for each fine-grid-point to be contained in a coarse grid point...
-
-  # upon rereading this code I'm wondering whether we actually need to do this?
 
   cg_lon_mins = cg_lons - D_lon/2
   cg_lon_maxs = cg_lons + D_lon/2
@@ -156,7 +154,7 @@ upscale_regular_lon_lat = function(dt,
     is_null = unlist(lapply(ret_list,length)) == 0
     ret_list[is_null] = 0
     ret_list= lapply(ret_list, `[[`, 1) # some fine-grid-corner-coordinates may be assigned to multiple coarse grid coordinates due to rounding errors, and the tol-expansion.
-                                        # In this case it does not matter which of the grid cell we assign it to, this hack assigns it to the first one.
+    # In this case it does not matter which of the grid cell we assign it to, this hack assigns it to the first one.
 
     return(unlist(ret_list))
   }
@@ -177,11 +175,11 @@ upscale_regular_lon_lat = function(dt,
 
   lon_min_index = find_index_lon(fg_lon_mins)
   lon_max_index = find_index_lon(fg_lon_maxs)
-
   lat_min_index = find_index_lat(fg_lat_mins)
   lat_max_index = find_index_lat(fg_lat_maxs)
 
-  # Now, a small grid cell overlaps with the i-th large grid cell, if (and only if) at least one of its corner points lies in that grid cell.
+  ####
+  #Now, a small grid cell overlaps with the i-th large grid cell, if (and only if) at least one of its corner points lies in that grid cell.
 
   fg_full = as.data.table(expand.grid(fg_lon = fg_lons,fg_lat = fg_lats))
   setkey(fg_full,fg_lon,fg_lat)
@@ -253,18 +251,19 @@ upscale_regular_lon_lat = function(dt,
 
   # convert lats to sin(lats):
   matched_grids[,c('fg_lat_min','fg_lat_max','cg_lat_min','cg_lat_max') := lapply(.SD,function(x) sin(pi*x/180)),.SDcols = c('fg_lat_min','fg_lat_max','cg_lat_min','cg_lat_max')]
-  # calculate fraction of overlap:
+  # calculate area of overlap:
   matched_grids[,area := (pmin(cg_lon_max,fg_lon_max) - pmax(cg_lon_min,fg_lon_min)) * (pmin(cg_lat_max,fg_lat_max) - pmax(cg_lat_min,fg_lat_min))]
-  # this should be non-negative, but just for robustness:
-  matched_grids = matched_grids[area > 0]
-
   # area contribution per coarse grid cell:
   matched_grids[,area_contr:= area/sum(area),by = index] # this is why we don't need to care about the absolute unit of area, we only need it for our weights for averaging.
 
-  matched_grids = matched_grids[,.(index,lon,lat,fg_index,fg_lon,fg_lat,area_contr)]
+  # for dealing with partially covered gridcells, calculate the fraction of each coarse grid cell that is covered:
+  matched_grids[,cg_area := (cg_lon_max - cg_lon_min) * (cg_lat_max - cg_lat_min),by = index]
+  matched_grids[,foc := sum(area)/cg_area,by = index]
+
+  matched_grids = matched_grids[,.(index,lon,lat,fg_index,fg_lon,fg_lat,area_contr,foc)]
 
   # now, matched grids contains the weights for the weighted averages, and we can merge with the original data table:
-  setnames(matched_grids,c('cg_index','cg_lon','cg_lat','fg_index','lon','lat','area_contr'))
+  setnames(matched_grids,c('cg_index','cg_lon','cg_lat','fg_index','lon','lat','area_contr','foc'))
 
   if(!is.null(save_weights)) fwrite(matched_grids, file = save_weights)
 
@@ -274,13 +273,16 @@ upscale_regular_lon_lat = function(dt,
   setkeyv(dt,save_key_dt)
 
   # take the weighted average for upscaling:
-  ret_dt= ret_dt[!is.na(get(uscols[1]))] # remove missing values before taking weighted means: The function stats::weighted.means has three if-queries, making it probably pretty slow. Using sum with na.rm=TRUE is the fast alternative,
-                                         # but if you do that without removing the missing values first, coarse grid cells that do not overlap with a single fine grid cells get the value 0 rather than NA.
+  ret_dt= ret_dt[!is.na(get(uscols[1]))] # remove missing values before taking weighted means: The function stats::weighted.means has three if-queries, making it pretty slow.
+  # Using sum with na.rm=TRUE is the fast alternative, but if you do that without removing the missing values first,
+  # coarse grid cells that do not overlap with a single fine grid cells get the value 0 rather than NA.
+
+  # subset to coarse grid cells with required fraction of coverage
+  req_frac_of_coverage = min(0.9999,req_frac_of_coverage) # dealing with precision errors
+  ret_dt = ret_dt[foc >= req_frac_of_coverage][,foc:=NULL][]
 
   ret_dt = ret_dt[,lapply(.SD,FUN = function(x) sum(area_contr*x,na.rm = T)),.SDcols = uscols,by = c(bycols,'cg_lon','cg_lat')]
-
 
   setnames(ret_dt,c('cg_lon','cg_lat'),c('lon','lat'))
   return(ret_dt)
 }
-

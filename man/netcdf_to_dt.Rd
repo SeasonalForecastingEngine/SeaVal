@@ -45,10 +45,11 @@ The function converts netcdfs into long data.tables.
 Be aware that the data table can be much larger in memory, especially if you have many dimension variables.
 }
 \examples{
-\dontrun{
-fn = '/directory/filename.nc'
-dt = netcdf_to_dt(nc)
-}
+# filename of example-netcdf file:
+fn = system.file("extdata", "example.nc", package="SeaVal")
+
+dt = netcdf_to_dt(fn)
+print(dt)
 
 
 }

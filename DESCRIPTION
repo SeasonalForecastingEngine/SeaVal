@@ -1,6 +1,6 @@
 Package: SeaVal
 Title: Validation of Seasonal Weather Forecasts
-Version: 1.0.0.9001
+Version: 1.1.0
 Authors@R: 
     c(person(given = "Claudio",
            family = "Heinrich-Mertsching",
@@ -42,13 +42,12 @@ Collate:
     'auxiliary_functions.R'
     'chirps.R'
     'data.R'
-    'data_wrangling.R'
     'diagrams.R'
     'ICPAC_temp.R'
     'ncdf_to_dt.R'
     'plotting.R'
     'quantiles.R'
     'scores.R'
-    'seasonal.R'
+    'spatial_grids.R'
     'upscaling.R'
     'utils.R'

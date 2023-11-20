@@ -37,14 +37,16 @@ none.
 }
 \description{
 This function writes a netcdf from a long data table, the usual data format in SeaVal.
+If not specified, it guesses (based on column names) which columns contain dimension variables and which contain variables.
 The function currently does not support writing netcdfs with multiple variables that have different sets of dimension variables!
 }
 \examples{
-\dontrun{
-dt_to_netcdf(ecmwf_monthly,nc_out = './directory/ecmwf_monthly.nc')
-}
+example_dt = data.table(lon = 1:3, month = 4:6, prec = 7:9)
+file_name = tempfile()
+dt_to_netcdf(dt = example_dt, nc_out = file_name,
+             vars = "prec", units = "mm",
+             dim_vars = c("lon","month"), dim_var_units = c("degree longitude","month"))
 
-}
-\author{
-Claudio
+
+
 }

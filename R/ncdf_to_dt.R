@@ -213,7 +213,6 @@ netcdf_to_dt = function(nc, vars = NULL,
 #'
 #'
 #' @export
-
 dt_to_netcdf = function(dt,nc_out,
                         vars = NULL,
                         units = NULL,
@@ -235,11 +234,13 @@ dt_to_netcdf = function(dt,nc_out,
     vars = setdiff(names(dt),dim_vars)
     if(check)
     {
-    test = readline(prompt = paste0("You didn't provide information which columns of dt are dim_vars and which are variables.
-My guess would be\nvariables: ",paste(vars,collapse = ', '),
-"\ndim_vars: ",paste(dim_vars,collapse = ', '),
-"\nIs that ok?  [y/n]"))
-    if(test != 'y') stop('please provide vars and dim_vars manually.')
+      message(paste("You didn't provide information which columns of dt are dim_vars and which are variables.",
+                    "My guess would be as follows:",
+                    paste0("variables: ",paste(vars,collapse = ', ')),
+                    paste0("dim_vars: ",paste(dim_vars,collapse = ', ')),
+                    "Is that ok?",sep = "\n"))
+      test = menu(c('yes','no'))
+      if(test != 1) stop('please provide vars and dim_vars manually. See ?dt_to_netcdf for details.')
     }
   }
 
@@ -290,7 +291,7 @@ My guess would be\nvariables: ",paste(vars,collapse = ', '),
     vals = dt[,get(v)]
 
     if(is.null(units))
-      {
+    {
       unit = readline(prompt = paste0('Enter the unit of the variable ',v,':\n'))
     } else {
       unit = units[ii]
@@ -305,7 +306,7 @@ My guess would be\nvariables: ",paste(vars,collapse = ', '),
   }
 
   # write the netcdf file:
-    nc = ncdf4::nc_create(filename = nc_out,vars = c(vars_ncdf))
+  nc = ncdf4::nc_create(filename = nc_out,vars = c(vars_ncdf))
 
   for(ii in seq_along(vars))
   {
@@ -319,5 +320,5 @@ My guess would be\nvariables: ",paste(vars,collapse = ', '),
   {
     ncdf4::ncatt_put(nc,varid = 0,attname = 'Description',attval = description)
   }
-    ncdf4::nc_close(nc)
+  ncdf4::nc_close(nc)
 }

@@ -20,10 +20,9 @@ a gg object
 Plot the ROC-curve for a vector of probabilities and corresponding observations.
 }
 \examples{
-\donttest{
 probs = seq(0,1,length.out = 5)
 obs = c(FALSE,FALSE,TRUE,FALSE,TRUE)
 pp = roc_curve_vec(probs,obs)
 if(interactive()) plot(pp)
-}
+
 }

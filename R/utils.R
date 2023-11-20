@@ -80,6 +80,8 @@ It is calculated separately for each ',paste(by,collapse = ', ')))
 
 add_country_names = function(dt,regions = EA_country_names())
 {
+  country = NULL
+
   if('country' %in% names(dt))
   {return(dt)}
 

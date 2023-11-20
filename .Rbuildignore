@@ -5,3 +5,5 @@
 ^cran-comments\.md$
 ^\.git$
 ^\.gitignore$
+^scripts
+^notes_on_CRAN_release\.md

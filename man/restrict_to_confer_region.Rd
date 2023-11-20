@@ -19,6 +19,6 @@ Wraps \code{\link{restrict_to_country}}, and restricts to the GHA-region usually
 }
 \examples{
 ex_dt = chirps_monthly[lat < 0 & month == 11 & year == 2020]
-dt = restrict_to_confer_region(ex_dt,'Kenya')
+dt = restrict_to_confer_region(ex_dt)
 
 }

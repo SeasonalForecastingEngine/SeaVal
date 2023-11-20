@@ -25,5 +25,6 @@ occur during the season. This function loads CHIRPS data, and derives this mask 
 the coordinates that shouldn't be masked. You can apply the mask to an existing data table using dt = combine(dt,mask).
 }
 \examples{
-\dontrun{get_mask('MAM')}
+if(interactive()) get_mask('MAM')
+
 }

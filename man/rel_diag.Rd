@@ -41,6 +41,7 @@ You can provide a 'by' argument to obtain separate reliability diagrams for diff
 a column named 'season', you can set by = 'season'. Then, the function will output a list of 16 diagrams, 4 for each season.
 }
 \examples{
+\donttest{
 dt = data.table(below = c(0.5,0.3,0),
                 normal = c(0.3,0.3,0.7),
                 above = c(0.2,0.4,0.3),
@@ -49,5 +50,6 @@ dt = data.table(below = c(0.5,0.3,0),
 print(dt)
 pp = rel_diag(dt)
 if(interactive()) plot(pp)
+}
 
 }
