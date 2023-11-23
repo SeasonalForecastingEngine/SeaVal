@@ -1,6 +1,6 @@
 # SeaVal
 
-This package suports validation of seasonal weather forecasts. 
+This package supports validation of seasonal weather forecasts. 
 The focus lies on tercile forecasts, i.e. predictions of three probabilities, 
 one for 'below normal' (e.g. temperature or precipitation), 'normal', and 
 'above normal', respectively. The package implements a large variety of evaluation metrics,
