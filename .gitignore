@@ -6,3 +6,4 @@ scripts/SeaValDocumentation/bookdown/render_tutorial.R
 scripts/SeaValDocumentation/bookdown/_book/
 scripts/SeaValDocumentation/bookdown/_bookdown_files/
 *.Rprofile
+revdep/
