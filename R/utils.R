@@ -396,26 +396,7 @@ restrict_to_country = function(dt,ct,rectangle = FALSE,tol = 1)
 }
 
 
-#' restricts data to CONFER region
-#'
-#' Wraps \code{\link{restrict_to_country}}, and restricts to the GHA-region usually considered in CONFER, see \code{\link{EA_country_names}}.
-#' @param dt the data table.
-#' @param ... passed on to \code{\link{restrict_to_country}}
-#'
-#'@return the data table, restricted to the selected country
-#'
-#'@examples
-#'ex_dt = chirps_monthly[lat < 0 & month == 11 & year == 2020]
-#'dt = restrict_to_confer_region(ex_dt)
-#'
-#' @export
-#' @importFrom data.table as.data.table
 
-restrict_to_confer_region = function(dt,...)
-{
-  dt = restrict_to_country(dt,ct = EA_country_names(),...)
-  return(dt)
-}
 
 #' restricts data to the Greater Horn of Africa
 #'
@@ -432,7 +413,19 @@ restrict_to_confer_region = function(dt,...)
 #' @export
 #' @importFrom data.table as.data.table
 
-restrict_to_GHA = restrict_to_confer_region
+restrict_to_GHA = function(dt,...)
+{
+  dt = restrict_to_country(dt,ct = EA_country_names(),...)
+  return(dt)
+}
+
+#'@rdname restrict_to_GHA
+restrict_to_confer_region = function(...)
+{
+  lifecycle::deprecate_warn('1.1.1','restrict_to_confer_region()','restrict_to_GHA')
+  restrict_to_GHA(...)
+}
+
 
 #' Get tercile probability forecast from ensemble forecasts
 #'

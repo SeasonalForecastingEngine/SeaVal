@@ -1,6 +1,6 @@
 Package: SeaVal
 Title: Validation of Seasonal Weather Forecasts
-Version: 1.1.0
+Version: 1.1.1
 Authors@R: 
     c(person(given = "Claudio",
            family = "Heinrich-Mertsching",
@@ -30,12 +30,13 @@ Depends:
     data.table, 
     ggplot2
 Imports: 
-  ggplotify,
-  maps,
-  ncdf4,
-  patchwork,
-  RColorBrewer,
-  scales
+    ggplotify,
+    lifecycle,
+    maps,
+    ncdf4,
+    patchwork,
+    RColorBrewer,
+    scales
 LazyData: true
 RoxygenNote: 7.2.3
 Collate: 
@@ -48,6 +49,8 @@ Collate:
     'plotting.R'
     'quantiles.R'
     'scores.R'
+    'SeaVal-package.R'
     'spatial_grids.R'
     'upscaling.R'
     'utils.R'
+Roxygen: list(markdown = TRUE)

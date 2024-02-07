@@ -80,8 +80,10 @@ ggplot_dt = function(dt,
   {
     data_col = ifelse(test = (length(level_cols) < ncol(dt)),
                       no = names(dt)[ncol(dt)], # last column if every column is level-column
-                      yes = setdiff(names(dt),level_cols)[1])
+                      yes = setdiff(names(dt),c(level_cols,'country'))[1])
   }
+
+  if(data_col %in% tc_cols()) message('Check out the function tercile_cat() for plotting tercile-categories.')
 
   # now remove lon lat from level_cols and check whether dt contains multiple levels:
   level_cols = setdiff(level_cols,space_dimvars(dt))
@@ -292,12 +294,12 @@ ggplot_dt = function(dt,
 #'
 #'@examples
 #'dt = chirps_monthly[lon %between% c(30,40) & lat < 0 & month == 11 & year == 2020]
-#'pp = ggplot_dt_gha_map(dt)
+#'pp = gha_plot(dt)
 #'if(interactive()) plot(pp)
 #'
 #'@export
 
-ggplot_dt_gha_map = function(...,expand.x = c(-0.5,0.5),expand.y = c(-0.5,2))
+gha_plot = function(...,expand.x = c(-0.5,0.5),expand.y = c(-0.5,2))
 {
   long = group = NULL
   fn =  system.file("extdata", "GHA_map.csv", package="SeaVal")
@@ -310,13 +312,21 @@ ggplot_dt_gha_map = function(...,expand.x = c(-0.5,0.5),expand.y = c(-0.5,2))
   return(pp)
 }
 
-#' Synonym for \code{\link{ggplot_dt_gha_map}}.
-#'
-#' @param ...,expand.x,expand.y passed to \code{\link{ggplot_dt}}
-#' @export
 
-ggplot_dt_shf = ggplot_dt_gha_map
+#'@rdname gha_plot
+ggplot_dt_shf = function(...)
+{
+  lifecycle::deprecate_warn("1.1.1", "ggplot_dt_shf()", "gha_plot()")
+  gha_plot(...)
+}
 
+
+#'@rdname gha_plot
+ggplot_dt_gha_map = function(...)
+{
+  lifecycle::deprecate_warn("1.1.1", "ggplot_dt_gha_map()", "gha_plot()")
+  gha_plot(...)
+}
 
 
 

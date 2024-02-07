@@ -12,6 +12,6 @@ crps_aux(y, dat)
 \item{dat}{vector of length m containing the m ensemble forecasts}
 }
 \description{
-Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
-but is just repeated (which is why only y[1]) is used.
+Mostly copy-paste from \code{scoringRules:::crps_edf}. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
+but is just repeated (which is why only \code{y[1]}) is used.
 }

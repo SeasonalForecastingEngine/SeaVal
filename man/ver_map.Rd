@@ -14,14 +14,14 @@ ver_map(
 }
 \arguments{
 \item{dt}{input data table. This has to contain the observations for the year to plot, as well as for many other years (which are used to calculate the climatological reference).
-The data table should have coumns named `lon`, `lat`, `year`, and an observation column, the name of which is passed as value of `o` to the function, see below.
-For each level of `lon`, `lat`, and `year`, the table should only contain one row (this is checked by the function).}
+The data table should have coumns named \code{lon}, \code{lat}, \code{year}, and an observation column, the name of which is passed as value of \code{o} to the function, see below.
+For each level of \code{lon}, \code{lat}, and \code{year}, the table should only contain one row (this is checked by the function).}
 
 \item{o}{name of the column containing the observation.}
 
 \item{yy}{The year for which to show the verification map. Defaults to the last year available in dt}
 
-\item{climatology_period}{which years should the climatology be calculated on? Defaults to all years (except `yy`) in `dt`}
+\item{climatology_period}{which years should the climatology be calculated on? Defaults to all years (except \code{yy}) in \code{dt}}
 
 \item{out_file}{optional path and file name (including valid filetype, like .pdf or .png) for saving the file. If not provided, the function just shows the plot in the running R session.}
 }

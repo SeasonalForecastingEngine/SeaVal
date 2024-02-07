@@ -11,7 +11,7 @@ grid_info(dt)
 }
 \value{
 This function does not return a value; instead, it prints a message to the console
-        with the grid information.
+with the grid information.
 }
 \description{
 This function prints out spatial grid information from a data table. If the grid-attribute does not exist

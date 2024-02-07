@@ -43,11 +43,11 @@ are_all_elements_within_eps = function(x, y, eps) {
 #'
 #' The grid attribute is a named list with (some of) the following pages:
 #' \itemize{
-#' \item[coor_cns]: Character vector of length two specifying the names of the data-table-columns containing the spatial grids (in order x,y).
-#' \item[x,y]: Numeric vectors of all unique x- and y-coordinates in increasing order (NAs not included).
-#' \item[regular]: Logical. Is the grid *regular*? See details below.
-#' \item[dx,dy]: Step sizes of the regular grid (only contained if `regular = TRUE`). By convention we set `dx` to 9999 if only one x-coordinate is present, likewise for `dy`.
-#' \item[complete]: Logical. Is the regular grid *complete*? See details below.
+#' \item{`coor_cns`}: Character vector of length two specifying the names of the data-table-columns containing the spatial grids (in order x,y).
+#' \item{`x,y`}: Numeric vectors of all unique x- and y-coordinates in increasing order (NAs not included).
+#' \item{`regular`}: Logical. Is the grid *regular*? See details below.
+#' \item{`dx,dy`}: Step sizes of the regular grid (only contained if `regular = TRUE`). By convention we set `dx` to 9999 if only one x-coordinate is present, likewise for `dy`.
+#' \item{`complete`}: Logical. Is the regular grid *complete*? See details below.
 #' }
 #'
 #'

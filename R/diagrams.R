@@ -856,6 +856,8 @@ ver_map_chirps = function(mm = month(Sys.Date()-60),
   quantile_dir = file.path(quantile_dir,'quantiles')
 
   fn = list.files(quantile_dir,pattern = 'ver_map_quantiles')
+  # for now exclude the seasonal file:
+  fn = grep(fn, pattern='seasonal', invert=TRUE, value=TRUE)
 
   if(length(fn)>1) warning(paste0('There are multiple quantile files for verification map in the target directory, I am picking\n',fn[1],'\nThe target directory is ',quantile_dir))
   fn = fn[1]

@@ -20,7 +20,7 @@ get_mask(
 \item{version, resolution, us}{Passed to \code{\link{load_chirps}}. Which CHIRPS version do you want to use and on what resolution?}
 }
 \description{
-A gridpoint is masked for a given season (either 'MAM', 'JJAS' or 'OND'), if, on average, less than 10% of the annual total of rainfall
+A gridpoint is masked for a given season (either 'MAM', 'JJAS' or 'OND'), if, on average, less than 10\% of the annual total of rainfall
 occur during the season. This function loads CHIRPS data, and derives this mask as a data table of lon, lat coordinates, only containing
 the coordinates that shouldn't be masked. You can apply the mask to an existing data table using dt = combine(dt,mask).
 }

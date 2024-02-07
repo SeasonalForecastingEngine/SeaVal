@@ -19,7 +19,7 @@ RPSS(
 \item{f}{column names of the prediction.}
 
 \item{o}{column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.}
+contain -1 if it falls into the first category (corresponding to \code{fcs[1]}), 0 for the second and 1 for the third category.}
 
 \item{by}{column names of grouping variables, all of which need to be columns in dt.
 Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.}
@@ -31,12 +31,12 @@ Default is to group by all instances of month, season, lon, lat, system and lead
 \value{
 A data table with the scores
 
- @examples
+@examples
 dt = data.table(below = c(0.5,0.3,0),
-                normal = c(0.3,0.3,0.7),
-                above = c(0.2,0.4,0.3),
-                tc_cat = c(-1,0,0),
-                year = 1:3)
+normal = c(0.3,0.3,0.7),
+above = c(0.2,0.4,0.3),
+tc_cat = c(-1,0,0),
+year = 1:3)
 print(dt)
 RPSS(dt)
 }

@@ -56,9 +56,12 @@ upscale_regular_lon_lat = function(dt,
   cg_lat_max = mt = area = area_contr = NULL
   cg_area = foc = NULL
 
-
   set_spatial_grid(dt)
   set_spatial_grid(coarse_grid)
+
+  # kick out all rows that have a missing value in one of the uscols
+  na_inds = is.na(rowSums(dt[,.SD,.SDcols = uscols]))
+  dt = dt[(!na_inds)]
 
   # checks for regularity and correct column names:
 

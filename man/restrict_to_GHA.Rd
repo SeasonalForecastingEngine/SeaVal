@@ -2,9 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{restrict_to_GHA}
 \alias{restrict_to_GHA}
+\alias{restrict_to_confer_region}
 \title{restricts data to the Greater Horn of Africa}
 \usage{
 restrict_to_GHA(dt, ...)
+
+restrict_to_confer_region(...)
 }
 \arguments{
 \item{dt}{the data table.}

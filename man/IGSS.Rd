@@ -18,8 +18,8 @@ IGSS(
 
 \item{f}{column names of the prediction.}
 
-\item{o}{column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.}
+\item{o}{column name of the observations (either in \code{obs_dt}, or in \code{dt} if \code{obs_dt = NULL}). The observation column needs to
+contain -1 if it falls into the first category (corresponding to \code{fcs[1]}), 0 for the second and 1 for the third category.}
 
 \item{by}{column names of grouping variables, all of which need to be columns in dt.
 Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.}

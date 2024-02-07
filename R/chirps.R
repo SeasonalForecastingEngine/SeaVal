@@ -379,8 +379,11 @@ download_chirps_monthly_low = function(update,
           next
         }
         setnames(dt_temp,c('X','Y'),c('lon','lat'))
-        dt_temp = upscale_regular_lon_lat(dt_temp,upscale_grid,'precipitation',
-                                          bycols = 'T',save_weights = file.path(save_dir,paste0('temp.csv')))
+        dt_temp = upscale_regular_lon_lat(dt_temp,
+                                          upscale_grid,'precipitation',
+                                          bycols = 'T',
+                                          save_weights = file.path(save_dir,paste0('temp.csv')),
+                                          req_frac_of_coverage = 0.5)
 
         nc_out = file.path(save_dir,paste0(yy,'_',mm,'.nc'))
 
@@ -389,7 +392,7 @@ download_chirps_monthly_low = function(update,
                      dim_vars = c('lon','lat','T'),
                      dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
                      nc_out = nc_out,
-                     check = TRUE)
+                     check = FALSE)
 
         invisible(file.remove(fn))
       }
@@ -431,7 +434,7 @@ download_chirps_monthly_low = function(update,
                      dim_vars = c('lon','lat','T'),
                      dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
                      nc_out = nc_out,
-                     check = TRUE)
+                     check = FALSE)
         # get rid of the big one:
         invisible(file.remove(fn))
       }
@@ -546,8 +549,12 @@ upscale_chirps = function(update = TRUE,
       # (This is usually happening for the first file that is upscaled. But ICPACs CHIRPS blended sometimes has erroneous files that can't be upscaled and this can also happen to be the first file.)
       if(!file.exists(file.path(us_dir,'temp.csv')))
       {
-        dt_temp = upscale_regular_lon_lat(dt_temp,upscale_grid,'precipitation',
-                                                   bycols = 'T',save_weights = file.path(us_dir,'temp.csv'))
+        dt_temp = upscale_regular_lon_lat(dt_temp,
+                                          upscale_grid,
+                                          'precipitation',
+                                          bycols = 'T',
+                                          save_weights = file.path(us_dir,'temp.csv'),
+                                          req_frac_of_coverage = 0.5)
         nc_out = file.path(us_dir,files_for_us[i])
 
         dt_to_netcdf(dt_temp,'precipitation',
@@ -555,7 +562,7 @@ upscale_chirps = function(update = TRUE,
                      dim_vars = c('lon','lat','T'),
                      dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
                      nc_out = nc_out,
-                     check = TRUE)
+                     check = FALSE)
       } else { # now it follows the upscale part for situations where the weights have been saved already.
         upscale_weights = fread(file.path(us_dir,'temp.csv'))
 
@@ -581,10 +588,10 @@ upscale_chirps = function(update = TRUE,
                      dim_vars = c('lon','lat','T'),
                      dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
                      nc_out = nc_out,
-                     check = TRUE)
+                     check = FALSE)
         }
     }
-    file.remove(file.path(us_dir,'temp.csv'),showWarnings = FALSE)
+    suppressWarnings(invisible(file.remove(file.path(us_dir,'temp.csv'))))
   }
 
   if(length(prelim_files_for_us) > 0)
@@ -612,8 +619,11 @@ upscale_chirps = function(update = TRUE,
       # (This is usually happening for the first file that is upscaled. But ICPACs CHIRPS blended sometimes has erroneous files that can't be upscaled and this can also happen to be the first file.)
       if(!file.exists(file.path(prelim_us_dir,'temp.csv')))
       {
-        dt_temp = upscale_regular_lon_lat(dt_temp,upscale_grid,'precip',
-                                          bycols = 'T',save_weights = file.path(prelim_us_dir,'temp.csv'))
+        dt_temp = upscale_regular_lon_lat(dt_temp,
+                                          upscale_grid,'precip',
+                                          bycols = 'T',
+                                          save_weights = file.path(prelim_us_dir,'temp.csv'),
+                                          req_frac_of_coverage = 0.5)
         nc_out = file.path(prelim_us_dir,prelim_files_for_us[i])
 
         dt_to_netcdf(dt_temp,'precip',
@@ -621,7 +631,7 @@ upscale_chirps = function(update = TRUE,
                      dim_vars = c('lon','lat','T'),
                      dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
                      nc_out = nc_out,
-                     check = TRUE)
+                     check = FALSE)
       } else { # now it follows the upscale part for situations where the weights have been saved already.
         upscale_weights = fread(file.path(prelim_us_dir,'temp.csv'))
 
@@ -647,7 +657,7 @@ upscale_chirps = function(update = TRUE,
                      dim_vars = c('lon','lat','T'),
                      dim_var_units = c('degree longitude','degree_latitude','months since 1960-01-01'),
                      nc_out = nc_out,
-                     check = TRUE)
+                     check = FALSE)
       }
     }
   }
@@ -900,7 +910,11 @@ The preliminary data has been removed again."),call. = FALSE)
       chirps_iri_grid = chirps_iri_grid[,.(X,Y)]
       setnames(chirps_iri_grid,c('lon','lat'))
 
-      dt_new = upscale_regular_lon_lat(dt,chirps_iri_grid,uscols = 'precip',bycols = 'T')
+      dt_new = upscale_regular_lon_lat(dt,
+                                       chirps_iri_grid,
+                                       uscols = 'precip',
+                                       bycols = 'T',
+                                       req_frac_of_coverage = 0.5)
 
       setnames(dt_new,c('lon','lat'),c('X','Y'))
       dt_to_netcdf(dt_new,vars = 'precip',units = 'mm/month',
@@ -908,7 +922,8 @@ The preliminary data has been removed again."),call. = FALSE)
                    dim_var_units = c('degree longitude',
                                      'degree latitude',
                                      'months since 1960-01-01'),
-                   nc_out = file.path(save_dir,paste0(yy,'_',mm,'.nc')))
+                   nc_out = file.path(save_dir,paste0(yy,'_',mm,'.nc')),
+                   check = FALSE)
 
       file.remove(file.path(save_dir,'temp.nc'))
 

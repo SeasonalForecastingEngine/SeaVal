@@ -34,7 +34,7 @@ A list of gg objects which can be plotted by ggpubr::ggarrange (for example)
 }
 \description{
 Creates reliability diagrams from a data table containing tercile forecasts
- It wraps \code{rel_diag_vec}, see \code{?rel_diag_vec} for more details.
+It wraps \code{rel_diag_vec}, see \code{?rel_diag_vec} for more details.
 about the output diagrams. The output format is very much inspired by Figure 5 of Mason&2018. By default, 4 diagrams are drawn,
 one for each the prediction of above-, normal- and below-values, plus one for  all forecasts together.
 You can provide a 'by' argument to obtain separate reliability diagrams for different values of the by-columns. E.g., when you data table contains

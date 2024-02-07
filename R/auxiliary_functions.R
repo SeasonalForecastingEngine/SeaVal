@@ -247,7 +247,7 @@ Use / on Linux (e.g. /nr/project/stat/CONFER/Data/) and \\ on Windows (e.g. C:\\
 EA_country_names = function()
 { return(
   c('Burundi','Djibouti', 'Eritrea','Ethiopia',
-    'Kenya','Rwanda','Somalia','Somaliland',
+    'Kenya','Rwanda','Somalia','Somalia:Somaliland',
     'South Sudan','Sudan','Tanzania','Uganda'))
 }
 

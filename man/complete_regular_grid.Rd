@@ -13,8 +13,8 @@ complete_regular_grid(dt)
 A data table with the completed spatial grid. Has the grid-attribute.
 }
 \description{
-First checks whether the spatial coordinates in a data table are part of a *regular grid*.
-If they are, the function returns the smallest *regular complete grid* including all coordinates.
+First checks whether the spatial coordinates in a data table are part of a \emph{regular grid}.
+If they are, the function returns the smallest \emph{regular complete grid} including all coordinates.
 See \code{\link{set_spatial_grid}} for more information.
 }
 \examples{

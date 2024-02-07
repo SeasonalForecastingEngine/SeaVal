@@ -31,11 +31,13 @@ Nothing if save_file is provided. Otherwise the list described above
 }
 \description{
 The quantiles are saved in/returned as a list with the following elements:
-* dt - A data table with quantiles for each level of by (not the same as the input-dt).
-* quantiles - the vector of quantiles that were used.
-* group - a data table containing the levels the quantiles are grouped over, e.g. all years the quantiles are calculated over.
-* data_col_name - the name of data_col, see below, so that you know what the quantiles actually were computed from.
-* description - the description string, if provided.
+\itemize{
+\item dt - A data table with quantiles for each level of by (not the same as the input-dt).
+\item quantiles - the vector of quantiles that were used.
+\item group - a data table containing the levels the quantiles are grouped over, e.g. all years the quantiles are calculated over.
+\item data_col_name - the name of data_col, see below, so that you know what the quantiles actually were computed from.
+\item description - the description string, if provided.
+}
 }
 \examples{
 \donttest{get_quantiles(chirps_monthly)}

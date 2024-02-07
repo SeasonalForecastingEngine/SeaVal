@@ -69,6 +69,11 @@ netcdf_to_dt = function(nc, vars = NULL,
       dim_name = nc$dim[[ii]]$name
       vals = nc$dim[[ii]]$vals
       read_inds = which(vals %between% subset_list[[dim_name]])
+      if(length(read_inds) == 0) {
+        warning(paste0("Dimvar ",dim_name," has no values within the subset range [",paste(subset_list[[dim_name]],collapse = ", "),"]"))
+        return(data.table())
+      }
+
       subset_list[[dim_name]] = list(start = min(read_inds),count = max(read_inds) - min(read_inds) + 1)
     }
   }

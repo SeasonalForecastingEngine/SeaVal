@@ -78,7 +78,7 @@ CPA = function(dt, f, o = 'obs',
 #' @description Taking CRPSs of ensemble forecasts stored in long data tables:
 #'
 #' @param dt Data table containing predictions and observations.
-#' @param f column name of the forecasts. May not be called 'f'
+#' @param f column name of the forecasts. May not be called `'f'`
 #' @param o column name of the observations.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
@@ -118,8 +118,8 @@ CRPS = function(dt, f, o = "obs",
 
 #' Auxiliary function for calculating crps.
 #'
-#' @description Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
-#' but is just repeated (which is why only y[1]) is used.
+#' @description Mostly copy-paste from `scoringRules:::crps_edf`. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
+#' but is just repeated (which is why only `y[1]`) is used.
 #' @param y vector of length m with m identical entries, the observation
 #' @param dat vector of length m containing the m ensemble forecasts
 
@@ -135,8 +135,8 @@ crps_aux = function(y,dat)
 
 #' Auxiliary function for calculating crps with ensemble size correction by Ferro et al. 2008.
 #'
-#' @description Mostly copy-paste from scoringRules::crps_edf. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
-#' but is just repeated (which is why only y[1]) is used.
+#' @description Mostly copy-paste from `scoringRules::crps_edf`. Adjusted to the data table format, where the observation is a vector of the same length as the ensemble forecast,
+#' but is just repeated (which is why only `y[1]`) is used.
 #' @param y vector of length m with m identical entries, the observation
 #' @param dat vector of length m containing the m ensemble forecasts
 
@@ -414,8 +414,8 @@ PCC = function(dt, f,
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
-#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param o column name of the observations (either in `obs_dt`, or in `dt` if `obs_dt = NULL`). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to `fcs[1]`), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
@@ -471,8 +471,8 @@ HS = function(dt,f = c('below','normal','above'),
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
-#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param o column name of the observations (either in `obs_dt`, or in dt if `obs_dt = NULL`). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to `fcs[1]`), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
@@ -521,8 +521,8 @@ HSS = function(dt,f = c('below','normal','above'),
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
-#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param o column name of the observations (either in `obs_dt`, or in dt if `obs_dt = NULL`). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to `fcs[1]`), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
@@ -578,8 +578,8 @@ indicator_times_value_aux = function(indicator,value)
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
-#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param o column name of the observations (either in `obs_dt`, or in dt if `obs_dt = NULL`). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to `fcs[1]`), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
@@ -627,8 +627,8 @@ IGS = function(dt,f = c('below','normal','above'),
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
-#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param o column name of the observations (either in `obs_dt`, or in `dt` if `obs_dt = NULL`). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to `fcs[1]`), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
@@ -675,8 +675,8 @@ IGSS = function(dt,f = c('below','normal','above'),
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
-#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param o column name of the observations (either in `obs_dt`, or in dt if `obs_dt = NULL`). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to `fcs[1]`), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
@@ -720,8 +720,8 @@ MB = function(dt,f = c('below','normal','above'),
 #'
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
-#' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' @param o column name of the observations (either in `obs_dt`, or in dt if `obs_dt = NULL`). The observation column needs to
+#' contain -1 if it falls into the first category (corresponding to `fcs[1]`), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
@@ -800,7 +800,7 @@ roc_score_vec = function(probs,obs)
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
 #' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' contain -1 if it falls into the first category (corresponding to `fcs[1]`), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
@@ -913,7 +913,7 @@ disc_score_dt = function(year,obs,pB,pN,pA)
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
 #' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' contain -1 if it falls into the first category (corresponding to `fcs[1]`), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
@@ -957,7 +957,7 @@ DISS = function(dt,f = c('below','normal','above'),
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
 #' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' contain -1 if it falls into the first category (corresponding to `fcs[1]`), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
@@ -1001,7 +1001,7 @@ RPS = function(dt,f = c('below','normal','above'),
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
 #' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' contain -1 if it falls into the first category (corresponding to `fcs[1]`), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
@@ -1060,7 +1060,7 @@ RPSS = function(dt,f = c('below','normal','above'),
 #' @param bins probability bins, defaults to c("<30", "30-35",">35")
 #' @param f column names of the prediction.
 #' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' contain -1 if it falls into the first category (corresponding to `fcs[1]`), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
@@ -1159,7 +1159,7 @@ RES = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
 #' @param bins probability bins, defaults to ("<30", "30-35",">35") which is given as c(0.30, 0.35001).
 #' @param f column names of the prediction.
 #' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' contain -1 if it falls into the first category (corresponding to `fcs[1]`), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.
@@ -1261,7 +1261,7 @@ REL = function(dt,bins=c(0.30,0.35001),f = c('below','normal','above'),
 #' @param dt Data table containing the predictions.
 #' @param f column names of the prediction.
 #' @param o column name of the observations (either in obs_dt, or in dt if obs_dt = NULL). The observation column needs to
-#' contain -1 if it falls into the first category (corresponding to fcs[1]), 0 for the second and 1 for the third category.
+#' contain -1 if it falls into the first category (corresponding to `fcs[1]`), 0 for the second and 1 for the third category.
 #' @param by column names of grouping variables, all of which need to be columns in dt.
 #' Default is to group by all instances of month, season, lon, lat, system and lead_time that are columns in dt.
 #' @param pool column name(s) for the variable(s) along which is averaged, typically just 'year'.

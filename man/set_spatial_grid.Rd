@@ -16,20 +16,20 @@ set_spatial_grid(
 \item{dt}{A data table object.}
 
 \item{coor_cns}{Optional character vector of length two indicating the names of the spatial coordinates
-within the data table in order `x`,`y`. Default (`NULL`) makes the function guess based on column names.}
+within the data table in order \code{x},\code{y}. Default (\code{NULL}) makes the function guess based on column names.}
 
 \item{check_regular}{A logical indicating whether to check for regularity of the grid. This should essentially always be done but can be suppressed for speed.
-Defaults to `TRUE`.}
+Defaults to \code{TRUE}.}
 
 \item{regular_tolerance}{Value >= 0 specifying the amount of rounding error we allow for still recognizing a grid as regular.
-Given in percent of the minimum of `dx` and `dy`. Default is 1. Based on this value coordinates are rounded to the smallest after-comma-digit making them regular,
-as long as this rounding introduces less error than `min(dx,dy)*regular_tolerance/100`.
-Set this to `NULL` if you are absolutely certain that you don't want to round/change the grid. Doing this or decreasing this below 1 is not recommended, see details below.}
+Given in percent of the minimum of \code{dx} and \code{dy}. Default is 1. Based on this value coordinates are rounded to the smallest after-comma-digit making them regular,
+as long as this rounding introduces less error than \code{min(dx,dy)*regular_tolerance/100}.
+Set this to \code{NULL} if you are absolutely certain that you don't want to round/change the grid. Doing this or decreasing this below 1 is not recommended, see details below.}
 
-\item{verbose}{Logical. If `TRUE`, the grid information is printed out (by a call to \code{\link{grid_info}}).}
+\item{verbose}{Logical. If \code{TRUE}, the grid information is printed out (by a call to \code{\link{grid_info}}).}
 }
 \value{
-Nothing, the attributes of dt are set in the parent environment. Moreover, the grid coordinates may be rounded If `regular`
+Nothing, the attributes of dt are set in the parent environment. Moreover, the grid coordinates may be rounded If \code{regular}
 }
 \description{
 This function creates the spatial grid attribute for a data table.
@@ -41,45 +41,45 @@ While this sounds dangerous, it is almost always desirable to treat coordinates 
 \details{
 The grid attribute is a named list with (some of) the following pages:
 \itemize{
-\item[coor_cns]: Character vector of length two specifying the names of the data-table-columns containing the spatial grids (in order x,y).
-\item[x,y]: Numeric vectors of all unique x- and y-coordinates in increasing order (NAs not included).
-\item[regular]: Logical. Is the grid *regular*? See details below.
-\item[dx,dy]: Step sizes of the regular grid (only contained if `regular = TRUE`). By convention we set `dx` to 9999 if only one x-coordinate is present, likewise for `dy`.
-\item[complete]: Logical. Is the regular grid *complete*? See details below.
+\item{\code{coor_cns}}: Character vector of length two specifying the names of the data-table-columns containing the spatial grids (in order x,y).
+\item{\verb{x,y}}: Numeric vectors of all unique x- and y-coordinates in increasing order (NAs not included).
+\item{\code{regular}}: Logical. Is the grid \emph{regular}? See details below.
+\item{\verb{dx,dy}}: Step sizes of the regular grid (only contained if \code{regular = TRUE}). By convention we set \code{dx} to 9999 if only one x-coordinate is present, likewise for \code{dy}.
+\item{\code{complete}}: Logical. Is the regular grid \emph{complete}? See details below.
 }
 
-We call a grid *regular* if there is a coordinate `(x0,y0)` and positive values `dx`, `dy`,
-such that each coordinate of the grid can be written as `(x0 + n*dx,y0 + m*dy)` for integers `n`,`m`.
+We call a grid \emph{regular} if there is a coordinate \verb{(x0,y0)} and positive values \code{dx}, \code{dy},
+such that each coordinate of the grid can be written as \verb{(x0 + n*dx,y0 + m*dy)} for integers \code{n},\code{m}.
 Importantly, a regular grid does not need to be "a complete rectangle", we allow for missing coordinates, see details below.
-We call it a *regular complete grid* if the grid contains these numbers for all integers `n`, `m` between some limits `n_min` and `n_max`,
-respectively `m_min`, `m_max`.
+We call it a \emph{regular complete grid} if the grid contains these numbers for all integers \code{n}, \code{m} between some limits \code{n_min} and \code{n_max},
+respectively \code{m_min}, \code{m_max}.
 
 Checking regularity properly is a difficult problem, because we allow for missing coordinates
 in the grid and allow for rounding errors.
-For the treatment of rounding errors it is not recommended to set `regular_tolerance` to `NULL` or a very small value
+For the treatment of rounding errors it is not recommended to set \code{regular_tolerance} to \code{NULL} or a very small value
 (e.g. 0.1 or smaller). In this case, grids that are regular in praxis are frequently not recognized as regular:
 Take for example the three x-coordinates 1, 1.5001, 2.4999. They are supposed to be rounded to 1 digit after
-the comma and then the grid is regular with `dx = 0.5`. However, if `regular_tolerance` is NULL, the grid will be marked as irregular.
-Similarly, if `regular_tolerance` is too small, the function is not allowed to make rounding errors of 0.0001
+the comma and then the grid is regular with \code{dx = 0.5}. However, if \code{regular_tolerance} is NULL, the grid will be marked as irregular.
+Similarly, if \code{regular_tolerance} is too small, the function is not allowed to make rounding errors of 0.0001
 and the grid will also not be recognized as regular.
 
 When it comes to the issue of missing values in the grid, we are (deliberately) a bit sloppy and only check whether
-the coordinates are part of a grid with `dx` being the minimum `x`-difference between two coordinates,
-and similar `dy`. This may not detect regularity, when we have data that is sparse on a regular grid.
-An example would be the three lon/lat coordinates `c(0,0)`, `c(2,0)`, `c(5,0)`. They clearly lie on the regular integer-lon/lat-
-grid. However, the grid would show as not regular, because `dx` is not checked for smaller values than 2.
+the coordinates are part of a grid with \code{dx} being the minimum \code{x}-difference between two coordinates,
+and similar \code{dy}. This may not detect regularity, when we have data that is sparse on a regular grid.
+An example would be the three lon/lat coordinates \code{c(0,0)}, \code{c(2,0)}, \code{c(5,0)}. They clearly lie on the regular integer-lon/lat-
+grid. However, the grid would show as not regular, because \code{dx} is not checked for smaller values than 2.
 This choice is on purpose, since for most applications grids with many (or mostly) holes should be treated as irregular (e.g. plotting, upscaling, etc.).
 The most important case of regular but not complete grids is gridded data that is restricted to a certain region, e.g. a country
 or restricted to land. This is what we think of when we think of a regular incomplete grid, and for such data the check works perfectly.
 
 Note that at the very bottom it is the definition of regularity itself that is a bit tricky:
-If we allow `dx`, `dy` to go all the way down to the machine-delta,
+If we allow \code{dx}, \code{dy} to go all the way down to the machine-delta,
 then pretty much any set of coordinates represented in a computer is part of a regular grid.
-This hints at testing and detecting regularity actually depending on how small you're willing to make your `dx`,`dy`.
-An example in 1 dimension: consider the three 1-dimensional coordinates `0`, `1`, and `m/n`, with `m` and `n` integers
-without common divisors and `m>n`. It is not difficult to see that these coordinates are part of a regular grid and that the
-largest `dx` for detecting this is 1/n. This shows that you can have very small coordinate sets that are in theory regular, but their regularity
-can be arbitrarily hard to detect. An example of a grid that is truely not regular are the three `x`-coordinates 0,1,a with a irrational.
+This hints at testing and detecting regularity actually depending on how small you're willing to make your \code{dx},\code{dy}.
+An example in 1 dimension: consider the three 1-dimensional coordinates \code{0}, \code{1}, and \code{m/n}, with \code{m} and \code{n} integers
+without common divisors and \code{m>n}. It is not difficult to see that these coordinates are part of a regular grid and that the
+largest \code{dx} for detecting this is 1/n. This shows that you can have very small coordinate sets that are in theory regular, but their regularity
+can be arbitrarily hard to detect. An example of a grid that is truely not regular are the three \code{x}-coordinates 0,1,a with a irrational.
 }
 \examples{
 dt = data.table(lon = 1:4, lat = rep(1:2,each = 2), some_data = runif(4))

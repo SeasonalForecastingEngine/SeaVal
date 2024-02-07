@@ -18,7 +18,7 @@ CRPS(
 \arguments{
 \item{dt}{Data table containing predictions and observations.}
 
-\item{f}{column name of the forecasts. May not be called 'f'}
+\item{f}{column name of the forecasts. May not be called \code{'f'}}
 
 \item{o}{column name of the observations.}
 

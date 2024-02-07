@@ -56,9 +56,9 @@ even though many fine grid cells may overlap the coarse grid cell).
 Conservative interpolation calculates the coarse grid cell value by averaging all fine grid cells overlapping with it, weighted by
 the fraction of overlap. This is the appropriate way of upscaling when predictions and observations constitute grid point averages, which is usually the case (Göber et al. 2008).
 
-The grids are assumed to be *regular*, but are not required to be *complete* (see \code{\link{set_spatial_grid}}).
-The function is faster when missing-data grid points are not contained in `dt` (then fewer grid points need to be matched).
+The grids are assumed to be \emph{regular}, but are not required to be \emph{complete} (see \code{\link{set_spatial_grid}}).
+The function is faster when missing-data grid points are not contained in \code{dt} (then fewer grid points need to be matched).
 }
 \references{
-Göber, M., Ervin Z., and Richardson, D.S. (2008): *"Could a perfect model ever satisfy a naïve forecaster? On grid box mean versus point verification."* Meteorological Applications: A journal of forecasting, practical applications, training techniques and modelling 15, no. 3 (2008): 359-365.
+Göber, M., Ervin Z., and Richardson, D.S. (2008): \emph{"Could a perfect model ever satisfy a naïve forecaster? On grid box mean versus point verification."} Meteorological Applications: A journal of forecasting, practical applications, training techniques and modelling 15, no. 3 (2008): 359-365.
 }
