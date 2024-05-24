@@ -1,3 +1,7 @@
+# SeaVal (development version)
+
+* Plotting functions `tfc_plot()` and `tfc_gha_plot()` for plotting tercile forecasts.
+
 # SeaVal 1.1.1
 
 * Fixed an issue where `add_country()`, `restrict_to_country()` and `restrict_to_GHA()` did not recognize Somaliland as part of Somalia.

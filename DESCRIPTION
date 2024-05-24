@@ -1,6 +1,6 @@
 Package: SeaVal
 Title: Validation of Seasonal Weather Forecasts
-Version: 1.1.1
+Version: 1.1.1.9000
 Authors@R: 
     c(person(given = "Claudio",
            family = "Heinrich-Mertsching",
@@ -30,6 +30,7 @@ Depends:
     data.table, 
     ggplot2
 Imports: 
+    ggnewscale,
     ggplotify,
     lifecycle,
     maps,
