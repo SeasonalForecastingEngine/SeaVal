@@ -37,7 +37,8 @@ Imports:
     ncdf4,
     patchwork,
     RColorBrewer,
-    scales
+    scales,
+    stringr
 LazyData: true
 RoxygenNote: 7.2.3
 Collate: 
@@ -50,6 +51,7 @@ Collate:
     'plotting.R'
     'quantiles.R'
     'scores.R'
+    'seasonal.R'
     'SeaVal-package.R'
     'spatial_grids.R'
     'upscaling.R'

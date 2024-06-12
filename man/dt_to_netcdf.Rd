@@ -39,6 +39,9 @@ none.
 This function writes a netcdf from a long data table, the usual data format in SeaVal.
 If not specified, it guesses (based on column names) which columns contain dimension variables and which contain variables.
 The function currently does not support writing netcdfs with multiple variables that have different sets of dimension variables!
+
+It allows to store character columns in netcdfs (essentially labelling them as integers and storing a legend).
+This legend is automatically interpreted when the netcdf is read with \code{\link[=netcdf_to_dt]{netcdf_to_dt()}}, but is also humanly readable.
 }
 \examples{
 example_dt = data.table(lon = 1:3, month = 4:6, prec = 7:9)

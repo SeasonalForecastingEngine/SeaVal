@@ -1,4 +1,8 @@
 
+
+# for check():
+N = group = long = NULL
+
 #### This file contains all kind of auxiliary functions. ####
 
 #' Auxiliary function
@@ -273,6 +277,15 @@ fc_cols = function(dt = NULL)
   }
   if(length(cols) == 0) stop("I don't recognize which column contains the forecast.")
   return(cols)
+}
+
+#' Data table column names that are recognized as leadtime
+#' @export
+#' @examples
+#' lt_cols()
+
+lt_cols = function(){
+  return(c('leadtime','lead_time'))
 }
 
 #' Observation column names

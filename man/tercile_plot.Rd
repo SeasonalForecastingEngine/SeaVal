@@ -16,7 +16,8 @@ tercile_plot(
   na.value = "white",
   extent = NULL,
   expand.x = c(-0.5, 0.5),
-  expand.y = c(-0.5, 2)
+  expand.y = c(-0.5, 2),
+  dimension_check = TRUE
 )
 }
 \arguments{
@@ -37,15 +38,17 @@ tercile_plot(
 \item{extent}{Optional vector of length 4 specifying the plotting borders in order xmin, xmax, ymin, ymax.}
 
 \item{expand.x, expand.y}{How far should the plotting borders be extended (beyond the data range)?}
+
+\item{dimension_check}{Logical. By default the function checks that there are not multiple values per coordinate
+(and subsets to the first level if there are several, e.g. to the first year and month (by appearance in \code{dt}) if \code{dt} contains data for several years and months).}
 }
 \description{
 Function for plotting terciles
 }
 \examples{
-\donttest{
-dt = combine(chirps_monthly[month == 12],tfc_from_efc(ecmwf_monthly[month == 12]))
-p = tercile_plot(dt)
+dt = chirps_monthly[month == 12 & lat <0 & year == 2018]
+p = tercile_plot(dt = dt)
 if(interactive()) plot(p)
-}
+
 
 }

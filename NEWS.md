@@ -2,6 +2,14 @@
 
 * Plotting functions `tfc_plot()` and `tfc_gha_plot()` for plotting tercile forecasts.
 
+* All map-plotting functions have now the option to turn off dimension-checking, by setting `dimension_check = FALSE`. This makes them quite a bit faster, but is less secure. Default is to check (as before).
+
+* Units for precipitation datasets have been switched from mm/day to mm (or mm/month) which is much more common. This affects the two internal datasets `chirps_monthly` and `ecmwf_monthly`, and the data returned from `load_chirps()`.
+
+* The new function `convert_monthly_to_seasonal()` converts monthly observations/predictions to seasonal ones.
+
+* `dt_to_netcdf()` can now handle character-valued columns in `dt`. These are recognized correctly by `netcdf_to_dt()`.
+
 # SeaVal 1.1.1
 
 * Fixed an issue where `add_country()`, `restrict_to_country()` and `restrict_to_GHA()` did not recognize Somaliland as part of Somalia.

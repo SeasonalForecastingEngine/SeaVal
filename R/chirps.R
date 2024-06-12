@@ -798,11 +798,12 @@ I expect the CHIRPS data to be located in a subfolder CHIRPS in that directory."
     dt = rbindlist(list(dt,dt_prelim))
   }
 
-  # convert time to reasonable format and precipitation to mm/day
+  # convert time to reasonable format and precipitation to mm
   dt[,year := floor(get('T')/12) + 1960]
   dt[,month := floor(get('T'))%%12 + 1]
   dt[,T:=NULL]
-  dt[,prec := prec/30] # calendar is 360 days, original unit is mm/month
+  message("Starting 06/2024, load_chirps() returns rainfall in mm (or mm/month), no longer in mm/day. Monthly chirps uses 30-day calendar so in order to convert to mm/day you can simply divide by 30.")
+  #dt[,prec := prec/30] # calendar is 360 days, original unit is mm/month
 
   return(dt)
 }

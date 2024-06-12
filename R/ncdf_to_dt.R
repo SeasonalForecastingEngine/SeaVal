@@ -45,9 +45,9 @@ netcdf_to_dt = function(nc, vars = NULL,
   {
     if(!file.exists(nc)) stop(paste0('The file ',nc,' does not exist.\nRemember that you need to include the path to the directory the file is located in.'))
     nc = ncdf4::nc_open(nc)
+    on.exit(ncdf4::nc_close(nc))
   }
   if(verbose == 2) print(nc)
-
 
   # convert vars to numeric vector indexing the variables you want to extract:
   if(is.null(vars))
@@ -82,11 +82,19 @@ netcdf_to_dt = function(nc, vars = NULL,
   units = NULL
   for(var in vars)
   {
+    legend_list = list() # we have to store which variables have a legend-attribute (which indicates that they originally contained characters).
+
     v = nc$var[[var]]
     if(v$ndims == 0)
     {
       warning(paste0('The variable ',v$name,' has no dimensions and is skipped.'))
       next
+    }
+
+
+    if('legend' %in% names(ncatt_get(nc, varid = v$name))) {
+      legend_list = c(legend_list,ncatt_get(nc, varid = v$name, attname = 'legend')$value)
+      names(legend_list[[length(legend_list)]]) = v$name
     }
 
     units = c(units, paste0(v$name,': ',v$units))
@@ -116,6 +124,12 @@ netcdf_to_dt = function(nc, vars = NULL,
 
     for(i in 1:v$ndims)
     {
+      if('legend' %in% names(ncatt_get(nc, varid = v$dim[[i]]$name))) {
+        legend_list = c(legend_list,ncatt_get(nc, varid = v$dim[[i]]$name, attname = 'legend')$value)
+        names(legend_list[[length(legend_list)]]) = v$dim[[i]]$name
+      }
+
+
 
       ### vectorize dimension entries: ###
       if(count[i] == -1)
@@ -144,8 +158,22 @@ netcdf_to_dt = function(nc, vars = NULL,
     dt_ttemp = data.table(as.vector(ncvar_get(nc,varid = v$name,start = start,count = count)))
     setnames(dt_ttemp,v$name)
 
-    if(keep_nas) dt_list = c(dt_list,list(data.table(dt_temp,dt_ttemp)))
-    if(!keep_nas) dt_list = c(dt_list,list(data.table(dt_temp,dt_ttemp)[!is.na(get(v$name))]))
+    dt_temp = data.table(dt_temp, dt_ttemp)
+
+    for(i in seq_along(legend_list)){
+      temp = strsplit(legend_list[[i]],split = ', ')
+      temp = strsplit(unlist(temp),split = ' = ')
+      inds = c()
+      char_values = c()
+      for(j in seq_along(temp)){
+        inds = c(inds,as.numeric(temp[[j]][1]))
+        char_values = c(char_values,temp[[j]][2])
+      }
+      dt_temp[,(names(legend_list[[i]])) := char_values[match(get(names(legend_list[[i]])),inds)]]
+    }
+
+    if(keep_nas) dt_list = c(dt_list,list(dt_temp))
+    if(!keep_nas) dt_list = c(dt_list,list(dt_temp[!is.na(get(v$name))]))
 
   }
 
@@ -183,8 +211,6 @@ netcdf_to_dt = function(nc, vars = NULL,
     cat(catout)
   }
 
-  ncdf4::nc_close(nc)
-
   return(dt_list)
 }
 
@@ -194,6 +220,9 @@ netcdf_to_dt = function(nc, vars = NULL,
 #' @description This function writes a netcdf from a long data table, the usual data format in SeaVal.
 #' If not specified, it guesses (based on column names) which columns contain dimension variables and which contain variables.
 #' The function currently does not support writing netcdfs with multiple variables that have different sets of dimension variables!
+#'
+#' It allows to store character columns in netcdfs (essentially labelling them as integers and storing a legend).
+#' This legend is automatically interpreted when the netcdf is read with [netcdf_to_dt()], but is also humanly readable.
 #'
 #' @param dt a data.table
 #' @param vars names of columns in dt containing variables. If this is NULL, the function guesses and asks for confirmation.
@@ -249,6 +278,15 @@ dt_to_netcdf = function(dt,nc_out,
     }
   }
 
+  # convert character columns to integers and record their levels
+  char_colnames = names(dt)[as.logical(dt[,lapply(.SD, is.character)])]
+  att_list_for_char_cols = list()
+  for(i in seq_along(char_colnames)){
+    dt[,char_colnames[i] := as.factor(get(char_colnames[i]))]
+    att_list_for_char_cols[[i]] = dt[,levels(get(char_colnames[i]))]
+    dt[,char_colnames[i] := as.integer(get(char_colnames[i]))]
+  }
+
   # get data into correct order:
   setkeyv(dt,rev(dim_vars))
 
@@ -283,17 +321,17 @@ dt_to_netcdf = function(dt,nc_out,
 
   # get the 'rectangular' dt:
   expand_dt = as.data.table(expand.grid(dim_list))
-  dt = merge(dt,expand_dt,all = TRUE)
-  setkeyv(dt,rev(dim_vars))
+
+  dt_new = merge(dt,expand_dt,by = key(dt),all = TRUE) # dt is keyed by dimension variables
 
   # define the variables of the netcdf:
   vars_ncdf = list()
   for(ii in seq_along(vars))
   {
     v = vars[ii]
-    if(!v %in% names(dt)) stop(paste0(v,' is not a column name in dt.'))
+    if(!v %in% names(dt_new)) stop(paste0(v,' is not a column name in dt.'))
 
-    vals = dt[,get(v)]
+    vals = dt_new[,get(v)]
 
     if(is.null(units))
     {
@@ -312,18 +350,28 @@ dt_to_netcdf = function(dt,nc_out,
 
   # write the netcdf file:
   nc = ncdf4::nc_create(filename = nc_out,vars = c(vars_ncdf))
+  on.exit(ncdf4::nc_close(nc))
 
   for(ii in seq_along(vars))
   {
     v = vars[ii]
-    values = dt[,get(v)]
+    values = dt_new[,get(v)]
 
     ncdf4::ncvar_put(nc, varid = vars[ii],vals = values)
+  }
+
+  for(i in seq_along(char_colnames)){
+    templist = att_list_for_char_cols[[i]]
+    legend_string = paste(1:length(templist),'=',templist,collapse = ', ')
+    ncatt_put(nc, varid = char_colnames[i], attname = 'legend', attval = legend_string)
+
+    # revert conversion of the column in dt:
+    dt[,char_colnames[i] := att_list_for_char_cols[[i]][get(char_colnames[i])]]
   }
 
   if(!is.null(description))
   {
     ncdf4::ncatt_put(nc,varid = 0,attname = 'Description',attval = description)
   }
-  ncdf4::nc_close(nc)
+
 }

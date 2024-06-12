@@ -25,7 +25,8 @@ ggplot_dt(
   add_map = TRUE,
   extent = NULL,
   expand.x = c(0, 0),
-  expand.y = c(0, 0)
+  expand.y = c(0, 0),
+  dimension_check = TRUE
 )
 }
 \arguments{
@@ -56,12 +57,15 @@ since they're adjusted to be 'nice'), or by specifying the breaks explicitly (wh
 should be apart, and specifying the centerpoint for one of the bins (default is midpoint, or the center of rr if midpoint is not provided). For example, if your color scale shows
 percentages and you'd like 4 categories, ranging from white to red, this is easiest achieved by \code{binwidth = 25, midpoint = 12.5}.}
 
-\item{add_map}{logical. Set to FALSE to remove borders (e.g. if you want to add them yourself from a shapefile).}
+\item{add_map}{logical, defaults to \code{TRUE}, mostly for internal use. Set to \code{FALSE} to remove borders (e.g. if you want to add them yourself from a shapefile).}
 
 \item{extent}{An optional four-element vector in the order xmin,xmax,ymin,ymax for specifying the spatial extent of the plot. Default is to fit the extent to the data.}
 
 \item{expand.x, expand.y}{vectors with two entries to be added to xlims/ylims of the plot. E.g. expand.x = c(-0.5,0.5)
 expands the plot by half a longitude both on the right and left hand side}
+
+\item{dimension_check}{Logical. By default the function checks that there are not multiple values per coordinate
+(and subsets to the first level if there are several, e.g. to the first year and month (by appearance in \code{dt}) if \code{dt} contains data for several years and months).}
 }
 \value{
 a ggplot object.
