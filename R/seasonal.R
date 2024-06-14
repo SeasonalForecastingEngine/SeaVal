@@ -48,6 +48,7 @@ season_strings_to_int = function(seasons = c("MAM", "JJAS", "OND")){
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # returns empty data table, because the example data does not contain data for a full season:
 #' dt = convert_monthly_to_seasonal(chirps_monthly)
 #'
@@ -63,6 +64,7 @@ season_strings_to_int = function(seasons = c("MAM", "JJAS", "OND")){
 #'                                   FUN = mean,
 #'                                   only_complete_seasons = FALSE)
 #' print(dt3)
+#' }
 
 convert_monthly_to_seasonal = function(dt,
                                        vars = NULL,

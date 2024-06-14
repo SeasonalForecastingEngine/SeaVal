@@ -11,5 +11,5 @@ downloading and managing monthly-means gridded precipitation observations provid
 Climate Hazards Group InfraRed Precipitation with Station data 
 [(CHIRPS)](https://www.chc.ucsb.edu/data/chirps).
 
-The package can be installed by running `install.packages("SeaVal")`. Thereafter it can be loaded by running `library(SeaVal)`
-For a comprehensive online tutorial, see http://files.nr.no/samba/CONFER/SeaVal/.
+The package can be installed by running `install.packages("SeaVal")`. Thereafter it can be loaded by running `library(SeaVal)`.
+A comprehensive online tutorial is available [here](https://seasonalforecastingengine.github.io).

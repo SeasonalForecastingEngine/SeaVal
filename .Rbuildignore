@@ -9,3 +9,4 @@
 ^notes_on_CRAN_release\.md$
 ^revdep$
 ^CRAN-SUBMISSION$
+^\.github

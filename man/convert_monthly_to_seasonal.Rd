@@ -49,6 +49,7 @@ provided in \code{by}. If yes, they are kept, else they are discarded. A typical
 The grouping levels usually include \code{'lon'}, \code{'lat'}, so there is only one country name per grouping level and the name is kept.
 }
 \examples{
+\donttest{
 # returns empty data table, because the example data does not contain data for a full season:
 dt = convert_monthly_to_seasonal(chirps_monthly)
 
@@ -64,4 +65,5 @@ dt3 = convert_monthly_to_seasonal(chirps_monthly,
                                   FUN = mean,
                                   only_complete_seasons = FALSE)
 print(dt3)
+}
 }
