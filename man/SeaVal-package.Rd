@@ -6,18 +6,18 @@
 \alias{SeaVal-package}
 \title{SeaVal: Validation of Seasonal Weather Forecasts}
 \description{
-Provides tools for processing and evaluating seasonal weather forecasts, with an emphasis on tercile forecasts. We follow the World Meteorological Organization's "Guidance on Verification of Operational Seasonal Climate Forecasts", S.J.Mason (2018, ISBN: 978-92-63-11220-0, URL: \url{https://library.wmo.int/idurl/4/56227}). The development was supported by the European Union’s Horizon 2020 research and innovation programme under grant agreement no. 869730 (CONFER). A comprehensive online tutorial is available at \url{http://files.nr.no/samba/CONFER/SeaVal/}.
+Provides tools for processing and evaluating seasonal weather forecasts, with an emphasis on tercile forecasts. We follow the World Meteorological Organization's "Guidance on Verification of Operational Seasonal Climate Forecasts", S.J.Mason (2018, ISBN: 978-92-63-11220-0, URL: \url{https://library.wmo.int/idurl/4/56227}). The development was supported by the European Union’s Horizon 2020 research and innovation programme under grant agreement no. 869730 (CONFER). A comprehensive online tutorial is available at \url{https://seasonalforecastingengine.github.io/SeaValDoc/}.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://files.nr.no/samba/CONFER/SeaVal/}
+  \item \url{https://seasonalforecastingengine.github.io/SeaValDoc/}
   \item \url{https://github.com/SeasonalForecastingEngine/SeaVal}
 }
 
 }
 \author{
-\strong{Maintainer}: Claudio Heinrich-Mertsching \email{claudio@nr.no} (\href{https://orcid.org/0000-0003-3581-6416}{ORCID}) [copyright holder]
+\strong{Maintainer}: Claudio Heinrich-Mertsching \email{claudio.heinrich@hotmail.de} (\href{https://orcid.org/0000-0003-3581-6416}{ORCID}) [copyright holder]
 
 Other contributors:
 \itemize{

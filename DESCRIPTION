@@ -1,6 +1,6 @@
 Package: SeaVal
 Title: Validation of Seasonal Weather Forecasts
-Version: 1.1.2
+Version: 1.2.0
 Authors@R: 
     c(person(given = "Claudio",
            family = "Heinrich-Mertsching",

@@ -129,7 +129,7 @@ ggplot_dt = function(dt,
     data_col = temp[[2]]
   }
 
-  if(data_col %in% tc_cols()) message('Check out the function tercile_cat() for plotting tercile-categories.')
+  if(data_col %in% tc_cols()) message('Check out the function tercile_plot() for plotting tercile-categories.')
   if(data_col %in% c("above","below","normal")) message('Check out the function tfc_plot() for plotting tercile-forecasts.')
 
   if(is.null(oob)) oob = scales::squish # declaring this in the function-defaults results in a NOTE during check(), because scales is imported but never used
