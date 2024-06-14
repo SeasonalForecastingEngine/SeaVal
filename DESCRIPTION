@@ -1,11 +1,11 @@
 Package: SeaVal
 Title: Validation of Seasonal Weather Forecasts
-Version: 1.1.1.9000
+Version: 1.1.2
 Authors@R: 
     c(person(given = "Claudio",
            family = "Heinrich-Mertsching",
            role = c("aut", "cre","cph"),
-           email = "claudio@nr.no",
+           email = "claudio.heinrich@hotmail.de",
            comment = c(ORCID = "0000-0003-3581-6416")),
     person(given = "Celine",
            family = "Cunen",
@@ -21,8 +21,8 @@ Description: Provides tools for processing and evaluating seasonal weather forec
     S.J.Mason (2018, ISBN: 978-92-63-11220-0, URL: <https://library.wmo.int/idurl/4/56227>). 
     The development was supported by the European Union’s Horizon 2020 research and innovation 
     programme under grant agreement no. 869730 (CONFER).
-    A comprehensive online tutorial is available at <http://files.nr.no/samba/CONFER/SeaVal/>.
-URL: http://files.nr.no/samba/CONFER/SeaVal/, https://github.com/SeasonalForecastingEngine/SeaVal
+    A comprehensive online tutorial is available at <https://seasonalforecastingengine.github.io/SeaValDoc/>.
+URL: https://seasonalforecastingengine.github.io/SeaValDoc/, https://github.com/SeasonalForecastingEngine/SeaVal
 License: GPL (>= 3)
 Encoding: UTF-8
 Depends: 

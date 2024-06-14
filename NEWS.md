@@ -1,4 +1,4 @@
-# SeaVal (development version)
+# SeaVal 1.1.2
 
 * Plotting functions `tfc_plot()` and `tfc_gha_plot()` for plotting tercile forecasts.
 
@@ -9,6 +9,10 @@
 * The new function `convert_monthly_to_seasonal()` converts monthly observations/predictions to seasonal ones.
 
 * `dt_to_netcdf()` can now handle character-valued columns in `dt`. These are recognized correctly by `netcdf_to_dt()`.
+
+* Fixed a bug in `ver_map()` and `ver_map_chirps()`.
+
+* The maintainers email address and the location of the online tutorial changed.
 
 # SeaVal 1.1.1
 
