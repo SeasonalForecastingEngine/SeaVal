@@ -1,3 +1,5 @@
+# SeaVal (development version)
+
 # SeaVal 1.2.0
 
 * Plotting functions `tfc_plot()` and `tfc_gha_plot()` for plotting tercile forecasts.

@@ -521,8 +521,8 @@ tfc_plot = function(dt,
   if(dimension_check) dt = modify_dt_map_plotting(dt = dt, data_col = "below")[[1]] # second page contains 'data_col' which we don't need here...
 
 
+  dt = copy(dt) # unfortunately, that's required to not change the columns:
   # only keep largest value between below, normal and above:
-
   dt[below <= pmax(normal,above),below:= NA_real_]
   dt[above <= pmax(below,normal,na.rm = TRUE),above:= NA_real_]
   dt[normal <= pmax(below,above,na.rm = TRUE),normal:= NA_real_]
@@ -552,25 +552,30 @@ tfc_plot = function(dt,
   # set colorscales:
   if(!discrete_cs)
   {
-    guide = guide_colorbar(barwidth = guide_barwidth, barheight = guide_barheight)
     cs_below = scale_fill_gradient(low = 'white', high = below,
                                    name = cs_names[1],
                                    limits = c(rmin,rmax),
                                    na.value = NA,
                                    oob = oob,
-                                   guide = guide)
+                                   guide = guide_colorbar(barwidth = guide_barwidth,
+                                                          barheight = guide_barheight,
+                                                          order = 1))
     cs_normal = scale_fill_gradient(low = 'white', high = normal,
                                     name = cs_names[2],
                                     limits = c(rmin,rmax),
                                     na.value = NA,
                                     oob = oob,
-                                    guide = guide)
+                                    guide = guide_colorbar(barwidth = guide_barwidth,
+                                                           barheight = guide_barheight,
+                                                           order = 2))
     cs_above = scale_fill_gradient(low = 'white', high = above,
                                    name = cs_names[3],
                                    limits = c(rmin,rmax),
                                    na.value = NA,
                                    oob = oob,
-                                   guide = guide)
+                                   guide = guide_colorbar(barwidth = guide_barwidth,
+                                                          barheight = guide_barheight,
+                                                          order = 3))
   }
   if(discrete_cs)
   {
@@ -584,21 +589,21 @@ tfc_plot = function(dt,
                                 limits = c(rmin,rmax),
                                 na.value = NA,
                                 oob = oob,
-                                guide = guide)
+                                guide = guide_colorsteps(barwidth = guide_barwidth, barheight = guide_barheight,order = 1))
     cs_normal = scale_fill_steps(low = 'white', high = normal,
                                  name = cs_names[2],
                                  breaks = breaks,
                                  limits = c(rmin,rmax),
                                  na.value = NA,
                                  oob = oob,
-                                 guide = guide)
+                                 guide = guide_colorsteps(barwidth = guide_barwidth, barheight = guide_barheight,order = 2))
     cs_above = scale_fill_steps(low = 'white', high = above,
                                 name = cs_names[3],
                                 breaks = breaks,
                                 limits = c(rmin,rmax),
                                 na.value = NA,
                                 oob = oob,
-                                guide = guide)
+                                guide = guide_colorsteps(barwidth = guide_barwidth, barheight = guide_barheight,order = 3))
 
   }
 
